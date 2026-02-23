@@ -24,10 +24,28 @@ abstract class AppApiServiceClient {
     @Field('is_mobile_pass') bool directLogin,
   );
 
-  // Add more endpoints as needed
-  // Example:
-  // @GET("apiAdmin/User/all")
-  // Future<Response> getUsers(@Queries() Map<String, dynamic> queries);
+  // Category endpoints
+  @GET("apiAdmin/Category/all")
+  Future<Response> getCategories();
+
+  @POST("apiAdmin/Category/create")
+  Future<Response> addCategory(@Field('name') String name);
+
+  // Product endpoints
+  @GET("apiAdmin/Product/all")
+  Future<Response> getProducts();
+
+  @GET("apiAdmin/Product/{id}")
+  Future<Response> getProductDetails(@Path('id') String id);
+
+  @POST("apiAdmin/Product/create")
+  Future<Response> createProduct(@Field('name') String name, @Field('description') String? description, @Field('price') double price, @Field('category_id') String categoryId, @Field('quantity') int? quantity, @Field('images') List<String> images);
+
+  @PUT("apiAdmin/Product/{id}")
+  Future<Response> updateProduct(@Path('id') String id, @Field('name') String name, @Field('description') String? description, @Field('price') double price, @Field('category_id') String categoryId, @Field('quantity') int? quantity, @Field('images') List<String> images);
+
+  @DELETE("apiAdmin/Product/{id}")
+  Future<Response> deleteProduct(@Path('id') String id);
 }
 
 // Annotations for API methods (simplified versions)

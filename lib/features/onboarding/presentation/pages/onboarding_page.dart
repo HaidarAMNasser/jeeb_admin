@@ -24,8 +24,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     context.read<OnboardingBloc>().add(const OnboardingInitialized());
   }
 
-  void _navigateToLogin() {
-    Navigator.pushReplacementNamed(context, Routes.login);
+  void _navigateToProducts() {
+    Navigator.pushReplacementNamed(context, Routes.products);
   }
 
   @override
@@ -77,7 +77,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                     OnboardingBottomSection(
                       state: state,
-                      onGetStarted: _navigateToLogin,
+                      onGetStarted: _navigateToProducts,
                       onNext: () {
                         context.read<OnboardingBloc>().add(
                           const OnboardingNextPage(),

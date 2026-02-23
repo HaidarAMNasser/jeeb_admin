@@ -46,5 +46,45 @@ class AppTranslation {
   static String get startBuilding => 'start_building'.tr();
   static String get madeWithLove => 'made_with_love'.tr();
   static String get createdBy => 'created_by'.tr();
+
+  // Category
+  static String get categories => 'categories'.tr();
+  static String get addCategory => 'add_category'.tr();
+  static String get categoryName => 'category_name'.tr();
+  static String get pleaseEnterCategoryName => 'please_enter_category_name'.tr();
+  static String get categoryAddedSuccessfully => 'category_added_successfully'.tr();
+
+  // Product
+  static String get products => 'products'.tr();
+  static String get addProduct => 'add_product'.tr();
+  static String get editProduct => 'edit_product'.tr();
+  static String get productName => 'product_name'.tr();
+  static String get productDescription => 'product_description'.tr();
+  static String get productPrice => 'product_price'.tr();
+  static String get productQuantity => 'product_quantity'.tr();
+  static String get selectCategory => 'select_category'.tr();
+  static String get productImages => 'product_images'.tr();
+  static String get addImage => 'add_image'.tr();
+  static String get removeImage => 'remove_image'.tr();
+  static String get noImagesAdded => 'no_images_added'.tr();
+  static String get enterImageUrl => 'enter_image_url'.tr();
+  static String get add => 'add'.tr();
+  static String get pleaseEnterProductName => 'please_enter_product_name'.tr();
+  static String get pleaseEnterProductPrice => 'please_enter_product_price'.tr();
+  static String get invalidProductPrice => 'invalid_product_price'.tr();
+  static String get pleaseSelectCategory => 'please_select_category'.tr();
+  static String get pleaseAddAtLeastOneImage => 'please_add_at_least_one_image'.tr();
+  static String get productCreatedSuccessfully => 'product_created_successfully'.tr();
+  static String get productUpdatedSuccessfully => 'product_updated_successfully'.tr();
+  static String get productDeletedSuccessfully => 'product_deleted_successfully'.tr();
+  static String get delete => 'delete'.tr();
+  static String get edit => 'edit'.tr();
+  static String get save => 'save'.tr();
+  static String get cancel => 'cancel'.tr();
+  static String get rating => 'rating'.tr();
+  static String get noProductsFound => 'no_products_found'.tr();
+  static String get noCategoriesFound => 'no_categories_found'.tr();
+  static String get loading => 'loading'.tr();
+  static String get errorOccurred => 'error_occurred'.tr();
 }
 

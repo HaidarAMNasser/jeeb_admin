@@ -4,40 +4,76 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:easy_localization/easy_localization.dart' as easy_localization;
 
 class CustomTextField extends StatelessWidget {
+  final String title;
   final String hintText;
   final TextEditingController? controller;
   final Function(String)? onChanged;
 
   const CustomTextField({
+    super.key,
+    required this.title,
     required this.hintText,
     this.controller,
     this.onChanged,
-    required UniqueKey key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      textDirection: TextDirection.rtl,
-      controller: controller,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        hintText: hintText,
-        enabledBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-        hintStyle: getRegularStyle(color: Colors.grey, fontSize: AppFontSize.s13),
-        hintTextDirection: TextDirection.rtl,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24.r),
-            borderSide: BorderSide(color: ColorManager.borderColor)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24.r),
-          borderSide: BorderSide(color: ColorManager.primaryDark),
+    final isRTL = context.locale.languageCode == 'ar';
+    final textDirection = isRTL ? TextDirection.rtl : TextDirection.ltr;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CustomText(
+          text: title,
+          textStyle: getSemiBoldStyle(
+            fontSize: AppFontSize.s16,
+            color: ColorManager.defaultWhite,
+          ),
         ),
-      ),
-      style: getRegularStyle(fontSize: AppFontSize.s14),
+        SizedBox(height: AppHeight.s8),
+        TextField(
+          textDirection: textDirection,
+          textAlign: isRTL ? TextAlign.right : TextAlign.left,
+          controller: controller,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            hintText: hintText,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.r18),
+              borderSide: BorderSide(color: ColorManager.borderColor),
+            ),
+            hintStyle: getRegularStyle(
+              color: ColorManager.descriptionColor,
+              fontSize: AppFontSize.s13,
+            ),
+            hintTextDirection: textDirection,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: AppPadding.p16,
+              vertical: AppHeight.s16,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.r18),
+              borderSide: BorderSide(color: ColorManager.borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.r18),
+              borderSide: BorderSide(color: ColorManager.borderColor),
+            ),
+            filled: true,
+            fillColor: ColorManager.defaultWhite,
+          ),
+          style: getRegularStyle(
+            fontSize: AppFontSize.s14,
+            color: ColorManager.productNameColor,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -84,36 +120,3 @@ class CustomDropdownField<T> extends StatelessWidget {
   }
 }
 
-class CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-  final Color color;
-  final Color textcolor;
-  final double? elevation;
-  const CustomButton(
-      {required this.text,
-      required this.onPressed,
-      this.elevation,
-      required this.color,
-      required this.textcolor});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        elevation: this.elevation ?? 0,
-        backgroundColor: color,
-        foregroundColor: textcolor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24.r),
-        ),
-        textStyle: getRegularStyle(
-          color: Colors.white,
-          fontSize: AppFontSize.s16,
-        ),
-      ),
-      child: CustomText(text: text),
-    );
-  }
-}

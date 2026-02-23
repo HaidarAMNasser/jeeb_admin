@@ -6,6 +6,16 @@ import 'navigation_service.dart';
 import '../../../features/splash/presentation/pages/splash_page.dart';
 import '../../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../../features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import '../../../features/product/list_product/presentation/pages/list_product_page.dart';
+import '../../../features/product/list_product/presentation/bloc/list_product_bloc.dart';
+import '../../../features/product/list_product/data/repositories/list_product_repository.dart';
+import '../../../features/product/create_product/presentation/pages/create_product_page.dart';
+import '../../../features/product/create_product/presentation/bloc/create_product_bloc.dart';
+import '../../../features/product/create_product/data/repositories/create_product_repository.dart';
+import '../../../features/product/update_product/presentation/bloc/update_product_bloc.dart';
+import '../../../features/product/update_product/data/repositories/update_product_repository.dart';
+  
+import '../../infrastructure/di/dependency_injection.dart' as di;
 
 /// Application Router
 class AppRouter {
@@ -40,20 +50,29 @@ class AppRouter {
           settings,
         );
 
-      // Example: Route with parameters and multiple BLoCs (same as old project)
-      // case Routes.profile:
-      //   return _buildRouteWithBlocs(
-      //     ProfileScreen(
-      //       userId: args?['userId'] as String,
-      //       userName: args?['userName'] as String?,
-      //       canEdit: args?['canEdit'] as bool? ?? false,
-      //     ),
-      //     settings,
-      //     blocs: [
-      //       () => di.sl<ProfileBloc>(),
-      //       () => di.sl<SettingsBloc>(),
-      //     ],
-      //   );
+      case Routes.products:
+        return _buildRouteWithBloc(
+          const ListProductPage(),
+          settings,
+          bloc: () => ListProductBloc(di.sl<ListProductRepository>())
+            ..add(const GetProductsEvent()),
+        );
+
+      case Routes.addProduct:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final product = args?['product'];
+        return _buildRouteWithBlocs(
+          CreateProductPage(product: product),
+          settings,
+          providers: [
+            BlocProvider<CreateProductBloc>(
+              create: (_) => CreateProductBloc(di.sl<CreateProductRepository>()),
+            ),
+            BlocProvider<UpdateProductBloc>(
+              create: (_) => UpdateProductBloc(di.sl<UpdateProductRepository>()),
+            ),
+          ],
+        );
 
       default:
         return _buildRoute(
@@ -137,43 +156,27 @@ class AppRouter {
     );
   }
 
-  /// Build route with auto-injected BLoCs from dependency injection
-  /// Just pass the BLoC factory functions and it will automatically wrap with BlocProvider
-  /// Parameters are passed via RouteSettings.arguments as Map<String, dynamic>
-  ///
-  /// Usage with parameters:
+  /// Build route with multiple BLoC providers
+  /// Usage:
   /// ```dart
   /// final args = settings.arguments as Map<String, dynamic>?;
   /// return _buildRouteWithBlocs(
-  ///   MyScreen(
-  ///     id: args?['id'] as String?,
-  ///     name: args?['name'] as String?,
-  ///   ),
+  ///   MyScreen(id: args?['id']),
   ///   settings,
-  ///   blocs: [() => di.sl<MyBloc>()],
+  ///   providers: [
+  ///     BlocProvider(create: (_) => di.sl<MyBloc>()),
+  ///     BlocProvider(create: (_) => di.sl<AnotherBloc>()),
+  ///   ],
   /// );
   /// ```
-  // ignore: unused_element
   static PageRouteBuilder _buildRouteWithBlocs(
     Widget page,
     RouteSettings settings, {
-    required List<dynamic Function()> blocs,
+    required List<BlocProvider> providers,
   }) {
     return PageRouteBuilder(
       settings: settings,
       pageBuilder: (context, animation, secondaryAnimation) {
-        // If single BLoC, use BlocProvider directly
-        if (blocs.length == 1) {
-          final bloc = blocs.first()();
-          return BlocProvider.value(value: bloc, child: page);
-        }
-
-        // If multiple BLoCs, create providers and use MultiBlocProvider
-        final providers = blocs.map((blocFactory) {
-          final bloc = blocFactory();
-          return BlocProvider.value(value: bloc);
-        }).toList();
-
         return MultiBlocProvider(providers: providers, child: page);
       },
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
