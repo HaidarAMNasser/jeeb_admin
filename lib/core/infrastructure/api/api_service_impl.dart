@@ -84,6 +84,222 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
+  Future<Response> register(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String phone,
+    String role,
+    int countryId,
+    int cityId,
+    String notificationChannel,
+    String? address,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
+      'phone': phone,
+      'role': role,
+      'countryId': countryId,
+      'cityId': cityId,
+      'notificationChannel': notificationChannel,
+      if (address != null) 'address': address,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/register',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> verify(
+    String email,
+    String otp,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {
+      'email': email,
+      'otp': otp,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/verify',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> resendOtp(
+    String email,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {
+      'email': email,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/resend-otp',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> forgotPassword(
+    String email,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {
+      'email': email,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/forgot-password',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> resetPassword(
+    String email,
+    String otp,
+    String password,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {
+      'email': email,
+      'otp': otp,
+      'password': password,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/reset-password',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getProfile() async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/profile',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> updateProfile(
+    String? firstName,
+    String? lastName,
+    String? phone,
+    int? countryId,
+    int? cityId,
+    String? address,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = <String, dynamic>{};
+    if (firstName != null) data['firstName'] = firstName;
+    if (lastName != null) data['lastName'] = lastName;
+    if (phone != null) data['phone'] = phone;
+    if (countryId != null) data['countryId'] = countryId;
+    if (cityId != null) data['cityId'] = cityId;
+    if (address != null) data['address'] = address;
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/profile',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
   Future<Response> getCategories() async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -256,6 +472,61 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
             .compose(
               dio.options,
               'apiAdmin/Product/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getCountries(
+    int? page,
+    int? limit,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'countries',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getCities(
+    int countryId,
+    int? page,
+    int? limit,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      'countryId': countryId,
+    };
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'cities',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),

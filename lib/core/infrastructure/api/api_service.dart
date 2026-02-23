@@ -24,6 +24,56 @@ abstract class AppApiServiceClient {
     @Field('is_mobile_pass') bool directLogin,
   );
 
+  @POST("auth/register")
+  Future<Response> register(
+    @Field('firstName') String firstName,
+    @Field('lastName') String lastName,
+    @Field('email') String email,
+    @Field('password') String password,
+    @Field('phone') String phone,
+    @Field('role') String role,
+    @Field('countryId') int countryId,
+    @Field('cityId') int cityId,
+    @Field('notificationChannel') String notificationChannel,
+    @Field('address') String? address,
+  );
+
+  @POST("auth/verify")
+  Future<Response> verify(
+    @Field('email') String email,
+    @Field('otp') String otp,
+  );
+
+  @POST("auth/resend-otp")
+  Future<Response> resendOtp(
+    @Field('email') String email,
+  );
+
+  @POST("auth/forgot-password")
+  Future<Response> forgotPassword(
+    @Field('email') String email,
+  );
+
+  @POST("auth/reset-password")
+  Future<Response> resetPassword(
+    @Field('email') String email,
+    @Field('otp') String otp,
+    @Field('password') String password,
+  );
+
+  @GET("auth/profile")
+  Future<Response> getProfile();
+
+  @PATCH("auth/profile")
+  Future<Response> updateProfile(
+    @Field('firstName') String? firstName,
+    @Field('lastName') String? lastName,
+    @Field('phone') String? phone,
+    @Field('countryId') int? countryId,
+    @Field('cityId') int? cityId,
+    @Field('address') String? address,
+  );
+
   // Category endpoints
   @GET("apiAdmin/Category/all")
   Future<Response> getCategories();
@@ -46,6 +96,20 @@ abstract class AppApiServiceClient {
 
   @DELETE("apiAdmin/Product/{id}")
   Future<Response> deleteProduct(@Path('id') String id);
+
+  // Countries & Cities endpoints
+  @GET("countries")
+  Future<Response> getCountries(
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+  );
+
+  @GET("cities")
+  Future<Response> getCities(
+    @Query('countryId') int countryId,
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+  );
 }
 
 // Annotations for API methods (simplified versions)
