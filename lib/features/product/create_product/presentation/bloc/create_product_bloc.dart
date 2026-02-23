@@ -71,7 +71,12 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
         if (!state.isValid) {
           return;
         }
-        emit(state.copyWith(isLoading: true));
+        emit(CreateProductLoading(
+          images: state.images,
+          selectedCategoryId: state.selectedCategoryId,
+          productId: state.productId,
+          isValid: state.isValid,
+        ));
         final result = await _createRepository.createProduct(
           name: nameController.text.trim(),
           description: descriptionController.text.trim().isEmpty
@@ -85,9 +90,12 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
           images: state.images,
         );
         result.fold(
-          (failure) => emit(state.copyWith(
-            isLoading: false,
-            errorMessage: failure.message,
+          (failure) => emit(CreateProductError(
+            message: failure.message,
+            images: state.images,
+            selectedCategoryId: state.selectedCategoryId,
+            productId: state.productId,
+            isValid: state.isValid,
           )),
           (product) => emit(CreateProductSuccess(product: product)),
         );

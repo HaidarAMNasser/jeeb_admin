@@ -16,6 +16,8 @@ import '../api/api_service.dart';
 import '../../config/app_config.dart';
 import '../../../features/product/list_product/data/data_sources/list_product_data_source.dart';
 import '../../../features/product/list_product/data/repositories/list_product_repository.dart';
+import '../../../features/product/product_details/data/data_sources/product_details_data_source.dart';
+import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
 
@@ -61,6 +63,12 @@ Future<void> init() async {
     () => ListProductRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => ListProductRepository(sl(), sl()));
+
+  //! Product Details Dependencies
+  sl.registerFactory<ProductDetailsRemoteDataSource>(
+    () => ProductDetailsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ProductDetailsRepository(sl(), sl()));
 
   //! Product Create/Update/Delete Dependencies
   sl.registerFactory<CreateProductRemoteDataSource>(

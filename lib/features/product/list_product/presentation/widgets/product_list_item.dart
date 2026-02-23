@@ -6,6 +6,8 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 
 class ProductListItem extends StatelessWidget {
   final ProductEntity product;
@@ -14,7 +16,15 @@ class ProductListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return InkWell(
+      onTap: () {
+        AppRouter.navigateTo(
+          context,
+          Routes.productDetails,
+          arguments: {'productId': product.id},
+        );
+      },
+      child: Card(
       color: ColorManager.defaultWhite,
       margin: EdgeInsets.only(bottom: AppMargin.m16),
       elevation: 2,
@@ -164,6 +174,7 @@ class ProductListItem extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
     );
   }

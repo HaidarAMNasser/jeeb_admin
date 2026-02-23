@@ -163,7 +163,7 @@ class _ImageItem extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(AppSize.s5),
                 decoration: BoxDecoration(
-                  color: ColorManager.error,
+                  color: ColorManager.defaultYellow,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

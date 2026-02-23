@@ -86,5 +86,10 @@ class AppTranslation {
   static String get noCategoriesFound => 'no_categories_found'.tr();
   static String get loading => 'loading'.tr();
   static String get errorOccurred => 'error_occurred'.tr();
+  static String get retry => 'retry'.tr();
+  static String get noInternetConnection => 'no_internet_connection'.tr();
+  static String get noDataFound => 'no_data_found'.tr();
+  static String get somethingWentWrong => 'something_went_wrong'.tr();
+  static String get productDetails => 'product_details'.tr();
 }
 

@@ -44,7 +44,7 @@ class ColorManager {
   // Status Colors
   static const Color success = Color(0xFF00B894);
   static const Color warning = Color(0xFFFDAA5D);
-  static const Color error = Color(0xFFE74C3C);
+  // static const Color error = Color(0xFFE74C3C);
   static const Color info = Color(0xFF74B9FF);
 
   // Button States

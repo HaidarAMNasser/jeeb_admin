@@ -67,6 +67,90 @@ class CreateProductInitial extends CreateProductState {
   }
 }
 
+class CreateProductLoading extends CreateProductState {
+  const CreateProductLoading({
+    required super.images,
+    required super.selectedCategoryId,
+    required super.productId,
+    required super.isValid,
+    super.isLoading = true,
+    super.errorMessage,
+  });
+
+  CreateProductLoading copyWith({
+    List<String>? images,
+    String? selectedCategoryId,
+    String? productId,
+    bool? isValid,
+    bool? isLoading,
+    String? errorMessage,
+  }) {
+    return CreateProductLoading(
+      images: images ?? this.images,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
+      productId: productId ?? this.productId,
+      isValid: isValid ?? this.isValid,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        images,
+        selectedCategoryId,
+        productId,
+        isValid,
+        isLoading,
+        errorMessage,
+      ];
+}
+
+class CreateProductError extends CreateProductState {
+  final String message;
+
+  const CreateProductError({
+    required this.message,
+    required super.images,
+    required super.selectedCategoryId,
+    required super.productId,
+    required super.isValid,
+    super.isLoading = false,
+    super.errorMessage,
+  });
+
+  CreateProductError copyWith({
+    String? message,
+    List<String>? images,
+    String? selectedCategoryId,
+    String? productId,
+    bool? isValid,
+    bool? isLoading,
+    String? errorMessage,
+  }) {
+    return CreateProductError(
+      message: message ?? this.message,
+      images: images ?? this.images,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
+      productId: productId ?? this.productId,
+      isValid: isValid ?? this.isValid,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        message,
+        images,
+        selectedCategoryId,
+        productId,
+        isValid,
+        isLoading,
+        errorMessage,
+      ];
+}
+
 class CreateProductSuccess extends CreateProductState {
   final ProductEntity product;
 

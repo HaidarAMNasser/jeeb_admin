@@ -14,6 +14,9 @@ import '../../../features/product/create_product/presentation/bloc/create_produc
 import '../../../features/product/create_product/data/repositories/create_product_repository.dart';
 import '../../../features/product/update_product/presentation/bloc/update_product_bloc.dart';
 import '../../../features/product/update_product/data/repositories/update_product_repository.dart';
+import '../../../features/product/product_details/presentation/pages/product_details_page.dart';
+import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
+import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
   
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -70,6 +73,22 @@ class AppRouter {
             ),
             BlocProvider<UpdateProductBloc>(
               create: (_) => UpdateProductBloc(di.sl<UpdateProductRepository>()),
+            ),
+            BlocProvider<ProductDetailsBloc>(
+              create: (_) => ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
+            ),
+          ],
+        );
+
+      case Routes.productDetails:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final productId = args?['productId'] as String? ?? '';
+        return _buildRouteWithBlocs(
+          ProductDetailsPage(productId: productId),
+          settings,
+          providers: [
+            BlocProvider<ProductDetailsBloc>(
+              create: (_) => ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
             ),
           ],
         );

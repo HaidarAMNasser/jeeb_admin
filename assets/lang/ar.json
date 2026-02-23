@@ -72,5 +72,10 @@
   "no_products_found": "لا توجد منتجات",
   "no_categories_found": "لا توجد فئات",
   "loading": "جاري التحميل...",
-  "error_occurred": "حدث خطأ"
+  "error_occurred": "حدث خطأ",
+  "retry": "إعادة المحاولة",
+  "no_internet_connection": "لا يوجد اتصال بالإنترنت",
+  "no_data_found": "لا توجد بيانات",
+  "something_went_wrong": "حدث خطأ ما",
+  "product_details": "تفاصيل المنتج"
 }

@@ -72,5 +72,10 @@
   "no_products_found": "No products found",
   "no_categories_found": "No categories found",
   "loading": "Loading...",
-  "error_occurred": "An error occurred"
+  "error_occurred": "An error occurred",
+  "retry": "Retry",
+  "no_internet_connection": "No internet connection",
+  "no_data_found": "No data found",
+  "something_went_wrong": "Something went wrong",
+  "product_details": "Product Details"
 }
