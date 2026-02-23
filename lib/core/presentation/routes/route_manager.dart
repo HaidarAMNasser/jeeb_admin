@@ -14,6 +14,8 @@ import '../../../features/product/create_product/presentation/bloc/create_produc
 import '../../../features/product/create_product/data/repositories/create_product_repository.dart';
 import '../../../features/product/update_product/presentation/bloc/update_product_bloc.dart';
 import '../../../features/product/update_product/data/repositories/update_product_repository.dart';
+import '../../../features/product/delete_product/presentation/bloc/delete_product_bloc.dart';
+import '../../../features/product/delete_product/data/repositories/delete_product_repository.dart';
 import '../../../features/product/product_details/presentation/pages/product_details_page.dart';
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
@@ -73,6 +75,9 @@ class AppRouter {
             ),
             BlocProvider<UpdateProductBloc>(
               create: (_) => UpdateProductBloc(di.sl<UpdateProductRepository>()),
+            ),
+            BlocProvider<DeleteProductBloc>(
+              create: (_) => DeleteProductBloc(di.sl<DeleteProductRepository>()),
             ),
             BlocProvider<ProductDetailsBloc>(
               create: (_) => ProductDetailsBloc(di.sl<ProductDetailsRepository>()),

@@ -77,10 +77,14 @@ class AppTranslation {
   static String get productCreatedSuccessfully => 'product_created_successfully'.tr();
   static String get productUpdatedSuccessfully => 'product_updated_successfully'.tr();
   static String get productDeletedSuccessfully => 'product_deleted_successfully'.tr();
+  static String get deleteProduct => 'delete_product'.tr();
+  static String get areYouSureDeleteProduct => 'are_you_sure_delete_product'.tr();
+  static String get areYouSureWantToDeleteThisProduct => 'are_you_sure_want_to_delete_this_product'.tr();
   static String get delete => 'delete'.tr();
   static String get edit => 'edit'.tr();
   static String get save => 'save'.tr();
   static String get cancel => 'cancel'.tr();
+  static String get confirm => 'confirm'.tr();
   static String get rating => 'rating'.tr();
   static String get noProductsFound => 'no_products_found'.tr();
   static String get noCategoriesFound => 'no_categories_found'.tr();
