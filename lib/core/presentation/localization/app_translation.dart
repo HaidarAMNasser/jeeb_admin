@@ -138,5 +138,6 @@ class AppTranslation {
   static String get profileUpdatedSuccess => 'profile_updated_success'.tr();
   static String get forgotPasswordDescription => 'forgot_password_description'.tr();
   static String get pleaseSelectCountryFirst => 'please_select_country_first'.tr();
+  static String get noCitiesAvailable => 'no_cities_available'.tr();
 }
 

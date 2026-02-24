@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'country_entity.dart';
-import 'city_entity.dart';
+import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
+import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 
 enum UserRole {
   customer,

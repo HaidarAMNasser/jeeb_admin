@@ -38,6 +38,12 @@ import '../../../features/auth/reset_password/presentation/bloc/reset_password_b
 import '../../../features/auth/profile/data/data_sources/profile_remote_data_source.dart';
 import '../../../features/auth/profile/data/repositories/profile_repository.dart';
 import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/country/data/data_sources/country_remote_data_source.dart';
+import '../../../features/country/data/repositories/country_repository.dart';
+import '../../../features/country/presentation/bloc/country_bloc.dart';
+import '../../../features/city/data/data_sources/city_remote_data_source.dart';
+import '../../../features/city/data/repositories/city_repository.dart';
+import '../../../features/city/presentation/bloc/city_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -143,4 +149,18 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ProfileRepository(sl(), sl()));
   sl.registerFactory(() => ProfileBloc(sl()));
+
+  //! Country Dependencies
+  sl.registerFactory<CountryRemoteDataSource>(
+    () => CountryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => CountryRepository(sl(), sl()));
+  sl.registerFactory(() => CountryBloc(sl()));
+
+  //! City Dependencies
+  sl.registerFactory<CityRemoteDataSource>(
+    () => CityRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => CityRepository(sl(), sl()));
+  sl.registerFactory(() => CityBloc(sl()));
 }

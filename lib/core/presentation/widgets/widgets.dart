@@ -5,6 +5,8 @@ export 'error_state_widget.dart';
 export 'custom_password_field.dart';
 export 'custom_text_display.dart';
 export 'custom_dropdown.dart';
+export 'custom_paginated_dropdown.dart';
+export 'animated_border_wrapper.dart';
 export 'empty_state_widget.dart';
 export 'custom_app_bar.dart';
 export 'bloc_state_handler.dart';

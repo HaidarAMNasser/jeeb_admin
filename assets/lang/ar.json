@@ -122,5 +122,6 @@
   "passwords_do_not_match": "كلمات المرور غير متطابقة",
   "profile_updated_success": "تم تحديث الملف الشخصي بنجاح",
   "forgot_password_description": "أدخل بريدك الإلكتروني لاستلام رمز التحقق",
-  "please_select_country_first": "الرجاء اختيار دولة أولاً"
+  "please_select_country_first": "الرجاء اختيار دولة أولاً",
+  "no_cities_available": "لا توجد مدن متاحة"
 }

@@ -31,6 +31,8 @@ import '../../../features/auth/reset_password/presentation/pages/reset_password_
 import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
 import '../../../features/auth/profile/presentation/pages/profile_page.dart';
 import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/country/presentation/bloc/country_bloc.dart';
+import '../../../features/city/presentation/bloc/city_bloc.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -60,10 +62,20 @@ class AppRouter {
         );
 
       case Routes.register:
-        return _buildRouteWithBloc(
+        return _buildRouteWithBlocs(
           const RegisterPage(),
           settings,
-          bloc: () => di.sl<RegisterBloc>(),
+          providers: [
+            BlocProvider<RegisterBloc>(
+              create: (_) => di.sl<RegisterBloc>(),
+            ),
+            BlocProvider<CountryBloc>(
+              create: (_) => di.sl<CountryBloc>(),
+            ),
+            BlocProvider<CityBloc>(
+              create: (_) => di.sl<CityBloc>(),
+            ),
+          ],
         );
 
       case Routes.verify:

@@ -1,6 +1,6 @@
 import '../../domain/entities/user_entity.dart';
-import 'country_model.dart';
-import 'city_model.dart';
+import 'package:jeeb_admin/features/country/data/models/country_model.dart';
+import 'package:jeeb_admin/features/city/data/models/city_model.dart';
 
 class UserModel {
   final int id;

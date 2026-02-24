@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart' as easy_localization;
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
@@ -11,8 +10,9 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_dropdown.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/features/auth/login/data/models/country_model.dart';
-import 'package:jeeb_admin/features/auth/login/data/models/city_model.dart';
+import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
+import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
+import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 
 class RegisterForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -24,14 +24,10 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController addressController;
   final String? selectedRole;
   final String? selectedNotificationChannel;
-  final int? selectedCountryId;
-  final int? selectedCityId;
-  final List<CountryModel> countries;
-  final List<CityModel> cities;
-  final bool isLoadingCountries;
-  final bool isLoadingCities;
-  final ValueChanged<int?> onCountryChanged;
-  final ValueChanged<int?> onCityChanged;
+  final CountryEntity? selectedCountry;
+  final CityEntity? selectedCity;
+  final ValueChanged<CountryEntity?> onCountryChanged;
+  final ValueChanged<CityEntity?> onCityChanged;
   final ValueChanged<String?> onRoleChanged;
   final ValueChanged<String?> onNotificationChannelChanged;
   final VoidCallback onRegister;
@@ -48,12 +44,8 @@ class RegisterForm extends StatelessWidget {
     required this.addressController,
     this.selectedRole,
     this.selectedNotificationChannel,
-    this.selectedCountryId,
-    this.selectedCityId,
-    required this.countries,
-    required this.cities,
-    required this.isLoadingCountries,
-    required this.isLoadingCities,
+    this.selectedCountry,
+    this.selectedCity,
     required this.onCountryChanged,
     required this.onCityChanged,
     required this.onRoleChanged,
@@ -64,8 +56,6 @@ class RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRTL = context.locale.languageCode == 'ar';
-    
     return Form(
       key: formKey,
       child: Column(
@@ -107,40 +97,12 @@ class RegisterForm extends StatelessWidget {
             controller: addressController,
           ),
           SizedBox(height: AppHeight.s24),
-          CustomDropdown<int>(
-            title: AppTranslation.selectCountry,
-            value: selectedCountryId,
-            hintText: isLoadingCountries 
-                ? AppTranslation.loading 
-                : AppTranslation.selectCountry,
-            items: countries.map((country) {
-              final countryName = isRTL ? country.name.ar : country.name.en;
-              return DropdownMenuItem<int>(
-                value: country.id,
-                child: Text(countryName),
-              );
-            }).toList(),
-            onChanged: isLoadingCountries ? null : onCountryChanged,
-          ),
-          SizedBox(height: AppHeight.s24),
-          CustomDropdown<int>(
-            title: AppTranslation.selectCity,
-            value: selectedCityId,
-            hintText: isLoadingCities 
-                ? AppTranslation.loading 
-                : (selectedCountryId == null 
-                    ? AppTranslation.pleaseSelectCountryFirst 
-                    : AppTranslation.selectCity),
-            items: cities.map((city) {
-              final cityName = isRTL ? city.name.ar : city.name.en;
-              return DropdownMenuItem<int>(
-                value: city.id,
-                child: Text(cityName),
-              );
-            }).toList(),
-            onChanged: (isLoadingCities || selectedCountryId == null) 
-                ? null 
-                : onCityChanged,
+          CountryCityWidget(
+            selectedCountry: selectedCountry,
+            selectedCity: selectedCity,
+            onSelectCountry: onCountryChanged,
+            onSelectCity: onCityChanged,
+            isRequired: true,
           ),
           SizedBox(height: AppHeight.s24),
           CustomDropdown<String>(
