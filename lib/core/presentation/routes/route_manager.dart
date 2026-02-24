@@ -19,7 +19,21 @@ import '../../../features/product/delete_product/data/repositories/delete_produc
 import '../../../features/product/product_details/presentation/pages/product_details_page.dart';
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
-  
+import '../../../features/auth/login/presentation/pages/login_page.dart';
+import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
+import '../../../features/auth/register/presentation/pages/register_page.dart';
+import '../../../features/auth/register/presentation/bloc/register_bloc.dart';
+import '../../../features/auth/verify/presentation/pages/verify_page.dart';
+import '../../../features/auth/verify/presentation/bloc/verify_bloc.dart';
+import '../../../features/auth/forgot_password/presentation/pages/forgot_password_page.dart';
+import '../../../features/auth/forgot_password/presentation/bloc/forgot_password_bloc.dart';
+import '../../../features/auth/reset_password/presentation/pages/reset_password_page.dart';
+import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
+import '../../../features/auth/profile/presentation/pages/profile_page.dart';
+import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/country/presentation/bloc/country_bloc.dart';
+import '../../../features/city/presentation/bloc/city_bloc.dart';
+
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
 /// Application Router
@@ -41,26 +55,68 @@ class AppRouter {
         );
 
       case Routes.login:
-        // Example: Auto-inject single BLoC with parameters (same as old project)
-        // return _buildRouteWithBlocs(
-        //   LoginScreen(
-        //     userId: args?['userId'] as String?,
-        //     email: args?['email'] as String?,
-        //   ),
-        //   settings,
-        //   blocs: [() => di.sl<LoginBloc>()],
-        // );
-        return _buildRoute(
-          Scaffold(body: Center(child: Text('Login Screen'))),
+        return _buildRouteWithBloc(
+          const LoginPage(),
           settings,
+          bloc: () => di.sl<LoginBloc>(),
+        );
+
+      case Routes.register:
+        return _buildRouteWithBlocs(
+          const RegisterPage(),
+          settings,
+          providers: [
+            BlocProvider<RegisterBloc>(
+              create: (_) => di.sl<RegisterBloc>(),
+            ),
+            BlocProvider<CountryBloc>(
+              create: (_) => di.sl<CountryBloc>(),
+            ),
+            BlocProvider<CityBloc>(
+              create: (_) => di.sl<CityBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.verify:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final email = args?['email'] as String? ?? '';
+        return _buildRouteWithBloc(
+          VerifyPage(email: email),
+          settings,
+          bloc: () => di.sl<VerifyBloc>(),
+        );
+
+      case Routes.forgotPassword:
+        return _buildRouteWithBloc(
+          const ForgotPasswordPage(),
+          settings,
+          bloc: () => di.sl<ForgotPasswordBloc>(),
+        );
+
+      case Routes.resetPassword:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final email = args?['email'] as String? ?? '';
+        return _buildRouteWithBloc(
+          ResetPasswordPage(email: email),
+          settings,
+          bloc: () => di.sl<ResetPasswordBloc>(),
+        );
+
+      case Routes.profile:
+        return _buildRouteWithBloc(
+          const ProfilePage(),
+          settings,
+          bloc: () => di.sl<ProfileBloc>()..add(const GetProfile()),
         );
 
       case Routes.products:
         return _buildRouteWithBloc(
           const ListProductPage(),
           settings,
-          bloc: () => ListProductBloc(di.sl<ListProductRepository>())
-            ..add(const GetProductsEvent()),
+          bloc: () =>
+              ListProductBloc(di.sl<ListProductRepository>())
+                ..add(const GetProductsEvent()),
         );
 
       case Routes.addProduct:
@@ -71,16 +127,20 @@ class AppRouter {
           settings,
           providers: [
             BlocProvider<CreateProductBloc>(
-              create: (_) => CreateProductBloc(di.sl<CreateProductRepository>()),
+              create: (_) =>
+                  CreateProductBloc(di.sl<CreateProductRepository>()),
             ),
             BlocProvider<UpdateProductBloc>(
-              create: (_) => UpdateProductBloc(di.sl<UpdateProductRepository>()),
+              create: (_) =>
+                  UpdateProductBloc(di.sl<UpdateProductRepository>()),
             ),
             BlocProvider<DeleteProductBloc>(
-              create: (_) => DeleteProductBloc(di.sl<DeleteProductRepository>()),
+              create: (_) =>
+                  DeleteProductBloc(di.sl<DeleteProductRepository>()),
             ),
             BlocProvider<ProductDetailsBloc>(
-              create: (_) => ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
+              create: (_) =>
+                  ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
             ),
           ],
         );
@@ -93,7 +153,8 @@ class AppRouter {
           settings,
           providers: [
             BlocProvider<ProductDetailsBloc>(
-              create: (_) => ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
+              create: (_) =>
+                  ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
             ),
           ],
         );

@@ -95,5 +95,49 @@ class AppTranslation {
   static String get noDataFound => 'no_data_found'.tr();
   static String get somethingWentWrong => 'something_went_wrong'.tr();
   static String get productDetails => 'product_details'.tr();
+
+  // Auth
+  static String get login => 'login'.tr();
+  static String get register => 'register'.tr();
+  static String get email => 'email'.tr();
+  static String get password => 'password'.tr();
+  static String get enterEmail => 'enter_email'.tr();
+  static String get enterPassword => 'enter_password'.tr();
+  static String get loginSuccess => 'login_success'.tr();
+  static String get forgotPassword => 'forgot_password'.tr();
+  static String get dontHaveAccount => 'dont_have_account'.tr();
+  static String get alreadyHaveAccount => 'already_have_account'.tr();
+  static String get firstName => 'first_name'.tr();
+  static String get lastName => 'last_name'.tr();
+  static String get phone => 'phone'.tr();
+  static String get enterPhone => 'enter_phone'.tr();
+  static String get address => 'address'.tr();
+  static String get enterAddress => 'enter_address'.tr();
+  static String get selectCountry => 'select_country'.tr();
+  static String get selectCity => 'select_city'.tr();
+  static String get notificationChannel => 'notification_channel'.tr();
+  static String get verifyAccount => 'verify_account'.tr();
+  static String get enterOtp => 'enter_otp'.tr();
+  static String get otp => 'otp'.tr();
+  static String get resendOtp => 'resend_otp'.tr();
+  static String get resetPassword => 'reset_password'.tr();
+  static String get newPassword => 'new_password'.tr();
+  static String get confirmPassword => 'confirm_password'.tr();
+  static String get passwordResetSuccess => 'password_reset_success'.tr();
+  static String get accountVerifiedSuccess => 'account_verified_success'.tr();
+  static String get otpSentSuccess => 'otp_sent_success'.tr();
+  static String get notAuthorized => 'not_authorized'.tr();
+  static String get pleaseEnterEmail => 'please_enter_email'.tr();
+  static String get pleaseEnterPassword => 'please_enter_password'.tr();
+  static String get pleaseSelectCountry => 'please_select_country'.tr();
+  static String get pleaseSelectCity => 'please_select_city'.tr();
+  static String get registerSuccess => 'register_success'.tr();
+  static String get pleaseEnterOtp => 'please_enter_otp'.tr();
+  static String get sendOtp => 'send_otp'.tr();
+  static String get passwordsDoNotMatch => 'passwords_do_not_match'.tr();
+  static String get profileUpdatedSuccess => 'profile_updated_success'.tr();
+  static String get forgotPasswordDescription => 'forgot_password_description'.tr();
+  static String get pleaseSelectCountryFirst => 'please_select_country_first'.tr();
+  static String get noCitiesAvailable => 'no_cities_available'.tr();
 }
 

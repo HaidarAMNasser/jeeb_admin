@@ -20,6 +20,30 @@ import '../../../features/product/product_details/data/data_sources/product_deta
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
+import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
+import '../../../features/auth/login/data/repositories/login_repository.dart';
+import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
+import '../../../features/auth/register/data/data_sources/register_remote_data_source.dart';
+import '../../../features/auth/register/data/repositories/register_repository.dart';
+import '../../../features/auth/register/presentation/bloc/register_bloc.dart';
+import '../../../features/auth/verify/data/data_sources/verify_remote_data_source.dart';
+import '../../../features/auth/verify/data/repositories/verify_repository.dart';
+import '../../../features/auth/verify/presentation/bloc/verify_bloc.dart';
+import '../../../features/auth/forgot_password/data/data_sources/forgot_password_remote_data_source.dart';
+import '../../../features/auth/forgot_password/data/repositories/forgot_password_repository.dart';
+import '../../../features/auth/forgot_password/presentation/bloc/forgot_password_bloc.dart';
+import '../../../features/auth/reset_password/data/data_sources/reset_password_remote_data_source.dart';
+import '../../../features/auth/reset_password/data/repositories/reset_password_repository.dart';
+import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
+import '../../../features/auth/profile/data/data_sources/profile_remote_data_source.dart';
+import '../../../features/auth/profile/data/repositories/profile_repository.dart';
+import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/country/data/data_sources/country_remote_data_source.dart';
+import '../../../features/country/data/repositories/country_repository.dart';
+import '../../../features/country/presentation/bloc/country_bloc.dart';
+import '../../../features/city/data/data_sources/city_remote_data_source.dart';
+import '../../../features/city/data/repositories/city_repository.dart';
+import '../../../features/city/presentation/bloc/city_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -84,8 +108,59 @@ Future<void> init() async {
   sl.registerFactory(() => UpdateProductRepository(sl(), sl()));
   sl.registerFactory(() => DeleteProductRepository(sl(), sl()));
 
-  // Register your dependencies here
-  // Example:
-  // sl.registerFactory(() => LoginUseCase(sl()));
-  // sl.registerFactory(() => AuthRepository(sl()));
+  //! Auth Dependencies - Login
+  sl.registerFactory<LoginRemoteDataSource>(
+    () => LoginRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => LoginRepository(sl(), sl()));
+  sl.registerFactory(() => LoginBloc(sl(), sl()));
+
+  //! Auth Dependencies - Register
+  sl.registerFactory<RegisterRemoteDataSource>(
+    () => RegisterRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => RegisterRepository(sl(), sl()));
+  sl.registerFactory(() => RegisterBloc(sl()));
+
+  //! Auth Dependencies - Verify
+  sl.registerFactory<VerifyRemoteDataSource>(
+    () => VerifyRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => VerifyRepository(sl(), sl()));
+  sl.registerFactory(() => VerifyBloc(sl()));
+
+  //! Auth Dependencies - Forgot Password
+  sl.registerFactory<ForgotPasswordRemoteDataSource>(
+    () => ForgotPasswordRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => ForgotPasswordRepository(sl(), sl()));
+  sl.registerFactory(() => ForgotPasswordBloc(sl()));
+
+  //! Auth Dependencies - Reset Password
+  sl.registerFactory<ResetPasswordRemoteDataSource>(
+    () => ResetPasswordRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => ResetPasswordRepository(sl(), sl()));
+  sl.registerFactory(() => ResetPasswordBloc(sl()));
+
+  //! Auth Dependencies - Profile
+  sl.registerFactory<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => ProfileRepository(sl(), sl()));
+  sl.registerFactory(() => ProfileBloc(sl()));
+
+  //! Country Dependencies
+  sl.registerFactory<CountryRemoteDataSource>(
+    () => CountryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => CountryRepository(sl(), sl()));
+  sl.registerFactory(() => CountryBloc(sl()));
+
+  //! City Dependencies
+  sl.registerFactory<CityRemoteDataSource>(
+    () => CityRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => CityRepository(sl(), sl()));
+  sl.registerFactory(() => CityBloc(sl()));
 }
