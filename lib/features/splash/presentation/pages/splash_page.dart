@@ -6,7 +6,7 @@ import '../../../../core/presentation/theme/font_manager.dart';
 import '../../../../core/common/utils/asset_manager.dart';
 import '../widgets/curved_text_animation.dart';
 import '../widgets/shimmer_wave_animation.dart';
-
+import '../../../../core/presentation/routes/routes.dart';
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -22,11 +22,11 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _navigateToNext() {
-    // Future.delayed(const Duration(seconds: 3), () {
-    //   if (mounted) {
-    //     Navigator.pushReplacementNamed(context, Routes.onboarding);
-    //   }
-    // });
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, Routes.onboarding);
+      }
+    });
   }
 
   @override
