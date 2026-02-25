@@ -44,6 +44,9 @@ class _CurvedTextAnimationState extends State<CurvedTextAnimation>
     _fadeAnimations = [];
     _scaleAnimations = [];
 
+    // Add initial delay before starting animations
+    const initialDelay = Duration(milliseconds: 300);
+
     for (int i = 0; i < widget.text.length; i++) {
       final controller = AnimationController(
         duration: const Duration(milliseconds: 600),
@@ -68,9 +71,9 @@ class _CurvedTextAnimationState extends State<CurvedTextAnimation>
       _fadeAnimations.add(fadeAnimation);
       _scaleAnimations.add(scaleAnimation);
 
-      // Stagger the animations
+      // Stagger the animations with initial delay
       Future.delayed(
-        Duration(milliseconds: i * widget.letterDelay.inMilliseconds),
+        initialDelay + Duration(milliseconds: i * widget.letterDelay.inMilliseconds),
         () {
           if (mounted) {
             controller.forward();
