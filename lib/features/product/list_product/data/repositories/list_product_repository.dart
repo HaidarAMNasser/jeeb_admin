@@ -19,10 +19,22 @@ class ListProductRepository {
     this._networkInfo,
   );
 
-  Future<Either<Failure, List<ProductEntity>>> getProducts() async {
+  Future<Either<Failure, List<ProductEntity>>> getProducts({
+    int? page,
+    int? limit,
+    String? search,
+    String? categoryId,
+    String? restaurantId,
+  }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.getProducts();
+        final response = await _remoteDataSource.getProducts(
+          page: page,
+          limit: limit,
+          search: search,
+          categoryId: categoryId,
+          restaurantId: restaurantId,
+        );
 
         BaseResponseModel<List<ProductModel>> baseResponseModel =
             BaseResponseModel<List<ProductModel>>.fromJson(

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,11 +30,11 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
           // Edit mode - initialize with product data
           nameController.text = event.product!.name;
           descriptionController.text = event.product!.description ?? '';
-          priceController.text = event.product!.price.toString();
-          quantityController.text = event.product!.quantity?.toString() ?? '';
+          priceController.text = (event.product!.price / 100).toString(); // Convert from smallest unit to decimal
+          quantityController.text = event.product!.stockQuantity?.toString() ?? '';
           emit(CreateProductInitial(
-            images: event.product!.images,
-            selectedCategoryId: event.product!.categoryId,
+            images: event.product!.images.map((img) => img.url).toList(), // Extract URLs from image entities
+            selectedCategoryId: event.product!.categoryId ?? '',
             productId: event.product!.id,
           ));
         } else {
@@ -77,18 +78,27 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
           productId: state.productId,
           isValid: state.isValid,
         ));
-        final result = await _createRepository.createProduct(
-          name: nameController.text.trim(),
-          description: descriptionController.text.trim().isEmpty
-              ? null
-              : descriptionController.text.trim(),
-          price: double.tryParse(priceController.text.trim()) ?? 0.0,
-          categoryId: state.selectedCategoryId ?? '',
-          quantity: quantityController.text.trim().isEmpty
-              ? null
-              : int.tryParse(quantityController.text.trim()),
-          images: state.images,
-        );
+        
+        // Convert price from decimal to smallest currency unit (e.g., 12.99 -> 1299)
+        final priceInSmallestUnit = ((double.tryParse(priceController.text.trim()) ?? 0.0) * 100).toInt();
+        
+        // Build FormData
+        final formData = FormData.fromMap({
+          'name': nameController.text.trim(),
+          if (descriptionController.text.trim().isNotEmpty)
+            'description': descriptionController.text.trim(),
+          'price': priceInSmallestUnit,
+          'categoryId': state.selectedCategoryId ?? '',
+          if (quantityController.text.trim().isNotEmpty)
+            'stockQuantity': int.tryParse(quantityController.text.trim()),
+        });
+        
+        // Add images individually to FormData
+        for (var image in state.images) {
+          formData.fields.add(MapEntry('images', image));
+        }
+        
+        final result = await _createRepository.createProduct(formData);
         result.fold(
           (failure) => emit(CreateProductError(
             message: failure.message,

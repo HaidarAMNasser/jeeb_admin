@@ -1,15 +1,9 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class CreateProductRemoteDataSource {
-  Future<Response> createProduct({
-    required String name,
-    String? description,
-    required double price,
-    required String categoryId,
-    int? quantity,
-    required List<String> images,
-  });
+  Future<Response> createProduct(FormData formData);
 }
 
 class CreateProductRemoteDataSourceImpl
@@ -19,22 +13,8 @@ class CreateProductRemoteDataSourceImpl
   CreateProductRemoteDataSourceImpl(this._appApiServiceClient);
 
   @override
-  Future<Response> createProduct({
-    required String name,
-    String? description,
-    required double price,
-    required String categoryId,
-    int? quantity,
-    required List<String> images,
-  }) {
-    return _appApiServiceClient.createProduct(
-      name,
-      description,
-      price,
-      categoryId,
-      quantity,
-      images,
-    );
+  Future<Response> createProduct(FormData formData) {
+    return _appApiServiceClient.createProduct(formData);
   }
 }
 

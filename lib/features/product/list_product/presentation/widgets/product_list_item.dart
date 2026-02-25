@@ -55,7 +55,7 @@ class ProductListItem extends StatelessWidget {
                           height: AppHeight.s50,
                           color: ColorManager.background,
                           child: Image.network(
-                            product.images.first,
+                            product.images.first.url,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
@@ -83,7 +83,7 @@ class ProductListItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.r20),
                       ),
                       child: CustomText(
-                        text: product.categoryName,
+                        text: product.categoryName ?? '',
                         textStyle: getSemiBoldStyle(
                           fontSize: AppFontSize.s12,
                           color: ColorManager.primary,
@@ -162,10 +162,10 @@ class ProductListItem extends StatelessWidget {
                 ),
               ],
             ),
-            if (product.quantity != null) ...[
+            if (product.stockQuantity != null && product.hasStock == true) ...[
               SizedBox(height: AppHeight.s8),
               CustomText(
-                text: '${AppTranslation.productQuantity}: ${product.quantity}',
+                text: '${AppTranslation.productQuantity}: ${product.stockQuantity}',
                 textStyle: getRegularStyle(
                   fontSize: AppFontSize.s12,
                   color: ColorManager.descriptionColor,

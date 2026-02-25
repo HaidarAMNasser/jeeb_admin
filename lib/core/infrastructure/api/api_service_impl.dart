@@ -344,9 +344,20 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> getProducts() async {
+  Future<Response> getProducts(
+    int? page,
+    int? limit,
+    String? search,
+    String? categoryId,
+    String? restaurantId,
+  ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    if (categoryId != null && categoryId.isNotEmpty) queryParameters['categoryId'] = categoryId;
+    if (restaurantId != null && restaurantId.isNotEmpty) queryParameters['restaurantId'] = restaurantId;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(
@@ -354,7 +365,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Product/all',
+              'products',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -375,7 +386,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Product/$id',
+              'products/$id',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -386,24 +397,11 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> createProduct(
-    String name,
-    String? description,
-    double price,
-    String categoryId,
-    int? quantity,
-    List<String> images,
-  ) async {
+  Future<Response> createProduct(FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
-    final data = {
-      'name': name,
-      'description': description,
-      'price': price,
-      'category_id': categoryId,
-      'quantity': quantity,
-      'images': images,
+    final headers = <String, dynamic>{
+      'Content-Type': 'multipart/form-data',
     };
 
     final result = await dio.fetch<Map<String, dynamic>>(
@@ -411,9 +409,9 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'POST', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Product/create',
+              'products',
               queryParameters: queryParameters,
-              data: data,
+              data: formData,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -423,35 +421,21 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> updateProduct(
-    String id,
-    String name,
-    String? description,
-    double price,
-    String categoryId,
-    int? quantity,
-    List<String> images,
-  ) async {
+  Future<Response> updateProduct(String id, FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
-    final data = {
-      'name': name,
-      'description': description,
-      'price': price,
-      'category_id': categoryId,
-      'quantity': quantity,
-      'images': images,
+    final headers = <String, dynamic>{
+      'Content-Type': 'multipart/form-data',
     };
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
-        Options(method: 'PUT', headers: headers, extra: extra)
+        Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Product/$id',
+              'products/$id',
               queryParameters: queryParameters,
-              data: data,
+              data: formData,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -471,7 +455,28 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'DELETE', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Product/$id',
+              'products/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> deleteProductImage(String imageId) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'DELETE', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'products/images/$imageId',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),

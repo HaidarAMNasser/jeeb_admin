@@ -156,7 +156,7 @@ class CreateProductSuccess extends CreateProductState {
 
   CreateProductSuccess({required this.product})
       : super(
-          images: product.images,
+          images: product.images.map((img) => img.url).toList(),
           selectedCategoryId: product.categoryId,
         );
 

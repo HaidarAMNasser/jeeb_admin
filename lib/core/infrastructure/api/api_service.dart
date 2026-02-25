@@ -82,20 +82,29 @@ abstract class AppApiServiceClient {
   Future<Response> addCategory(@Field('name') String name);
 
   // Product endpoints
-  @GET("apiAdmin/Product/all")
-  Future<Response> getProducts();
+  @GET("products")
+  Future<Response> getProducts(
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+    @Query('categoryId') String? categoryId,
+    @Query('restaurantId') String? restaurantId,
+  );
 
-  @GET("apiAdmin/Product/{id}")
+  @GET("products/{id}")
   Future<Response> getProductDetails(@Path('id') String id);
 
-  @POST("apiAdmin/Product/create")
-  Future<Response> createProduct(@Field('name') String name, @Field('description') String? description, @Field('price') double price, @Field('category_id') String categoryId, @Field('quantity') int? quantity, @Field('images') List<String> images);
+  @POST("products")
+  Future<Response> createProduct(FormData formData);
 
-  @PUT("apiAdmin/Product/{id}")
-  Future<Response> updateProduct(@Path('id') String id, @Field('name') String name, @Field('description') String? description, @Field('price') double price, @Field('category_id') String categoryId, @Field('quantity') int? quantity, @Field('images') List<String> images);
+  @PATCH("products/{id}")
+  Future<Response> updateProduct(@Path('id') String id, FormData formData);
 
-  @DELETE("apiAdmin/Product/{id}")
+  @DELETE("products/{id}")
   Future<Response> deleteProduct(@Path('id') String id);
+
+  @DELETE("products/images/{imageId}")
+  Future<Response> deleteProductImage(@Path('imageId') String imageId);
 
   // Countries & Cities endpoints
   @GET("countries")

@@ -10,6 +10,7 @@ import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
+import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
 
 class ListProductPage extends StatelessWidget {
   const ListProductPage({super.key});
@@ -43,23 +44,35 @@ class ListProductPage extends StatelessWidget {
                 id: '1',
                 name: 'Burger Deluxe',
                 description: 'Delicious burger with special sauce and fresh vegetables',
-                price: 25.99,
+                price: 2599, // 25.99 in smallest currency unit
                 categoryId: '1',
                 categoryName: 'Fast Food',
-                quantity: 50,
-                images: ['https://via.placeholder.com/300'],
-                rating: 4.5,
+                stockQuantity: 50,
+                images: [
+                  ProductImageEntity(
+                    id: 1,
+                    url: 'https://via.placeholder.com/300',
+                    isMain: true,
+                    displayOrder: 0,
+                  ),
+                ],
               ),
               ProductEntity(
                 id: '2',
                 name: 'Pizza Margherita',
                 description: 'Classic Italian pizza with fresh mozzarella and basil',
-                price: 35.50,
+                price: 3550, // 35.50 in smallest currency unit
                 categoryId: '1',
                 categoryName: 'Fast Food',
-                quantity: 30,
-                images: ['https://via.placeholder.com/300'],
-                rating: 4.8,
+                stockQuantity: 30,
+                images: [
+                  ProductImageEntity(
+                    id: 2,
+                    url: 'https://via.placeholder.com/300',
+                    isMain: true,
+                    displayOrder: 0,
+                  ),
+                ],
               ),
             ];
 
@@ -92,23 +105,35 @@ class ListProductPage extends StatelessWidget {
                 id: '1',
                 name: 'Burger Deluxe',
                 description: 'Delicious burger with special sauce and fresh vegetables',
-                price: 25.99,
+                price: 2599, // 25.99 in smallest currency unit
                 categoryId: '1',
                 categoryName: 'Fast Food',
-                quantity: 50,
-                images: ['https://via.placeholder.com/300'],
-                rating: 4.5,
+                stockQuantity: 50,
+                images: [
+                  ProductImageEntity(
+                    id: 1,
+                    url: 'https://via.placeholder.com/300',
+                    isMain: true,
+                    displayOrder: 0,
+                  ),
+                ],
               ),
               ProductEntity(
                 id: '2',
                 name: 'Pizza Margherita',
                 description: 'Classic Italian pizza with fresh mozzarella and basil',
-                price: 35.50,
+                price: 3550, // 35.50 in smallest currency unit
                 categoryId: '1',
                 categoryName: 'Fast Food',
-                quantity: 30,
-                images: ['https://via.placeholder.com/300'],
-                rating: 4.8,
+                stockQuantity: 30,
+                images: [
+                  ProductImageEntity(
+                    id: 2,
+                    url: 'https://via.placeholder.com/300',
+                    isMain: true,
+                    displayOrder: 0,
+                  ),
+                ],
               ),
             ];
 

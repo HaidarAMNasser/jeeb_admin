@@ -110,10 +110,7 @@ class RegisterForm extends StatelessWidget {
             value: selectedNotificationChannel,
             hintText: AppTranslation.notificationChannel,
             items: const [
-              DropdownMenuItem<String>(
-                value: 'EMAIL',
-                child: Text('EMAIL'),
-              ),
+              DropdownMenuItem<String>(value: 'EMAIL', child: Text('EMAIL')),
               DropdownMenuItem<String>(
                 value: 'WHATSAPP',
                 child: Text('WHATSAPP'),
@@ -138,14 +135,22 @@ class RegisterForm extends StatelessWidget {
                 value: 'MERCHANT',
                 child: Text('MERCHANT'),
               ),
-              DropdownMenuItem<String>(
-                value: 'ADMIN',
-                child: Text('ADMIN'),
-              ),
+              DropdownMenuItem<String>(value: 'ADMIN', child: Text('ADMIN')),
             ],
             onChanged: onRoleChanged,
           ),
           SizedBox(height: AppHeight.s24),
+          TextButton(
+            onPressed: () {
+              context.pushNamed(Routes.products);
+            },
+            child: CustomTextDisplay(
+              text: AppTranslation.login,
+              fontSize: AppFontSize.s14,
+              color: ColorManager.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -172,4 +177,3 @@ class RegisterForm extends StatelessWidget {
     );
   }
 }
-

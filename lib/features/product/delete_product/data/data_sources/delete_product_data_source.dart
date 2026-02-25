@@ -3,6 +3,7 @@ import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class DeleteProductRemoteDataSource {
   Future<Response> deleteProduct(String id);
+  Future<Response> deleteProductImage(String imageId);
 }
 
 class DeleteProductRemoteDataSourceImpl
@@ -14,6 +15,11 @@ class DeleteProductRemoteDataSourceImpl
   @override
   Future<Response> deleteProduct(String id) {
     return _appApiServiceClient.deleteProduct(id);
+  }
+
+  @override
+  Future<Response> deleteProductImage(String imageId) {
+    return _appApiServiceClient.deleteProductImage(imageId);
   }
 }
 

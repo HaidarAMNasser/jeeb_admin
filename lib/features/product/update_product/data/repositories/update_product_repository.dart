@@ -7,6 +7,8 @@ import 'package:jeeb_admin/core/common/utils/error_handler.dart';
 import 'package:jeeb_admin/core/infrastructure/network/network_info.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/product/update_product/data/data_sources/update_product_data_source.dart';
+import 'package:jeeb_admin/features/product/list_product/data/mappers/product_mapper.dart';
+import 'package:jeeb_admin/features/product/list_product/data/models/product_model.dart';
 
 class UpdateProductRepository {
   final UpdateProductRemoteDataSource _remoteDataSource;
@@ -19,66 +21,45 @@ class UpdateProductRepository {
 
   Future<Either<Failure, ProductEntity>> updateProduct({
     required String id,
-    required String name,
-    String? description,
-    required double price,
-    required String categoryId,
-    int? quantity,
-    required List<String> images,
+    required FormData formData,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.updateProduct(
           id: id,
-          name: name,
-          description: description,
-          price: price,
-          categoryId: categoryId,
-          quantity: quantity,
-          images: images,
+          formData: formData,
         );
 
-        BaseResponseModel<dynamic> baseResponseModel =
-            BaseResponseModel<dynamic>.fromJson(
+        BaseResponseModel<ProductModel> baseResponseModel =
+            BaseResponseModel<ProductModel>.fromJson(
           response.data!,
-          (json) => json,
+          (json) {
+            if (json is String) {
+              final parsedJson = jsonDecode(json) as Map<String, dynamic>;
+              return ProductModel.fromJson(parsedJson);
+            } else if (json is Map<String, dynamic>) {
+              return ProductModel.fromJson(json);
+            } else {
+              throw FormatException(
+                  'Expected data to be String or Map, but got ${json.runtimeType}');
+            }
+          },
         );
 
-        if (baseResponseModel.status == 200 ||
-            baseResponseModel.success == true ||
-            baseResponseModel.statusCode == 200) {
-          // Construct entity directly from response data
-          dynamic data = baseResponseModel.data;
-          if (data is String) {
-            data = jsonDecode(data);
+        if (baseResponseModel.statusCode == 200 ||
+            baseResponseModel.success == true) {
+          if (baseResponseModel.data == null) {
+            return Left(ErrorHandler.handle(DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: RequestOptions(),
+            )));
           }
-          
-          if (data is Map<String, dynamic>) {
-            final productEntity = ProductEntity(
-              id: data['id']?.toString() ?? id,
-              name: data['name']?.toString() ?? name,
-              description: data['description']?.toString(),
-              price: (data['price'] as num?)?.toDouble() ?? price,
-              categoryId: data['category_id']?.toString() ?? categoryId,
-              categoryName: data['category_name']?.toString() ?? '',
-              quantity: data['quantity'] as int? ?? quantity,
-              images: data['images'] != null
-                  ? List<String>.from(data['images'] as List)
-                  : images,
-            );
-            return Right(productEntity);
-          } else {
-            // If no data returned, create entity with provided values
-            return Right(ProductEntity(
-              id: id,
-              name: name,
-              description: description,
-              price: price,
-              categoryId: categoryId,
-              categoryName: '',
-              quantity: quantity,
-              images: images,
-            ));
+
+          try {
+            return Right(baseResponseModel.data!.toDomain());
+          } catch (domainError) {
+            return Left(ErrorHandler.handle(domainError));
           }
         } else {
           return Left(ErrorHandler.handle(DioException(
