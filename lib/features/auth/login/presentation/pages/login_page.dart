@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is LoginSuccess) {
           customToast(msg: AppTranslation.loginSuccess);
           context.pushNamedAndRemoveUntil(
-            Routes.home,
+            Routes.mainNavigation,
             predicate: (route) => false,
           );
         } else if (state is LoginError) {

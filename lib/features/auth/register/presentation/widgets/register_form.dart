@@ -140,17 +140,7 @@ class RegisterForm extends StatelessWidget {
             onChanged: onRoleChanged,
           ),
           SizedBox(height: AppHeight.s24),
-          TextButton(
-            onPressed: () {
-              context.pushNamed(Routes.products);
-            },
-            child: CustomTextDisplay(
-              text: AppTranslation.login,
-              fontSize: AppFontSize.s14,
-              color: ColorManager.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

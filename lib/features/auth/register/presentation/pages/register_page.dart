@@ -9,6 +9,8 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import '../bloc/register_bloc.dart';
@@ -59,6 +61,33 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
+  // Fake register function for testing - bypasses actual registration
+  Future<void> _handleFakeRegister() async {
+    try {
+      final storageService = di.sl<StorageService>();
+      
+      // Set fake token for testing
+      await storageService.setUserToken('fake_token_for_testing');
+      
+      // Set user role to admin (lowercase as stored in login)
+      await storageService.setUserRole('admin');
+      
+      customToast(msg: 'Fake registration successful (Testing Mode - Admin)');
+      
+      // Navigate to main navigation
+      if (mounted) {
+        context.pushNamedAndRemoveUntil(
+          Routes.mainNavigation,
+          predicate: (route) => false,
+        );
+      }
+    } catch (e) {
+      customToast(msg: 'Error in fake register: $e');
+    }
+  }
+
+  // Original register function - kept for future use when real registration is needed
+  // ignore: unused_element
   void _handleRegister() {
     if (_formKey.currentState!.validate()) {
       if (_selectedCountry == null) {
@@ -145,7 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onCityChanged: _onCityChanged,
                     onRoleChanged: (role) => setState(() => _selectedRole = role),
                     onNotificationChannelChanged: (channel) => setState(() => _selectedNotificationChannel = channel),
-                    onRegister: _handleRegister,
+                    onRegister: _handleFakeRegister, // Using fake register for testing
                     isLoading: state is RegisterLoading,
                   ),
                 ),

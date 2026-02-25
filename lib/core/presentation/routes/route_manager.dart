@@ -33,6 +33,7 @@ import '../../../features/auth/profile/presentation/pages/profile_page.dart';
 import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
+import '../../../features/main_navigation/presentation/pages/main_navigation_page.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -157,6 +158,12 @@ class AppRouter {
                   ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
             ),
           ],
+        );
+
+      case Routes.mainNavigation:
+        return _buildRoute(
+          const MainNavigationPage(),
+          settings,
         );
 
       default:

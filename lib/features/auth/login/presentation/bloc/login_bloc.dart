@@ -27,6 +27,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           (tokenEntity) async {
             // Store token
             await _storageService.setUserToken(tokenEntity.accessToken);
+            // Store user role
+            await _storageService.setUserRole(tokenEntity.user.role.name);
             emit(const LoginSuccess());
           },
         );
