@@ -141,6 +141,39 @@ abstract class AppApiServiceClient {
     @Query('page') int? page,
     @Query('limit') int? limit,
   });
+
+  // Delivery endpoints
+  @GET("delivery-men")
+  Future<Response> getDeliveryMen({
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+  });
+
+  @GET("delivery-men/{id}")
+  Future<Response> getDeliveryManDetails(@Path('id') String id);
+
+  @POST("delivery-men")
+  Future<Response> createDeliveryMan(
+    @Field('name') String name,
+    @Field('phone') String phone,
+    @Field('email') String email,
+    @Field('vehicleType') String? vehicleType,
+    @Field('status') String? status,
+  );
+
+  @PATCH("delivery-men/{id}")
+  Future<Response> updateDeliveryMan(
+    @Path('id') String id,
+    @Field('name') String? name,
+    @Field('phone') String? phone,
+    @Field('email') String? email,
+    @Field('vehicleType') String? vehicleType,
+    @Field('status') String? status,
+  );
+
+  @DELETE("delivery-men/{id}")
+  Future<Response> deleteDeliveryMan(@Path('id') String id);
 }
 
 // Annotations for API methods (simplified versions)

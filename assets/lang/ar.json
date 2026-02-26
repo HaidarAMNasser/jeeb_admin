@@ -130,4 +130,11 @@
   "merchant_deleted_successfully": "تم حذف التاجر بنجاح",
   "are_you_sure_delete_merchant": "هل أنت متأكد أنك تريد حذف هذا التاجر؟",
   "location": "الموقع"
+  "delivery_men": "سائقي التوصيل",
+  "delivery_man_details": "تفاصيل سائق التوصيل",
+  "add_delivery_man": "إضافة سائق توصيل",
+  "edit_delivery_man": "تعديل سائق التوصيل",
+  "no_delivery_men_found": "لا يوجد سائقي توصيل",
+  "vehicle_type": "نوع المركبة",
+  "status": "الحالة"
 }

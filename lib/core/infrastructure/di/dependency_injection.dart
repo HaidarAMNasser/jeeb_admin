@@ -50,6 +50,16 @@ import '../../../features/merchant/merchant_details/data/data_sources/merchant_d
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 import '../../../features/merchant/delete_merchant/data/data_sources/delete_merchant_data_source.dart';
 import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
+import '../../../features/delivery/list_delivery/data/data_sources/list_delivery_data_source.dart';
+import '../../../features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
+import '../../../features/delivery/delivery_details/data/data_sources/delivery_details_data_source.dart';
+import '../../../features/delivery/delivery_details/data/repositories/delivery_details_repository.dart';
+import '../../../features/delivery/create_delivery/data/data_sources/create_delivery_data_source.dart';
+import '../../../features/delivery/create_delivery/data/repositories/create_delivery_repository.dart';
+import '../../../features/delivery/update_delivery/data/data_sources/update_delivery_data_source.dart';
+import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
+import '../../../features/delivery/delete_delivery/data/data_sources/delete_delivery_data_source.dart';
+import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -187,4 +197,29 @@ Future<void> init() async {
     () => DeleteMerchantRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => DeleteMerchantRepository(sl(), sl()));
+  //! Delivery List Dependencies
+  sl.registerFactory<ListDeliveryRemoteDataSource>(
+    () => ListDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ListDeliveryRepository(sl(), sl()));
+
+  //! Delivery Details Dependencies
+  sl.registerFactory<DeliveryDetailsRemoteDataSource>(
+    () => DeliveryDetailsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => DeliveryDetailsRepository(sl(), sl()));
+
+  //! Delivery Create/Update/Delete Dependencies
+  sl.registerFactory<CreateDeliveryRemoteDataSource>(
+    () => CreateDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory<UpdateDeliveryRemoteDataSource>(
+    () => UpdateDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory<DeleteDeliveryRemoteDataSource>(
+    () => DeleteDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => CreateDeliveryRepository(sl(), sl()));
+  sl.registerFactory(() => UpdateDeliveryRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteDeliveryRepository(sl(), sl()));
 }

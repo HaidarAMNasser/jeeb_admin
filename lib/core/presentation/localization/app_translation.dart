@@ -147,5 +147,14 @@ class AppTranslation {
   static String get merchantDetails => 'merchant_details'.tr();
   static String get noMerchantsFound => 'no_merchants_found'.tr();
   static String get location => 'location'.tr();
+
+  // Delivery
+  static String get deliveryMen => 'delivery_men'.tr();
+  static String get deliveryManDetails => 'delivery_man_details'.tr();
+  static String get addDeliveryMan => 'add_delivery_man'.tr();
+  static String get editDeliveryMan => 'edit_delivery_man'.tr();
+  static String get noDeliveryMenFound => 'no_delivery_men_found'.tr();
+  static String get vehicleType => 'vehicle_type'.tr();
+  static String get status => 'status'.tr();
 }
 
