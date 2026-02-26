@@ -20,13 +20,15 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
             emit(ListMerchantLoadingMore(
               merchants: currentState.merchants,
               currentPage: currentState.currentPage,
+              search: currentState.search,
             ));
 
             final nextPage = currentState.currentPage + 1;
+            final searchQuery = event.search ?? currentState.search;
             final result = await _repository.getMerchants(
               page: nextPage,
               limit: _pageSize,
-              search: event.search,
+              search: searchQuery,
             );
 
             result.fold(
@@ -40,6 +42,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
                   merchants: updatedMerchants,
                   hasMore: newMerchants.length == _pageSize,
                   currentPage: nextPage,
+                  search: searchQuery,
                 ));
               },
             );
@@ -59,6 +62,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
               merchants: merchants,
               hasMore: merchants.length == _pageSize,
               currentPage: 1,
+              search: event.search,
             )),
           );
         }

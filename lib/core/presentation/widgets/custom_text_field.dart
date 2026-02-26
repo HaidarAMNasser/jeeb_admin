@@ -12,6 +12,8 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
   final Function(String)? onChanged;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
 
   const CustomTextField({
     super.key,
@@ -19,6 +21,8 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     this.controller,
     this.onChanged,
+    this.prefixIcon,
+    this.suffixIcon,
   });
 
   @override
@@ -44,6 +48,8 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hintText,
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.r18),
               borderSide: BorderSide(color: ColorManager.borderColor),
@@ -63,7 +69,7 @@ class CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.r18),
-              borderSide: BorderSide(color: ColorManager.borderColor),
+              borderSide: BorderSide(color: ColorManager.primary),
             ),
             filled: true,
             fillColor: ColorManager.defaultWhite,

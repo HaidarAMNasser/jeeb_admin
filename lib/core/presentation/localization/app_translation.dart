@@ -146,6 +146,8 @@ class AppTranslation {
   static String get merchants => 'merchants'.tr();
   static String get merchantDetails => 'merchant_details'.tr();
   static String get noMerchantsFound => 'no_merchants_found'.tr();
+  static String get searchMerchants => 'search_merchants'.tr();
+  static String get searchMerchantsHint => 'search_merchants_hint'.tr();
   static String get location => 'location'.tr();
 }
 

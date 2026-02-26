@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/search_merchant_widget.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
 
 class ListMerchantPage extends StatefulWidget {
@@ -48,9 +49,10 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
         setState(() {
           _isLoadingMore = true;
         });
+        // Use the search query from state when loading more
         context.read<ListMerchantBloc>().add(
-              const GetMerchantsEvent(loadMore: true),
-            );
+          GetMerchantsEvent(loadMore: true, search: state.search),
+        );
       }
     }
   }
@@ -83,12 +85,21 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
           }
         },
         builder: (context, state) {
+          // Get current search query from state for refresh
+          String? currentSearch;
+          if (state is ListMerchantLoaded) {
+            currentSearch = state.search;
+          } else if (state is ListMerchantLoadingMore) {
+            currentSearch = state.search;
+          }
+
           // return BlocStateHandler<ListMerchantBloc, ListMerchantState>(
           //   bloc: context.read<ListMerchantBloc>(),
           //   isLoading: (state) => state is ListMerchantLoading,
           //   isError: (state) => state is ListMerchantError,
           //   getErrorMessage: (state) => (state as ListMerchantError).message,
-          //   isSuccess: (state) => state is ListMerchantLoaded || state is ListMerchantLoadingMore,
+          //   isSuccess: (state) =>
+          //       state is ListMerchantLoaded || state is ListMerchantLoadingMore,
           //   isEmpty: (state) {
           //     if (state is ListMerchantLoaded) {
           //       return state.merchants.isEmpty;
@@ -106,55 +117,85 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
           //     final merchants = merchantState is ListMerchantLoaded
           //         ? merchantState.merchants
           //         : (merchantState as ListMerchantLoadingMore).merchants;
-          //     final hasMore = merchantState is ListMerchantLoaded ? merchantState.hasMore : false;
+          //     final hasMore = merchantState is ListMerchantLoaded
+          //         ? merchantState.hasMore
+          //         : false;
 
-          //     return RefreshIndicator(
-          //       onRefresh: () async {
-          //         context.read<ListMerchantBloc>().add(
-          //               const GetMerchantsEvent(),
-          //             );
-          //       },
-          //       child: ListView.builder(
-          //         controller: _scrollController,
-          //         padding: EdgeInsets.all(AppPadding.p16),
-          //         itemCount: merchants.length + (hasMore ? 1 : 0),
-          //         itemBuilder: (context, index) {
-          //           if (index == merchants.length) {
-          //             // Loading more indicator
-          //             return Padding(
-          //               padding: EdgeInsets.all(AppPadding.p16),
-          //               child: const CustomCircleIndicator(),
-          //             );
-          //           }
-
-          //           final merchant = merchants[index];
-          //           return MerchantListItem(merchant: merchant);
-          //         },
-          //       ),
+          //     return Column(
+          //       children: [
+          //         // Search field
+          //         const SearchMerchantWidget(),
+          //         Expanded(
+          //           child: RefreshIndicator(
+          //             onRefresh: () async {
+          //               context.read<ListMerchantBloc>().add(
+          //                 GetMerchantsEvent(search: currentSearch),
+          //               );
+          //             },
+          //             child: ListView.builder(
+          //               controller: _scrollController,
+          //               padding: EdgeInsets.symmetric(
+          //                 horizontal: AppPadding.p16,
+          //               ),
+          //               itemCount: merchants.length + (hasMore ? 1 : 0),
+          //               itemBuilder: (context, index) {
+          //                 if (index == merchants.length) {
+          //                   return Padding(
+          //                     padding: EdgeInsets.all(AppPadding.p16),
+          //                     child: const CustomCircleIndicator(),
+          //                   );
+          //                 }
+          //                 final merchant = merchants[index];
+          //                 return MerchantListItem(merchant: merchant);
+          //               },
+          //             ),
+          //           ),
+          //         ),
+          //       ],
           //     );
           //   },
           // );
 
-          // Fake data ListView for UI testing
+          // Fake data ListView for UI testing with search
           final fakeMerchants = _generateFakeMerchants();
-          return RefreshIndicator(
-            onRefresh: () async {
-              setState(() {});
-            },
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(AppPadding.p16),
-              itemCount: fakeMerchants.length,
-              itemBuilder: (context, index) {
-                final merchant = fakeMerchants[index];
-                return MerchantListItem(merchant: merchant);
-              },
-            ),
+          final searchQuery = currentSearch?.toLowerCase() ?? '';
+          final filteredMerchants = searchQuery.isEmpty
+              ? fakeMerchants
+              : fakeMerchants
+                  .where((merchant) =>
+                      merchant.name.toLowerCase().contains(searchQuery) ||
+                      merchant.email.toLowerCase().contains(searchQuery))
+                  .toList();
+
+          return Column(
+            children: [
+              // Search field
+              const SearchMerchantWidget(),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<ListMerchantBloc>().add(
+                          GetMerchantsEvent(search: currentSearch),
+                        );
+                  },
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
+                    itemCount: filteredMerchants.length,
+                    itemBuilder: (context, index) {
+                      final merchant = filteredMerchants[index];
+                      return MerchantListItem(merchant: merchant);
+                    },
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
+}
 
   // Fake data generation for UI testing
   List<MerchantEntity> _generateFakeMerchants() {
@@ -204,5 +245,4 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
       );
     });
   }
-}
 
