@@ -19,7 +19,6 @@ class ProfileHeader extends StatelessWidget {
           colors: [
             ColorManager.defaultYellow,
             ColorManager.primary,
-            ColorManager.primary,
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
