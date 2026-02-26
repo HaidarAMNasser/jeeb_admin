@@ -7,7 +7,9 @@ import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as 
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.dart';
 import 'package:jeeb_admin/features/main_navigation/presentation/pages/orders_page.dart';
-import 'package:jeeb_admin/features/main_navigation/presentation/pages/delivery_page.dart';
+import 'package:jeeb_admin/features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
+import 'package:jeeb_admin/features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
+import 'package:jeeb_admin/features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
@@ -34,7 +36,12 @@ class _AdminNavigationState extends State<AdminNavigation> {
       case 1:
         return const OrdersPage();
       case 2:
-        return const DeliveryPage();
+        return BlocProvider<ListDeliveryBloc>(
+          create: (_) =>
+              ListDeliveryBloc(di.sl<ListDeliveryRepository>())
+                ..add(const GetDeliveryMenEvent()),
+          child: const ListDeliveryPage(),
+        );
       case 3:
         return BlocProvider<ProfileBloc>(
           create: (_) => di.sl<ProfileBloc>()..add(const GetProfile()),

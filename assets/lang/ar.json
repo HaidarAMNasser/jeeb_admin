@@ -127,5 +127,12 @@
   "merchants": "التجار",
   "merchant_details": "تفاصيل التاجر",
   "no_merchants_found": "لا يوجد تجار",
-  "location": "الموقع"
+  "location": "الموقع",
+  "delivery_men": "سائقي التوصيل",
+  "delivery_man_details": "تفاصيل سائق التوصيل",
+  "add_delivery_man": "إضافة سائق توصيل",
+  "edit_delivery_man": "تعديل سائق التوصيل",
+  "no_delivery_men_found": "لا يوجد سائقي توصيل",
+  "vehicle_type": "نوع المركبة",
+  "status": "الحالة"
 }

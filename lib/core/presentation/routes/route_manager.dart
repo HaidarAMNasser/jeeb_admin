@@ -40,6 +40,20 @@ import '../../../features/merchant/list_merchant/data/repositories/list_merchant
 import '../../../features/merchant/merchant_details/presentation/pages/merchant_details_page.dart';
 import '../../../features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
+import '../../../features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
+import '../../../features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
+import '../../../features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
+import '../../../features/delivery/delivery_details/presentation/pages/delivery_details_page.dart';
+import '../../../features/delivery/delivery_details/presentation/bloc/delivery_details_bloc.dart';
+import '../../../features/delivery/delivery_details/data/repositories/delivery_details_repository.dart';
+import '../../../features/delivery/create_delivery/presentation/pages/add_delivery_page.dart';
+import '../../../features/delivery/create_delivery/presentation/bloc/create_delivery_bloc.dart';
+import '../../../features/delivery/create_delivery/data/repositories/create_delivery_repository.dart';
+import '../../../features/delivery/update_delivery/presentation/bloc/update_delivery_bloc.dart';
+import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
+import '../../../features/delivery/delete_delivery/presentation/bloc/delete_delivery_bloc.dart';
+import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -205,6 +219,62 @@ class AppRouter {
             BlocProvider<ListProductBloc>(
               create: (_) =>
                   ListProductBloc(di.sl<ListProductRepository>()),
+            ),
+          ],
+        );
+
+      case Routes.delivery:
+        return _buildRouteWithBlocs(
+          const ListDeliveryPage(),
+          settings,
+          providers: [
+            BlocProvider<ListDeliveryBloc>(
+              create: (_) =>
+                  ListDeliveryBloc(di.sl<ListDeliveryRepository>())
+                    ..add(const GetDeliveryMenEvent()),
+            ),
+          ],
+        );
+
+      case Routes.deliveryDetails:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final deliveryManId = args?['deliveryManId'] as String? ?? '';
+        if (deliveryManId.isEmpty) {
+          return _buildRoute(
+            Scaffold(
+              body: Center(child: Text('Delivery man ID not provided')),
+            ),
+            settings,
+          );
+        }
+        return _buildRouteWithBlocs(
+          DeliveryDetailsPage(deliveryManId: deliveryManId),
+          settings,
+          providers: [
+            BlocProvider<DeliveryDetailsBloc>(
+              create: (_) =>
+                  DeliveryDetailsBloc(di.sl<DeliveryDetailsRepository>()),
+            ),
+            BlocProvider<DeleteDeliveryBloc>(
+              create: (_) => DeleteDeliveryBloc(di.sl<DeleteDeliveryRepository>()),
+            ),
+          ],
+        );
+
+      case Routes.addDelivery:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final deliveryMan = args?['deliveryMan'] as DeliveryManEntity?;
+        return _buildRouteWithBlocs(
+          AddDeliveryPage(deliveryMan: deliveryMan),
+          settings,
+          providers: [
+            BlocProvider<CreateDeliveryBloc>(
+              create: (_) =>
+                  CreateDeliveryBloc(di.sl<CreateDeliveryRepository>()),
+            ),
+            BlocProvider<UpdateDeliveryBloc>(
+              create: (_) =>
+                  UpdateDeliveryBloc(di.sl<UpdateDeliveryRepository>()),
             ),
           ],
         );

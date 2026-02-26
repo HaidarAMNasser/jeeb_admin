@@ -127,5 +127,12 @@
   "merchants": "Merchants",
   "merchant_details": "Merchant Details",
   "no_merchants_found": "No merchants found",
-  "location": "Location"
+  "location": "Location",
+  "delivery_men": "Delivery Men",
+  "delivery_man_details": "Delivery Man Details",
+  "add_delivery_man": "Add Delivery Man",
+  "edit_delivery_man": "Edit Delivery Man",
+  "no_delivery_men_found": "No delivery men found",
+  "vehicle_type": "Vehicle Type",
+  "status": "Status"
 }

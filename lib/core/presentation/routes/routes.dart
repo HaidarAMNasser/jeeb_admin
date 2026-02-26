@@ -18,4 +18,7 @@ class Routes {
   static const String mainNavigation = '/main-navigation';
   static const String merchants = '/merchants';
   static const String merchantDetails = '/merchant-details';
+  static const String delivery = '/delivery';
+  static const String deliveryDetails = '/delivery-details';
+  static const String addDelivery = '/add-delivery';
 }
