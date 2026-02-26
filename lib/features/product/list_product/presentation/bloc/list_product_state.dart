@@ -20,12 +20,14 @@ class ListProductLoaded extends ListProductState {
   final bool hasMore;
   final int currentPage;
   final bool isLoadingMore;
+  final String? merchantId;
 
   const ListProductLoaded({
     required this.products,
     this.hasMore = true,
     this.currentPage = 1,
     this.isLoadingMore = false,
+    this.merchantId,
   });
 
   ListProductLoaded copyWith({
@@ -33,17 +35,19 @@ class ListProductLoaded extends ListProductState {
     bool? hasMore,
     int? currentPage,
     bool? isLoadingMore,
+    String? merchantId,
   }) {
     return ListProductLoaded(
       products: products ?? this.products,
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      merchantId: merchantId ?? this.merchantId,
     );
   }
 
   @override
-  List<Object?> get props => [products, hasMore, currentPage, isLoadingMore];
+  List<Object?> get props => [products, hasMore, currentPage, isLoadingMore, merchantId];
 }
 
 class ListProductLoadingMore extends ListProductState {

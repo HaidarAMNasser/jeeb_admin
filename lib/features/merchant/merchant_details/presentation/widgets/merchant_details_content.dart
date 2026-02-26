@@ -6,15 +6,23 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
+import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_products_section.dart';
 
 class MerchantDetailsContent extends StatelessWidget {
   final MerchantEntity merchant;
+  final String merchantId;
+  final ScrollController? scrollController;
 
-  const MerchantDetailsContent({super.key, required this.merchant});
+  const MerchantDetailsContent({
+    super.key,
+    required this.merchant,
+    required this.merchantId,
+    this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
       padding: EdgeInsets.all(AppPadding.p16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,6 +125,12 @@ class MerchantDetailsContent extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          SizedBox(height: AppHeight.s24),
+          // Products Section
+          MerchantProductsSection(
+            merchantId: merchantId,
+            scrollController: scrollController,
           ),
         ],
       ),

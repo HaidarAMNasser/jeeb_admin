@@ -4,10 +4,11 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
-import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_details_content.dart';
+import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
+import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 
 class MerchantDetailsPage extends StatefulWidget {
   final String merchantId;
@@ -19,6 +20,9 @@ class MerchantDetailsPage extends StatefulWidget {
 }
 
 class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +30,38 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
     context.read<MerchantDetailsBloc>().add(
           GetMerchantDetailsEvent(id: widget.merchantId),
         );
+    // Load products for this merchant
+    context.read<ListProductBloc>().add(
+          GetProductsEvent(merchantId: widget.merchantId),
+        );
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isLoadingMore) return;
+
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.8) {
+      final state = context.read<ListProductBloc>().state;
+      if (state is ListProductLoaded && state.hasMore) {
+        setState(() {
+          _isLoadingMore = true;
+        });
+        context.read<ListProductBloc>().add(
+              GetProductsEvent(
+                loadMore: true,
+                merchantId: widget.merchantId,
+              ),
+            );
+      }
+    }
   }
 
   @override
@@ -42,22 +78,50 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
           ),
         ),
       ),
-      body: BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
-        bloc: context.read<MerchantDetailsBloc>(),
-        isLoading: (state) => state is MerchantDetailsLoading,
-        isError: (state) => state is MerchantDetailsError,
-        getErrorMessage: (state) => (state as MerchantDetailsError).message,
-        isSuccess: (state) => state is MerchantDetailsLoaded,
-        getRetryCallback: (state) => () {
-          context.read<MerchantDetailsBloc>().add(
-                GetMerchantDetailsEvent(id: widget.merchantId),
-              );
-        },
-        successBuilder: (context, detailsState) {
-          final loadedState = detailsState as MerchantDetailsLoaded;
-          return MerchantDetailsContent(merchant: loadedState.merchant);
+      body: Builder(
+        builder: (context) {
+          // return BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
+          //   bloc: context.read<MerchantDetailsBloc>(),
+          //   isLoading: (state) => state is MerchantDetailsLoading,
+          //   isError: (state) => state is MerchantDetailsError,
+          //   getErrorMessage: (state) => (state as MerchantDetailsError).message,
+          //   isSuccess: (state) => state is MerchantDetailsLoaded,
+          //   getRetryCallback: (state) => () {
+          //     context.read<MerchantDetailsBloc>().add(
+          //           GetMerchantDetailsEvent(id: widget.merchantId),
+          //         );
+          //   },
+          //   successBuilder: (context, detailsState) {
+          //     final loadedState = detailsState as MerchantDetailsLoaded;
+          //     return MerchantDetailsContent(merchant: loadedState.merchant);
+          //   },
+          // );
+
+          // Fake data for UI testing
+          final fakeMerchant = _generateFakeMerchant();
+          return SingleChildScrollView(
+            controller: _scrollController,
+            child: MerchantDetailsContent(
+              merchant: fakeMerchant,
+              merchantId: widget.merchantId,
+              scrollController: _scrollController,
+            ),
+          );
         },
       ),
+    );
+  }
+
+  // Fake data generation for UI testing
+  MerchantEntity _generateFakeMerchant() {
+    return MerchantEntity(
+      id: widget.merchantId,
+      name: 'Al-Rashid Restaurant',
+      email: 'al_rashid_restaurant@example.com',
+      cityName: 'Beirut',
+      countryName: 'Lebanon',
+      phoneNumber: '+961 3 1234567',
+      image: 'https://picsum.photos/seed/merchant${widget.merchantId}/200/200',
     );
   }
 }

@@ -194,11 +194,19 @@ class AppRouter {
             settings,
           );
         }
-        return _buildRouteWithBloc(
+        return _buildRouteWithBlocs(
           MerchantDetailsPage(merchantId: merchantId),
           settings,
-          bloc: () =>
-              MerchantDetailsBloc(di.sl<MerchantDetailsRepository>()),
+          providers: [
+            BlocProvider<MerchantDetailsBloc>(
+              create: (_) =>
+                  MerchantDetailsBloc(di.sl<MerchantDetailsRepository>()),
+            ),
+            BlocProvider<ListProductBloc>(
+              create: (_) =>
+                  ListProductBloc(di.sl<ListProductRepository>()),
+            ),
+          ],
         );
 
       default:

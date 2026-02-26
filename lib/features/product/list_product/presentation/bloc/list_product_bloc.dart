@@ -26,6 +26,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
             final result = await _repository.getProducts(
               page: nextPage,
               limit: _pageSize,
+              restaurantId: currentState.merchantId,
             );
 
             result.fold(
@@ -39,6 +40,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
                   products: updatedProducts,
                   hasMore: newProducts.length == _pageSize,
                   currentPage: nextPage,
+                  merchantId: currentState.merchantId,
                 ));
               },
             );
@@ -49,6 +51,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
           final result = await _repository.getProducts(
             page: 1,
             limit: _pageSize,
+            restaurantId: event.merchantId,
           );
 
           result.fold(
@@ -57,6 +60,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
               products: products,
               hasMore: products.length == _pageSize,
               currentPage: 1,
+              merchantId: event.merchantId,
             )),
           );
         }

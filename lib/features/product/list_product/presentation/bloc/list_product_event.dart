@@ -9,10 +9,11 @@ abstract class ListProductEvent extends Equatable {
 
 class GetProductsEvent extends ListProductEvent {
   final bool loadMore;
+  final String? merchantId;
 
-  const GetProductsEvent({this.loadMore = false});
+  const GetProductsEvent({this.loadMore = false, this.merchantId});
 
   @override
-  List<Object> get props => [loadMore];
+  List<Object> get props => [loadMore, merchantId ?? ''];
 }
 
