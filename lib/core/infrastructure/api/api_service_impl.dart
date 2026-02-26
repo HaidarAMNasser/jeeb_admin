@@ -616,5 +616,145 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     return result;
   }
+
+  @override
+  Future<Response> getDeliveryMen({
+    int? page,
+    int? limit,
+    String? search,
+  }) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'delivery-men',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getDeliveryManDetails(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'delivery-men/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> createDeliveryMan(
+    String name,
+    String phone,
+    String email,
+    String? vehicleType,
+    String? status,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = <String, dynamic>{
+      'name': name,
+      'phone': phone,
+      'email': email,
+      if (vehicleType != null && vehicleType.isNotEmpty) 'vehicleType': vehicleType,
+      if (status != null && status.isNotEmpty) 'status': status,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'delivery-men',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> updateDeliveryMan(
+    String id,
+    String? name,
+    String? phone,
+    String? email,
+    String? vehicleType,
+    String? status,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = <String, dynamic>{};
+    if (name != null) data['name'] = name;
+    if (phone != null) data['phone'] = phone;
+    if (email != null) data['email'] = email;
+    if (vehicleType != null) data['vehicleType'] = vehicleType;
+    if (status != null) data['status'] = status;
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'delivery-men/$id',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> deleteDeliveryMan(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'DELETE', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'delivery-men/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
 }
 
