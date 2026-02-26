@@ -132,4 +132,11 @@
   "search_merchants": "Search Merchants",
   "search_merchants_hint": "Search merchants...",
   "location": "Location"
+  "delivery_men": "Delivery Men",
+  "delivery_man_details": "Delivery Man Details",
+  "add_delivery_man": "Add Delivery Man",
+  "edit_delivery_man": "Edit Delivery Man",
+  "no_delivery_men_found": "No delivery men found",
+  "vehicle_type": "Vehicle Type",
+  "status": "Status"
 }
