@@ -40,6 +40,8 @@ import '../../../features/merchant/list_merchant/data/repositories/list_merchant
 import '../../../features/merchant/merchant_details/presentation/pages/merchant_details_page.dart';
 import '../../../features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
+import '../../../features/merchant/delete_merchant/presentation/bloc/delete_merchant_bloc.dart';
+import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -205,6 +207,10 @@ class AppRouter {
             BlocProvider<ListProductBloc>(
               create: (_) =>
                   ListProductBloc(di.sl<ListProductRepository>()),
+            ),
+            BlocProvider<DeleteMerchantBloc>(
+              create: (_) =>
+                  DeleteMerchantBloc(di.sl<DeleteMerchantRepository>()),
             ),
           ],
         );

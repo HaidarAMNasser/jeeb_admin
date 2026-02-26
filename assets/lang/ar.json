@@ -127,5 +127,7 @@
   "merchants": "التجار",
   "merchant_details": "تفاصيل التاجر",
   "no_merchants_found": "لا يوجد تجار",
+  "merchant_deleted_successfully": "تم حذف التاجر بنجاح",
+  "are_you_sure_delete_merchant": "هل أنت متأكد أنك تريد حذف هذا التاجر؟",
   "location": "الموقع"
 }

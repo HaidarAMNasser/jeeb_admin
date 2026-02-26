@@ -82,6 +82,8 @@ class AppTranslation {
   static String get areYouSureWantToDeleteThisProduct => 'are_you_sure_want_to_delete_this_product'.tr();
   static String get delete => 'delete'.tr();
   static String get edit => 'edit'.tr();
+  static String get merchantDeletedSuccessfully => 'merchant_deleted_successfully'.tr();
+  static String get areYouSureDeleteMerchant => 'are_you_sure_delete_merchant'.tr();
   static String get save => 'save'.tr();
   static String get cancel => 'cancel'.tr();
   static String get confirm => 'confirm'.tr();

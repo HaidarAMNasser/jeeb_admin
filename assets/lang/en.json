@@ -127,5 +127,7 @@
   "merchants": "Merchants",
   "merchant_details": "Merchant Details",
   "no_merchants_found": "No merchants found",
+  "merchant_deleted_successfully": "Merchant deleted successfully",
+  "are_you_sure_delete_merchant": "Are you sure you want to delete this merchant?",
   "location": "Location"
 }

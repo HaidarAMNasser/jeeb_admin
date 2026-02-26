@@ -48,6 +48,8 @@ import '../../../features/merchant/list_merchant/data/data_sources/list_merchant
 import '../../../features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
 import '../../../features/merchant/merchant_details/data/data_sources/merchant_details_data_source.dart';
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
+import '../../../features/merchant/delete_merchant/data/data_sources/delete_merchant_data_source.dart';
+import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -179,4 +181,10 @@ Future<void> init() async {
     () => MerchantDetailsRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => MerchantDetailsRepository(sl(), sl()));
+
+  //! Merchant Delete Dependencies
+  sl.registerFactory<DeleteMerchantRemoteDataSource>(
+    () => DeleteMerchantRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => DeleteMerchantRepository(sl(), sl()));
 }

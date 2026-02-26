@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_details_content.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
+import 'package:jeeb_admin/features/merchant/delete_merchant/presentation/bloc/delete_merchant_bloc.dart';
 
 class MerchantDetailsPage extends StatefulWidget {
   final String merchantId;
@@ -66,49 +73,88 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorManager.background,
-      appBar: AppBar(
-        backgroundColor: ColorManager.background,
-        title: CustomText(
-          text: AppTranslation.merchantDetails,
-          textStyle: getBoldStyle(
-            fontSize: AppFontSize.s24,
-            color: ColorManager.titlesColor,
-          ),
-        ),
-      ),
-      body: Builder(
-        builder: (context) {
-          // return BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
-          //   bloc: context.read<MerchantDetailsBloc>(),
-          //   isLoading: (state) => state is MerchantDetailsLoading,
-          //   isError: (state) => state is MerchantDetailsError,
-          //   getErrorMessage: (state) => (state as MerchantDetailsError).message,
-          //   isSuccess: (state) => state is MerchantDetailsLoaded,
-          //   getRetryCallback: (state) => () {
-          //     context.read<MerchantDetailsBloc>().add(
-          //           GetMerchantDetailsEvent(id: widget.merchantId),
-          //         );
-          //   },
-          //   successBuilder: (context, detailsState) {
-          //     final loadedState = detailsState as MerchantDetailsLoaded;
-          //     return MerchantDetailsContent(merchant: loadedState.merchant);
-          //   },
-          // );
-
-          // Fake data for UI testing
-          final fakeMerchant = _generateFakeMerchant();
-          return SingleChildScrollView(
-            controller: _scrollController,
-            child: MerchantDetailsContent(
-              merchant: fakeMerchant,
-              merchantId: widget.merchantId,
-              scrollController: _scrollController,
+    return BlocConsumer<DeleteMerchantBloc, DeleteMerchantState>(
+      listener: (context, deleteState) {
+        if (deleteState is DeleteMerchantSuccess) {
+          customToast(msg: AppTranslation.merchantDeletedSuccessfully);
+          AppRouter.navigateTo(context, Routes.merchants);
+        } else if (deleteState is DeleteMerchantError) {
+          customToast(msg: deleteState.message);
+        }
+      },
+      builder: (context, deleteState) {
+        return ModalProgressHUD(
+          progressIndicator: const CustomCircleIndicator(),
+          inAsyncCall: deleteState is DeleteMerchantLoading,
+          child: Scaffold(
+            backgroundColor: ColorManager.background,
+            appBar: AppBar(
+              backgroundColor: ColorManager.background,
+              title: CustomText(
+                text: AppTranslation.merchantDetails,
+                textStyle: getBoldStyle(
+                  fontSize: AppFontSize.s24,
+                  color: ColorManager.titlesColor,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: ColorManager.error,
+                  ),
+                  onPressed: () => _showDeleteConfirmation(context),
+                ),
+              ],
             ),
-          );
-        },
-      ),
+            body: Builder(
+              builder: (context) {
+                // return BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
+                //   bloc: context.read<MerchantDetailsBloc>(),
+                //   isLoading: (state) => state is MerchantDetailsLoading,
+                //   isError: (state) => state is MerchantDetailsError,
+                //   getErrorMessage: (state) => (state as MerchantDetailsError).message,
+                //   isSuccess: (state) => state is MerchantDetailsLoaded,
+                //   getRetryCallback: (state) => () {
+                //     context.read<MerchantDetailsBloc>().add(
+                //           GetMerchantDetailsEvent(id: widget.merchantId),
+                //         );
+                //   },
+                //   successBuilder: (context, detailsState) {
+                //     final loadedState = detailsState as MerchantDetailsLoaded;
+                //     return MerchantDetailsContent(merchant: loadedState.merchant);
+                //   },
+                // );
+
+                // Fake data for UI testing
+                final fakeMerchant = _generateFakeMerchant();
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  child: MerchantDetailsContent(
+                    merchant: fakeMerchant,
+                    merchantId: widget.merchantId,
+                    scrollController: _scrollController,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    ConfirmationDialog.show(
+      context: context,
+      title: AppTranslation.areYouSureDeleteMerchant,
+      onConfirm: () {
+        context.read<DeleteMerchantBloc>().add(
+              DeleteMerchantSubmitted(merchantId: widget.merchantId),
+            );
+      },
+      confirmText: AppTranslation.delete,
+      confirmColor: ColorManager.error,
     );
   }
 
