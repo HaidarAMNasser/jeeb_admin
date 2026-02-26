@@ -127,7 +127,9 @@
   "merchants": "التجار",
   "merchant_details": "تفاصيل التاجر",
   "no_merchants_found": "لا يوجد تجار",
-  "location": "الموقع",
+  "merchant_deleted_successfully": "تم حذف التاجر بنجاح",
+  "are_you_sure_delete_merchant": "هل أنت متأكد أنك تريد حذف هذا التاجر؟",
+  "location": "الموقع"
   "delivery_men": "سائقي التوصيل",
   "delivery_man_details": "تفاصيل سائق التوصيل",
   "add_delivery_man": "إضافة سائق توصيل",

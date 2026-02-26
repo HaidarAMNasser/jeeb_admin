@@ -8,24 +8,28 @@ import '../../../login/domain/entities/user_entity.dart';
 class ProfileHeader extends StatelessWidget {
   final UserEntity user;
 
-  const ProfileHeader({
-    super.key,
-    required this.user,
-  });
+  const ProfileHeader({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
-        color: ColorManager.surfaceDark,
+        gradient: LinearGradient(
+          colors: [
+            ColorManager.defaultYellow,
+            ColorManager.primary,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
         borderRadius: BorderRadius.circular(AppRadius.r18),
       ),
       child: Column(
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: ColorManager.primary,
+            backgroundColor: ColorManager.defaultWhite,
             child: CustomTextDisplay(
               text: user.firstName[0].toUpperCase(),
               fontSize: AppFontSize.s24,
@@ -51,4 +55,3 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 }
-

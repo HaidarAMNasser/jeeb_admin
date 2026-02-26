@@ -127,7 +127,9 @@
   "merchants": "Merchants",
   "merchant_details": "Merchant Details",
   "no_merchants_found": "No merchants found",
-  "location": "Location",
+  "merchant_deleted_successfully": "Merchant deleted successfully",
+  "are_you_sure_delete_merchant": "Are you sure you want to delete this merchant?",
+  "location": "Location"
   "delivery_men": "Delivery Men",
   "delivery_man_details": "Delivery Man Details",
   "add_delivery_man": "Add Delivery Man",
