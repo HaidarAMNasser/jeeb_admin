@@ -139,5 +139,11 @@ class AppTranslation {
   static String get forgotPasswordDescription => 'forgot_password_description'.tr();
   static String get pleaseSelectCountryFirst => 'please_select_country_first'.tr();
   static String get noCitiesAvailable => 'no_cities_available'.tr();
+
+  // Merchant
+  static String get merchants => 'merchants'.tr();
+  static String get merchantDetails => 'merchant_details'.tr();
+  static String get noMerchantsFound => 'no_merchants_found'.tr();
+  static String get location => 'location'.tr();
 }
 

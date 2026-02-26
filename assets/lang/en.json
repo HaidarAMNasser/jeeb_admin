@@ -123,5 +123,9 @@
   "profile_updated_success": "Profile updated successfully",
   "forgot_password_description": "Enter your email to receive OTP",
   "please_select_country_first": "Please select a country first",
-  "no_cities_available": "No cities available"
+  "no_cities_available": "No cities available",
+  "merchants": "Merchants",
+  "merchant_details": "Merchant Details",
+  "no_merchants_found": "No merchants found",
+  "location": "Location"
 }

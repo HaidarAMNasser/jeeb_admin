@@ -34,6 +34,12 @@ import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
 import '../../../features/main_navigation/presentation/pages/main_navigation_page.dart';
+import '../../../features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
+import '../../../features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
+import '../../../features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
+import '../../../features/merchant/merchant_details/presentation/pages/merchant_details_page.dart';
+import '../../../features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
+import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -164,6 +170,43 @@ class AppRouter {
         return _buildRoute(
           const MainNavigationPage(),
           settings,
+        );
+
+      case Routes.merchants:
+        return _buildRouteWithBloc(
+          const ListMerchantPage(),
+          settings,
+          bloc: () =>
+              ListMerchantBloc(di.sl<ListMerchantRepository>())
+                ..add(const GetMerchantsEvent()),
+        );
+
+      case Routes.merchantDetails:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final merchantId = args?['merchantId'] as String? ?? '';
+        if (merchantId.isEmpty) {
+          return _buildRoute(
+            Scaffold(
+              body: Center(
+                child: Text('Merchant ID not provided'),
+              ),
+            ),
+            settings,
+          );
+        }
+        return _buildRouteWithBlocs(
+          MerchantDetailsPage(merchantId: merchantId),
+          settings,
+          providers: [
+            BlocProvider<MerchantDetailsBloc>(
+              create: (_) =>
+                  MerchantDetailsBloc(di.sl<MerchantDetailsRepository>()),
+            ),
+            BlocProvider<ListProductBloc>(
+              create: (_) =>
+                  ListProductBloc(di.sl<ListProductRepository>()),
+            ),
+          ],
         );
 
       default:

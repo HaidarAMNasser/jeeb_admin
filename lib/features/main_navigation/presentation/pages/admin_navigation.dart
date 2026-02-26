@@ -7,8 +7,10 @@ import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as 
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.dart';
 import 'package:jeeb_admin/features/main_navigation/presentation/pages/orders_page.dart';
-import 'package:jeeb_admin/features/main_navigation/presentation/pages/merchants_page.dart';
 import 'package:jeeb_admin/features/main_navigation/presentation/pages/delivery_page.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
 
 class AdminNavigation extends StatefulWidget {
   const AdminNavigation({super.key});
@@ -23,7 +25,12 @@ class _AdminNavigationState extends State<AdminNavigation> {
   Widget _buildScreen(int index) {
     switch (index) {
       case 0:
-        return const MerchantsPage();
+        return BlocProvider<ListMerchantBloc>(
+          create: (_) =>
+              ListMerchantBloc(di.sl<ListMerchantRepository>())
+                ..add(const GetMerchantsEvent()),
+          child: const ListMerchantPage(),
+        );
       case 1:
         return const OrdersPage();
       case 2:

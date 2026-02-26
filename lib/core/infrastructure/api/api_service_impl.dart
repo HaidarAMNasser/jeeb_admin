@@ -540,5 +540,81 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     return result;
   }
+
+  @override
+  Future<Response> getMerchants({
+    int? page,
+    int? limit,
+    String? search,
+  }) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'merchants',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getMerchantDetails(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'merchants/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getMerchantReviews({
+    required String merchantId,
+    int? page,
+    int? limit,
+  }) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'merchants/$merchantId/reviews',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
 }
 
