@@ -119,6 +119,25 @@ abstract class AppApiServiceClient {
     @Query('page') int? page,
     @Query('limit') int? limit,
   );
+
+  // Merchant endpoints
+  @GET("merchants")
+  Future<Response> getMerchants({
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+  });
+
+  @GET("merchants/{id}")
+  Future<Response> getMerchantDetails(@Path('id') String id);
+
+  // Merchant Review endpoints
+  @GET("merchants/{merchantId}/reviews")
+  Future<Response> getMerchantReviews({
+    @Path('merchantId') required String merchantId,
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+  });
 }
 
 // Annotations for API methods (simplified versions)

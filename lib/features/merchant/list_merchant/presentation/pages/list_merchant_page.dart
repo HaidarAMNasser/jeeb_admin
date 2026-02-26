@@ -8,18 +8,17 @@ import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
-import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item.dart';
 
-class ListProductPage extends StatefulWidget {
-  const ListProductPage({super.key});
+class ListMerchantPage extends StatefulWidget {
+  const ListMerchantPage({super.key});
 
   @override
-  State<ListProductPage> createState() => _ListProductPageState();
+  State<ListMerchantPage> createState() => _ListMerchantPageState();
 }
 
-class _ListProductPageState extends State<ListProductPage> {
+class _ListMerchantPageState extends State<ListMerchantPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -27,8 +26,8 @@ class _ListProductPageState extends State<ListProductPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Load initial products
-    context.read<ListProductBloc>().add(const GetProductsEvent());
+    // Load initial merchants
+    context.read<ListMerchantBloc>().add(const GetMerchantsEvent());
   }
 
   @override
@@ -43,13 +42,13 @@ class _ListProductPageState extends State<ListProductPage> {
 
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent * 0.8) {
-      final state = context.read<ListProductBloc>().state;
-      if (state is ListProductLoaded && state.hasMore) {
+      final state = context.read<ListMerchantBloc>().state;
+      if (state is ListMerchantLoaded && state.hasMore) {
         setState(() {
           _isLoadingMore = true;
         });
-        context.read<ListProductBloc>().add(
-              const GetProductsEvent(loadMore: true),
+        context.read<ListMerchantBloc>().add(
+              const GetMerchantsEvent(loadMore: true),
             );
       }
     }
@@ -62,64 +61,64 @@ class _ListProductPageState extends State<ListProductPage> {
       appBar: AppBar(
         backgroundColor: ColorManager.background,
         title: CustomText(
-          text: AppTranslation.products,
+          text: AppTranslation.merchants,
           textStyle: getBoldStyle(
             fontSize: AppFontSize.s24,
             color: ColorManager.titlesColor,
           ),
         ),
       ),
-      body: BlocConsumer<ListProductBloc, ListProductState>(
+      body: BlocConsumer<ListMerchantBloc, ListMerchantState>(
         listener: (context, state) {
-          if (state is ListProductLoaded) {
+          if (state is ListMerchantLoaded) {
             setState(() {
               _isLoadingMore = false;
             });
           }
-          if (state is ListProductError) {
+          if (state is ListMerchantError) {
             setState(() {
               _isLoadingMore = false;
             });
           }
         },
         builder: (context, state) {
-          return BlocStateHandler<ListProductBloc, ListProductState>(
-            bloc: context.read<ListProductBloc>(),
-            isLoading: (state) => state is ListProductLoading,
-            isError: (state) => state is ListProductError,
-            getErrorMessage: (state) => (state as ListProductError).message,
-            isSuccess: (state) => state is ListProductLoaded || state is ListProductLoadingMore,
+          return BlocStateHandler<ListMerchantBloc, ListMerchantState>(
+            bloc: context.read<ListMerchantBloc>(),
+            isLoading: (state) => state is ListMerchantLoading,
+            isError: (state) => state is ListMerchantError,
+            getErrorMessage: (state) => (state as ListMerchantError).message,
+            isSuccess: (state) => state is ListMerchantLoaded || state is ListMerchantLoadingMore,
             isEmpty: (state) {
-              if (state is ListProductLoaded) {
-                return state.products.isEmpty;
+              if (state is ListMerchantLoaded) {
+                return state.merchants.isEmpty;
               }
-              if (state is ListProductLoadingMore) {
-                return state.products.isEmpty;
+              if (state is ListMerchantLoadingMore) {
+                return state.merchants.isEmpty;
               }
               return false;
             },
-            emptyMessage: AppTranslation.noProductsFound,
+            emptyMessage: AppTranslation.noMerchantsFound,
             getRetryCallback: (state) => () {
-              context.read<ListProductBloc>().add(const GetProductsEvent());
+              context.read<ListMerchantBloc>().add(const GetMerchantsEvent());
             },
-            successBuilder: (context, productState) {
-              final products = productState is ListProductLoaded
-                  ? productState.products
-                  : (productState as ListProductLoadingMore).products;
-              final hasMore = productState is ListProductLoaded ? productState.hasMore : false;
+            successBuilder: (context, merchantState) {
+              final merchants = merchantState is ListMerchantLoaded
+                  ? merchantState.merchants
+                  : (merchantState as ListMerchantLoadingMore).merchants;
+              final hasMore = merchantState is ListMerchantLoaded ? merchantState.hasMore : false;
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  context.read<ListProductBloc>().add(
-                        const GetProductsEvent(),
+                  context.read<ListMerchantBloc>().add(
+                        const GetMerchantsEvent(),
                       );
                 },
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: EdgeInsets.all(AppPadding.p16),
-                  itemCount: products.length + (hasMore ? 1 : 0),
+                  itemCount: merchants.length + (hasMore ? 1 : 0),
                   itemBuilder: (context, index) {
-                    if (index == products.length) {
+                    if (index == merchants.length) {
                       // Loading more indicator
                       return Padding(
                         padding: EdgeInsets.all(AppPadding.p16),
@@ -127,21 +126,14 @@ class _ListProductPageState extends State<ListProductPage> {
                       );
                     }
 
-                    final product = products[index];
-                    return ProductListItem(product: product);
+                    final merchant = merchants[index];
+                    return MerchantListItem(merchant: merchant);
                   },
                 ),
               );
             },
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorManager.primary,
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.addProduct);
-        },
-        child: Icon(Icons.add, color: ColorManager.surface),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
+import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import 'package:jeeb_admin/features/product/create_product/presentation/pages/create_product_page.dart';
@@ -44,47 +45,35 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           ),
         ),
       ),
-      body: BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
-        builder: (context, state) {
-          if (state is ProductDetailsLoading) {
-            return const CustomCircleIndicator();
-          } else if (state is ProductDetailsError) {
-            // Check if it's a network error
-            final isNetworkError = state.message.toLowerCase().contains('network') ||
-                state.message.toLowerCase().contains('internet') ||
-                state.message.toLowerCase().contains('connection');
-            
-            return ErrorStateWidget(
-              message: isNetworkError
-                  ? AppTranslation.noInternetConnection
-                  : state.message,
-              icon: isNetworkError ? Icons.wifi_off : Icons.error_outline,
-              onRetry: () {
-                context.read<ProductDetailsBloc>().add(
-                      GetProductDetailsEvent(id: widget.productId),
-                    );
-              },
-            );
-          } else if (state is ProductDetailsLoaded) {
-            // Navigate to create product page in edit mode
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CreateProductPage(
-                      product: state.product,
-                    ),
+      body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
+        bloc: context.read<ProductDetailsBloc>(),
+        isLoading: (state) => state is ProductDetailsLoading,
+        isError: (state) => state is ProductDetailsError,
+        getErrorMessage: (state) => (state as ProductDetailsError).message,
+        isSuccess: (state) => state is ProductDetailsLoaded,
+        getRetryCallback: (state) => () {
+          context.read<ProductDetailsBloc>().add(
+                GetProductDetailsEvent(id: widget.productId),
+              );
+        },
+        successBuilder: (context, productState) {
+          final loadedState = productState as ProductDetailsLoaded;
+          
+          // Navigate to create product page in edit mode
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateProductPage(
+                    product: loadedState.product,
                   ),
-                );
-              }
-            });
-            // Show loading while navigating
-            return const CustomCircleIndicator();
-          } else {
-            // Initial state - show loading
-            return const CustomCircleIndicator();
-          }
+                ),
+              );
+            }
+          });
+          // Show loading while navigating
+          return const CustomCircleIndicator();
         },
       ),
     );

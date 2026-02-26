@@ -8,16 +8,58 @@ part 'list_product_state.dart';
 
 class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
   final ListProductRepository _repository;
+  static const int _pageSize = 20;
 
   ListProductBloc(this._repository) : super(const ListProductInitial()) {
     on<ListProductEvent>((event, emit) async {
       if (event is GetProductsEvent) {
-        emit(const ListProductLoading());
-        final result = await _repository.getProducts();
-        result.fold(
-          (failure) => emit(ListProductError(message: failure.message)),
-          (products) => emit(ListProductLoaded(products: products)),
-        );
+        if (event.loadMore) {
+          // Load more products
+          final currentState = state;
+          if (currentState is ListProductLoaded) {
+            emit(ListProductLoadingMore(
+              products: currentState.products,
+              currentPage: currentState.currentPage,
+            ));
+
+            final nextPage = currentState.currentPage + 1;
+            final result = await _repository.getProducts(
+              page: nextPage,
+              limit: _pageSize,
+            );
+
+            result.fold(
+              (failure) => emit(ListProductError(message: failure.message)),
+              (newProducts) {
+                final updatedProducts = [
+                  ...currentState.products,
+                  ...newProducts,
+                ];
+                emit(ListProductLoaded(
+                  products: updatedProducts,
+                  hasMore: newProducts.length == _pageSize,
+                  currentPage: nextPage,
+                ));
+              },
+            );
+          }
+        } else {
+          // Initial load or refresh
+          emit(const ListProductLoading());
+          final result = await _repository.getProducts(
+            page: 1,
+            limit: _pageSize,
+          );
+
+          result.fold(
+            (failure) => emit(ListProductError(message: failure.message)),
+            (products) => emit(ListProductLoaded(
+              products: products,
+              hasMore: products.length == _pageSize,
+              currentPage: 1,
+            )),
+          );
+        }
       }
     });
   }

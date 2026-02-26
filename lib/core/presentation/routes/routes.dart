@@ -16,4 +16,6 @@ class Routes {
   static const String addProduct = '/add-product';
   static const String productDetails = '/product-details';
   static const String mainNavigation = '/main-navigation';
+  static const String merchants = '/merchants';
+  static const String merchantDetails = '/merchant-details';
 }

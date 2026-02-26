@@ -44,6 +44,10 @@ import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/data/data_sources/city_remote_data_source.dart';
 import '../../../features/city/data/repositories/city_repository.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
+import '../../../features/merchant/list_merchant/data/data_sources/list_merchant_data_source.dart';
+import '../../../features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
+import '../../../features/merchant/merchant_details/data/data_sources/merchant_details_data_source.dart';
+import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -163,4 +167,16 @@ Future<void> init() async {
   );
   sl.registerFactory(() => CityRepository(sl(), sl()));
   sl.registerFactory(() => CityBloc(sl()));
+
+  //! Merchant List Dependencies
+  sl.registerFactory<ListMerchantRemoteDataSource>(
+    () => ListMerchantRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ListMerchantRepository(sl(), sl()));
+
+  //! Merchant Details Dependencies
+  sl.registerFactory<MerchantDetailsRemoteDataSource>(
+    () => MerchantDetailsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => MerchantDetailsRepository(sl(), sl()));
 }

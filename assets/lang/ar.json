@@ -123,5 +123,9 @@
   "profile_updated_success": "تم تحديث الملف الشخصي بنجاح",
   "forgot_password_description": "أدخل بريدك الإلكتروني لاستلام رمز التحقق",
   "please_select_country_first": "الرجاء اختيار دولة أولاً",
-  "no_cities_available": "لا توجد مدن متاحة"
+  "no_cities_available": "لا توجد مدن متاحة",
+  "merchants": "التجار",
+  "merchant_details": "تفاصيل التاجر",
+  "no_merchants_found": "لا يوجد تجار",
+  "location": "الموقع"
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/error_state_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/empty_state_widget.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 /// A generic widget that handles BlocBuilder states automatically
 /// Works with any bloc that follows the common state pattern:
@@ -77,11 +78,17 @@ class BlocStateHandler<B extends StateStreamable<S>, S> extends StatelessWidget 
         if (_checkError(state)) {
           final errorMsg = _getErrorMessage(state);
           final onRetry = _getRetryCallback(state);
+          final isNetworkError = _isNetworkError(errorMsg);
+          final displayMessage = isNetworkError 
+              ? AppTranslation.noInternetConnection 
+              : errorMsg;
+          
           if (errorBuilder != null) {
-            return errorBuilder!(context, errorMsg, onRetry);
+            return errorBuilder!(context, displayMessage, onRetry);
           }
           return ErrorStateWidget(
-            message: errorMsg,
+            message: displayMessage,
+            icon: isNetworkError ? Icons.wifi_off : Icons.error_outline,
             onRetry: onRetry,
           );
         }
@@ -176,6 +183,16 @@ class BlocStateHandler<B extends StateStreamable<S>, S> extends StatelessWidget 
       return getRetryCallback!(state);
     }
     return null;
+  }
+
+  /// Check if the error message indicates a network error
+  bool _isNetworkError(String message) {
+    final lowerMessage = message.toLowerCase();
+    return lowerMessage.contains('network') ||
+        lowerMessage.contains('internet') ||
+        lowerMessage.contains('connection') ||
+        lowerMessage.contains('no internet') ||
+        lowerMessage.contains('check your network');
   }
 }
 
