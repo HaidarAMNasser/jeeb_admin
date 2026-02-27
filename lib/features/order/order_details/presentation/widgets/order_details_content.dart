@@ -30,7 +30,19 @@ class OrderDetailsContent extends StatelessWidget {
             SizedBox(height: AppHeight.s16),
           ],
 
-          // Location
+          // Number of People
+          if (order.numberOfPeople != null) ...[
+            OrderPeopleCard(numberOfPeople: order.numberOfPeople!),
+            SizedBox(height: AppHeight.s16),
+          ],
+          // Products
+          OrderProductsSection(products: order.products),
+
+          // Delivery Man
+          if (order.deliveryMan != null) ...[
+            OrderDeliveryManCard(deliveryMan: order.deliveryMan!),
+            SizedBox(height: AppHeight.s16),
+          ], // Location
           if (order.latitude != null && order.longitude != null) ...[
             OrderLocationCard(
               latitude: order.latitude!,
@@ -38,21 +50,6 @@ class OrderDetailsContent extends StatelessWidget {
             ),
             SizedBox(height: AppHeight.s16),
           ],
-
-          // Number of People
-          if (order.numberOfPeople != null) ...[
-            OrderPeopleCard(numberOfPeople: order.numberOfPeople!),
-            SizedBox(height: AppHeight.s16),
-          ],
-
-          // Delivery Man
-          if (order.deliveryMan != null) ...[
-            OrderDeliveryManCard(deliveryMan: order.deliveryMan!),
-            SizedBox(height: AppHeight.s16),
-          ],
-
-          // Products
-          OrderProductsSection(products: order.products),
         ],
       ),
     );

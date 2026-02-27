@@ -42,16 +42,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<OrderCompleteBloc>(
-          create: (_) => di.sl<OrderCompleteBloc>(),
-        ),
-        BlocProvider<OrderCancelBloc>(
-          create: (_) => di.sl<OrderCancelBloc>(),
-        ),
-      ],
-      child: BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
+    return BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
         listener: (context, completeState) {
           if (completeState is OrderCompleteSuccess) {
             customToast(msg: AppTranslation.orderCompletedSuccessfully);
@@ -163,7 +154,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             },
           );
         },
-      ),
     );
   }
 

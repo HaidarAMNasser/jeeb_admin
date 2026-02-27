@@ -4,6 +4,8 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/features/main_navigation/presentation/pages/merchant_navigation.dart';
 import 'package:jeeb_admin/features/main_navigation/presentation/pages/admin_navigation.dart';
 import '../../../../core/infrastructure/di/dependency_injection.dart' as di;
+import '../../../../core/common/classes/user_roles.dart';
+import '../../../../core/presentation/routes/routes.dart';
 
 class MainNavigationPage extends StatefulWidget {
   const MainNavigationPage({super.key});
@@ -37,33 +39,27 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       return Scaffold(
         backgroundColor: ColorManager.background,
         body: Center(
-          child: CircularProgressIndicator(
-            color: ColorManager.primary,
-          ),
+          child: CircularProgressIndicator(color: ColorManager.primary),
         ),
       );
     }
 
     // Route based on user role
-    switch (_userRole) {
-      case 'merchant':
-        return const MerchantNavigation();
-      case 'admin':
-        return const AdminNavigation();
-      default:
-        // If no role found, redirect to login
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushReplacementNamed('/login');
-        });
-        return Scaffold(
-          backgroundColor: ColorManager.background,
-          body: Center(
-            child: CircularProgressIndicator(
-              color: ColorManager.primary,
-            ),
-          ),
-        );
+    if (_userRole == UserRoles.merchant.name) {
+      return const MerchantNavigation();
+    } else if (_userRole == UserRoles.admin.name) {
+      return const AdminNavigation();
+    } else {
+      // If no role found or unsupported role, redirect to login
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacementNamed(Routes.login);
+      });
+      return Scaffold(
+        backgroundColor: ColorManager.background,
+        body: Center(
+          child: CircularProgressIndicator(color: ColorManager.primary),
+        ),
+      );
     }
   }
 }
-

@@ -10,7 +10,9 @@ import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import '../bloc/register_bloc.dart';
@@ -65,15 +67,15 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _handleFakeRegister() async {
     try {
       final storageService = di.sl<StorageService>();
-      
+
       // Set fake token for testing
       await storageService.setUserToken('fake_token_for_testing');
-      
+
       // Set user role to admin (lowercase as stored in login)
-      await storageService.setUserRole('admin');
-      
+      await storageService.setUserRole(UserRole.merchant.name);
+
       customToast(msg: 'Fake registration successful (Testing Mode - Admin)');
-      
+
       // Navigate to main navigation
       if (mounted) {
         context.pushNamedAndRemoveUntil(
@@ -100,89 +102,84 @@ class _RegisterPageState extends State<RegisterPage> {
       }
 
       context.read<RegisterBloc>().add(
-            RegisterSubmitted(
-              firstName: _firstNameController.text.trim(),
-              lastName: _lastNameController.text.trim(),
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-              phone: _phoneController.text.trim(),
-              role: _selectedRole!,
-              countryId: _selectedCountry!.id,
-              cityId: _selectedCity!.id,
-              notificationChannel: _selectedNotificationChannel!,
-              address: _addressController.text.trim().isEmpty
-                  ? null
-                  : _addressController.text.trim(),
-            ),
-          );
+        RegisterSubmitted(
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          phone: _phoneController.text.trim(),
+          role: _selectedRole!,
+          countryId: _selectedCountry!.id,
+          cityId: _selectedCity!.id,
+          notificationChannel: _selectedNotificationChannel!,
+          address: _addressController.text.trim().isEmpty
+              ? null
+              : _addressController.text.trim(),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterBloc, RegisterState>(
-        listener: (context, state) {
-          if (state is RegisterSuccess) {
-            customToast(msg: AppTranslation.registerSuccess);
-            context.pushNamed(
-              Routes.verify,
-              arguments: {'email': state.email},
-            );
-          } else if (state is RegisterError) {
-            customToast(msg: state.message);
-          }
-        },
-        builder: (context, state) {
-          return ModalProgressHUD(
-            progressIndicator: const CustomCircleIndicator(),
-            inAsyncCall: state is RegisterLoading,
-            child: Scaffold(
+      listener: (context, state) {
+        if (state is RegisterSuccess) {
+          customToast(msg: AppTranslation.registerSuccess);
+          context.pushNamed(Routes.verify, arguments: {'email': state.email});
+        } else if (state is RegisterError) {
+          customToast(msg: state.message);
+        }
+      },
+      builder: (context, state) {
+        return ModalProgressHUD(
+          progressIndicator: const CustomCircleIndicator(),
+          inAsyncCall: state is RegisterLoading,
+          child: Scaffold(
+            backgroundColor: ColorManager.background,
+            appBar: AppBar(
               backgroundColor: ColorManager.background,
-              appBar: AppBar(
-                backgroundColor: ColorManager.background,
-                elevation: 0,
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: ColorManager.titlesColor,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                title: CustomTextDisplay(
-                  text: AppTranslation.register,
-                  fontSize: AppFontSize.s24,
-                  color: ColorManager.titlesColor,
-                  fontWeight: FontWeight.bold,
-                ),
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: ColorManager.titlesColor),
+                onPressed: () => Navigator.of(context).pop(),
               ),
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(AppPadding.p24),
-                  child: RegisterForm(
-                    formKey: _formKey,
-                    firstNameController: _firstNameController,
-                    lastNameController: _lastNameController,
-                    emailController: _emailController,
-                    passwordController: _passwordController,
-                    phoneController: _phoneController,
-                    addressController: _addressController,
-                    selectedRole: _selectedRole,
-                    selectedNotificationChannel: _selectedNotificationChannel,
-                    selectedCountry: _selectedCountry,
-                    selectedCity: _selectedCity,
-                    onCountryChanged: _onCountryChanged,
-                    onCityChanged: _onCityChanged,
-                    onRoleChanged: (role) => setState(() => _selectedRole = role),
-                    onNotificationChannelChanged: (channel) => setState(() => _selectedNotificationChannel = channel),
-                    onRegister: _handleFakeRegister, // Using fake register for testing
-                    isLoading: state is RegisterLoading,
-                  ),
+              title: CustomTextDisplay(
+                text: AppTranslation.register,
+                fontSize: AppFontSize.s24,
+                color: ColorManager.titlesColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(AppPadding.p24),
+                child: RegisterForm(
+                  formKey: _formKey,
+                  firstNameController: _firstNameController,
+                  lastNameController: _lastNameController,
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  phoneController: _phoneController,
+                  addressController: _addressController,
+                  selectedRole: _selectedRole,
+                  selectedNotificationChannel: _selectedNotificationChannel,
+                  selectedCountry: _selectedCountry,
+                  selectedCity: _selectedCity,
+                  onCountryChanged: _onCountryChanged,
+                  onCityChanged: _onCityChanged,
+                  onRoleChanged: (role) => setState(() => _selectedRole = role),
+                  onNotificationChannelChanged: (channel) =>
+                      setState(() => _selectedNotificationChannel = channel),
+                  onRegister:
+                      _handleFakeRegister, // Using fake register for testing
+                  isLoading: state is RegisterLoading,
                 ),
               ),
             ),
-          );
-        },
+          ),
+        );
+      },
     );
   }
 }
-
