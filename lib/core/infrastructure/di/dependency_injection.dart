@@ -60,6 +60,18 @@ import '../../../features/delivery/update_delivery/data/data_sources/update_deli
 import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
 import '../../../features/delivery/delete_delivery/data/data_sources/delete_delivery_data_source.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/order/list_order/data/data_sources/list_order_data_source.dart';
+import '../../../features/order/list_order/data/repositories/list_order_repository.dart';
+import '../../../features/order/order_details/data/data_sources/order_details_data_source.dart';
+import '../../../features/order/order_details/data/repositories/order_details_repository.dart';
+import '../../../features/order/order_complete/data/data_sources/order_complete_data_source.dart';
+import '../../../features/order/order_complete/data/repositories/order_complete_repository.dart';
+import '../../../features/order/order_cancel/data/data_sources/order_cancel_data_source.dart';
+import '../../../features/order/order_cancel/data/repositories/order_cancel_repository.dart';
+import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
+import '../../../features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
+import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -222,4 +234,32 @@ Future<void> init() async {
   sl.registerFactory(() => CreateDeliveryRepository(sl(), sl()));
   sl.registerFactory(() => UpdateDeliveryRepository(sl(), sl()));
   sl.registerFactory(() => DeleteDeliveryRepository(sl(), sl()));
+
+  //! Order List Dependencies
+  sl.registerFactory<ListOrderRemoteDataSource>(
+    () => ListOrderRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ListOrderRepository(sl(), sl()));
+  sl.registerFactory(() => ListOrderBloc(sl()));
+
+  //! Order Details Dependencies
+  sl.registerFactory<OrderDetailsRemoteDataSource>(
+    () => OrderDetailsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => OrderDetailsRepository(sl(), sl()));
+  sl.registerFactory(() => OrderDetailsBloc(sl()));
+
+  //! Order Complete Dependencies
+  sl.registerFactory<OrderCompleteRemoteDataSource>(
+    () => OrderCompleteRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => OrderCompleteRepository(sl(), sl()));
+  sl.registerFactory(() => OrderCompleteBloc(sl()));
+
+  //! Order Cancel Dependencies
+  sl.registerFactory<OrderCancelRemoteDataSource>(
+    () => OrderCancelRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => OrderCancelRepository(sl(), sl()));
+  sl.registerFactory(() => OrderCancelBloc(sl()));
 }

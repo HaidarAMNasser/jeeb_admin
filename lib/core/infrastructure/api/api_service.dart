@@ -174,6 +174,24 @@ abstract class AppApiServiceClient {
 
   @DELETE("delivery-men/{id}")
   Future<Response> deleteDeliveryMan(@Path('id') String id);
+
+  // Order endpoints
+  @GET("orders")
+  Future<Response> getOrders({
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+    @Header('merchantId') String? merchantId,
+  });
+
+  @GET("orders/{id}")
+  Future<Response> getOrderDetails(@Path('id') String id);
+
+  @POST("orders/{id}/complete")
+  Future<Response> completeOrder(@Path('id') String id);
+
+  @POST("orders/{id}/cancel")
+  Future<Response> cancelOrder(@Path('id') String id);
 }
 
 // Annotations for API methods (simplified versions)
@@ -219,5 +237,10 @@ class Queries {
 class Path {
   final String name;
   const Path(this.name);
+}
+
+class Header {
+  final String name;
+  const Header(this.name);
 }
 

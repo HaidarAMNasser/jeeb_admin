@@ -12,20 +12,22 @@ class ListDeliveryBloc extends Bloc<ListDeliveryEvent, ListDeliveryState> {
 
   ListDeliveryBloc(this._repository) : super(const ListDeliveryInitial()) {
     on<ListDeliveryEvent>((event, emit) async {
-      if (event is GetDeliveryMenEvent) {
+        if (event is GetDeliveryMenEvent) {
         if (event.loadMore) {
           final currentState = state;
           if (currentState is ListDeliveryLoaded) {
+            final searchQuery = event.search ?? currentState.search;
             emit(ListDeliveryLoadingMore(
               deliveryMen: currentState.deliveryMen,
               currentPage: currentState.currentPage,
+              search: searchQuery,
             ));
 
             final nextPage = currentState.currentPage + 1;
             final result = await _repository.getDeliveryMen(
               page: nextPage,
               limit: _pageSize,
-              search: event.search,
+              search: searchQuery,
             );
 
             result.fold(
@@ -39,6 +41,7 @@ class ListDeliveryBloc extends Bloc<ListDeliveryEvent, ListDeliveryState> {
                   deliveryMen: updated,
                   hasMore: newDeliveryMen.length == _pageSize,
                   currentPage: nextPage,
+                  search: searchQuery,
                 ));
               },
             );
@@ -57,6 +60,7 @@ class ListDeliveryBloc extends Bloc<ListDeliveryEvent, ListDeliveryState> {
               deliveryMen: deliveryMen,
               hasMore: deliveryMen.length == _pageSize,
               currentPage: 1,
+              search: event.search,
             )),
           );
         }

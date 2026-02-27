@@ -51,10 +51,10 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'Flutter Forge App',
+          title: 'Jeeb App',
           debugShowCheckedModeBanner: false,
           // theme: AppTheme.lightTheme,
-          // darkTheme: AppTheme.darkTheme,
+          // darkTheme:  AppTheme.darkTheme,
           themeMode: ThemeMode.system,
           navigatorKey: di.sl<NavigationService>().navigationKey,
           initialRoute: Routes.splash,

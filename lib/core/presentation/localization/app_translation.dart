@@ -146,6 +146,8 @@ class AppTranslation {
   static String get merchants => 'merchants'.tr();
   static String get merchantDetails => 'merchant_details'.tr();
   static String get noMerchantsFound => 'no_merchants_found'.tr();
+  static String get searchMerchants => 'search_merchants'.tr();
+  static String get searchMerchantsHint => 'search_merchants_hint'.tr();
   static String get location => 'location'.tr();
 
   // Delivery
@@ -156,5 +158,27 @@ class AppTranslation {
   static String get noDeliveryMenFound => 'no_delivery_men_found'.tr();
   static String get vehicleType => 'vehicle_type'.tr();
   static String get status => 'status'.tr();
+  static String get searchDeliveryMen => 'search_delivery_men'.tr();
+  static String get searchDeliveryMenHint => 'search_delivery_men_hint'.tr();
+
+  // Order
+  static String get orders => 'orders'.tr();
+  static String get orderDetails => 'order_details'.tr();
+  static String get noOrdersFound => 'no_orders_found'.tr();
+  static String get searchOrders => 'search_orders'.tr();
+  static String get searchOrdersHint => 'search_orders_hint'.tr();
+  static String get orderCompletedSuccessfully => 'order_completed_successfully'.tr();
+  static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
+  static String get order => 'order'.tr();
+  static String get productsCount => 'products_count'.tr();
+  static String get people => 'people'.tr();
+  static String get latitude => 'latitude'.tr();
+  static String get longitude => 'longitude'.tr();
+  static String get numberOfPeople => 'number_of_people'.tr();
+  static String get deliveryMan => 'delivery_man'.tr();
+  static String get areYouSureCompleteOrder => 'are_you_sure_complete_order'.tr();
+  static String get areYouSureCancelOrder => 'are_you_sure_cancel_order'.tr();
+  static String get completeOrder => 'complete_order'.tr();
+  static String get cancelOrder => 'cancel_order'.tr();
 }
 
