@@ -3,6 +3,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
+import 'package:jeeb_admin/core/presentation/widgets/gradient_text.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 class LoginHeader extends StatelessWidget {
@@ -13,11 +14,12 @@ class LoginHeader extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: AppHeight.s50),
-        CustomTextDisplay(
+        GradientText(
           text: AppTranslation.appName,
-          fontSize: AppFontSize.s30,
-          color: ColorManager.titlesColor,
-          fontWeight: FontWeight.bold,
+          textStyle: TextStyle(
+            fontSize: AppFontSize.s30,
+            fontWeight: FontWeight.bold,
+          ),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: AppHeight.s8),

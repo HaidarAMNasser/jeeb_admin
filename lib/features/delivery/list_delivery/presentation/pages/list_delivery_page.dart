@@ -7,8 +7,10 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/widgets/delivery_list_item.dart';
+import 'package:jeeb_admin/features/delivery/list_delivery/presentation/widgets/search_delivery_widget.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 
 class ListDeliveryPage extends StatefulWidget {
@@ -20,7 +22,6 @@ class ListDeliveryPage extends StatefulWidget {
 
 class _ListDeliveryPageState extends State<ListDeliveryPage> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _searchController = TextEditingController();
   bool _isLoadingMore = false;
 
   @override
@@ -34,7 +35,6 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -45,9 +45,9 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
       final state = context.read<ListDeliveryBloc>().state;
       if (state is ListDeliveryLoaded && state.hasMore) {
         setState(() => _isLoadingMore = true);
-        context
-            .read<ListDeliveryBloc>()
-            .add(GetDeliveryMenEvent(loadMore: true, search: _searchController.text.isEmpty ? null : _searchController.text));
+        context.read<ListDeliveryBloc>().add(
+          GetDeliveryMenEvent(loadMore: true, search: state.search),
+        );
       }
     }
   }
@@ -59,7 +59,7 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
       appBar: AppBar(
         backgroundColor: ColorManager.background,
         title: CustomText(
-          text: 'Delivery Men',
+          text: AppTranslation.deliveryMen,
           textStyle: getBoldStyle(
             fontSize: AppFontSize.s24,
             color: ColorManager.titlesColor,
@@ -76,28 +76,7 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.all(AppPadding.p16),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search delivery men...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.r12),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: AppPadding.p16,
-                  vertical: AppPadding.p12,
-                ),
-              ),
-              onSubmitted: (value) {
-                context.read<ListDeliveryBloc>().add(
-                      GetDeliveryMenEvent(search: value.isEmpty ? null : value),
-                    );
-              },
-            ),
-          ),
+          const SearchDeliveryWidget(),
           Expanded(
             child: BlocConsumer<ListDeliveryBloc, ListDeliveryState>(
               listener: (context, state) {
@@ -110,12 +89,15 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
                 final fakeDeliveryMen = _generateFakeDeliveryMen();
                 return RefreshIndicator(
                   onRefresh: () async {
+                    final state = context.read<ListDeliveryBloc>().state;
+                    String? searchQuery;
+                    if (state is ListDeliveryLoaded) {
+                      searchQuery = state.search;
+                    } else if (state is ListDeliveryLoadingMore) {
+                      searchQuery = state.search;
+                    }
                     context.read<ListDeliveryBloc>().add(
-                          GetDeliveryMenEvent(
-                            search: _searchController.text.isEmpty
-                                ? null
-                                : _searchController.text,
-                          ),
+                          GetDeliveryMenEvent(search: searchQuery),
                         );
                   },
                   child: ListView.builder(

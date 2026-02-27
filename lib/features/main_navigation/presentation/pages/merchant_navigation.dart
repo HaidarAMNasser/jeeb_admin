@@ -9,7 +9,8 @@ import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.
 import 'package:jeeb_admin/features/product/list_product/presentation/pages/list_product_page.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/data/repositories/list_product_repository.dart';
-import 'package:jeeb_admin/features/main_navigation/presentation/pages/orders_page.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 
 class MerchantNavigation extends StatefulWidget {
   const MerchantNavigation({super.key});
@@ -30,7 +31,11 @@ class _MerchantNavigationState extends State<MerchantNavigation> {
           child: const ListProductPage(),
         );
       case 1:
-        return const OrdersPage();
+        return BlocProvider<ListOrderBloc>(
+          create: (_) => di.sl<ListOrderBloc>()
+            ..add(const GetOrdersEvent()),
+          child: const ListOrderPage(),
+        );
       case 2:
         return BlocProvider<ProfileBloc>(
           create: (_) => di.sl<ProfileBloc>()..add(const GetProfile()),

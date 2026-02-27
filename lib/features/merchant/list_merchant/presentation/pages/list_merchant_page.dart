@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
@@ -22,7 +20,6 @@ class ListMerchantPage extends StatefulWidget {
 
 class _ListMerchantPageState extends State<ListMerchantPage> {
   final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -40,15 +37,13 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
   }
 
   void _onScroll() {
-    if (_isLoadingMore) return;
+    final state = context.read<ListMerchantBloc>().state;
+    // Prevent loading more if already loading
+    if (state is ListMerchantLoadingMore) return;
 
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent * 0.8) {
-      final state = context.read<ListMerchantBloc>().state;
       if (state is ListMerchantLoaded && state.hasMore) {
-        setState(() {
-          _isLoadingMore = true;
-        });
         // Use the search query from state when loading more
         context.read<ListMerchantBloc>().add(
           GetMerchantsEvent(loadMore: true, search: state.search),
@@ -71,19 +66,7 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
           ),
         ),
       ),
-      body: BlocConsumer<ListMerchantBloc, ListMerchantState>(
-        listener: (context, state) {
-          if (state is ListMerchantLoaded) {
-            setState(() {
-              _isLoadingMore = false;
-            });
-          }
-          if (state is ListMerchantError) {
-            setState(() {
-              _isLoadingMore = false;
-            });
-          }
-        },
+      body: BlocBuilder<ListMerchantBloc, ListMerchantState>(
         builder: (context, state) {
           // Get current search query from state for refresh
           String? currentSearch;

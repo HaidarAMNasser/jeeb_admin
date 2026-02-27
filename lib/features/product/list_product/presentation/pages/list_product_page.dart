@@ -21,7 +21,6 @@ class ListProductPage extends StatefulWidget {
 
 class _ListProductPageState extends State<ListProductPage> {
   final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -39,15 +38,13 @@ class _ListProductPageState extends State<ListProductPage> {
   }
 
   void _onScroll() {
-    if (_isLoadingMore) return;
+    final state = context.read<ListProductBloc>().state;
+    // Prevent loading more if already loading
+    if (state is ListProductLoadingMore) return;
 
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent * 0.8) {
-      final state = context.read<ListProductBloc>().state;
       if (state is ListProductLoaded && state.hasMore) {
-        setState(() {
-          _isLoadingMore = true;
-        });
         context.read<ListProductBloc>().add(
               const GetProductsEvent(loadMore: true),
             );
@@ -69,19 +66,7 @@ class _ListProductPageState extends State<ListProductPage> {
           ),
         ),
       ),
-      body: BlocConsumer<ListProductBloc, ListProductState>(
-        listener: (context, state) {
-          if (state is ListProductLoaded) {
-            setState(() {
-              _isLoadingMore = false;
-            });
-          }
-          if (state is ListProductError) {
-            setState(() {
-              _isLoadingMore = false;
-            });
-          }
-        },
+      body: BlocBuilder<ListProductBloc, ListProductState>(
         builder: (context, state) {
           return BlocStateHandler<ListProductBloc, ListProductState>(
             bloc: context.read<ListProductBloc>(),

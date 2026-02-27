@@ -6,7 +6,8 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.dart';
-import 'package:jeeb_admin/features/main_navigation/presentation/pages/orders_page.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
@@ -34,7 +35,11 @@ class _AdminNavigationState extends State<AdminNavigation> {
           child: const ListMerchantPage(),
         );
       case 1:
-        return const OrdersPage();
+        return BlocProvider<ListOrderBloc>(
+          create: (_) => di.sl<ListOrderBloc>()
+            ..add(const GetOrdersEvent()),
+          child: const ListOrderPage(),
+        );
       case 2:
         return BlocProvider<ListDeliveryBloc>(
           create: (_) =>
