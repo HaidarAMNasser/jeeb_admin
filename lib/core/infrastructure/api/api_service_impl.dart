@@ -546,12 +546,18 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     int? page,
     int? limit,
     String? search,
+    int? countryId,
+    int? cityId,
+    bool? isActive,
   }) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     if (page != null) queryParameters['page'] = page;
     if (limit != null) queryParameters['limit'] = limit;
     if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    if (countryId != null) queryParameters['countryId'] = countryId;
+    if (cityId != null) queryParameters['cityId'] = cityId;
+    if (isActive != null) queryParameters['isActive'] = isActive;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(
@@ -559,7 +565,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'merchants',
+              'users/merchants',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -580,8 +586,52 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'merchants/$id',
+              'users/merchants/$id',
               queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> createMerchant(FormData formData) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'users/merchants',
+              queryParameters: queryParameters,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> updateMerchant(String id, FormData formData) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'users/merchants/$id',
+              queryParameters: queryParameters,
+              data: formData,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -601,7 +651,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'DELETE', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'merchants/$id',
+              'users/merchants/$id',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),

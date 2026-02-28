@@ -121,17 +121,26 @@ abstract class AppApiServiceClient {
   );
 
   // Merchant endpoints
-  @GET("merchants")
+  @GET("users/merchants")
   Future<Response> getMerchants({
     @Query('page') int? page,
     @Query('limit') int? limit,
     @Query('search') String? search,
+    @Query('countryId') int? countryId,
+    @Query('cityId') int? cityId,
+    @Query('isActive') bool? isActive,
   });
 
-  @GET("merchants/{id}")
+  @GET("users/merchants/{id}")
   Future<Response> getMerchantDetails(@Path('id') String id);
 
-  @DELETE("merchants/{id}")
+  @POST("users/merchants")
+  Future<Response> createMerchant(FormData formData);
+
+  @PATCH("users/merchants/{id}")
+  Future<Response> updateMerchant(@Path('id') String id, FormData formData);
+
+  @DELETE("users/merchants/{id}")
   Future<Response> deleteMerchant(@Path('id') String id);
 
   // Merchant Review endpoints

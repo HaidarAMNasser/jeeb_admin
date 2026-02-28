@@ -6,6 +6,9 @@ abstract class ListMerchantRemoteDataSource {
     int? page,
     int? limit,
     String? search,
+    int? countryId,
+    int? cityId,
+    bool? isActive,
   });
 }
 
@@ -19,11 +22,17 @@ class ListMerchantRemoteDataSourceImpl implements ListMerchantRemoteDataSource {
     int? page,
     int? limit,
     String? search,
+    int? countryId,
+    int? cityId,
+    bool? isActive,
   }) {
     return _appApiServiceClient.getMerchants(
       page: page,
       limit: limit,
       search: search,
+      countryId: countryId,
+      cityId: cityId,
+      isActive: isActive,
     );
   }
 }

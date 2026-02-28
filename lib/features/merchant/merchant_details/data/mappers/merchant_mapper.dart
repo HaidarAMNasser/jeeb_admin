@@ -5,13 +5,13 @@ extension MerchantMapper on MerchantModel {
   MerchantEntity toDomain() {
     return MerchantEntity(
       id: id,
-      name: name,
+      name: name, // firstName + lastName
       email: email,
-      cityName: cityName,
-      countryName: countryName,
-      location: location,
-      phoneNumber: phoneNumber,
-      image: image,
+      cityName: cityName, // from city.nameEn or city.nameAr
+      countryName: countryName, // from country.nameEn or country.nameAr
+      location: address,
+      phoneNumber: phoneNumber, // from phone
+      image: imageUrl, // from image.url
     );
   }
 }
