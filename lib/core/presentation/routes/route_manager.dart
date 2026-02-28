@@ -31,6 +31,7 @@ import '../../../features/auth/reset_password/presentation/pages/reset_password_
 import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
 import '../../../features/auth/profile/presentation/pages/profile_page.dart';
 import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/auth/logout/presentation/bloc/logout_bloc.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
 import '../../../features/order/list_order/presentation/pages/list_order_page.dart';
@@ -133,10 +134,17 @@ class AppRouter {
         );
 
       case Routes.profile:
-        return _buildRouteWithBloc(
+        return _buildRouteWithBlocs(
           const ProfilePage(),
           settings,
-          bloc: () => di.sl<ProfileBloc>()..add(const GetProfile()),
+          providers: [
+            BlocProvider<ProfileBloc>(
+              create: (_) => di.sl<ProfileBloc>()..add(const GetProfile()),
+            ),
+            BlocProvider<LogoutBloc>(
+              create: (_) => di.sl<LogoutBloc>(),
+            ),
+          ],
         );
 
       case Routes.products:

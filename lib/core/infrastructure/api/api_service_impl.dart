@@ -300,6 +300,27 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
+  Future<Response> logout() async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'auth/logout',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
   Future<Response> getCategories() async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

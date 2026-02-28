@@ -120,6 +120,8 @@
   "send_otp": "إرسال رمز التحقق",
   "passwords_do_not_match": "كلمات المرور غير متطابقة",
   "profile_updated_success": "تم تحديث الملف الشخصي بنجاح",
+  "logout_success": "تم تسجيل الخروج بنجاح",
+  "logout_error": "فشل تسجيل الخروج. يرجى المحاولة مرة أخرى",
   "forgot_password_description": "أدخل بريدك الإلكتروني لاستلام رمز التحقق",
   "please_select_country_first": "الرجاء اختيار دولة أولاً",
   "no_cities_available": "لا توجد مدن متاحة",

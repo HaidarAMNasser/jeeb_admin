@@ -70,6 +70,9 @@ abstract class AppApiServiceClient {
     @Field('address') String? address,
   );
 
+  @POST("auth/logout")
+  Future<Response> logout();
+
   // Category endpoints
   @GET("apiAdmin/Category/all")
   Future<Response> getCategories();

@@ -120,6 +120,8 @@
   "send_otp": "Send OTP",
   "passwords_do_not_match": "Passwords do not match",
   "profile_updated_success": "Profile updated successfully",
+  "logout_success": "Logged out successfully",
+  "logout_error": "Failed to logout. Please try again",
   "forgot_password_description": "Enter your email to receive OTP",
   "please_select_country_first": "Please select a country first",
   "no_cities_available": "No cities available",

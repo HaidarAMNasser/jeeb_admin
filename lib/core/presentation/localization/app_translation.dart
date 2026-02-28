@@ -138,6 +138,8 @@ class AppTranslation {
   static String get sendOtp => 'send_otp'.tr();
   static String get passwordsDoNotMatch => 'passwords_do_not_match'.tr();
   static String get profileUpdatedSuccess => 'profile_updated_success'.tr();
+  static String get logoutSuccess => 'logout_success'.tr();
+  static String get logoutError => 'logout_error'.tr();
   static String get forgotPasswordDescription => 'forgot_password_description'.tr();
   static String get pleaseSelectCountryFirst => 'please_select_country_first'.tr();
   static String get noCitiesAvailable => 'no_cities_available'.tr();
