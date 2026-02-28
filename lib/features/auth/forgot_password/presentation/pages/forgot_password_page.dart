@@ -4,6 +4,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
@@ -40,8 +41,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       }
 
       context.read<ForgotPasswordBloc>().add(
-            ForgotPasswordSubmitted(email: email),
-          );
+        ForgotPasswordSubmitted(email: email),
+      );
     }
   }
 
@@ -65,24 +66,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           inAsyncCall: state is ForgotPasswordLoading,
           child: Scaffold(
             backgroundColor: ColorManager.background,
-            appBar: AppBar(
-              backgroundColor: ColorManager.background,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: ColorManager.titlesColor,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: Text(
-                AppTranslation.forgotPassword,
-                style: getBoldStyle(
-                  fontSize: AppFontSize.s24,
-                  color: ColorManager.titlesColor,
-                ),
-              ),
-            ),
+            appBar: CustomAppBar(title: AppTranslation.forgotPassword),
+
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(AppPadding.p24),
@@ -133,4 +118,3 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 }
-

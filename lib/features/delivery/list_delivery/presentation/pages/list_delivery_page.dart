@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
@@ -56,32 +54,15 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.background,
-      appBar: AppBar(
-        backgroundColor: ColorManager.background,
-        title: CustomText(
-          text: AppTranslation.deliveryMen,
-          textStyle: getBoldStyle(
-            fontSize: AppFontSize.s24,
-            color: ColorManager.titlesColor,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              AppRouter.navigateTo(context, Routes.addDelivery);
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: AppTranslation.deliveryMen),
+
       body: Column(
         children: [
           const SearchDeliveryWidget(),
           Expanded(
             child: BlocConsumer<ListDeliveryBloc, ListDeliveryState>(
               listener: (context, state) {
-                if (state is ListDeliveryLoaded ||
-                    state is ListDeliveryError) {
+                if (state is ListDeliveryLoaded || state is ListDeliveryError) {
                   setState(() => _isLoadingMore = false);
                 }
               },
@@ -97,8 +78,8 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
                       searchQuery = state.search;
                     }
                     context.read<ListDeliveryBloc>().add(
-                          GetDeliveryMenEvent(search: searchQuery),
-                        );
+                      GetDeliveryMenEvent(search: searchQuery),
+                    );
                   },
                   child: ListView.builder(
                     controller: _scrollController,
@@ -145,7 +126,8 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
         id: '${index + 1}',
         name: names[nameIndex],
         phone: '+961 ${3 + (index % 7)}${1000000 + index}',
-        email: '${names[nameIndex].toLowerCase().replaceAll(' ', '_')}@delivery.com',
+        email:
+            '${names[nameIndex].toLowerCase().replaceAll(' ', '_')}@delivery.com',
         isOnline: index % 2 == 0,
       );
     });

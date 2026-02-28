@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -12,10 +10,7 @@ import 'package:jeeb_admin/features/product/create_product/presentation/pages/cr
 class ProductDetailsPage extends StatefulWidget {
   final String productId;
 
-  const ProductDetailsPage({
-    super.key,
-    required this.productId,
-  });
+  const ProductDetailsPage({super.key, required this.productId});
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -27,24 +22,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     super.initState();
     // Fetch product details when page loads
     context.read<ProductDetailsBloc>().add(
-          GetProductDetailsEvent(id: widget.productId),
-        );
+      GetProductDetailsEvent(id: widget.productId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.background,
-      appBar: AppBar(
-        backgroundColor: ColorManager.background,
-        title: CustomText(
-          text: AppTranslation.productDetails,
-          textStyle: getBoldStyle(
-            fontSize: AppFontSize.s24,
-            color: ColorManager.titlesColor,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(title: AppTranslation.productDetails),
       body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
         bloc: context.read<ProductDetailsBloc>(),
         isLoading: (state) => state is ProductDetailsLoading,
@@ -53,21 +39,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         isSuccess: (state) => state is ProductDetailsLoaded,
         getRetryCallback: (state) => () {
           context.read<ProductDetailsBloc>().add(
-                GetProductDetailsEvent(id: widget.productId),
-              );
+            GetProductDetailsEvent(id: widget.productId),
+          );
         },
         successBuilder: (context, productState) {
           final loadedState = productState as ProductDetailsLoaded;
-          
+
           // Navigate to create product page in edit mode
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CreateProductPage(
-                    product: loadedState.product,
-                  ),
+                  builder: (context) =>
+                      CreateProductPage(product: loadedState.product),
                 ),
               );
             }
@@ -79,4 +64,3 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 }
-

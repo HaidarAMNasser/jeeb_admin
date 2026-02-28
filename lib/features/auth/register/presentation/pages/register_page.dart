@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
@@ -137,20 +136,8 @@ class _RegisterPageState extends State<RegisterPage> {
           inAsyncCall: state is RegisterLoading,
           child: Scaffold(
             backgroundColor: ColorManager.background,
-            appBar: AppBar(
-              backgroundColor: ColorManager.background,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: ColorManager.titlesColor),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: CustomTextDisplay(
-                text: AppTranslation.register,
-                fontSize: AppFontSize.s24,
-                color: ColorManager.titlesColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            appBar: CustomAppBar(title: AppTranslation.register),
+
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(AppPadding.p24),

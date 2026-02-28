@@ -172,6 +172,10 @@ class AppTranslation {
   static String get pleaseEnterLastName => 'please_enter_last_name'.tr();
   static String get pleaseEnterPhone => 'please_enter_phone'.tr();
   static String get passwordMustBeAtLeast6Characters => 'password_must_be_at_least_6_characters'.tr();
+  static String get selectLanguage => 'select_language'.tr();
+  static String get changeLanguage => 'change_language'.tr();
+  static String get close => 'close'.tr();
+  static String get languageChangedSuccessfully => 'language_changed_successfully'.tr();
 
   // Order
   static String get orders => 'orders'.tr();

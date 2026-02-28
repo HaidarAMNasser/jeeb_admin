@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -105,17 +103,10 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
                           deleteStateBuilder is DeleteDeliveryLoading,
                       child: Scaffold(
                         backgroundColor: ColorManager.background,
-                        appBar: AppBar(
-                          backgroundColor: ColorManager.background,
-                          title: CustomText(
-                            text: _isEditMode
-                                ? AppTranslation.editDeliveryMan
-                                : AppTranslation.addDeliveryMan,
-                            textStyle: getBoldStyle(
-                              fontSize: AppFontSize.s24,
-                              color: ColorManager.titlesColor,
-                            ),
-                          ),
+                        appBar: CustomAppBar(
+                          title: _isEditMode
+                              ? AppTranslation.editDeliveryMan
+                              : AppTranslation.addDeliveryMan,
                           actions: _isEditMode
                               ? [
                                   IconButton(
@@ -129,6 +120,7 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
                                 ]
                               : null,
                         ),
+
                         body: CreateDeliveryForm(
                           isEdit: _isEditMode,
                           deliveryManId: widget.deliveryMan?.id,

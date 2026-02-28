@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
@@ -64,16 +65,8 @@ class _ListOrderPageState extends State<ListOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.background,
-      appBar: AppBar(
-        backgroundColor: ColorManager.background,
-        title: CustomText(
-          text: AppTranslation.orders,
-          textStyle: getBoldStyle(
-            fontSize: AppFontSize.s24,
-            color: ColorManager.titlesColor,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(title: AppTranslation.orders),
+
       body: BlocBuilder<ListOrderBloc, ListOrderState>(
         builder: (context, state) {
           // Get current search query from state for refresh
@@ -137,13 +130,11 @@ class _ListOrderPageState extends State<ListOrderPage> {
           final searchQuery = currentSearch?.toLowerCase() ?? '';
           final filteredOrders = searchQuery.isEmpty
               ? fakeOrders
-              : fakeOrders
-                  .where((order) {
-                    final status = order.status?.toLowerCase() ?? '';
-                    return order.id.toLowerCase().contains(searchQuery) ||
-                        status.contains(searchQuery);
-                  })
-                  .toList();
+              : fakeOrders.where((order) {
+                  final status = order.status?.toLowerCase() ?? '';
+                  return order.id.toLowerCase().contains(searchQuery) ||
+                      status.contains(searchQuery);
+                }).toList();
 
           return Column(
             children: [
@@ -153,8 +144,8 @@ class _ListOrderPageState extends State<ListOrderPage> {
                 child: RefreshIndicator(
                   onRefresh: () async {
                     context.read<ListOrderBloc>().add(
-                          GetOrdersEvent(search: currentSearch),
-                        );
+                      GetOrdersEvent(search: currentSearch),
+                    );
                   },
                   child: ListView.builder(
                     controller: _scrollController,
@@ -198,16 +189,20 @@ class _ListOrderPageState extends State<ListOrderPage> {
       return ProductEntity(
         id: 'product_${orderIndex}_$productIndex',
         name: productNames[productIndex % productNames.length],
-        description: 'Delicious ${productNames[productIndex % productNames.length]}',
+        description:
+            'Delicious ${productNames[productIndex % productNames.length]}',
         price: 1000 + (productIndex * 500),
         categoryId: 'cat1',
         categoryName: 'Fast Food',
         images: [
           ProductImageEntity(
             id: productIndex + 1,
-            url: 'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
-            mobileUrl: 'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
-            thumbnailUrl: 'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
+            url:
+                'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
+            mobileUrl:
+                'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
+            thumbnailUrl:
+                'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
             isMain: true,
             displayOrder: 1,
           ),
@@ -216,4 +211,3 @@ class _ListOrderPageState extends State<ListOrderPage> {
     });
   }
 }
-

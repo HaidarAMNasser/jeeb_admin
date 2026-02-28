@@ -6,10 +6,14 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dar
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:jeeb_admin/core/presentation/widgets/language_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:easy_localization/easy_localization.dart';
 import '../bloc/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
 import '../widgets/profile_header.dart';
@@ -74,13 +78,44 @@ class _ProfilePageState extends State<ProfilePage> {
     context.read<LogoutBloc>().add(const LogoutSubmitted());
   }
 
+  Future<void> _handleChangeLanguage() async {
+    final storageService = di.sl<StorageService>();
+    final currentLanguage = storageService.getAppLanguage();
+    
+    final selectedLanguage = await showDialog<String>(
+      context: context,
+      builder: (context) => LanguageSelectionDialog(
+        currentLanguage: currentLanguage.isEmpty ? null : currentLanguage,
+      ),
+    );
+
+    if (selectedLanguage != null && selectedLanguage != currentLanguage && mounted) {
+      // Save selected language
+      await storageService.setAppLanguage(selectedLanguage);
+      
+      // Update app locale
+      await context.setLocale(Locale(selectedLanguage));
+      
+      // Show success message
+      customToast(msg: AppTranslation.languageChangedSuccessfully);
+      
+      // Restart the app to apply language changes
+      // Note: In a real app, you might want to use a package like flutter_restart
+      // For now, we'll just show a toast and the language will change on next app restart
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LogoutBloc, LogoutState>(
       listener: (context, logoutState) {
         if (logoutState is LogoutSuccess) {
           customToast(msg: AppTranslation.logoutSuccess);
-          NavigationService().pushNamedAndRemoveUntil(Routes.login);
+          // Navigate to login screen after clearing storage
+          // Storage is already cleared in the logout bloc before emitting success
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            NavigationService().pushNamedAndRemoveUntil(Routes.login);
+          });
         } else if (logoutState is LogoutError) {
           customToast(msg: logoutState.message);
         }
@@ -148,6 +183,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             isLoading: isUpdateLoading,
                           ),
                           SizedBox(height: AppHeight.s24),
+                          CustomButton(
+                            text: AppTranslation.changeLanguage,
+                            onPressed: _handleChangeLanguage,
+                            isLoading: false,
+                            color: ColorManager.primary,
+                            isOutlined: true,
+                          ),
+                          SizedBox(height: AppHeight.s16),
                           CustomButton(
                             text: AppTranslation.logout,
                             onPressed: _handleLogout,

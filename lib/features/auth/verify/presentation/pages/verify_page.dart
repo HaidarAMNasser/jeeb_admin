@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
@@ -17,10 +16,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 class VerifyPage extends StatefulWidget {
   final String email;
 
-  const VerifyPage({
-    super.key,
-    required this.email,
-  });
+  const VerifyPage({super.key, required this.email});
 
   @override
   State<VerifyPage> createState() => _VerifyPageState();
@@ -45,18 +41,13 @@ class _VerifyPageState extends State<VerifyPage> {
       }
 
       context.read<VerifyBloc>().add(
-            VerifySubmitted(
-              email: widget.email,
-              otp: otp,
-            ),
-          );
+        VerifySubmitted(email: widget.email, otp: otp),
+      );
     }
   }
 
   void _handleResendOtp() {
-    context.read<VerifyBloc>().add(
-          ResendOtpSubmitted(email: widget.email),
-        );
+    context.read<VerifyBloc>().add(ResendOtpSubmitted(email: widget.email));
   }
 
   @override
@@ -81,23 +72,8 @@ class _VerifyPageState extends State<VerifyPage> {
           inAsyncCall: state is VerifyLoading,
           child: Scaffold(
             backgroundColor: ColorManager.background,
-            appBar: AppBar(
-              backgroundColor: ColorManager.background,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: ColorManager.titlesColor,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: CustomTextDisplay(
-                text: AppTranslation.verifyAccount,
-                fontSize: AppFontSize.s24,
-                color: ColorManager.titlesColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            appBar: CustomAppBar(title: AppTranslation.verifyAccount),
+
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(AppPadding.p24),
@@ -122,4 +98,3 @@ class _VerifyPageState extends State<VerifyPage> {
     );
   }
 }
-

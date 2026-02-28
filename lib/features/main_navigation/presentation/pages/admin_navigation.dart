@@ -15,7 +15,7 @@ import 'package:jeeb_admin/features/delivery/list_delivery/data/repositories/lis
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
-
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 class AdminNavigation extends StatefulWidget {
   const AdminNavigation({super.key});
 
@@ -100,26 +100,26 @@ class _AdminNavigationState extends State<AdminNavigation> {
             fontSize: AppFontSize.s12,
             color: ColorManager.textSecondary,
           ),
-          items: const [
+          items:  [
             BottomNavigationBarItem(
               icon: Icon(Icons.store_outlined),
               activeIcon: Icon(Icons.store),
-              label: 'Merchants',
+              label: AppTranslation.merchants,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_bag_outlined),
               activeIcon: Icon(Icons.shopping_bag),
-              label: 'Orders',
+              label: AppTranslation.orders,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.delivery_dining_outlined),
               activeIcon: Icon(Icons.delivery_dining),
-              label: 'Delivery',
+              label: AppTranslation.deliveryMen,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
-              label: 'Profile',
+              label: AppTranslation.profile,
             ),
           ],
         ),

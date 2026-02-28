@@ -170,5 +170,9 @@
   "please_enter_first_name": "Please enter first name",
   "please_enter_last_name": "Please enter last name",
   "please_enter_phone": "Please enter phone",
-  "password_must_be_at_least_6_characters": "Password must be at least 6 characters"
+  "password_must_be_at_least_6_characters": "Password must be at least 6 characters",
+  "select_language": "Select Language",
+  "change_language": "Change Language",
+  "close": "Close",
+  "language_changed_successfully": "Language changed successfully"
 }

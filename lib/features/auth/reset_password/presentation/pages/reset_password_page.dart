@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
@@ -16,10 +15,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 class ResetPasswordPage extends StatefulWidget {
   final String email;
 
-  const ResetPasswordPage({
-    super.key,
-    required this.email,
-  });
+  const ResetPasswordPage({super.key, required this.email});
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -59,12 +55,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       }
 
       context.read<ResetPasswordBloc>().add(
-            ResetPasswordSubmitted(
-              email: widget.email,
-              otp: otp,
-              password: password,
-            ),
-          );
+        ResetPasswordSubmitted(
+          email: widget.email,
+          otp: otp,
+          password: password,
+        ),
+      );
     }
   }
 
@@ -88,23 +84,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           inAsyncCall: state is ResetPasswordLoading,
           child: Scaffold(
             backgroundColor: ColorManager.background,
-            appBar: AppBar(
-              backgroundColor: ColorManager.background,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: ColorManager.titlesColor,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: CustomTextDisplay(
-                text: AppTranslation.resetPassword,
-                fontSize: AppFontSize.s24,
-                color: ColorManager.titlesColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            appBar: CustomAppBar(title: AppTranslation.resetPassword),
+
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(AppPadding.p24),
@@ -124,4 +105,3 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     );
   }
 }
-

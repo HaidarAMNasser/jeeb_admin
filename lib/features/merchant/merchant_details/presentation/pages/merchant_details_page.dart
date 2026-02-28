@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
@@ -35,12 +33,12 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
     super.initState();
     // Load merchant details
     context.read<MerchantDetailsBloc>().add(
-          GetMerchantDetailsEvent(id: widget.merchantId),
-        );
+      GetMerchantDetailsEvent(id: widget.merchantId),
+    );
     // Load products for this merchant
     context.read<ListProductBloc>().add(
-          GetProductsEvent(merchantId: widget.merchantId),
-        );
+      GetProductsEvent(merchantId: widget.merchantId),
+    );
     _scrollController.addListener(_onScroll);
   }
 
@@ -62,11 +60,8 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
           _isLoadingMore = true;
         });
         context.read<ListProductBloc>().add(
-              GetProductsEvent(
-                loadMore: true,
-                merchantId: widget.merchantId,
-              ),
-            );
+          GetProductsEvent(loadMore: true, merchantId: widget.merchantId),
+        );
       }
     }
   }
@@ -88,21 +83,11 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
           inAsyncCall: deleteState is DeleteMerchantLoading,
           child: Scaffold(
             backgroundColor: ColorManager.background,
-            appBar: AppBar(
-              backgroundColor: ColorManager.background,
-              title: CustomText(
-                text: AppTranslation.merchantDetails,
-                textStyle: getBoldStyle(
-                  fontSize: AppFontSize.s24,
-                  color: ColorManager.titlesColor,
-                ),
-              ),
+            appBar: CustomAppBar(
+              title: AppTranslation.merchantDetails,
               actions: [
                 IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: ColorManager.error,
-                  ),
+                  icon: Icon(Icons.delete, color: ColorManager.error),
                   onPressed: () => _showDeleteConfirmation(context),
                 ),
               ],
@@ -150,8 +135,8 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
       title: AppTranslation.areYouSureDeleteMerchant,
       onConfirm: () {
         context.read<DeleteMerchantBloc>().add(
-              DeleteMerchantSubmitted(merchantId: widget.merchantId),
-            );
+          DeleteMerchantSubmitted(merchantId: widget.merchantId),
+        );
       },
       confirmText: AppTranslation.delete,
       confirmColor: ColorManager.error,
