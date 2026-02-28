@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final Color? filledColor;
+  final bool? obscureText;
   const CustomTextField({
     super.key,
     this.title,
@@ -26,7 +27,8 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.filledColor,
-  });
+    this.obscureText = false,
+          });
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class CustomTextField extends StatelessWidget {
           ),
         SizedBox(height: AppHeight.s8),
         TextField(
+          obscureText: obscureText ?? false,
           textDirection: textDirection,
           textAlign: isRTL ? TextAlign.right : TextAlign.left,
           controller: controller,

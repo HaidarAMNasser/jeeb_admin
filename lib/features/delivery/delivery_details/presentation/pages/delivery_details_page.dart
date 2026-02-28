@@ -95,8 +95,9 @@ class DeliveryDetailsPage extends StatelessWidget {
       name: 'Ahmad Hassan',
       phone: '+961 3 1234567',
       email: 'ahmad_hassan@delivery.com',
-      vehicleType: 'Motorcycle',
-      status: 'active',
+      cityName: 'Beirut',
+      countryName: 'Lebanon',
+      isOnline: true,
     );
   }
 }

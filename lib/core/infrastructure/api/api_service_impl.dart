@@ -693,12 +693,20 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     int? page,
     int? limit,
     String? search,
+    bool? isOnline,
+    int? officeOwnerId,
+    int? countryId,
+    int? cityId,
   }) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     if (page != null) queryParameters['page'] = page;
     if (limit != null) queryParameters['limit'] = limit;
     if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    if (isOnline != null) queryParameters['isOnline'] = isOnline;
+    if (officeOwnerId != null) queryParameters['officeOwnerId'] = officeOwnerId;
+    if (countryId != null) queryParameters['countryId'] = countryId;
+    if (cityId != null) queryParameters['cityId'] = cityId;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(
@@ -706,7 +714,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'delivery-men',
+              'users/deliveries',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -727,7 +735,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'delivery-men/$id',
+              'users/deliveries/$id',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -738,32 +746,19 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> createDeliveryMan(
-    String name,
-    String phone,
-    String email,
-    String? vehicleType,
-    String? status,
-  ) async {
+  Future<Response> createDeliveryMan(FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = <String, dynamic>{
-      'name': name,
-      'phone': phone,
-      'email': email,
-      if (vehicleType != null && vehicleType.isNotEmpty) 'vehicleType': vehicleType,
-      if (status != null && status.isNotEmpty) 'status': status,
-    };
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'POST', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'delivery-men',
+              'users/deliveries',
               queryParameters: queryParameters,
-              data: data,
+              data: formData,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -773,32 +768,19 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> updateDeliveryMan(
-    String id,
-    String? name,
-    String? phone,
-    String? email,
-    String? vehicleType,
-    String? status,
-  ) async {
+  Future<Response> updateDeliveryMan(String id, FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = <String, dynamic>{};
-    if (name != null) data['name'] = name;
-    if (phone != null) data['phone'] = phone;
-    if (email != null) data['email'] = email;
-    if (vehicleType != null) data['vehicleType'] = vehicleType;
-    if (status != null) data['status'] = status;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'delivery-men/$id',
+              'users/deliveries/$id',
               queryParameters: queryParameters,
-              data: data,
+              data: formData,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -818,7 +800,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'DELETE', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'delivery-men/$id',
+              'users/deliveries/$id',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),

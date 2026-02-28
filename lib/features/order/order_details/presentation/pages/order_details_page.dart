@@ -251,8 +251,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       name: 'Ahmed Ali',
       phone: '+961 3 1234567',
       email: 'ahmed.ali@example.com',
-      vehicleType: 'Motorcycle',
-      status: 'active',
       image: 'https://picsum.photos/seed/delivery1/200/200',
     );
   }

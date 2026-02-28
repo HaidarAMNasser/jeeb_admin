@@ -160,6 +160,16 @@ class AppTranslation {
   static String get status => 'status'.tr();
   static String get searchDeliveryMen => 'search_delivery_men'.tr();
   static String get searchDeliveryMenHint => 'search_delivery_men_hint'.tr();
+  static String get deliveryManCreatedSuccessfully => 'delivery_man_created_successfully'.tr();
+  static String get deliveryManUpdatedSuccessfully => 'delivery_man_updated_successfully'.tr();
+  static String get deliveryManDeletedSuccessfully => 'delivery_man_deleted_successfully'.tr();
+  static String get areYouSureDeleteDeliveryMan => 'are_you_sure_delete_delivery_man'.tr();
+  static String get enterFirstName => 'enter_first_name'.tr();
+  static String get enterLastName => 'enter_last_name'.tr();
+  static String get pleaseEnterFirstName => 'please_enter_first_name'.tr();
+  static String get pleaseEnterLastName => 'please_enter_last_name'.tr();
+  static String get pleaseEnterPhone => 'please_enter_phone'.tr();
+  static String get passwordMustBeAtLeast6Characters => 'password_must_be_at_least_6_characters'.tr();
 
   // Order
   static String get orders => 'orders'.tr();

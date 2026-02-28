@@ -139,9 +139,6 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
       'Samer George',
       'Walid Hani',
     ];
-    final vehicles = ['Motorcycle', 'Bicycle', 'Car', 'Van'];
-    final statuses = ['active', 'inactive', 'busy'];
-
     return List.generate(25, (index) {
       final nameIndex = index % names.length;
       return DeliveryManEntity(
@@ -149,8 +146,7 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
         name: names[nameIndex],
         phone: '+961 ${3 + (index % 7)}${1000000 + index}',
         email: '${names[nameIndex].toLowerCase().replaceAll(' ', '_')}@delivery.com',
-        vehicleType: vehicles[index % vehicles.length],
-        status: statuses[index % statuses.length],
+        isOnline: index % 2 == 0,
       );
     });
   }

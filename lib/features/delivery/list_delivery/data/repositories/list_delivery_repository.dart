@@ -23,6 +23,10 @@ class ListDeliveryRepository {
     int? page,
     int? limit,
     String? search,
+    bool? isOnline,
+    int? officeOwnerId,
+    int? countryId,
+    int? cityId,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -30,6 +34,10 @@ class ListDeliveryRepository {
           page: page,
           limit: limit,
           search: search,
+          isOnline: isOnline,
+          officeOwnerId: officeOwnerId,
+          countryId: countryId,
+          cityId: cityId,
         );
 
         BaseResponseModel<List<DeliveryManModel>> baseResponseModel =

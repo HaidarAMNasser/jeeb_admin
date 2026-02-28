@@ -158,5 +158,15 @@
   "are_you_sure_complete_order": "هل أنت متأكد أنك تريد إكمال هذا الطلب؟",
   "are_you_sure_cancel_order": "هل أنت متأكد أنك تريد إلغاء هذا الطلب؟",
   "complete_order": "إكمال الطلب",
-  "cancel_order": "إلغاء الطلب"
+  "cancel_order": "إلغاء الطلب",
+  "delivery_man_created_successfully": "تم إنشاء سائق التوصيل بنجاح",
+  "delivery_man_updated_successfully": "تم تحديث سائق التوصيل بنجاح",
+  "delivery_man_deleted_successfully": "تم حذف سائق التوصيل بنجاح",
+  "are_you_sure_delete_delivery_man": "هل أنت متأكد أنك تريد حذف سائق التوصيل هذا؟",
+  "enter_first_name": "أدخل الاسم الأول",
+  "enter_last_name": "أدخل الاسم الأخير",
+  "please_enter_first_name": "الرجاء إدخال الاسم الأول",
+  "please_enter_last_name": "الرجاء إدخال الاسم الأخير",
+  "please_enter_phone": "الرجاء إدخال رقم الهاتف",
+  "password_must_be_at_least_6_characters": "يجب أن تكون كلمة المرور 6 أحرف على الأقل"
 }

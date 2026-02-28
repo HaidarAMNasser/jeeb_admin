@@ -3,7 +3,6 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_password_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_dropdown.dart';
@@ -59,6 +58,7 @@ class RegisterForm extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
+        spacing: AppHeight.s24,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CustomTextField(
@@ -66,37 +66,33 @@ class RegisterForm extends StatelessWidget {
             hintText: AppTranslation.firstName,
             controller: firstNameController,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomTextField(
             title: AppTranslation.lastName,
             hintText: AppTranslation.lastName,
             controller: lastNameController,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomTextField(
             title: AppTranslation.email,
             hintText: AppTranslation.enterEmail,
             controller: emailController,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomTextField(
             title: AppTranslation.phone,
             hintText: AppTranslation.enterPhone,
             controller: phoneController,
           ),
-          SizedBox(height: AppHeight.s24),
-          CustomPasswordField(
+          CustomTextField(
+            obscureText: true,
             title: AppTranslation.password,
             hintText: AppTranslation.enterPassword,
             controller: passwordController,
           ),
-          SizedBox(height: AppHeight.s24),
+
           CustomTextField(
             title: AppTranslation.address,
             hintText: AppTranslation.enterAddress,
             controller: addressController,
           ),
-          SizedBox(height: AppHeight.s24),
           CountryCityWidget(
             selectedCountry: selectedCountry,
             selectedCity: selectedCity,
@@ -104,7 +100,6 @@ class RegisterForm extends StatelessWidget {
             onSelectCity: onCityChanged,
             isRequired: true,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomDropdown<String>(
             title: AppTranslation.notificationChannel,
             value: selectedNotificationChannel,
@@ -118,29 +113,27 @@ class RegisterForm extends StatelessWidget {
             ],
             onChanged: onNotificationChannelChanged,
           ),
-          SizedBox(height: AppHeight.s32),
+          SizedBox(height: AppHeight.s8),
           CustomButton(
             text: AppTranslation.register,
             onPressed: onRegister,
             isLoading: isLoading,
             color: ColorManager.primary,
           ),
-          SizedBox(height: AppHeight.s24),
-          CustomDropdown<String>(
-            title: 'Role (Admin or Merchant)',
-            value: selectedRole,
-            hintText: 'Select Role',
-            items: const [
-              DropdownMenuItem<String>(
-                value: 'MERCHANT',
-                child: Text('MERCHANT'),
-              ),
-              DropdownMenuItem<String>(value: 'ADMIN', child: Text('ADMIN')),
-            ],
-            onChanged: onRoleChanged,
-          ),
-          SizedBox(height: AppHeight.s24),
 
+          // CustomDropdown<String>(
+          //   title: 'Role (Admin or Merchant)',
+          //   value: selectedRole,
+          //   hintText: 'Select Role',
+          //   items: const [
+          //     DropdownMenuItem<String>(
+          //       value: 'MERCHANT',
+          //       child: Text('MERCHANT'),
+          //     ),
+          //     DropdownMenuItem<String>(value: 'ADMIN', child: Text('ADMIN')),
+          //   ],
+          //   onChanged: onRoleChanged,
+          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

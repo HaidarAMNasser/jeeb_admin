@@ -45,14 +45,10 @@ abstract class AppApiServiceClient {
   );
 
   @POST("auth/resend-otp")
-  Future<Response> resendOtp(
-    @Field('email') String email,
-  );
+  Future<Response> resendOtp(@Field('email') String email);
 
   @POST("auth/forgot-password")
-  Future<Response> forgotPassword(
-    @Field('email') String email,
-  );
+  Future<Response> forgotPassword(@Field('email') String email);
 
   @POST("auth/reset-password")
   Future<Response> resetPassword(
@@ -152,36 +148,27 @@ abstract class AppApiServiceClient {
   });
 
   // Delivery endpoints
-  @GET("delivery-men")
+  @GET("users/deliveries")
   Future<Response> getDeliveryMen({
     @Query('page') int? page,
     @Query('limit') int? limit,
     @Query('search') String? search,
+    @Query('isOnline') bool? isOnline,
+    @Query('officeOwnerId') int? officeOwnerId,
+    @Query('countryId') int? countryId,
+    @Query('cityId') int? cityId,
   });
 
-  @GET("delivery-men/{id}")
+  @GET("users/deliveries/{id}")
   Future<Response> getDeliveryManDetails(@Path('id') String id);
 
-  @POST("delivery-men")
-  Future<Response> createDeliveryMan(
-    @Field('name') String name,
-    @Field('phone') String phone,
-    @Field('email') String email,
-    @Field('vehicleType') String? vehicleType,
-    @Field('status') String? status,
-  );
+  @POST("users/deliveries")
+  Future<Response> createDeliveryMan(FormData formData);
 
-  @PATCH("delivery-men/{id}")
-  Future<Response> updateDeliveryMan(
-    @Path('id') String id,
-    @Field('name') String? name,
-    @Field('phone') String? phone,
-    @Field('email') String? email,
-    @Field('vehicleType') String? vehicleType,
-    @Field('status') String? status,
-  );
+  @PATCH("users/deliveries/{id}")
+  Future<Response> updateDeliveryMan(@Path('id') String id, FormData formData);
 
-  @DELETE("delivery-men/{id}")
+  @DELETE("users/deliveries/{id}")
   Future<Response> deleteDeliveryMan(@Path('id') String id);
 
   // Order endpoints
@@ -252,4 +239,3 @@ class Header {
   final String name;
   const Header(this.name);
 }
-

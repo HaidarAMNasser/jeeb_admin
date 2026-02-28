@@ -2,23 +2,37 @@ import 'package:equatable/equatable.dart';
 
 class DeliveryManEntity extends Equatable {
   final String id;
-  final String name;
+  final String name; // firstName + lastName
   final String phone;
   final String email;
-  final String? vehicleType;
-  final String? status;
+  final String? cityName;
+  final String? countryName;
   final String? image;
+  final bool? isOnline;
+  final int? officeOwnerId;
 
   const DeliveryManEntity({
     required this.id,
     required this.name,
     required this.phone,
     required this.email,
-    this.vehicleType,
-    this.status,
+    this.cityName,
+    this.countryName,
     this.image,
+    this.isOnline,
+    this.officeOwnerId,
   });
 
   @override
-  List<Object?> get props => [id, name, phone, email, vehicleType, status, image];
+  List<Object?> get props => [
+        id,
+        name,
+        phone,
+        email,
+        cityName,
+        countryName,
+        image,
+        isOnline,
+        officeOwnerId,
+      ];
 }

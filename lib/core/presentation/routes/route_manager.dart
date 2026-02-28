@@ -288,6 +288,10 @@ class AppRouter {
               create: (_) =>
                   UpdateDeliveryBloc(di.sl<UpdateDeliveryRepository>()),
             ),
+            BlocProvider<DeleteDeliveryBloc>(
+              create: (_) =>
+                  DeleteDeliveryBloc(di.sl<DeleteDeliveryRepository>()),
+            ),
           ],
         );
 

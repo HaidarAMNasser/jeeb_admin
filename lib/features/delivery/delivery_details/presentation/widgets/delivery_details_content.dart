@@ -72,16 +72,23 @@ class DeliveryDetailsContent extends StatelessWidget {
               SizedBox(height: AppHeight.s24),
               if (deliveryMan.phone.isNotEmpty)
                 _buildInfoRow(Icons.phone, 'Phone', deliveryMan.phone),
-              if (deliveryMan.vehicleType != null &&
-                  deliveryMan.vehicleType!.isNotEmpty) ...[
+              if (deliveryMan.cityName != null &&
+                  deliveryMan.cityName!.isNotEmpty) ...[
+                SizedBox(height: AppHeight.s12),
+                _buildInfoRow(Icons.location_city, 'City', deliveryMan.cityName!),
+              ],
+              if (deliveryMan.countryName != null &&
+                  deliveryMan.countryName!.isNotEmpty) ...[
+                SizedBox(height: AppHeight.s12),
+                _buildInfoRow(Icons.public, 'Country', deliveryMan.countryName!),
+              ],
+              if (deliveryMan.isOnline != null) ...[
                 SizedBox(height: AppHeight.s12),
                 _buildInfoRow(
-                    Icons.two_wheeler, 'Vehicle', deliveryMan.vehicleType!),
-              ],
-              if (deliveryMan.status != null &&
-                  deliveryMan.status!.isNotEmpty) ...[
-                SizedBox(height: AppHeight.s12),
-                _buildInfoRow(Icons.info, 'Status', deliveryMan.status!),
+                  Icons.circle,
+                  'Status',
+                  deliveryMan.isOnline == true ? 'Online' : 'Offline',
+                ),
               ],
             ],
           ),
