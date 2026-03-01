@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -46,8 +44,8 @@ class _ListProductPageState extends State<ListProductPage> {
         _scrollController.position.maxScrollExtent * 0.8) {
       if (state is ListProductLoaded && state.hasMore) {
         context.read<ListProductBloc>().add(
-              const GetProductsEvent(loadMore: true),
-            );
+          const GetProductsEvent(loadMore: true),
+        );
       }
     }
   }
@@ -56,16 +54,7 @@ class _ListProductPageState extends State<ListProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.background,
-      appBar: AppBar(
-        backgroundColor: ColorManager.background,
-        title: CustomText(
-          text: AppTranslation.products,
-          textStyle: getBoldStyle(
-            fontSize: AppFontSize.s24,
-            color: ColorManager.titlesColor,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(title: AppTranslation.products),
       body: BlocBuilder<ListProductBloc, ListProductState>(
         builder: (context, state) {
           return BlocStateHandler<ListProductBloc, ListProductState>(
@@ -73,7 +62,8 @@ class _ListProductPageState extends State<ListProductPage> {
             isLoading: (state) => state is ListProductLoading,
             isError: (state) => state is ListProductError,
             getErrorMessage: (state) => (state as ListProductError).message,
-            isSuccess: (state) => state is ListProductLoaded || state is ListProductLoadingMore,
+            isSuccess: (state) =>
+                state is ListProductLoaded || state is ListProductLoadingMore,
             isEmpty: (state) {
               if (state is ListProductLoaded) {
                 return state.products.isEmpty;
@@ -91,13 +81,13 @@ class _ListProductPageState extends State<ListProductPage> {
               final products = productState is ListProductLoaded
                   ? productState.products
                   : (productState as ListProductLoadingMore).products;
-              final hasMore = productState is ListProductLoaded ? productState.hasMore : false;
+              final hasMore = productState is ListProductLoaded
+                  ? productState.hasMore
+                  : false;
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  context.read<ListProductBloc>().add(
-                        const GetProductsEvent(),
-                      );
+                  context.read<ListProductBloc>().add(const GetProductsEvent());
                 },
                 child: ListView.builder(
                   controller: _scrollController,
@@ -131,4 +121,3 @@ class _ListProductPageState extends State<ListProductPage> {
     );
   }
 }
-

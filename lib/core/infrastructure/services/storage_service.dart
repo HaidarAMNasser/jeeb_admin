@@ -32,7 +32,7 @@ class StorageServiceImpl implements StorageService {
 
   @override
   String getAppLanguage() {
-    return _sharedPreferences.getString(_languageKey) ?? 'en';
+    return _sharedPreferences.getString(_languageKey) ?? '';
   }
 
   @override

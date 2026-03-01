@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_password_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
@@ -39,11 +38,13 @@ class LoginForm extends StatelessWidget {
             controller: emailController,
           ),
           SizedBox(height: AppHeight.s24),
-          CustomPasswordField(
+          CustomTextField(
+            obscureText:  true,
             title: AppTranslation.password,
             hintText: AppTranslation.enterPassword,
             controller: passwordController,
           ),
+       
           SizedBox(height: AppHeight.s16),
           Align(
             alignment: Alignment.centerRight,
@@ -92,4 +93,3 @@ class LoginForm extends StatelessWidget {
     );
   }
 }
-

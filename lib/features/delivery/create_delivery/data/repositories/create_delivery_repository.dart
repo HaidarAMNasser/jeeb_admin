@@ -16,20 +16,34 @@ class CreateDeliveryRepository {
   );
 
   Future<Either<Failure, void>> createDeliveryMan({
-    required String name,
-    required String phone,
+    required String firstName,
+    required String lastName,
     required String email,
-    String? vehicleType,
-    String? status,
+    required String password,
+    required String phone,
+    int? countryId,
+    int? cityId,
+    String? address,
+    String? birthday,
+    String? notificationChannel,
+    int? officeOwnerId,
+    String? imagePath,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.createDeliveryMan(
-          name: name,
-          phone: phone,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
-          vehicleType: vehicleType,
-          status: status,
+          password: password,
+          phone: phone,
+          countryId: countryId,
+          cityId: cityId,
+          address: address,
+          birthday: birthday,
+          notificationChannel: notificationChannel,
+          officeOwnerId: officeOwnerId,
+          imagePath: imagePath,
         );
 
         BaseResponseModel<dynamic> baseResponseModel =
@@ -38,9 +52,9 @@ class CreateDeliveryRepository {
           (json) => json,
         );
 
-        if (baseResponseModel.status == 200 ||
+        if (baseResponseModel.status == 201 ||
             baseResponseModel.success == true ||
-            baseResponseModel.statusCode == 200) {
+            baseResponseModel.statusCode == 201) {
           return const Right(null);
         } else {
           return Left(ErrorHandler.handle(DioException(

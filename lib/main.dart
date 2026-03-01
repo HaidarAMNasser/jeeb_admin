@@ -6,6 +6,7 @@ import 'core/presentation/routes/routes.dart';
 import 'core/presentation/routes/navigation_service.dart';
 import 'core/infrastructure/di/dependency_injection.dart' as di;
 import 'core/presentation/localization/localization_manager.dart';
+import 'core/infrastructure/services/storage_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
@@ -29,12 +30,19 @@ void main() async {
   // Initialize dependency injection
   await di.init();
 
+  // Get stored language from SharedPreferences
+  final storageService = di.sl<StorageService>();
+  final storedLanguage = storageService.getAppLanguage();
+  final startLocale = storedLanguage.isEmpty
+      ? LocalizationManager.fallbackLocale
+      : (storedLanguage == 'ar' ? const Locale('ar') : LocalizationManager.fallbackLocale);
+
   runApp(
     EasyLocalization(
       supportedLocales: LocalizationManager.supportedLocales,
       path: LocalizationManager.translationsPath,
       fallbackLocale: LocalizationManager.fallbackLocale,
-      startLocale: LocalizationManager.fallbackLocale,
+      startLocale: startLocale,
       child: const MyApp(),
     ),
   );

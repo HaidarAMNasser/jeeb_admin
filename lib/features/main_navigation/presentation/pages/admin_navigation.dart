@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.dart';
+import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
@@ -14,7 +15,7 @@ import 'package:jeeb_admin/features/delivery/list_delivery/data/repositories/lis
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
-
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 class AdminNavigation extends StatefulWidget {
   const AdminNavigation({super.key});
 
@@ -48,8 +49,15 @@ class _AdminNavigationState extends State<AdminNavigation> {
           child: const ListDeliveryPage(),
         );
       case 3:
-        return BlocProvider<ProfileBloc>(
-          create: (_) => di.sl<ProfileBloc>()..add(const GetProfile()),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<ProfileBloc>(
+              create: (_) => di.sl<ProfileBloc>()..add(const GetProfile()),
+            ),
+            BlocProvider<LogoutBloc>(
+              create: (_) => di.sl<LogoutBloc>(),
+            ),
+          ],
           child: const ProfilePage(),
         );
       default:
@@ -92,26 +100,26 @@ class _AdminNavigationState extends State<AdminNavigation> {
             fontSize: AppFontSize.s12,
             color: ColorManager.textSecondary,
           ),
-          items: const [
+          items:  [
             BottomNavigationBarItem(
               icon: Icon(Icons.store_outlined),
               activeIcon: Icon(Icons.store),
-              label: 'Merchants',
+              label: AppTranslation.merchants,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_bag_outlined),
               activeIcon: Icon(Icons.shopping_bag),
-              label: 'Orders',
+              label: AppTranslation.orders,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.delivery_dining_outlined),
               activeIcon: Icon(Icons.delivery_dining),
-              label: 'Delivery',
+              label: AppTranslation.deliveryMen,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
-              label: 'Profile',
+              label: AppTranslation.profile,
             ),
           ],
         ),

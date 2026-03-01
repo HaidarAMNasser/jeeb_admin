@@ -23,6 +23,9 @@ class ListMerchantRepository {
     int? page,
     int? limit,
     String? search,
+    int? countryId,
+    int? cityId,
+    bool? isActive,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -30,6 +33,9 @@ class ListMerchantRepository {
           page: page,
           limit: limit,
           search: search,
+          countryId: countryId,
+          cityId: cityId,
+          isActive: isActive,
         );
 
         BaseResponseModel<List<MerchantModel>> baseResponseModel =

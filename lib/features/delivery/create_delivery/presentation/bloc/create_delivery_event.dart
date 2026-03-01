@@ -8,20 +8,47 @@ abstract class CreateDeliveryEvent extends Equatable {
 }
 
 class CreateDeliverySubmitted extends CreateDeliveryEvent {
-  final String name;
-  final String phone;
+  final String firstName;
+  final String lastName;
   final String email;
-  final String? vehicleType;
-  final String? status;
+  final String password;
+  final String phone;
+  final int? countryId;
+  final int? cityId;
+  final String? address;
+  final String? birthday;
+  final String? notificationChannel;
+  final int? officeOwnerId;
+  final String? imagePath;
 
   const CreateDeliverySubmitted({
-    required this.name,
-    required this.phone,
+    required this.firstName,
+    required this.lastName,
     required this.email,
-    this.vehicleType,
-    this.status,
+    required this.password,
+    required this.phone,
+    this.countryId,
+    this.cityId,
+    this.address,
+    this.birthday,
+    this.notificationChannel,
+    this.officeOwnerId,
+    this.imagePath,
   });
 
   @override
-  List<Object> get props => [name, phone, email, vehicleType ?? '', status ?? ''];
+  List<Object> get props => [
+        firstName,
+        lastName,
+        email,
+        password,
+        phone,
+        countryId ?? 0,
+        cityId ?? 0,
+        address ?? '',
+        birthday ?? '',
+        notificationChannel ?? '',
+        officeOwnerId ?? 0,
+        imagePath ?? '',
+      ];
 }

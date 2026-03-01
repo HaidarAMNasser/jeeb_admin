@@ -17,21 +17,33 @@ class UpdateDeliveryRepository {
 
   Future<Either<Failure, void>> updateDeliveryMan({
     required String id,
-    String? name,
+    String? firstName,
+    String? lastName,
     String? phone,
     String? email,
-    String? vehicleType,
-    String? status,
+    String? password,
+    int? countryId,
+    int? cityId,
+    String? address,
+    String? birthday,
+    String? notificationChannel,
+    String? imagePath,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.updateDeliveryMan(
           id: id,
-          name: name,
+          firstName: firstName,
+          lastName: lastName,
           phone: phone,
           email: email,
-          vehicleType: vehicleType,
-          status: status,
+          password: password,
+          countryId: countryId,
+          cityId: cityId,
+          address: address,
+          birthday: birthday,
+          notificationChannel: notificationChannel,
+          imagePath: imagePath,
         );
 
         BaseResponseModel<dynamic> baseResponseModel =

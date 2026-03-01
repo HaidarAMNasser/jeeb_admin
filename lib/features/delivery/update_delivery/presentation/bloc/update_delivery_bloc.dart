@@ -14,11 +14,17 @@ class UpdateDeliveryBloc extends Bloc<UpdateDeliveryEvent, UpdateDeliveryState> 
         emit(const UpdateDeliveryLoading());
         final result = await _repository.updateDeliveryMan(
           id: event.id,
-          name: event.name,
+          firstName: event.firstName,
+          lastName: event.lastName,
           phone: event.phone,
           email: event.email,
-          vehicleType: event.vehicleType,
-          status: event.status,
+          password: event.password,
+          countryId: event.countryId,
+          cityId: event.cityId,
+          address: event.address,
+          birthday: event.birthday,
+          notificationChannel: event.notificationChannel,
+          imagePath: event.imagePath,
         );
         result.fold(
           (failure) => emit(UpdateDeliveryError(message: failure.message)),

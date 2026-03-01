@@ -13,11 +13,18 @@ class CreateDeliveryBloc extends Bloc<CreateDeliveryEvent, CreateDeliveryState> 
       if (event is CreateDeliverySubmitted) {
         emit(const CreateDeliveryLoading());
         final result = await _repository.createDeliveryMan(
-          name: event.name,
-          phone: event.phone,
+          firstName: event.firstName,
+          lastName: event.lastName,
           email: event.email,
-          vehicleType: event.vehicleType,
-          status: event.status,
+          password: event.password,
+          phone: event.phone,
+          countryId: event.countryId,
+          cityId: event.cityId,
+          address: event.address,
+          birthday: event.birthday,
+          notificationChannel: event.notificationChannel,
+          officeOwnerId: event.officeOwnerId,
+          imagePath: event.imagePath,
         );
         result.fold(
           (failure) => emit(CreateDeliveryError(message: failure.message)),

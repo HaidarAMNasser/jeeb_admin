@@ -3,12 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
-import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/presentation/widgets/delivery_details_content.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 import 'package:jeeb_admin/features/delivery/delete_delivery/presentation/bloc/delete_delivery_bloc.dart';
@@ -36,15 +33,8 @@ class DeliveryDetailsPage extends StatelessWidget {
       ],
       child: Scaffold(
         backgroundColor: ColorManager.background,
-        appBar: AppBar(
-          backgroundColor: ColorManager.background,
-          title: CustomText(
-            text: 'Delivery Man Details',
-            textStyle: getBoldStyle(
-              fontSize: AppFontSize.s24,
-              color: ColorManager.titlesColor,
-            ),
-          ),
+        appBar: CustomAppBar(
+          title: 'Delivery Man Details',
           actions: [
             IconButton(
               icon: const Icon(Icons.edit),
@@ -62,6 +52,7 @@ class DeliveryDetailsPage extends StatelessWidget {
             ),
           ],
         ),
+
         body: Builder(
           builder: (context) {
             final fakeDeliveryMan = _getFakeDeliveryMan();
@@ -82,9 +73,9 @@ class DeliveryDetailsPage extends StatelessWidget {
       cancelText: AppTranslation.cancel,
       confirmColor: Colors.red,
       onConfirm: () {
-        context
-            .read<DeleteDeliveryBloc>()
-            .add(DeleteDeliverySubmitted(deliveryManId: deliveryManId));
+        context.read<DeleteDeliveryBloc>().add(
+          DeleteDeliverySubmitted(deliveryManId: deliveryManId),
+        );
       },
     );
   }
@@ -95,8 +86,9 @@ class DeliveryDetailsPage extends StatelessWidget {
       name: 'Ahmad Hassan',
       phone: '+961 3 1234567',
       email: 'ahmad_hassan@delivery.com',
-      vehicleType: 'Motorcycle',
-      status: 'active',
+      cityName: 'Beirut',
+      countryName: 'Lebanon',
+      isOnline: true,
     );
   }
 }

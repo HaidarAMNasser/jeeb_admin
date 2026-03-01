@@ -92,8 +92,7 @@ class DeliveryListItem extends StatelessWidget {
                         ],
                       ),
                     ],
-                    if (deliveryMan.status != null &&
-                        deliveryMan.status!.isNotEmpty) ...[
+                    if (deliveryMan.isOnline != null) ...[
                       SizedBox(height: AppHeight.s8),
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -101,17 +100,17 @@ class DeliveryListItem extends StatelessWidget {
                           vertical: AppPadding.p4,
                         ),
                         decoration: BoxDecoration(
-                          color: deliveryMan.status == 'active'
+                          color: deliveryMan.isOnline == true
                               ? ColorManager.primary.withOpacity(0.1)
                               : ColorManager.descriptionColor.withOpacity(0.2),
                           borderRadius:
                               BorderRadius.circular(AppRadius.r8),
                         ),
                         child: CustomText(
-                          text: deliveryMan.status!,
+                          text: deliveryMan.isOnline == true ? 'Online' : 'Offline',
                           textStyle: getSemiBoldStyle(
                             fontSize: AppFontSize.s10,
-                            color: deliveryMan.status == 'active'
+                            color: deliveryMan.isOnline == true
                                 ? ColorManager.primary
                                 : ColorManager.descriptionColor,
                           ),

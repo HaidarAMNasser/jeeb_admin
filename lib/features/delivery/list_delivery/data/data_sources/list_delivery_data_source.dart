@@ -6,6 +6,10 @@ abstract class ListDeliveryRemoteDataSource {
     int? page,
     int? limit,
     String? search,
+    bool? isOnline,
+    int? officeOwnerId,
+    int? countryId,
+    int? cityId,
   });
 }
 
@@ -19,11 +23,19 @@ class ListDeliveryRemoteDataSourceImpl implements ListDeliveryRemoteDataSource {
     int? page,
     int? limit,
     String? search,
+    bool? isOnline,
+    int? officeOwnerId,
+    int? countryId,
+    int? cityId,
   }) {
     return _appApiServiceClient.getDeliveryMen(
       page: page,
       limit: limit,
       search: search,
+      isOnline: isOnline,
+      officeOwnerId: officeOwnerId,
+      countryId: countryId,
+      cityId: cityId,
     );
   }
 }

@@ -5,12 +5,14 @@ extension DeliveryManMapper on DeliveryManModel {
   DeliveryManEntity toDomain() {
     return DeliveryManEntity(
       id: id,
-      name: name,
+      name: name, // firstName + lastName
       phone: phone,
       email: email,
-      vehicleType: vehicleType,
-      status: status,
-      image: image,
+      cityName: cityName,
+      countryName: countryName,
+      image: imageUrl,
+      isOnline: isOnline,
+      officeOwnerId: officeOwnerId,
     );
   }
 }
