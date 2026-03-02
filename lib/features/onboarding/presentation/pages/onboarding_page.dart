@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart' as el;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import '../../../../core/presentation/routes/routes.dart';
 import '../../../../core/presentation/theme/colors_manager.dart';
-import '../../../../core/presentation/widgets/text_widget.dart';
 import '../../../../core/presentation/widgets/language_selection_dialog.dart';
 import '../../../../core/infrastructure/services/storage_service.dart';
 import '../../../../core/infrastructure/di/dependency_injection.dart' as di;
@@ -75,14 +75,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             listener: (context, state) {
               if (state is OnboardingLoaded &&
                   state.notificationPermissionGranted == true) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: CustomText(
-                      text: OnboardingStrings.notificationsEnabledSuccess,
-                    ),
-                    backgroundColor: ColorManager.success,
-                  ),
-                );
+                customToast(msg: OnboardingStrings.notificationsEnabledSuccess);
               }
             },
             child: BlocBuilder<OnboardingBloc, OnboardingState>(
@@ -110,7 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           },
                         ),
                       ),
-                      
+
                       OnboardingBottomSection(
                         state: state,
                         onGetStarted: _navigateToAuth,

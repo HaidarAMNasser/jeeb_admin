@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'profile_header.dart';
 import 'profile_form.dart';
@@ -53,21 +50,7 @@ class ProfilePageContent extends StatelessWidget {
             addressController: addressController,
             onUpdate: onUpdate,
             isLoading: isUpdateLoading,
-          ),
-          SizedBox(height: AppHeight.s24),
-          CustomButton(
-            text: AppTranslation.changeLanguage,
-            onPressed: onChangeLanguage,
-            isLoading: false,
-            color: ColorManager.primary,
-            isOutlined: true,
-          ),
-          SizedBox(height: AppHeight.s16),
-          CustomButton(
-            text: AppTranslation.logout,
-            onPressed: onLogout,
-            isLoading: isLogoutLoading,
-            color: ColorManager.error,
+            onChangeLanguage: onChangeLanguage,
           ),
         ],
       ),

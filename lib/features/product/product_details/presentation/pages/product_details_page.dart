@@ -4,8 +4,9 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
-import 'package:jeeb_admin/features/product/create_product/presentation/pages/create_product_page.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final String productId;
@@ -45,20 +46,138 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         successBuilder: (context, productState) {
           final loadedState = productState as ProductDetailsLoaded;
 
-          // Navigate to create product page in edit mode
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      CreateProductPage(product: loadedState.product),
+          // Display product details - user can manually navigate to edit if needed
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Product Image
+                if (loadedState.product.images.isNotEmpty)
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: DecorationImage(
+                        image: NetworkImage(loadedState.product.images.first.url),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                SizedBox(height: 16),
+                
+                // Product Name
+                Text(
+                  loadedState.product.name,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: ColorManager.defaultWhite,
+                  ),
                 ),
-              );
-            }
-          });
-          // Show loading while navigating
-          return const CustomCircleIndicator();
+                SizedBox(height: 8),
+                
+                // Category
+                if (loadedState.product.categoryName != null)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: ColorManager.primary,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      loadedState.product.categoryName!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: ColorManager.defaultWhite,
+                      ),
+                    ),
+                  ),
+                SizedBox(height: 16),
+                
+                // Price
+                Row(
+                  children: [
+                    Text(
+                      '${(loadedState.product.price / 100).toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: ColorManager.primary,
+                      ),
+                    ),
+                    if (loadedState.product.priceAfterDiscount != null) ...[
+                      SizedBox(width: 8),
+                      Text(
+                        '${(loadedState.product.priceAfterDiscount! / 100).toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          decoration: TextDecoration.lineThrough,
+                          color: ColorManager.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                SizedBox(height: 16),
+                
+                // Description
+                if (loadedState.product.description != null) ...[
+                  Text(
+                    'Description',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: ColorManager.defaultWhite,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    loadedState.product.description!,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ColorManager.textSecondary,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                ],
+                
+                // Stock Info
+                Row(
+                  children: [
+                    Icon(Icons.inventory, color: ColorManager.primary, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Stock: ${loadedState.product.stockQuantity ?? 0}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ColorManager.defaultWhite,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                
+                // Edit Button
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.pushReplacementNamed(
+                      Routes.addProduct,
+                      arguments: {'product': loadedState.product},
+                    );
+                  },
+                  icon: Icon(Icons.edit),
+                  label: Text('Edit Product'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorManager.primary,
+                    foregroundColor: ColorManager.defaultWhite,
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
