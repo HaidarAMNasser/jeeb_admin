@@ -5,7 +5,6 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_dropdown.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -22,13 +21,11 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController phoneController;
   final TextEditingController addressController;
   final String? selectedRole;
-  final String? selectedNotificationChannel;
   final CountryEntity? selectedCountry;
   final CityEntity? selectedCity;
   final ValueChanged<CountryEntity?> onCountryChanged;
   final ValueChanged<CityEntity?> onCityChanged;
   final ValueChanged<String?> onRoleChanged;
-  final ValueChanged<String?> onNotificationChannelChanged;
   final VoidCallback onRegister;
   final bool isLoading;
 
@@ -42,13 +39,11 @@ class RegisterForm extends StatelessWidget {
     required this.phoneController,
     required this.addressController,
     this.selectedRole,
-    this.selectedNotificationChannel,
     this.selectedCountry,
     this.selectedCity,
     required this.onCountryChanged,
     required this.onCityChanged,
     required this.onRoleChanged,
-    required this.onNotificationChannelChanged,
     required this.onRegister,
     required this.isLoading,
   });
@@ -100,20 +95,6 @@ class RegisterForm extends StatelessWidget {
             onSelectCity: onCityChanged,
             isRequired: true,
           ),
-          CustomDropdown<String>(
-            title: AppTranslation.notificationChannel,
-            value: selectedNotificationChannel,
-            hintText: AppTranslation.notificationChannel,
-            items: const [
-              DropdownMenuItem<String>(value: 'EMAIL', child: Text('EMAIL')),
-              DropdownMenuItem<String>(
-                value: 'WHATSAPP',
-                child: Text('WHATSAPP'),
-              ),
-            ],
-            onChanged: onNotificationChannelChanged,
-          ),
-          SizedBox(height: AppHeight.s8),
           CustomButton(
             text: AppTranslation.register,
             onPressed: onRegister,

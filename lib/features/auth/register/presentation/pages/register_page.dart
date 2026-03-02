@@ -4,6 +4,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:jeeb_admin/core/presentation/widgets/verification_method_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
@@ -60,6 +61,29 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _selectedCity = city;
     });
+  }
+
+  /// On Register tap: validate form, show verification method dialog, then submit.
+  Future<void> _onRegisterTapped() async {
+    if (!_formKey.currentState!.validate()) return;
+    // TODO: uncomment for production – country/city required
+    // if (_selectedCountry == null) {
+    //   customToast(msg: AppTranslation.pleaseSelectCountry);
+    //   return;
+    // }
+    // if (_selectedCity == null) {
+    //   customToast(msg: AppTranslation.pleaseSelectCity);
+    //   return;
+    // }
+    final channel = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const VerificationMethodSelectionDialog(),
+    );
+    if (channel != null && mounted) {
+      setState(() => _selectedNotificationChannel = channel);
+      await _handleFakeRegister();
+    }
   }
 
   // Fake register function for testing - bypasses actual registration
@@ -150,16 +174,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   phoneController: _phoneController,
                   addressController: _addressController,
                   selectedRole: _selectedRole,
-                  selectedNotificationChannel: _selectedNotificationChannel,
                   selectedCountry: _selectedCountry,
                   selectedCity: _selectedCity,
                   onCountryChanged: _onCountryChanged,
                   onCityChanged: _onCityChanged,
                   onRoleChanged: (role) => setState(() => _selectedRole = role),
-                  onNotificationChannelChanged: (channel) =>
-                      setState(() => _selectedNotificationChannel = channel),
-                  onRegister:
-                      _handleFakeRegister, // Using fake register for testing
+                  onRegister: _onRegisterTapped,
                   isLoading: state is RegisterLoading,
                 ),
               ),

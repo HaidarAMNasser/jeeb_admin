@@ -28,7 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.filledColor,
     this.obscureText = false,
-          });
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,8 @@ class CustomTextField extends StatelessWidget {
         if (title != null)
           CustomText(
             text: title!,
-            textStyle: getSemiBoldStyle(
-              fontSize: AppFontSize.s16,
+            textStyle: getMediumStyle(
+              fontSize: AppFontSize.s15,
               color: ColorManager.defaultWhite,
             ),
           ),

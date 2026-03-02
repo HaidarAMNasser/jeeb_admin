@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 
 class CustomTextDisplay extends StatelessWidget {
   final String text;
@@ -24,17 +26,15 @@ class CustomTextDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
+    return CustomText(
+      text: text,
+      textStyle: getRegularStyle(
         fontSize: fontSize ?? AppFontSize.s14,
         color: color ?? ColorManager.textColor,
-        fontWeight: fontWeight ?? FontWeight.normal,
       ),
       textAlign: textAlign ?? TextAlign.start,
       maxLines: maxLines,
-      overflow: overflow,
+      textOverflow: overflow,
     );
   }
 }
-
