@@ -32,8 +32,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         result.fold(
           (failure) => emit(ProfileError(message: failure.message)),
-          (user) => emit(ProfileLoaded(user: user)),
+          (user) => emit(ProfileLoaded(
+            user: user,
+            formValuesInitialized: state is ProfileLoaded
+                ? (state as ProfileLoaded).formValuesInitialized
+                : false,
+          )),
         );
+      } else if (event is FormValuesInitialized) {
+        final current = state;
+        if (current is ProfileLoaded && !current.formValuesInitialized) {
+          emit(current.copyWith(formValuesInitialized: true));
+        }
       }
     });
   }

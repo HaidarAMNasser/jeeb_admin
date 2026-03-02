@@ -33,7 +33,9 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.background,
-      body: ShimmerWaveAnimation(
+      body: Directionality(
+        textDirection: TextDirection.ltr,
+        child: ShimmerWaveAnimation(
         primaryColor: ColorManager.primary,
         secondaryColor: ColorManager.defaultYellow,
         duration: const Duration(milliseconds: 2000),
@@ -67,7 +69,7 @@ class _SplashPageState extends State<SplashPage> {
             ),
           ),
         ),
-      ),
+      ),)
     );
   }
 }

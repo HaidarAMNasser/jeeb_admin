@@ -70,26 +70,31 @@ class OrderListItem extends StatelessWidget {
                             textOverflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: AppHeight.s4),
-                          if (order.status != null)
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: AppPadding.p8,
-                                vertical: AppPadding.p4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: _getStatusColor(order.status!)
-                                    .withOpacity(0.1),
-                                borderRadius:
-                                    BorderRadius.circular(AppRadius.r8),
-                              ),
-                              child: CustomText(
-                                text: order.status!,
-                                textStyle: getSemiBoldStyle(
-                                  fontSize: AppFontSize.s10,
-                                  color: _getStatusColor(order.status!),
-                                ),
-                              ),
+                          if (order.status != null) ...[
+                            Builder(
+                              builder: (context) {
+                                final status = order.statusEnum;
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: AppPadding.p8,
+                                    vertical: AppPadding.p4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: status.color.withOpacity(0.1),
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadius.r8),
+                                  ),
+                                  child: CustomText(
+                                    text: status.displayLabel,
+                                    textStyle: getSemiBoldStyle(
+                                      fontSize: AppFontSize.s10,
+                                      color: status.color,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
+                          ],
                         ],
                       ),
                     ],
@@ -154,17 +159,5 @@ class OrderListItem extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return Colors.green;
-      case 'cancelled':
-        return Colors.red;
-      case 'pending':
-        return Colors.orange;
-      default:
-        return ColorManager.primary;
-    }
-  }
 }
 

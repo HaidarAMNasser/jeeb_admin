@@ -179,7 +179,7 @@ Future<void> init() async {
     () => ProfileRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => ProfileRepository(sl(), sl()));
-  sl.registerFactory(() => ProfileBloc(sl()));
+  sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>()));
 
   //! Auth Dependencies - Logout
   sl.registerFactory<LogoutRemoteDataSource>(

@@ -17,11 +17,22 @@ class ProfileLoading extends ProfileState {
 
 class ProfileLoaded extends ProfileState {
   final UserEntity user;
+  final bool formValuesInitialized;
 
-  const ProfileLoaded({required this.user});
+  const ProfileLoaded({
+    required this.user,
+    this.formValuesInitialized = false,
+  });
+
+  ProfileLoaded copyWith({UserEntity? user, bool? formValuesInitialized}) {
+    return ProfileLoaded(
+      user: user ?? this.user,
+      formValuesInitialized: formValuesInitialized ?? this.formValuesInitialized,
+    );
+  }
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, formValuesInitialized];
 }
 
 class ProfileError extends ProfileState {

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/language_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -14,11 +12,13 @@ import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:easy_localization/easy_localization.dart';
-import '../bloc/profile_bloc.dart';
-import '../../../logout/presentation/bloc/logout_bloc.dart';
-import '../widgets/profile_header.dart';
-import '../widgets/profile_form.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
+import '../../../login/domain/entities/user_entity.dart';
+import '../../../logout/presentation/bloc/logout_bloc.dart';
+import '../bloc/profile_bloc.dart';
+import '../helpers/profile_state_helper.dart';
+import '../widgets/profile_page_content.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -34,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   bool _isProfileLoaded = false;
+  bool _wasUpdating = false;
 
   @override
   void initState() {
@@ -59,8 +60,9 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-  void _handleUpdateProfile() {
+  void _onUpdateProfile() {
     if (_formKey.currentState!.validate()) {
+      _wasUpdating = true;
       context.read<ProfileBloc>().add(
             UpdateProfile(
               firstName: _firstNameController.text.trim(),
@@ -74,14 +76,21 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void _handleLogout() {
+  void _onLogout() {
     context.read<LogoutBloc>().add(const LogoutSubmitted());
   }
 
-  Future<void> _handleChangeLanguage() async {
+  void _initFormValuesFromUser(UserEntity user) {
+    _firstNameController.text = user.firstName;
+    _lastNameController.text = user.lastName;
+    _phoneController.text = user.phone;
+    _addressController.text = user.address ?? '';
+  }
+
+  Future<void> _onChangeLanguage() async {
     final storageService = di.sl<StorageService>();
     final currentLanguage = storageService.getAppLanguage();
-    
+
     final selectedLanguage = await showDialog<String>(
       context: context,
       builder: (context) => LanguageSelectionDialog(
@@ -89,19 +98,12 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
 
-    if (selectedLanguage != null && selectedLanguage != currentLanguage && mounted) {
-      // Save selected language
+    if (selectedLanguage != null &&
+        selectedLanguage != currentLanguage &&
+        mounted) {
       await storageService.setAppLanguage(selectedLanguage);
-      
-      // Update app locale
       await context.setLocale(Locale(selectedLanguage));
-      
-      // Show success message
       customToast(msg: AppTranslation.languageChangedSuccessfully);
-      
-      // Restart the app to apply language changes
-      // Note: In a real app, you might want to use a package like flutter_restart
-      // For now, we'll just show a toast and the language will change on next app restart
     }
   }
 
@@ -111,8 +113,6 @@ class _ProfilePageState extends State<ProfilePage> {
       listener: (context, logoutState) {
         if (logoutState is LogoutSuccess) {
           customToast(msg: AppTranslation.logoutSuccess);
-          // Navigate to login screen after clearing storage
-          // Storage is already cleared in the logout bloc before emitting success
           WidgetsBinding.instance.addPostFrameCallback((_) {
             NavigationService().pushNamedAndRemoveUntil(Routes.login);
           });
@@ -121,29 +121,26 @@ class _ProfilePageState extends State<ProfilePage> {
         }
       },
       builder: (context, logoutState) {
+        final isLogoutLoading = logoutState is LogoutLoading;
+
         return BlocConsumer<ProfileBloc, ProfileState>(
           listener: (context, state) {
             if (state is ProfileLoaded) {
-              if (!_isProfileLoaded) {
-                // Initial load - update controllers
-                _firstNameController.text = state.user.firstName;
-                _lastNameController.text = state.user.lastName;
-                _phoneController.text = state.user.phone;
-                _addressController.text = state.user.address ?? '';
-                _isProfileLoaded = true;
-              } else {
-                // This is an update after initial load, show success toast
+              if (!state.formValuesInitialized) {
+                _initFormValuesFromUser(state.user);
+                context.read<ProfileBloc>().add(const FormValuesInitialized());
+              } else if (_wasUpdating) {
                 customToast(msg: AppTranslation.profileUpdatedSuccess);
+                _wasUpdating = false;
               }
+              _isProfileLoaded = true;
             } else if (state is ProfileError) {
               customToast(msg: state.message);
             }
           },
           builder: (context, state) {
-            // Use ModalProgressHUD only for update (PATCH) and logout (POST) operations
-            // Initial profile fetch (GET) uses BlocStateHandler
-            final isUpdateLoading = state is ProfileLoading && _isProfileLoaded;
-            final isLogoutLoading = logoutState is LogoutLoading;
+            final isUpdateLoading =
+                state is ProfileLoading && _isProfileLoaded;
             final showProgressHUD = isUpdateLoading || isLogoutLoading;
 
             return ModalProgressHUD(
@@ -151,54 +148,32 @@ class _ProfilePageState extends State<ProfilePage> {
               inAsyncCall: showProgressHUD,
               child: Scaffold(
                 backgroundColor: ColorManager.background,
-                appBar: CustomAppBar(
-                  title: AppTranslation.profile,
-                ),
+                appBar: CustomAppBar(title: AppTranslation.profile),
                 body: BlocStateHandler<ProfileBloc, ProfileState>(
                   bloc: context.read<ProfileBloc>(),
-                  isLoading: (state) => state is ProfileLoading && !_isProfileLoaded,
-                  isError: (state) => state is ProfileError && !_isProfileLoaded,
-                  getErrorMessage: (state) => (state as ProfileError).message,
-                  isSuccess: (state) => state is ProfileLoaded,
-                  getRetryCallback: (state) => () {
+                  isLoading: (s) => s is ProfileLoading && !_isProfileLoaded,
+                  isError: (s) => s is ProfileError && !_isProfileLoaded,
+                  getErrorMessage: (s) => (s as ProfileError).message,
+                  isSuccess: (s) => s is ProfileLoaded,
+                  getRetryCallback: (_) => () {
                     context.read<ProfileBloc>().add(const GetProfile());
                   },
                   successBuilder: (context, profileState) {
-                    final loadedState = profileState as ProfileLoaded;
+                    final user = getProfileUserFromState(profileState);
+                    if (user == null) return const SizedBox.shrink();
 
-                    return SingleChildScrollView(
-                      padding: EdgeInsets.all(AppPadding.p24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ProfileHeader(user: loadedState.user),
-                          SizedBox(height: AppHeight.s32),
-                          ProfileForm(
-                            formKey: _formKey,
-                            firstNameController: _firstNameController,
-                            lastNameController: _lastNameController,
-                            phoneController: _phoneController,
-                            addressController: _addressController,
-                            onUpdate: _handleUpdateProfile,
-                            isLoading: isUpdateLoading,
-                          ),
-                          SizedBox(height: AppHeight.s24),
-                          CustomButton(
-                            text: AppTranslation.changeLanguage,
-                            onPressed: _handleChangeLanguage,
-                            isLoading: false,
-                            color: ColorManager.primary,
-                            isOutlined: true,
-                          ),
-                          SizedBox(height: AppHeight.s16),
-                          CustomButton(
-                            text: AppTranslation.logout,
-                            onPressed: _handleLogout,
-                            isLoading: isLogoutLoading,
-                            color: ColorManager.error,
-                          ),
-                        ],
-                      ),
+                    return ProfilePageContent(
+                      user: user,
+                      formKey: _formKey,
+                      firstNameController: _firstNameController,
+                      lastNameController: _lastNameController,
+                      phoneController: _phoneController,
+                      addressController: _addressController,
+                      onUpdate: _onUpdateProfile,
+                      isUpdateLoading: isUpdateLoading,
+                      onChangeLanguage: () => _onChangeLanguage(),
+                      onLogout: _onLogout,
+                      isLogoutLoading: isLogoutLoading,
                     );
                   },
                 ),
@@ -209,6 +184,4 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     );
   }
-
 }
-

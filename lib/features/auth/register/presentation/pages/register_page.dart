@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
-  String? _selectedRole = 'MERCHANT';
+  String? _selectedRole = UserRole.merchant.name;
   String? _selectedNotificationChannel = 'EMAIL';
   CountryEntity? _selectedCountry;
   CityEntity? _selectedCity;

@@ -41,7 +41,9 @@ class CustomButton extends StatelessWidget {
                   width: AppSize.s2_5,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.r16),
+                  borderRadius: BorderRadius.circular(
+                    borderRadius ?? AppRadius.r16,
+                  ),
                 ),
               ),
               child: _buildChild(),
@@ -52,7 +54,9 @@ class CustomButton extends StatelessWidget {
                 backgroundColor: color ?? ColorManager.primary,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.r16),
+                  borderRadius: BorderRadius.circular(
+                    borderRadius ?? AppRadius.r16,
+                  ),
                 ),
                 elevation: AppSize.s5,
                 shadowColor: (color ?? ColorManager.primary).withOpacity(0.4),
@@ -68,9 +72,7 @@ class CustomButton extends StatelessWidget {
         width: AppSize.s24,
         height: AppSize.s24,
         child: CircularProgressIndicator(
-          color: isOutlined
-              ? (color ?? ColorManager.primary)
-              : Colors.white,
+          color: isOutlined ? (color ?? ColorManager.primary) : Colors.white,
           strokeWidth: AppSize.s2_5,
         ),
       );
@@ -78,10 +80,8 @@ class CustomButton extends StatelessWidget {
     return CustomText(
       text: text,
       textStyle: getBlackStyle(
-        fontSize: AppFontSize.s18,
-        color: isOutlined
-            ? (color ?? ColorManager.primary)
-            : Colors.white,
+        fontSize: AppFontSize.s15,
+        color: isOutlined ? (color ?? ColorManager.primary) : Colors.white,
       ),
     );
   }
