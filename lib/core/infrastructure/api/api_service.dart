@@ -32,8 +32,10 @@ abstract class AppApiServiceClient {
     @Field('password') String password,
     @Field('phone') String phone,
     @Field('role') String role,
-    @Field('countryId') int countryId,
-    @Field('cityId') int cityId,
+    @Field('countryId') int? countryId,
+    @Field('cityId') int? cityId,
+    @Field('latitude') double? latitude,
+    @Field('longitude') double? longitude,
     @Field('notificationChannel') String notificationChannel,
     @Field('address') String? address,
   );

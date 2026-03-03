@@ -91,26 +91,30 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     String password,
     String phone,
     String role,
-    int countryId,
-    int cityId,
+    int? countryId,
+    int? cityId,
+    double? latitude,
+    double? longitude,
     String notificationChannel,
     String? address,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = {
+    final data = <String, dynamic>{
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
       'password': password,
       'phone': phone,
       'role': role,
-      'countryId': countryId,
-      'cityId': cityId,
       'notificationChannel': notificationChannel,
-      if (address != null) 'address': address,
     };
+    if (countryId != null) data['countryId'] = countryId;
+    if (cityId != null) data['cityId'] = cityId;
+    if (latitude != null) data['latitude'] = latitude;
+    if (longitude != null) data['longitude'] = longitude;
+    if (address != null) data['address'] = address;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(

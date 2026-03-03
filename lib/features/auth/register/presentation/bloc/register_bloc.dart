@@ -21,6 +21,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           role: event.role,
           countryId: event.countryId,
           cityId: event.cityId,
+          latitude: event.latitude,
+          longitude: event.longitude,
           notificationChannel: event.notificationChannel,
           address: event.address,
         );

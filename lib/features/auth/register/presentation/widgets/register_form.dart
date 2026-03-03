@@ -12,6 +12,7 @@ import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
+import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
 
 class RegisterForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -25,12 +26,17 @@ class RegisterForm extends StatelessWidget {
   final String? selectedNotificationChannel;
   final CountryEntity? selectedCountry;
   final CityEntity? selectedCity;
+  final double? useLocationLatitude;
+  final double? useLocationLongitude;
   final ValueChanged<CountryEntity?> onCountryChanged;
   final ValueChanged<CityEntity?> onCityChanged;
+  final VoidCallback onUseMyLocation;
+  final VoidCallback? onClearDeviceLocation;
   final ValueChanged<String?> onRoleChanged;
   final ValueChanged<String?> onNotificationChannelChanged;
   final VoidCallback onRegister;
   final bool isLoading;
+  final bool isLocationLoading;
 
   const RegisterForm({
     super.key,
@@ -45,12 +51,17 @@ class RegisterForm extends StatelessWidget {
     this.selectedNotificationChannel,
     this.selectedCountry,
     this.selectedCity,
+    this.useLocationLatitude,
+    this.useLocationLongitude,
     required this.onCountryChanged,
     required this.onCityChanged,
+    required this.onUseMyLocation,
+    this.onClearDeviceLocation,
     required this.onRoleChanged,
     required this.onNotificationChannelChanged,
     required this.onRegister,
     required this.isLoading,
+    this.isLocationLoading = false,
   });
 
   @override
@@ -93,12 +104,26 @@ class RegisterForm extends StatelessWidget {
             hintText: AppTranslation.enterAddress,
             controller: addressController,
           ),
+          LocationSourceSelector(
+            title: AppTranslation.location,
+            useMyLocationHint: AppTranslation.useMyLocation,
+            locationSetHint: AppTranslation.locationSetFormat,
+            latitude: useLocationLatitude,
+            longitude: useLocationLongitude,
+            isRequired: true,
+            onUseMyLocation: onUseMyLocation,
+            onClearLocation: (useLocationLatitude != null || useLocationLongitude != null)
+                ? onClearDeviceLocation
+                : null,
+            isLoading: isLocationLoading,
+          ),
           CountryCityWidget(
             selectedCountry: selectedCountry,
             selectedCity: selectedCity,
             onSelectCountry: onCountryChanged,
             onSelectCity: onCityChanged,
             isRequired: true,
+            isReadOnly: useLocationLatitude != null && useLocationLongitude != null,
           ),
           CustomDropdown<String>(
             title: AppTranslation.notificationChannel,

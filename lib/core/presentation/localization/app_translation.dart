@@ -151,6 +151,12 @@ class AppTranslation {
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
   static String get location => 'location'.tr();
+  static String get useMyLocation => 'use_my_location'.tr();
+  static String get locationSetFormat => 'location_set_format'.tr();
+  static String get pleaseSelectCountryOrLocation =>
+      'please_select_country_or_location'.tr();
+  static String get locationPermissionDenied => 'location_permission_denied'.tr();
+  static String get locationUnavailable => 'location_unavailable'.tr();
 
   // Delivery
   static String get deliveryMen => 'delivery_men'.tr();

@@ -8,12 +8,9 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
-    as di;
-import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
+import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
 import '../bloc/register_bloc.dart';
 import '../widgets/register_form.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -37,6 +34,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _selectedNotificationChannel = 'EMAIL';
   CountryEntity? _selectedCountry;
   CityEntity? _selectedCity;
+  double? _useLocationLat;
+  double? _useLocationLng;
+  bool _isLocationLoading = false;
 
   @override
   void dispose() {
@@ -53,70 +53,76 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _selectedCountry = country;
       _selectedCity = null;
+      _useLocationLat = null;
+      _useLocationLng = null;
     });
   }
 
   void _onCityChanged(CityEntity? city) {
     setState(() {
       _selectedCity = city;
+      _useLocationLat = null;
+      _useLocationLng = null;
     });
   }
 
-  // Fake register function for testing - bypasses actual registration
-  Future<void> _handleFakeRegister() async {
-    try {
-      final storageService = di.sl<StorageService>();
-
-      // Set fake token for testing
-      await storageService.setUserToken('fake_token_for_testing');
-
-      // Set user role to admin (lowercase as stored in login)
-      await storageService.setUserRole(UserRole.admin.name);
-
-      customToast(msg: 'Fake registration successful (Testing Mode - Admin)');
-
-      // Navigate to main navigation
-      if (mounted) {
-        context.pushNamedAndRemoveUntil(
-          Routes.mainNavigation,
-          predicate: (route) => false,
-        );
+  Future<void> _onUseMyLocation() async {
+    setState(() => _isLocationLoading = true);
+    final position = await LocationPermissionHelper.requestAndGetPosition();
+    if (!mounted) return;
+    setState(() {
+      _isLocationLoading = false;
+      if (position != null) {
+        _useLocationLat = position.latitude;
+        _useLocationLng = position.longitude;
+        _selectedCountry = null;
+        _selectedCity = null;
       }
-    } catch (e) {
-      customToast(msg: 'Error in fake register: $e');
+    });
+    if (position == null) {
+      customToast(msg: AppTranslation.locationPermissionDenied);
     }
   }
 
-  // Original register function - kept for future use when real registration is needed
-  // ignore: unused_element
-  void _handleRegister() {
-    if (_formKey.currentState!.validate()) {
-      if (_selectedCountry == null) {
-        customToast(msg: AppTranslation.pleaseSelectCountry);
-        return;
-      }
-      if (_selectedCity == null) {
-        customToast(msg: AppTranslation.pleaseSelectCity);
-        return;
-      }
+  void _onClearDeviceLocation() {
+    setState(() {
+      _useLocationLat = null;
+      _useLocationLng = null;
+    });
+  }
 
-      context.read<RegisterBloc>().add(
-        RegisterSubmitted(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-          phone: _phoneController.text.trim(),
-          role: _selectedRole!,
-          countryId: _selectedCountry!.id,
-          cityId: _selectedCity!.id,
-          notificationChannel: _selectedNotificationChannel!,
-          address: _addressController.text.trim().isEmpty
-              ? null
-              : _addressController.text.trim(),
-        ),
-      );
+  /// Validates that either country+city or device location is set, then submits.
+  void _handleRegister() {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final hasCountryCity =
+        _selectedCountry != null && _selectedCity != null;
+    final hasDeviceLocation =
+        _useLocationLat != null && _useLocationLng != null;
+
+    if (!hasCountryCity && !hasDeviceLocation) {
+      customToast(msg: AppTranslation.pleaseSelectCountryOrLocation);
+      return;
     }
+
+    context.read<RegisterBloc>().add(
+          RegisterSubmitted(
+            firstName: _firstNameController.text.trim(),
+            lastName: _lastNameController.text.trim(),
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+            phone: _phoneController.text.trim(),
+            role: _selectedRole!,
+            countryId: _selectedCountry?.id,
+            cityId: _selectedCity?.id,
+            latitude: _useLocationLat,
+            longitude: _useLocationLng,
+            notificationChannel: _selectedNotificationChannel!,
+            address: _addressController.text.trim().isEmpty
+                ? null
+                : _addressController.text.trim(),
+          ),
+        );
   }
 
   @override
@@ -153,14 +159,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   selectedNotificationChannel: _selectedNotificationChannel,
                   selectedCountry: _selectedCountry,
                   selectedCity: _selectedCity,
+                  useLocationLatitude: _useLocationLat,
+                  useLocationLongitude: _useLocationLng,
                   onCountryChanged: _onCountryChanged,
                   onCityChanged: _onCityChanged,
+                  onUseMyLocation: _onUseMyLocation,
+                  onClearDeviceLocation: _onClearDeviceLocation,
                   onRoleChanged: (role) => setState(() => _selectedRole = role),
                   onNotificationChannelChanged: (channel) =>
                       setState(() => _selectedNotificationChannel = channel),
-                  onRegister:
-                      _handleFakeRegister, // Using fake register for testing
+                  onRegister: _handleRegister,
                   isLoading: state is RegisterLoading,
+                  isLocationLoading: _isLocationLoading,
                 ),
               ),
             ),

@@ -22,8 +22,10 @@ class RegisterRepository {
     required String password,
     required String phone,
     required String role,
-    required int countryId,
-    required int cityId,
+    int? countryId,
+    int? cityId,
+    double? latitude,
+    double? longitude,
     required String notificationChannel,
     String? address,
   }) async {
@@ -38,6 +40,8 @@ class RegisterRepository {
           role: role,
           countryId: countryId,
           cityId: cityId,
+          latitude: latitude,
+          longitude: longitude,
           notificationChannel: notificationChannel,
           address: address,
         );
