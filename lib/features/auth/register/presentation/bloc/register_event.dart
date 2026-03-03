@@ -20,6 +20,7 @@ class RegisterSubmitted extends RegisterEvent {
   final double? longitude;
   final String notificationChannel;
   final String? address;
+  final String? restaurantName;
 
   const RegisterSubmitted({
     required this.firstName,
@@ -34,6 +35,7 @@ class RegisterSubmitted extends RegisterEvent {
     this.longitude,
     required this.notificationChannel,
     this.address,
+    this.restaurantName,
   });
 
   @override
@@ -50,6 +52,7 @@ class RegisterSubmitted extends RegisterEvent {
         longitude,
         notificationChannel,
         address,
+        restaurantName,
       ];
 }
 

@@ -4,24 +4,30 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
+import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_location_card.dart';
 
 class ProfileForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
+  final UserEntity user;
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
   final TextEditingController phoneController;
   final TextEditingController addressController;
   final VoidCallback onUpdate;
+  final void Function(double latitude, double longitude)? onLocationPicked;
   final bool isLoading;
 
   const ProfileForm({
     super.key,
     required this.formKey,
+    required this.user,
     required this.firstNameController,
     required this.lastNameController,
     required this.phoneController,
     required this.addressController,
     required this.onUpdate,
+    this.onLocationPicked,
     required this.isLoading,
   });
 
@@ -55,7 +61,13 @@ class ProfileForm extends StatelessWidget {
             hintText: AppTranslation.enterAddress,
             controller: addressController,
           ),
-          SizedBox(height: AppHeight.s32),
+          SizedBox(height: AppHeight.s24),
+          if (onLocationPicked != null)
+            ProfileLocationCard(
+              user: user,
+              onLocationPicked: onLocationPicked!,
+            ),
+          if (onLocationPicked != null) SizedBox(height: AppHeight.s24),
           CustomButton(
             text: AppTranslation.save,
             onPressed: onUpdate,

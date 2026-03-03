@@ -28,6 +28,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           countryId: event.countryId,
           cityId: event.cityId,
           address: event.address,
+          latitude: event.latitude,
+          longitude: event.longitude,
         );
 
         result.fold(

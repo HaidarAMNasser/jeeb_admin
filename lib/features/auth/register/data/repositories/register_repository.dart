@@ -28,6 +28,7 @@ class RegisterRepository {
     double? longitude,
     required String notificationChannel,
     String? address,
+    String? restaurantName,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -44,6 +45,7 @@ class RegisterRepository {
           longitude: longitude,
           notificationChannel: notificationChannel,
           address: address,
+          restaurantName: restaurantName,
         );
 
         final apiResponse = ApiResponseModel<Map<String, dynamic>>.fromJson(

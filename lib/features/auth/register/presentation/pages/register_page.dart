@@ -30,6 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+  final _restaurantNameController = TextEditingController();
   String? _selectedRole = 'MERCHANT';
   String? _selectedNotificationChannel = 'EMAIL';
   CountryEntity? _selectedCountry;
@@ -46,6 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _passwordController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
+    _restaurantNameController.dispose();
     super.dispose();
   }
 
@@ -121,6 +123,9 @@ class _RegisterPageState extends State<RegisterPage> {
             address: _addressController.text.trim().isEmpty
                 ? null
                 : _addressController.text.trim(),
+            restaurantName: _restaurantNameController.text.trim().isEmpty
+                ? null
+                : _restaurantNameController.text.trim(),
           ),
         );
   }
@@ -155,6 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   passwordController: _passwordController,
                   phoneController: _phoneController,
                   addressController: _addressController,
+                  restaurantNameController: _restaurantNameController,
                   selectedRole: _selectedRole,
                   selectedNotificationChannel: _selectedNotificationChannel,
                   selectedCountry: _selectedCountry,

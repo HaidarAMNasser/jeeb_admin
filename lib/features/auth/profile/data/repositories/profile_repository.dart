@@ -57,6 +57,8 @@ class ProfileRepository {
     int? countryId,
     int? cityId,
     String? address,
+    double? latitude,
+    double? longitude,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -67,6 +69,8 @@ class ProfileRepository {
           countryId: countryId,
           cityId: cityId,
           address: address,
+          latitude: latitude,
+          longitude: longitude,
         );
 
         final apiResponse = ApiResponseModel<UserModel>.fromJson(

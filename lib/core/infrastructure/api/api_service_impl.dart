@@ -97,6 +97,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     double? longitude,
     String notificationChannel,
     String? address,
+    String? restaurantName,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -115,6 +116,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (latitude != null) data['latitude'] = latitude;
     if (longitude != null) data['longitude'] = longitude;
     if (address != null) data['address'] = address;
+    if (restaurantName != null && restaurantName.isNotEmpty) data['restaurantName'] = restaurantName;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -275,6 +277,8 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     int? countryId,
     int? cityId,
     String? address,
+    double? latitude,
+    double? longitude,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -286,6 +290,8 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (countryId != null) data['countryId'] = countryId;
     if (cityId != null) data['cityId'] = cityId;
     if (address != null) data['address'] = address;
+    if (latitude != null) data['latitude'] = latitude;
+    if (longitude != null) data['longitude'] = longitude;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(

@@ -22,6 +22,7 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController phoneController;
   final TextEditingController addressController;
+  final TextEditingController restaurantNameController;
   final String? selectedRole;
   final String? selectedNotificationChannel;
   final CountryEntity? selectedCountry;
@@ -47,6 +48,7 @@ class RegisterForm extends StatelessWidget {
     required this.passwordController,
     required this.phoneController,
     required this.addressController,
+    required this.restaurantNameController,
     this.selectedRole,
     this.selectedNotificationChannel,
     this.selectedCountry,
@@ -103,6 +105,11 @@ class RegisterForm extends StatelessWidget {
             title: AppTranslation.address,
             hintText: AppTranslation.enterAddress,
             controller: addressController,
+          ),
+          CustomTextField(
+            title: AppTranslation.restaurantName,
+            hintText: AppTranslation.enterRestaurantName,
+            controller: restaurantNameController,
           ),
           LocationSourceSelector(
             title: AppTranslation.location,

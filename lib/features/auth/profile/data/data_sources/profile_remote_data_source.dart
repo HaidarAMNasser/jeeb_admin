@@ -11,6 +11,8 @@ abstract class ProfileRemoteDataSource {
     int? countryId,
     int? cityId,
     String? address,
+    double? latitude,
+    double? longitude,
   });
 }
 
@@ -32,6 +34,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     int? countryId,
     int? cityId,
     String? address,
+    double? latitude,
+    double? longitude,
   }) {
     return _appApiServiceClient.updateProfile(
       firstName,
@@ -40,6 +44,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       countryId,
       cityId,
       address,
+      latitude,
+      longitude,
     );
   }
 }

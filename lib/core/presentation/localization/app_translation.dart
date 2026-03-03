@@ -115,6 +115,8 @@ class AppTranslation {
   static String get enterPhone => 'enter_phone'.tr();
   static String get address => 'address'.tr();
   static String get enterAddress => 'enter_address'.tr();
+  static String get restaurantName => 'restaurant_name'.tr();
+  static String get enterRestaurantName => 'enter_restaurant_name'.tr();
   static String get selectCountry => 'select_country'.tr();
   static String get selectCity => 'select_city'.tr();
   static String get notificationChannel => 'notification_channel'.tr();
@@ -157,6 +159,10 @@ class AppTranslation {
       'please_select_country_or_location'.tr();
   static String get locationPermissionDenied => 'location_permission_denied'.tr();
   static String get locationUnavailable => 'location_unavailable'.tr();
+  static String get chooseLocationOnMap => 'choose_location_on_map'.tr();
+  static String get updateLocation => 'update_location'.tr();
+  static String get currentLocation => 'current_location'.tr();
+  static String get noLocationSet => 'no_location_set'.tr();
 
   // Delivery
   static String get deliveryMen => 'delivery_men'.tr();

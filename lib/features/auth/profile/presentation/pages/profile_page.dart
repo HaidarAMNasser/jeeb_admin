@@ -74,6 +74,15 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _handleLocationPicked(double latitude, double longitude) {
+    context.read<ProfileBloc>().add(
+          UpdateProfile(
+            latitude: latitude,
+            longitude: longitude,
+          ),
+        );
+  }
+
   void _handleLogout() {
     context.read<LogoutBloc>().add(const LogoutSubmitted());
   }
@@ -92,10 +101,12 @@ class _ProfilePageState extends State<ProfilePage> {
     if (selectedLanguage != null && selectedLanguage != currentLanguage && mounted) {
       // Save selected language
       await storageService.setAppLanguage(selectedLanguage);
-      
+
+      if (!context.mounted) return;
       // Update app locale
       await context.setLocale(Locale(selectedLanguage));
-      
+
+      if (!context.mounted) return;
       // Show success message
       customToast(msg: AppTranslation.languageChangedSuccessfully);
       
@@ -175,11 +186,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           SizedBox(height: AppHeight.s32),
                           ProfileForm(
                             formKey: _formKey,
+                            user: loadedState.user,
                             firstNameController: _firstNameController,
                             lastNameController: _lastNameController,
                             phoneController: _phoneController,
                             addressController: _addressController,
                             onUpdate: _handleUpdateProfile,
+                            onLocationPicked: _handleLocationPicked,
                             isLoading: isUpdateLoading,
                           ),
                           SizedBox(height: AppHeight.s24),

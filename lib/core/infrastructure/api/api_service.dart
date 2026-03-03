@@ -38,6 +38,7 @@ abstract class AppApiServiceClient {
     @Field('longitude') double? longitude,
     @Field('notificationChannel') String notificationChannel,
     @Field('address') String? address,
+    @Field('restaurantName') String? restaurantName,
   );
 
   @POST("auth/verify")
@@ -70,6 +71,8 @@ abstract class AppApiServiceClient {
     @Field('countryId') int? countryId,
     @Field('cityId') int? cityId,
     @Field('address') String? address,
+    @Field('latitude') double? latitude,
+    @Field('longitude') double? longitude,
   );
 
   @POST("auth/logout")

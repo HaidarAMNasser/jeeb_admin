@@ -25,6 +25,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           longitude: event.longitude,
           notificationChannel: event.notificationChannel,
           address: event.address,
+          restaurantName: event.restaurantName,
         );
 
         result.fold(

@@ -15,6 +15,7 @@ abstract class RegisterRemoteDataSource {
     double? longitude,
     required String notificationChannel,
     String? address,
+    String? restaurantName,
   });
 }
 
@@ -37,6 +38,7 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
     double? longitude,
     required String notificationChannel,
     String? address,
+    String? restaurantName,
   }) {
     return _appApiServiceClient.register(
       firstName,
@@ -51,6 +53,7 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
       longitude,
       notificationChannel,
       address,
+      restaurantName,
     );
   }
 }
