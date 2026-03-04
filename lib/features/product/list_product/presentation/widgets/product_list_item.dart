@@ -1,18 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_input_dialog.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
+import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 
 class ProductListItem extends StatelessWidget {
   final ProductEntity product;
 
   const ProductListItem({super.key, required this.product});
+
+  Future<void> _onConfirmProduct(BuildContext context) async {
+    final currentPrice =
+        (product.price / 100).toStringAsFixed(2); // smallest unit → major
+
+    final result = await CustomInputDialog.show(
+      context: context,
+      title: AppTranslation.confirmProduct,
+      label: AppTranslation.newPrice,
+      hintText: AppTranslation.enterNewPrice,
+      initialValue: currentPrice,
+      keyboardType:
+          const TextInputType.numberWithOptions(decimal: true, signed: false),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return AppTranslation.pleaseEnterProductPrice;
+        }
+        final parsed = double.tryParse(value.replaceAll(',', ''));
+        if (parsed == null || parsed <= 0) {
+          return AppTranslation.invalidProductPrice;
+        }
+        return null;
+      },
+    );
+
+    if (result == null || result.isEmpty) return;
+
+    final newPrice = double.parse(result.replaceAll(',', ''));
+
+    context.read<ConfirmProductBloc>().add(
+          ConfirmProductSubmitted(
+            productId: product.id,
+            newPrice: newPrice,
+          ),
+        );
+
+    customToast(msg: AppTranslation.productConfirming);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +195,36 @@ class ProductListItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomText(
-                    text: '\$${product.price.toStringAsFixed(2)}',
+                    text:
+                        '\$${(product.price / 100).toStringAsFixed(2)}', // convert smallest unit
                     textStyle: getBoldStyle(
                       fontSize: AppFontSize.s20,
+                      color: ColorManager.primary,
+                    ),
+                  ),
+                ),
+                SizedBox(width: AppWidth.s8),
+                OutlinedButton.icon(
+                  onPressed: () => _onConfirmProduct(context),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: ColorManager.primary),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.r20),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppPadding.p12,
+                      vertical: AppHeight.s8,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.check_circle_outline,
+                    size: AppSize.s16,
+                    color: ColorManager.primary,
+                  ),
+                  label: CustomText(
+                    text: AppTranslation.confirmProduct,
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppFontSize.s12,
                       color: ColorManager.primary,
                     ),
                   ),

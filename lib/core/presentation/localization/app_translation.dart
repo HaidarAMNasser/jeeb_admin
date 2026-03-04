@@ -80,6 +80,11 @@ class AppTranslation {
   static String get deleteProduct => 'delete_product'.tr();
   static String get areYouSureDeleteProduct => 'are_you_sure_delete_product'.tr();
   static String get areYouSureWantToDeleteThisProduct => 'are_you_sure_want_to_delete_this_product'.tr();
+  static String get productConfirmedSuccessfully => 'product_confirmed_successfully'.tr();
+  static String get confirmProduct => 'confirm_product'.tr();
+  static String get newPrice => 'new_price'.tr();
+  static String get enterNewPrice => 'enter_new_price'.tr();
+  static String get productConfirming => 'product_confirming'.tr();
   static String get delete => 'delete'.tr();
   static String get edit => 'edit'.tr();
   static String get merchantDeletedSuccessfully => 'merchant_deleted_successfully'.tr();

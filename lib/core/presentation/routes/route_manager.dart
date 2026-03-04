@@ -19,6 +19,8 @@ import '../../../features/product/delete_product/data/repositories/delete_produc
 import '../../../features/product/product_details/presentation/pages/product_details_page.dart';
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
+import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
 import '../../../features/auth/login/presentation/pages/login_page.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
 import '../../../features/auth/register/presentation/pages/register_page.dart';
@@ -148,12 +150,19 @@ class AppRouter {
         );
 
       case Routes.products:
-        return _buildRouteWithBloc(
+        return _buildRouteWithBlocs(
           const ListProductPage(),
           settings,
-          bloc: () =>
-              ListProductBloc(di.sl<ListProductRepository>())
-                ..add(const GetProductsEvent()),
+          providers: [
+            BlocProvider<ListProductBloc>(
+              create: (_) =>
+                  ListProductBloc(di.sl<ListProductRepository>())
+                    ..add(const GetProductsEvent()),
+            ),
+            BlocProvider<ConfirmProductBloc>(
+              create: (_) => di.sl<ConfirmProductBloc>(),
+            ),
+          ],
         );
 
       case Routes.addProduct:

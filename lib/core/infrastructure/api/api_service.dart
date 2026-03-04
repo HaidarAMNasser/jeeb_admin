@@ -104,6 +104,13 @@ abstract class AppApiServiceClient {
   @PATCH("products/{id}")
   Future<Response> updateProduct(@Path('id') String id, FormData formData);
 
+  /// Confirm product and set final price so it becomes visible to clients.
+  @POST("products/{id}/confirm")
+  Future<Response> confirmProduct(
+    @Path('id') String id,
+    @Field('newPrice') double newPrice,
+  );
+
   @DELETE("products/{id}")
   Future<Response> deleteProduct(@Path('id') String id);
 

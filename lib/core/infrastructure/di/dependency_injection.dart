@@ -75,6 +75,9 @@ import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dar
 import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
 import '../../../features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
+import '../../../features/product/confirm_product/data/data_sources/confirm_product_data_source.dart';
+import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
+import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -118,6 +121,13 @@ Future<void> init() async {
     () => ListProductRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => ListProductRepository(sl(), sl()));
+
+  //! Product Confirm Dependencies
+  sl.registerFactory<ConfirmProductRemoteDataSource>(
+    () => ConfirmProductRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ConfirmProductRepository(sl(), sl()));
+  sl.registerFactory(() => ConfirmProductBloc(sl()));
 
   //! Product Details Dependencies
   sl.registerFactory<ProductDetailsRemoteDataSource>(
