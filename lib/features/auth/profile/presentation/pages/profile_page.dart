@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
@@ -16,8 +19,10 @@ import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as 
 import 'package:easy_localization/easy_localization.dart';
 import '../bloc/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
+import '../pages/location_map_picker_page.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -34,6 +39,8 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   bool _isProfileLoaded = false;
+  /// Set true when we dispatch UpdateProfile; only then show "profile updated" toast.
+  bool _pendingUpdateSuccess = false;
 
   @override
   void initState() {
@@ -61,6 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _handleUpdateProfile() {
     if (_formKey.currentState!.validate()) {
+      _pendingUpdateSuccess = true;
       context.read<ProfileBloc>().add(
             UpdateProfile(
               firstName: _firstNameController.text.trim(),
@@ -75,6 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _handleLocationPicked(double latitude, double longitude) {
+    _pendingUpdateSuccess = true;
     context.read<ProfileBloc>().add(
           UpdateProfile(
             latitude: latitude,
@@ -83,8 +92,82 @@ class _ProfilePageState extends State<ProfilePage> {
         );
   }
 
+  void _handleActiveChanged(bool isActive) {
+    _pendingUpdateSuccess = true;
+    context.read<ProfileBloc>().add(UpdateProfile(isActive: isActive));
+  }
+
   void _handleLogout() {
     context.read<LogoutBloc>().add(const LogoutSubmitted());
+  }
+
+  Future<void> _openMapPicker(UserEntity user) async {
+    final result = await Navigator.of(context).push<LocationMapPickerResult>(
+      MaterialPageRoute(
+        builder: (context) => LocationMapPickerPage(
+          initialLatitude: user.currentLat,
+          initialLongitude: user.currentLng,
+        ),
+      ),
+    );
+    if (result != null && mounted) {
+      _handleLocationPicked(result.latitude, result.longitude);
+    }
+  }
+
+  Future<void> _showAccountStatusDialog(UserEntity user) async {
+    final isActive = user.isActive ?? true;
+    final newValue = await showDialog<bool>(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.r20),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(AppPadding.p24),
+          decoration: BoxDecoration(
+            color: ColorManager.background,
+            borderRadius: BorderRadius.circular(AppRadius.r20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CustomText(
+                text: AppTranslation.accountStatus,
+                textStyle: getBoldStyle(
+                  fontSize: AppFontSize.s18,
+                  color: ColorManager.titlesColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: AppHeight.s24),
+              _AccountStatusOption(
+                label: AppTranslation.accountActive,
+                isSelected: isActive,
+                onTap: () => Navigator.of(context).pop(true),
+              ),
+              SizedBox(height: AppHeight.s16),
+              _AccountStatusOption(
+                label: AppTranslation.accountInactive,
+                isSelected: !isActive,
+                onTap: () => Navigator.of(context).pop(false),
+              ),
+              SizedBox(height: AppHeight.s24),
+              CustomButton(
+                text: AppTranslation.close,
+                onPressed: () => Navigator.of(context).pop(),
+                isOutlined: true,
+                color: ColorManager.primary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (newValue != null && mounted) {
+      _handleActiveChanged(newValue);
+    }
   }
 
   Future<void> _handleChangeLanguage() async {
@@ -142,8 +225,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 _phoneController.text = state.user.phone;
                 _addressController.text = state.user.address ?? '';
                 _isProfileLoaded = true;
-              } else {
-                // This is an update after initial load, show success toast
+              } else if (_pendingUpdateSuccess) {
+                _pendingUpdateSuccess = false;
                 customToast(msg: AppTranslation.profileUpdatedSuccess);
               }
             } else if (state is ProfileError) {
@@ -192,9 +275,26 @@ class _ProfilePageState extends State<ProfilePage> {
                             phoneController: _phoneController,
                             addressController: _addressController,
                             onUpdate: _handleUpdateProfile,
-                            onLocationPicked: _handleLocationPicked,
                             isLoading: isUpdateLoading,
                           ),
+                          SizedBox(height: AppHeight.s24),
+                          CustomButton(
+                            text: AppTranslation.updateLocation,
+                            onPressed: () => _openMapPicker(loadedState.user),
+                            isLoading: false,
+                            color: ColorManager.primary,
+                            isOutlined: true,
+                          ),
+                          if (loadedState.user.role == UserRole.merchant) ...[
+                            SizedBox(height: AppHeight.s16),
+                            CustomButton(
+                              text: AppTranslation.accountStatus,
+                              onPressed: () => _showAccountStatusDialog(loadedState.user),
+                              isLoading: false,
+                              color: ColorManager.primary,
+                              isOutlined: true,
+                            ),
+                          ],
                           SizedBox(height: AppHeight.s24),
                           CustomButton(
                             text: AppTranslation.changeLanguage,
@@ -222,6 +322,61 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     );
   }
+}
 
+class _AccountStatusOption extends StatelessWidget {
+  const _AccountStatusOption({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.r12),
+      child: Container(
+        padding: EdgeInsets.all(AppPadding.p16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? ColorManager.primary.withOpacity(0.1)
+              : ColorManager.background,
+          border: Border.all(
+            color: isSelected
+                ? ColorManager.primary
+                : ColorManager.borderColor,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(AppRadius.r12),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: CustomText(
+                text: label,
+                textStyle: getSemiBoldStyle(
+                  fontSize: AppFontSize.s18,
+                  color: isSelected
+                      ? ColorManager.primary
+                      : ColorManager.titlesColor,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: ColorManager.primary,
+                size: AppSize.s24,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 

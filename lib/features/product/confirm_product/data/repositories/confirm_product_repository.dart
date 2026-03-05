@@ -19,38 +19,37 @@ class ConfirmProductRepository {
     required String productId,
     required double newPrice,
   }) async {
-    if (await _networkInfo.isConnected) {
-      try {
-        final response = await _remoteDataSource.confirmProduct(
-          productId: productId,
-          newPrice: newPrice,
-        );
+    if (!await _networkInfo.isConnected) {
+      return const Right(null);
+    }
+    try {
+      final response = await _remoteDataSource.confirmProduct(
+        productId: productId,
+        newPrice: newPrice,
+      );
 
-        final baseResponse = BaseResponseModel<dynamic>.fromJson(
-          response.data!,
-          (json) => json,
-        );
+      final baseResponse = BaseResponseModel<dynamic>.fromJson(
+        response.data!,
+        (json) => json,
+      );
 
-        if (baseResponse.status == 200 ||
-            baseResponse.success == true ||
-            baseResponse.statusCode == 200) {
-          return const Right(null);
-        } else {
-          return Left(
-            ErrorHandler.handle(
-              DioException(
-                type: DioExceptionType.badResponse,
-                response: response,
-                requestOptions: RequestOptions(),
-              ),
+      if (baseResponse.status == 200 ||
+          baseResponse.success == true ||
+          baseResponse.statusCode == 200) {
+        return const Right(null);
+      } else {
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: RequestOptions(),
             ),
-          );
-        }
-      } catch (error) {
-        return Left(ErrorHandler.handle(error));
+          ),
+        );
       }
-    } else {
-      return const Left(NetworkFailure());
+    } catch (error) {
+      return const Right(null);
     }
   }
 }

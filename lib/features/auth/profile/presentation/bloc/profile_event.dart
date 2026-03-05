@@ -20,6 +20,7 @@ class UpdateProfile extends ProfileEvent {
   final String? address;
   final double? latitude;
   final double? longitude;
+  final bool? isActive;
 
   const UpdateProfile({
     this.firstName,
@@ -30,6 +31,7 @@ class UpdateProfile extends ProfileEvent {
     this.address,
     this.latitude,
     this.longitude,
+    this.isActive,
   });
 
   @override
@@ -42,6 +44,7 @@ class UpdateProfile extends ProfileEvent {
         address,
         latitude,
         longitude,
+        isActive,
       ];
 }
 

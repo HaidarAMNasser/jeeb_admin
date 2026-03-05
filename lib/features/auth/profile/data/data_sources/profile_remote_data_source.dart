@@ -13,6 +13,7 @@ abstract class ProfileRemoteDataSource {
     String? address,
     double? latitude,
     double? longitude,
+    bool? isActive,
   });
 }
 
@@ -36,6 +37,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     String? address,
     double? latitude,
     double? longitude,
+    bool? isActive,
   }) {
     return _appApiServiceClient.updateProfile(
       firstName,
@@ -46,6 +48,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       address,
       latitude,
       longitude,
+      isActive,
     );
   }
 }

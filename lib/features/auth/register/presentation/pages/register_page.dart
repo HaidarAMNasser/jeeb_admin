@@ -8,6 +8,10 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
@@ -93,41 +97,32 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  /// Validates that either country+city or device location is set, then submits.
-  void _handleRegister() {
+  /// Register button: go to home directly (dev/build flow).
+  Future<void> _handleRegister() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    final hasCountryCity =
-        _selectedCountry != null && _selectedCity != null;
-    final hasDeviceLocation =
-        _useLocationLat != null && _useLocationLng != null;
-
-    if (!hasCountryCity && !hasDeviceLocation) {
-      customToast(msg: AppTranslation.pleaseSelectCountryOrLocation);
-      return;
+    try {
+      final storage = di.sl<StorageService>();
+      await storage.setUserToken('dev_access_token');
+      await storage.setUserRole(UserRole.merchant.name);
+      if (!mounted) return;
+      NavigationService().pushNamedAndRemoveUntil(Routes.mainNavigation);
+    } catch (e) {
+      if (mounted) customToast(msg: 'Could not continue: $e');
     }
+  }
 
-    context.read<RegisterBloc>().add(
-          RegisterSubmitted(
-            firstName: _firstNameController.text.trim(),
-            lastName: _lastNameController.text.trim(),
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
-            phone: _phoneController.text.trim(),
-            role: _selectedRole!,
-            countryId: _selectedCountry?.id,
-            cityId: _selectedCity?.id,
-            latitude: _useLocationLat,
-            longitude: _useLocationLng,
-            notificationChannel: _selectedNotificationChannel!,
-            address: _addressController.text.trim().isEmpty
-                ? null
-                : _addressController.text.trim(),
-            restaurantName: _restaurantNameController.text.trim().isEmpty
-                ? null
-                : _restaurantNameController.text.trim(),
-          ),
-        );
+  /// Skip registration and go to app home (for development / building).
+  Future<void> _handleAccessApp() async {
+    try {
+      final storage = di.sl<StorageService>();
+      await storage.setUserToken('dev_access_token');
+      await storage.setUserRole(UserRole.merchant.name);
+      if (!mounted) return;
+      NavigationService().pushNamedAndRemoveUntil(Routes.mainNavigation);
+    } catch (e) {
+      if (mounted) customToast(msg: 'Could not access app: $e');
+    }
   }
 
   @override
@@ -152,7 +147,10 @@ class _RegisterPageState extends State<RegisterPage> {
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(AppPadding.p24),
-                child: RegisterForm(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    RegisterForm(
                   formKey: _formKey,
                   firstNameController: _firstNameController,
                   lastNameController: _lastNameController,
@@ -177,6 +175,21 @@ class _RegisterPageState extends State<RegisterPage> {
                   onRegister: _handleRegister,
                   isLoading: state is RegisterLoading,
                   isLocationLoading: _isLocationLoading,
+                ),
+                    SizedBox(height: AppHeight.s16),
+                    Center(
+                      child: TextButton(
+                        onPressed: _handleAccessApp,
+                        child: Text(
+                          'Access app',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: ColorManager.descriptionColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

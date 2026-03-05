@@ -279,6 +279,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     String? address,
     double? latitude,
     double? longitude,
+    bool? isActive,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -292,6 +293,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (address != null) data['address'] = address;
     if (latitude != null) data['latitude'] = latitude;
     if (longitude != null) data['longitude'] = longitude;
+    if (isActive != null) data['isActive'] = isActive;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(

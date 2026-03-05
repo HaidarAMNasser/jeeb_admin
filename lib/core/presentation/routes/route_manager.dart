@@ -202,6 +202,13 @@ class AppRouter {
               create: (_) =>
                   ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
             ),
+            BlocProvider<ConfirmProductBloc>(
+              create: (_) => di.sl<ConfirmProductBloc>(),
+            ),
+            BlocProvider<DeleteProductBloc>(
+              create: (_) =>
+                  DeleteProductBloc(di.sl<DeleteProductRepository>()),
+            ),
           ],
         );
 

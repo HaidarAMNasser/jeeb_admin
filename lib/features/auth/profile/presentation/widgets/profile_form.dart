@@ -5,7 +5,6 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
-import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_location_card.dart';
 
 class ProfileForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -15,7 +14,6 @@ class ProfileForm extends StatelessWidget {
   final TextEditingController phoneController;
   final TextEditingController addressController;
   final VoidCallback onUpdate;
-  final void Function(double latitude, double longitude)? onLocationPicked;
   final bool isLoading;
 
   const ProfileForm({
@@ -26,8 +24,7 @@ class ProfileForm extends StatelessWidget {
     required this.lastNameController,
     required this.phoneController,
     required this.addressController,
-    required this.onUpdate,
-    this.onLocationPicked,
+    required     this.onUpdate,
     required this.isLoading,
   });
 
@@ -62,12 +59,6 @@ class ProfileForm extends StatelessWidget {
             controller: addressController,
           ),
           SizedBox(height: AppHeight.s24),
-          if (onLocationPicked != null)
-            ProfileLocationCard(
-              user: user,
-              onLocationPicked: onLocationPicked!,
-            ),
-          if (onLocationPicked != null) SizedBox(height: AppHeight.s24),
           CustomButton(
             text: AppTranslation.save,
             onPressed: onUpdate,

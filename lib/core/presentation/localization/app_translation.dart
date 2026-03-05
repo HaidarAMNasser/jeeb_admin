@@ -168,6 +168,11 @@ class AppTranslation {
   static String get updateLocation => 'update_location'.tr();
   static String get currentLocation => 'current_location'.tr();
   static String get noLocationSet => 'no_location_set'.tr();
+  static String get accountStatus => 'account_status'.tr();
+  static String get accountActive => 'account_active'.tr();
+  static String get accountInactive => 'account_inactive'.tr();
+  static String get activateAccount => 'activate_account'.tr();
+  static String get deactivateAccount => 'deactivate_account'.tr();
 
   // Delivery
   static String get deliveryMen => 'delivery_men'.tr();

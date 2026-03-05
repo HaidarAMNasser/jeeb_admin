@@ -4,9 +4,13 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/core/common/classes/user_roles.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
@@ -21,13 +25,23 @@ class ListProductPage extends StatefulWidget {
 
 class _ListProductPageState extends State<ListProductPage> {
   final ScrollController _scrollController = ScrollController();
+  /// Only true for admin; confirm product action is admin-only.
+  bool _showConfirmProduct = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Load initial products
+    _loadUserRole();
     context.read<ListProductBloc>().add(const GetProductsEvent());
+  }
+
+  Future<void> _loadUserRole() async {
+    final role = await di.sl<StorageService>().getUserRole();
+    if (!mounted) return;
+    setState(() {
+      _showConfirmProduct = role == UserRoles.admin.name;
+    });
   }
 
   @override
@@ -52,79 +66,94 @@ class _ListProductPageState extends State<ListProductPage> {
     }
   }
 
+  Widget _buildProductList(BuildContext context) {
+    return BlocBuilder<ListProductBloc, ListProductState>(
+      builder: (context, state) {
+        return BlocStateHandler<ListProductBloc, ListProductState>(
+          bloc: context.read<ListProductBloc>(),
+          isLoading: (state) => state is ListProductLoading,
+          isError: (state) => state is ListProductError,
+          getErrorMessage: (state) => (state as ListProductError).message,
+          isSuccess: (state) =>
+              state is ListProductLoaded || state is ListProductLoadingMore,
+          isEmpty: (state) {
+            if (state is ListProductLoaded) return state.products.isEmpty;
+            if (state is ListProductLoadingMore) return state.products.isEmpty;
+            return false;
+          },
+          emptyMessage: AppTranslation.noProductsFound,
+          getRetryCallback: (state) => () {
+            context.read<ListProductBloc>().add(const GetProductsEvent());
+          },
+          successBuilder: (context, productState) {
+            final products = productState is ListProductLoaded
+                ? productState.products
+                : (productState as ListProductLoadingMore).products;
+            final hasMore = productState is ListProductLoaded
+                ? productState.hasMore
+                : false;
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<ListProductBloc>().add(const GetProductsEvent());
+              },
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.all(AppPadding.p16),
+                itemCount: products.length + (hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == products.length) {
+                    return Padding(
+                      padding: EdgeInsets.all(AppPadding.p16),
+                      child: const CustomCircleIndicator(),
+                    );
+                  }
+                  final product = products[index];
+                  return ProductListItem(
+                    product: product,
+                    showConfirmProduct: _showConfirmProduct,
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final body = _showConfirmProduct
+        ? BlocListener<ConfirmProductBloc, ConfirmProductState>(
+            listener: (context, state) {
+              if (state is ConfirmProductSuccess) {
+                customToast(msg: AppTranslation.productConfirmedSuccessfully);
+                context.read<ListProductBloc>().add(const GetProductsEvent());
+              } else if (state is ConfirmProductError) {
+                customToast(msg: state.message);
+              }
+            },
+            child: BlocBuilder<ConfirmProductBloc, ConfirmProductState>(
+              builder: (context, confirmState) {
+                return ModalProgressHUD(
+                  progressIndicator: const CustomCircleIndicator(),
+                  inAsyncCall: confirmState is ConfirmProductLoading,
+                  child: _buildProductList(context),
+                );
+              },
+            ),
+          )
+        : ModalProgressHUD(
+            progressIndicator: const CustomCircleIndicator(),
+            inAsyncCall: false,
+            child: _buildProductList(context),
+          );
+
     return Scaffold(
       backgroundColor: ColorManager.background,
       appBar: CustomAppBar(title: AppTranslation.products),
-      body: BlocListener<ConfirmProductBloc, ConfirmProductState>(
-        listener: (context, state) {
-          if (state is ConfirmProductSuccess) {
-            customToast(msg: AppTranslation.productConfirmedSuccessfully);
-            context.read<ListProductBloc>().add(const GetProductsEvent());
-          } else if (state is ConfirmProductError) {
-            customToast(msg: state.message);
-          }
-        },
-        child: BlocBuilder<ListProductBloc, ListProductState>(
-          builder: (context, state) {
-            return BlocStateHandler<ListProductBloc, ListProductState>(
-              bloc: context.read<ListProductBloc>(),
-              isLoading: (state) => state is ListProductLoading,
-              isError: (state) => state is ListProductError,
-              getErrorMessage: (state) => (state as ListProductError).message,
-              isSuccess: (state) =>
-                  state is ListProductLoaded || state is ListProductLoadingMore,
-              isEmpty: (state) {
-                if (state is ListProductLoaded) {
-                  return state.products.isEmpty;
-                }
-                if (state is ListProductLoadingMore) {
-                  return state.products.isEmpty;
-                }
-                return false;
-              },
-              emptyMessage: AppTranslation.noProductsFound,
-              getRetryCallback: (state) => () {
-                context.read<ListProductBloc>().add(const GetProductsEvent());
-              },
-              successBuilder: (context, productState) {
-                final products = productState is ListProductLoaded
-                    ? productState.products
-                    : (productState as ListProductLoadingMore).products;
-                final hasMore = productState is ListProductLoaded
-                    ? productState.hasMore
-                    : false;
-
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    context
-                        .read<ListProductBloc>()
-                        .add(const GetProductsEvent());
-                  },
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: EdgeInsets.all(AppPadding.p16),
-                    itemCount: products.length + (hasMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == products.length) {
-                        // Loading more indicator
-                        return Padding(
-                          padding: EdgeInsets.all(AppPadding.p16),
-                          child: const CustomCircleIndicator(),
-                        );
-                      }
-
-                      final product = products[index];
-                      return ProductListItem(product: product);
-                    },
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
+      body: body,
       floatingActionButton: FloatingActionButton(
         backgroundColor: ColorManager.primary,
         onPressed: () {

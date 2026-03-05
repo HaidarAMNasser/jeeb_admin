@@ -44,7 +44,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       );
     }
 
-    // Route based on user role
+    // Route based on user role (ConfirmProductBloc only provided for admin flow via routes)
     if (_userRole == UserRoles.merchant.name) {
       return const MerchantNavigation();
     } else if (_userRole == UserRoles.admin.name) {

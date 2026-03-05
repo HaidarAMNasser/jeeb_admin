@@ -73,6 +73,7 @@ abstract class AppApiServiceClient {
     @Field('address') String? address,
     @Field('latitude') double? latitude,
     @Field('longitude') double? longitude,
+    @Field('isActive') bool? isActive,
   );
 
   @POST("auth/logout")

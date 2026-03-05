@@ -6,6 +6,8 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 
 /// Default center when no initial location (Cairo).
 const LatLng _defaultCenter = LatLng(30.0444, 31.2357);
@@ -38,6 +40,8 @@ class LocationMapPickerPage extends StatefulWidget {
 class _LocationMapPickerPageState extends State<LocationMapPickerPage> {
   final MapController _mapController = MapController();
   late LatLng _selectedPoint;
+  static const double _zoom = 14;
+  bool _isLoadingLocation = false;
 
   @override
   void initState() {
@@ -53,6 +57,20 @@ class _LocationMapPickerPageState extends State<LocationMapPickerPage> {
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {
     setState(() => _selectedPoint = point);
+  }
+
+  Future<void> _goToMyLocation() async {
+    setState(() => _isLoadingLocation = true);
+    final position = await LocationPermissionHelper.requestAndGetPosition();
+    if (!mounted) return;
+    setState(() => _isLoadingLocation = false);
+    if (position != null) {
+      final point = LatLng(position.latitude, position.longitude);
+      setState(() => _selectedPoint = point);
+      _mapController.move(point, _zoom);
+    } else if (mounted) {
+      customToast(msg: AppTranslation.locationPermissionDenied);
+    }
   }
 
   void _onConfirm() {
@@ -121,6 +139,14 @@ class _LocationMapPickerPageState extends State<LocationMapPickerPage> {
                     ),
                   ),
                   SizedBox(height: AppHeight.s16),
+                  CustomButton(
+                    text: AppTranslation.useMyLocation,
+                    onPressed: _goToMyLocation,
+                    isLoading: _isLoadingLocation,
+                    color: ColorManager.primary,
+                    isOutlined: true,
+                  ),
+                  SizedBox(height: AppHeight.s12),
                   CustomButton(
                     text: AppTranslation.confirm,
                     onPressed: _onConfirm,

@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_input_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/core/common/classes/user_roles.dart';
 import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
-import 'package:jeeb_admin/features/product/create_product/presentation/pages/create_product_page.dart';
+import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import 'package:jeeb_admin/features/product/delete_product/presentation/bloc/delete_product_bloc.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final String productId;
@@ -17,50 +29,220 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
+  bool _isAdmin = false;
+
   @override
   void initState() {
     super.initState();
-    // Fetch product details when page loads
+    _loadUserRole();
     context.read<ProductDetailsBloc>().add(
-      GetProductDetailsEvent(id: widget.productId),
+          GetProductDetailsEvent(id: widget.productId),
+        );
+  }
+
+  Future<void> _loadUserRole() async {
+    final role = await di.sl<StorageService>().getUserRole();
+    if (!mounted) return;
+    setState(() => _isAdmin = role == UserRoles.admin.name);
+  }
+
+  Future<void> _showConfirmDialog(BuildContext context, ProductDetailsLoaded state) async {
+    final product = state.product;
+    final currentPrice = (product.price / 100).toStringAsFixed(2);
+
+    final result = await CustomInputDialog.show(
+      context: context,
+      title: AppTranslation.confirmProduct,
+      label: AppTranslation.newPrice,
+      hintText: AppTranslation.enterNewPrice,
+      initialValue: currentPrice,
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: false,
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return AppTranslation.pleaseEnterProductPrice;
+        }
+        final parsed = double.tryParse(value.replaceAll(',', ''));
+        if (parsed == null || parsed <= 0) {
+          return AppTranslation.invalidProductPrice;
+        }
+        return null;
+      },
+    );
+
+    if (result == null || result.isEmpty) return;
+
+    final newPrice = double.parse(result.replaceAll(',', ''));
+
+    context.read<ConfirmProductBloc>().add(
+          ConfirmProductSubmitted(
+            productId: product.id,
+            newPrice: newPrice,
+          ),
+        );
+  }
+
+  void _showDeleteDialog(BuildContext context, ProductDetailsLoaded state) {
+    ConfirmationDialog.show(
+      context: context,
+      title: AppTranslation.areYouSureWantToDeleteThisProduct,
+      confirmText: AppTranslation.delete,
+      confirmColor: ColorManager.primary,
+      onConfirm: () {
+        context.read<DeleteProductBloc>().add(
+              DeleteProductSubmitted(productId: state.product.id),
+            );
+      },
+    );
+  }
+
+  void _onEditProduct(BuildContext context, ProductDetailsLoaded state) {
+    context.pushReplacementNamed(
+      Routes.addProduct,
+      arguments: {'product': state.product},
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorManager.background,
-      appBar: CustomAppBar(title: AppTranslation.productDetails),
-      body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
-        bloc: context.read<ProductDetailsBloc>(),
-        isLoading: (state) => state is ProductDetailsLoading,
-        isError: (state) => state is ProductDetailsError,
-        getErrorMessage: (state) => (state as ProductDetailsError).message,
-        isSuccess: (state) => state is ProductDetailsLoaded,
-        getRetryCallback: (state) => () {
-          context.read<ProductDetailsBloc>().add(
-            GetProductDetailsEvent(id: widget.productId),
-          );
-        },
-        successBuilder: (context, productState) {
-          final loadedState = productState as ProductDetailsLoaded;
-
-          // Navigate to create product page in edit mode
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      CreateProductPage(product: loadedState.product),
-                ),
-              );
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ConfirmProductBloc, ConfirmProductState>(
+          listener: (context, state) {
+            if (state is ConfirmProductSuccess) {
+              customToast(msg: AppTranslation.productConfirmedSuccessfully);
+              context.read<ProductDetailsBloc>().add(
+                    GetProductDetailsEvent(id: widget.productId),
+                  );
+            } else if (state is ConfirmProductError) {
+              customToast(msg: state.message);
             }
-          });
-          // Show loading while navigating
-          return const CustomCircleIndicator();
+          },
+        ),
+        BlocListener<DeleteProductBloc, DeleteProductState>(
+          listener: (context, state) {
+            if (state is DeleteProductSuccess) {
+              customToast(msg: AppTranslation.productDeletedSuccessfully);
+              context.pushNamed(Routes.products);
+            } else if (state is DeleteProductError) {
+              customToast(msg: state.message);
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<ConfirmProductBloc, ConfirmProductState>(
+        builder: (context, confirmState) {
+          return ModalProgressHUD(
+            progressIndicator: const CustomCircleIndicator(),
+            inAsyncCall: confirmState is ConfirmProductLoading,
+            child: Scaffold(
+              backgroundColor: ColorManager.background,
+              appBar: CustomAppBar(
+                title: AppTranslation.productDetails,
+                actions: [
+                  BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
+              builder: (context, state) {
+                if (state is! ProductDetailsLoaded) {
+                  return const SizedBox.shrink();
+                }
+                return PopupMenuButton<_ProductDetailsAction>(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: ColorManager.titlesColor,
+                  ),
+                  onSelected: (action) {
+                    if (action == _ProductDetailsAction.edit) {
+                      _onEditProduct(context, state);
+                    } else if (action == _ProductDetailsAction.confirm) {
+                      _showConfirmDialog(context, state);
+                    } else if (action == _ProductDetailsAction.delete) {
+                      _showDeleteDialog(context, state);
+                    }
+                  },
+                  itemBuilder: (context) {
+                    final items = <PopupMenuItem<_ProductDetailsAction>>[
+                      PopupMenuItem(
+                        value: _ProductDetailsAction.edit,
+                        child: Text(AppTranslation.editProduct),
+                      ),
+                      if (_isAdmin)
+                        PopupMenuItem(
+                          value: _ProductDetailsAction.confirm,
+                          child: Text(AppTranslation.confirmProduct),
+                        ),
+                      PopupMenuItem(
+                        value: _ProductDetailsAction.delete,
+                        child: Text(
+                          AppTranslation.deleteProduct,
+                          style: TextStyle(color: ColorManager.error),
+                        ),
+                      ),
+                    ];
+                    return items;
+                  },
+                  );
+                },
+              ),
+                ],
+              ),
+              body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
+                bloc: context.read<ProductDetailsBloc>(),
+                isLoading: (state) => state is ProductDetailsLoading,
+                isError: (state) => state is ProductDetailsError,
+                getErrorMessage: (state) => (state as ProductDetailsError).message,
+                isSuccess: (state) => state is ProductDetailsLoaded,
+                getRetryCallback: (state) => () {
+                  context.read<ProductDetailsBloc>().add(
+                        GetProductDetailsEvent(id: widget.productId),
+                      );
+                },
+                successBuilder: (context, productState) {
+                  final loadedState = productState as ProductDetailsLoaded;
+                  final product = loadedState.product;
+
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.all(AppPadding.p16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          product.name,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: ColorManager.titlesColor,
+                              ),
+                        ),
+                        SizedBox(height: AppHeight.s8),
+                        if (product.description != null)
+                          Text(
+                            product.description!,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: ColorManager.textColor,
+                                ),
+                          ),
+                        SizedBox(height: AppHeight.s16),
+                        Text(
+                          '\$${(product.price / 100).toStringAsFixed(2)}',
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: ColorManager.primary,
+                              ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
         },
       ),
     );
   }
+}
+
+enum _ProductDetailsAction {
+  edit,
+  confirm,
+  delete,
 }
