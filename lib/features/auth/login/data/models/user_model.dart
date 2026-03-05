@@ -12,6 +12,7 @@ class UserModel {
   final String notificationChannel;
   final String? address;
   final bool? isOnline;
+  final bool? isActive;
   final String? verifiedAt;
   final double? currentLat;
   final double? currentLng;
@@ -32,6 +33,7 @@ class UserModel {
     required this.notificationChannel,
     this.address,
     this.isOnline,
+    this.isActive,
     this.verifiedAt,
     this.currentLat,
     this.currentLng,
@@ -54,6 +56,7 @@ class UserModel {
       notificationChannel: json['notificationChannel'] as String? ?? 'EMAIL',
       address: json['address'] as String?,
       isOnline: json['isOnline'] as bool?,
+      isActive: json['isActive'] as bool?,
       verifiedAt: json['verifiedAt'] as String?,
       currentLat: json['currentLat'] != null
           ? (json['currentLat'] as num).toDouble()
@@ -85,6 +88,7 @@ class UserModel {
       'notificationChannel': notificationChannel,
       'address': address,
       'isOnline': isOnline,
+      'isActive': isActive,
       'verifiedAt': verifiedAt,
       'currentLat': currentLat,
       'currentLng': currentLng,
@@ -138,6 +142,7 @@ class UserModel {
       notificationChannel: channel,
       address: address,
       isOnline: isOnline,
+      isActive: isActive,
       verifiedAt: verifiedAt != null ? DateTime.tryParse(verifiedAt!) : null,
       currentLat: currentLat,
       currentLng: currentLng,

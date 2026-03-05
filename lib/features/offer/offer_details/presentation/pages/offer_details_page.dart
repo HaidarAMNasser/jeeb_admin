@@ -5,14 +5,11 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
-import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_date_select.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/offer/offer_details/presentation/bloc/offer_details_bloc.dart';
@@ -31,7 +28,9 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<OfferDetailsBloc>().add(GetOfferDetailsEvent(id: widget.offerId));
+    context.read<OfferDetailsBloc>().add(
+      GetOfferDetailsEvent(id: widget.offerId),
+    );
   }
 
   @override
@@ -46,20 +45,19 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
         getErrorMessage: (state) => (state as OfferDetailsError).message,
         isSuccess: (state) => state is OfferDetailsLoaded,
         getRetryCallback: (_) => () {
-          context
-              .read<OfferDetailsBloc>()
-              .add(GetOfferDetailsEvent(id: widget.offerId));
+          context.read<OfferDetailsBloc>().add(
+            GetOfferDetailsEvent(id: widget.offerId),
+          );
         },
         successBuilder: (context, offerState) {
           final offer = (offerState as OfferDetailsLoaded).offer;
-          final discountLabel = offer.discountType == 'PERCENTAGE'
-              ? '${offer.discountValue}%'
-              : '${offer.discountValue}';
+          final discountLabel =
+              '${offer.discountValue} ${offer.discountType == 'PERCENTAGE' ? '%' : ''}';
 
           return SingleChildScrollView(
             padding: EdgeInsets.all(AppPadding.p16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (offer.shortDescription != null) ...[
                   CustomText(
@@ -81,23 +79,20 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                   ),
                   SizedBox(height: AppHeight.s16),
                 ],
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppPadding.p12,
-                      vertical: AppPadding.p8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: ColorManager.primary.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(AppRadius.r12),
-                    ),
-                    child: CustomText(
-                      text: '${AppTranslation.offerDiscount}: $discountLabel',
-                      textStyle: getSemiBoldStyle(
-                        fontSize: AppFontSize.s14,
-                        color: ColorManager.primary,
-                      ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppPadding.p12,
+                    vertical: AppPadding.p8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: ColorManager.primary.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(AppRadius.r12),
+                  ),
+                  child: CustomText(
+                    text: '${AppTranslation.offerDiscount}: $discountLabel',
+                    textStyle: getSemiBoldStyle(
+                      fontSize: AppFontSize.s14,
+                      color: ColorManager.primary,
                     ),
                   ),
                 ),
@@ -132,15 +127,14 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                   ),
                 ),
                 SizedBox(height: AppHeight.s8),
-                ...offer.products.map(
-                  (p) => ProductListItem(product: p),
-                ),
+                ...offer.products.map((p) => ProductListItem(product: p)),
                 SizedBox(height: AppHeight.s24),
                 // Edit button: merchant only; hidden for admin
                 FutureBuilder<String?>(
                   future: di.sl<StorageService>().getUserRole(),
                   builder: (context, snapshot) {
-                    final isAdmin = snapshot.data?.toLowerCase() == UserRole.admin.name;
+                    final isAdmin =
+                        snapshot.data?.toLowerCase() == UserRole.admin.name;
                     if (isAdmin) return const SizedBox.shrink();
                     return CustomButton(
                       text: AppTranslation.editOffer,

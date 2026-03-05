@@ -9,10 +9,13 @@ abstract class RegisterRemoteDataSource {
     required String password,
     required String phone,
     required String role,
-    required int countryId,
-    required int cityId,
+    int? countryId,
+    int? cityId,
+    double? latitude,
+    double? longitude,
     required String notificationChannel,
     String? address,
+    String? restaurantName,
   });
 }
 
@@ -29,10 +32,13 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
     required String password,
     required String phone,
     required String role,
-    required int countryId,
-    required int cityId,
+    int? countryId,
+    int? cityId,
+    double? latitude,
+    double? longitude,
     required String notificationChannel,
     String? address,
+    String? restaurantName,
   }) {
     return _appApiServiceClient.register(
       firstName,
@@ -43,8 +49,11 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
       role,
       countryId,
       cityId,
+      latitude,
+      longitude,
       notificationChannel,
       address,
+      restaurantName,
     );
   }
 }

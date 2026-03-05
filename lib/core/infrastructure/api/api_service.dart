@@ -32,10 +32,13 @@ abstract class AppApiServiceClient {
     @Field('password') String password,
     @Field('phone') String phone,
     @Field('role') String role,
-    @Field('countryId') int countryId,
-    @Field('cityId') int cityId,
+    @Field('countryId') int? countryId,
+    @Field('cityId') int? cityId,
+    @Field('latitude') double? latitude,
+    @Field('longitude') double? longitude,
     @Field('notificationChannel') String notificationChannel,
     @Field('address') String? address,
+    @Field('restaurantName') String? restaurantName,
   );
 
   @POST("auth/verify")
@@ -68,6 +71,9 @@ abstract class AppApiServiceClient {
     @Field('countryId') int? countryId,
     @Field('cityId') int? cityId,
     @Field('address') String? address,
+    @Field('latitude') double? latitude,
+    @Field('longitude') double? longitude,
+    @Field('isActive') bool? isActive,
   );
 
   @POST("auth/logout")
@@ -98,6 +104,13 @@ abstract class AppApiServiceClient {
 
   @PATCH("products/{id}")
   Future<Response> updateProduct(@Path('id') String id, FormData formData);
+
+  /// Confirm product and set final price so it becomes visible to clients.
+  @POST("products/{id}/confirm")
+  Future<Response> confirmProduct(
+    @Path('id') String id,
+    @Field('newPrice') double newPrice,
+  );
 
   @DELETE("products/{id}")
   Future<Response> deleteProduct(@Path('id') String id);

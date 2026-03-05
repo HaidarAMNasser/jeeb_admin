@@ -19,6 +19,8 @@ import '../../../features/product/delete_product/data/repositories/delete_produc
 import '../../../features/product/product_details/presentation/pages/product_details_page.dart';
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
+import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
 import '../../../features/auth/login/presentation/pages/login_page.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
 import '../../../features/auth/register/presentation/pages/register_page.dart';
@@ -162,14 +164,30 @@ class AppRouter {
         );
 
       case Routes.products:
+// <<<<<<< HEAD
         final productArgs = settings.arguments as Map<String, dynamic>?;
         final productMerchantId = productArgs?['merchantId'] as String?;
-        return _buildRouteWithBloc(
+//         return _buildRouteWithBloc(
+//           const ListProductPage(),
+//           settings,
+//           bloc: () =>
+//               ListProductBloc(di.sl<ListProductRepository>())
+//                 ..add(GetProductsEvent(merchantId: productMerchantId)),
+// =======
+        return _buildRouteWithBlocs(
           const ListProductPage(),
           settings,
-          bloc: () =>
-              ListProductBloc(di.sl<ListProductRepository>())
+          providers: [
+            BlocProvider<ListProductBloc>(
+              create: (_) =>
+                 ListProductBloc(di.sl<ListProductRepository>())
                 ..add(GetProductsEvent(merchantId: productMerchantId)),
+            ),
+            BlocProvider<ConfirmProductBloc>(
+              create: (_) => di.sl<ConfirmProductBloc>(),
+            ),
+          ],
+// >>>>>>> 01548bdab41b53e5162e3d8617375f258e8805f2
         );
 
       case Routes.addProduct:
@@ -208,6 +226,13 @@ class AppRouter {
             BlocProvider<ProductDetailsBloc>(
               create: (_) =>
                   ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
+            ),
+            BlocProvider<ConfirmProductBloc>(
+              create: (_) => di.sl<ConfirmProductBloc>(),
+            ),
+            BlocProvider<DeleteProductBloc>(
+              create: (_) =>
+                  DeleteProductBloc(di.sl<DeleteProductRepository>()),
             ),
           ],
         );

@@ -22,4 +22,3 @@ class DeleteProductRemoteDataSourceImpl
     return _appApiServiceClient.deleteProductImage(imageId);
   }
 }
-

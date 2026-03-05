@@ -24,6 +24,7 @@ class UserEntity extends Equatable {
   final NotificationChannel notificationChannel;
   final String? address;
   final bool? isOnline;
+  final bool? isActive;
   final DateTime? verifiedAt;
   final double? currentLat;
   final double? currentLng;
@@ -44,6 +45,7 @@ class UserEntity extends Equatable {
     required this.notificationChannel,
     this.address,
     this.isOnline,
+    this.isActive,
     this.verifiedAt,
     this.currentLat,
     this.currentLng,
@@ -68,6 +70,7 @@ class UserEntity extends Equatable {
         notificationChannel,
         address,
         isOnline,
+        isActive,
         verifiedAt,
         currentLat,
         currentLng,

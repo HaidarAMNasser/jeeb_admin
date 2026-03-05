@@ -80,6 +80,12 @@ class AppTranslation {
   static String get deleteProduct => 'delete_product'.tr();
   static String get areYouSureDeleteProduct => 'are_you_sure_delete_product'.tr();
   static String get areYouSureWantToDeleteThisProduct => 'are_you_sure_want_to_delete_this_product'.tr();
+  static String get productConfirmedSuccessfully => 'product_confirmed_successfully'.tr();
+  static String get confirmProduct => 'confirm_product'.tr();
+  static String get options => 'options'.tr();
+  static String get newPrice => 'new_price'.tr();
+  static String get enterNewPrice => 'enter_new_price'.tr();
+  static String get productConfirming => 'product_confirming'.tr();
   static String get delete => 'delete'.tr();
   static String get edit => 'edit'.tr();
   static String get merchantDeletedSuccessfully => 'merchant_deleted_successfully'.tr();
@@ -115,6 +121,8 @@ class AppTranslation {
   static String get enterPhone => 'enter_phone'.tr();
   static String get address => 'address'.tr();
   static String get enterAddress => 'enter_address'.tr();
+  static String get restaurantName => 'restaurant_name'.tr();
+  static String get enterRestaurantName => 'enter_restaurant_name'.tr();
   static String get selectCountry => 'select_country'.tr();
   static String get selectCity => 'select_city'.tr();
   static String get notificationChannel => 'notification_channel'.tr();
@@ -143,6 +151,7 @@ class AppTranslation {
   static String get profileUpdatedSuccess => 'profile_updated_success'.tr();
   static String get logoutSuccess => 'logout_success'.tr();
   static String get logoutError => 'logout_error'.tr();
+  static String get areYouSureLogout => 'are_you_sure_logout'.tr();
   static String get forgotPasswordDescription => 'forgot_password_description'.tr();
   static String get pleaseSelectCountryFirst => 'please_select_country_first'.tr();
   static String get noCitiesAvailable => 'no_cities_available'.tr();
@@ -154,6 +163,21 @@ class AppTranslation {
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
   static String get location => 'location'.tr();
+  static String get useMyLocation => 'use_my_location'.tr();
+  static String get locationSetFormat => 'location_set_format'.tr();
+  static String get pleaseSelectCountryOrLocation =>
+      'please_select_country_or_location'.tr();
+  static String get locationPermissionDenied => 'location_permission_denied'.tr();
+  static String get locationUnavailable => 'location_unavailable'.tr();
+  static String get chooseLocationOnMap => 'choose_location_on_map'.tr();
+  static String get updateLocation => 'update_location'.tr();
+  static String get currentLocation => 'current_location'.tr();
+  static String get noLocationSet => 'no_location_set'.tr();
+  static String get accountStatus => 'account_status'.tr();
+  static String get accountActive => 'account_active'.tr();
+  static String get accountInactive => 'account_inactive'.tr();
+  static String get activateAccount => 'activate_account'.tr();
+  static String get deactivateAccount => 'deactivate_account'.tr();
 
   // Delivery
   static String get deliveryMen => 'delivery_men'.tr();

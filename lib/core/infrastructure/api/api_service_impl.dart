@@ -91,26 +91,32 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     String password,
     String phone,
     String role,
-    int countryId,
-    int cityId,
+    int? countryId,
+    int? cityId,
+    double? latitude,
+    double? longitude,
     String notificationChannel,
     String? address,
+    String? restaurantName,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = {
+    final data = <String, dynamic>{
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
       'password': password,
       'phone': phone,
       'role': role,
-      'countryId': countryId,
-      'cityId': cityId,
       'notificationChannel': notificationChannel,
-      if (address != null) 'address': address,
     };
+    if (countryId != null) data['countryId'] = countryId;
+    if (cityId != null) data['cityId'] = cityId;
+    if (latitude != null) data['latitude'] = latitude;
+    if (longitude != null) data['longitude'] = longitude;
+    if (address != null) data['address'] = address;
+    if (restaurantName != null && restaurantName.isNotEmpty) data['restaurantName'] = restaurantName;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -271,6 +277,9 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     int? countryId,
     int? cityId,
     String? address,
+    double? latitude,
+    double? longitude,
+    bool? isActive,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -282,6 +291,9 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (countryId != null) data['countryId'] = countryId;
     if (cityId != null) data['cityId'] = cityId;
     if (address != null) data['address'] = address;
+    if (latitude != null) data['latitude'] = latitude;
+    if (longitude != null) data['longitude'] = longitude;
+    if (isActive != null) data['isActive'] = isActive;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -478,6 +490,31 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'products/$id',
               queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> confirmProduct(String id, double newPrice) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = <String, dynamic>{
+      'newPrice': newPrice,
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'products/$id/confirm',
+              queryParameters: queryParameters,
+              data: data,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
