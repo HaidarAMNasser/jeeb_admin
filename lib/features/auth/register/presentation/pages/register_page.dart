@@ -10,7 +10,8 @@ import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
@@ -150,28 +151,29 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     RegisterForm(
-                  formKey: _formKey,
-                  firstNameController: _firstNameController,
-                  lastNameController: _lastNameController,
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  phoneController: _phoneController,
-                  addressController: _addressController,
-                  restaurantNameController: _restaurantNameController,
-                  selectedRole: _selectedRole,
-                  selectedCountry: _selectedCountry,
-                  selectedCity: _selectedCity,
-                  useLocationLatitude: _useLocationLat,
-                  useLocationLongitude: _useLocationLng,
-                  onCountryChanged: _onCountryChanged,
-                  onCityChanged: _onCityChanged,
-                  onUseMyLocation: _onUseMyLocation,
-                  onClearDeviceLocation: _onClearDeviceLocation,
-                  onRoleChanged: (role) => setState(() => _selectedRole = role),
-                  onRegister: _handleRegister,
-                  isLoading: state is RegisterLoading,
-                  isLocationLoading: _isLocationLoading,
-                ),
+                      formKey: _formKey,
+                      firstNameController: _firstNameController,
+                      lastNameController: _lastNameController,
+                      emailController: _emailController,
+                      passwordController: _passwordController,
+                      phoneController: _phoneController,
+                      addressController: _addressController,
+                      restaurantNameController: _restaurantNameController,
+                      selectedRole: _selectedRole,
+                      selectedCountry: _selectedCountry,
+                      selectedCity: _selectedCity,
+                      useLocationLatitude: _useLocationLat,
+                      useLocationLongitude: _useLocationLng,
+                      onCountryChanged: _onCountryChanged,
+                      onCityChanged: _onCityChanged,
+                      onUseMyLocation: _onUseMyLocation,
+                      onClearDeviceLocation: _onClearDeviceLocation,
+                      onRoleChanged: (role) =>
+                          setState(() => _selectedRole = role),
+                      onRegister: _handleRegister,
+                      isLoading: state is RegisterLoading,
+                      isLocationLoading: _isLocationLoading,
+                    ),
                     SizedBox(height: AppHeight.s16),
                     Center(
                       child: TextButton(

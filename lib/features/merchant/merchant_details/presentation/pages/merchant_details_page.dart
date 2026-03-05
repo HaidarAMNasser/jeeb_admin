@@ -119,6 +119,7 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
                     merchant: fakeMerchant,
                     merchantId: widget.merchantId,
                     scrollController: _scrollController,
+                    showConfirmProduct: true,
                   ),
                 );
               },

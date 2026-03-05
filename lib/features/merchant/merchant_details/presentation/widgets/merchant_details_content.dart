@@ -12,12 +12,15 @@ class MerchantDetailsContent extends StatelessWidget {
   final MerchantEntity merchant;
   final String merchantId;
   final ScrollController? scrollController;
+  /// When true, shows "Confirm product" on each product (admin only).
+  final bool showConfirmProduct;
 
   const MerchantDetailsContent({
     super.key,
     required this.merchant,
     required this.merchantId,
     this.scrollController,
+    this.showConfirmProduct = false,
   });
 
   @override
@@ -131,6 +134,7 @@ class MerchantDetailsContent extends StatelessWidget {
           MerchantProductsSection(
             merchantId: merchantId,
             scrollController: scrollController,
+            showConfirmProduct: showConfirmProduct,
           ),
         ],
       ),

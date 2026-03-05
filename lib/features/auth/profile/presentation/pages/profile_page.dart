@@ -15,6 +15,7 @@ import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
     as di;
+import 'package:jeeb_admin/core/common/classes/user_roles.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../bloc/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
@@ -42,6 +43,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isProfileLoaded = false;
   /// Set true when we dispatch UpdateProfile; only then show "profile updated" toast.
   bool _pendingUpdateSuccess = false;
+  /// From storage: only show location/account status for merchant, not admin.
+  bool _isMerchant = false;
 
   @override
   void initState() {
@@ -50,12 +53,19 @@ class _ProfilePageState extends State<ProfilePage> {
     _lastNameController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
+    _loadStoredRole();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<ProfileBloc>().add(const GetProfile());
       }
     });
+  }
+
+  Future<void> _loadStoredRole() async {
+    final role = await di.sl<StorageService>().getUserRole();
+    if (!mounted) return;
+    setState(() => _isMerchant = role == UserRoles.merchant.name);
   }
 
   @override
@@ -271,14 +281,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             onChangeLanguage: _handleChangeLanguage,
                           ),
                           SizedBox(height: AppHeight.s24),
-                          CustomButton(
-                            text: AppTranslation.updateLocation,
-                            onPressed: () => _openMapPicker(loadedState.user),
-                            isLoading: false,
-                            color: ColorManager.primary,
-                            isOutlined: true,
-                          ),
-                          if (loadedState.user.role == UserRole.merchant) ...[
+                          if (_isMerchant) ...[
+                            CustomButton(
+                              text: AppTranslation.updateLocation,
+                              onPressed: () => _openMapPicker(loadedState.user),
+                              isLoading: false,
+                              color: ColorManager.primary,
+                              isOutlined: true,
+                            ),
                             SizedBox(height: AppHeight.s16),
                             CustomButton(
                               text: AppTranslation.accountStatus,
@@ -287,6 +297,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: ColorManager.primary,
                               isOutlined: true,
                             ),
+                            SizedBox(height: AppHeight.s24),
                           ],
                           SizedBox(height: AppHeight.s24),
                           CustomButton(

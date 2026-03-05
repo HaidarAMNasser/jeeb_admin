@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.dart';
 import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/pages/li
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+
 class AdminNavigation extends StatefulWidget {
   const AdminNavigation({super.key});
 
@@ -37,8 +39,7 @@ class _AdminNavigationState extends State<AdminNavigation> {
         );
       case 1:
         return BlocProvider<ListOrderBloc>(
-          create: (_) => di.sl<ListOrderBloc>()
-            ..add(const GetOrdersEvent()),
+          create: (_) => di.sl<ListOrderBloc>()..add(const GetOrdersEvent()),
           child: const ListOrderPage(),
         );
       case 2:
@@ -54,9 +55,7 @@ class _AdminNavigationState extends State<AdminNavigation> {
             BlocProvider<ProfileBloc>(
               create: (_) => di.sl<ProfileBloc>()..add(const GetProfile()),
             ),
-            BlocProvider<LogoutBloc>(
-              create: (_) => di.sl<LogoutBloc>(),
-            ),
+            BlocProvider<LogoutBloc>(create: (_) => di.sl<LogoutBloc>()),
           ],
           child: const ProfilePage(),
         );
@@ -100,7 +99,7 @@ class _AdminNavigationState extends State<AdminNavigation> {
             fontSize: AppFontSize.s12,
             color: ColorManager.textSecondary,
           ),
-          items:  [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.store_outlined),
               activeIcon: Icon(Icons.store),
@@ -127,4 +126,3 @@ class _AdminNavigationState extends State<AdminNavigation> {
     );
   }
 }
-

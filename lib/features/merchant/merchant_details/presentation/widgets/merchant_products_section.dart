@@ -6,7 +6,9 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
+import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
@@ -14,11 +16,14 @@ import 'package:jeeb_admin/features/product/list_product/domain/entities/product
 class MerchantProductsSection extends StatefulWidget {
   final String merchantId;
   final ScrollController? scrollController;
+  /// When true, shows "Confirm product" button (admin viewing merchant's products).
+  final bool showConfirmProduct;
 
   const MerchantProductsSection({
     super.key,
     required this.merchantId,
     this.scrollController,
+    this.showConfirmProduct = false,
   });
 
   @override
@@ -148,7 +153,7 @@ class _MerchantProductsSectionState extends State<MerchantProductsSection> {
     // Fake data for UI testing
     final fakeProducts = _generateFakeProducts();
 
-    return Column(
+    Widget listContent = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
@@ -166,11 +171,32 @@ class _MerchantProductsSectionState extends State<MerchantProductsSection> {
           itemCount: fakeProducts.length,
           itemBuilder: (context, index) {
             final product = fakeProducts[index];
-            return ProductListItem(product: product);
+            return ProductListItem(
+              product: product,
+              showConfirmProduct: widget.showConfirmProduct,
+            );
           },
         ),
       ],
     );
+
+    if (widget.showConfirmProduct) {
+      return BlocListener<ConfirmProductBloc, ConfirmProductState>(
+        listener: (context, state) {
+          if (state is ConfirmProductSuccess) {
+            customToast(msg: AppTranslation.productConfirmedSuccessfully);
+            context.read<ListProductBloc>().add(
+                  GetProductsEvent(merchantId: widget.merchantId),
+                );
+          } else if (state is ConfirmProductError) {
+            customToast(msg: state.message);
+          }
+        },
+        child: listContent,
+      );
+    }
+
+    return listContent;
   }
 
   List<ProductEntity> _generateFakeProducts() {
