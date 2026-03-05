@@ -72,6 +72,16 @@ import '../../../features/order/order_complete/data/repositories/order_complete_
 import '../../../features/order/order_cancel/data/data_sources/order_cancel_data_source.dart';
 import '../../../features/order/order_cancel/data/repositories/order_cancel_repository.dart';
 import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import '../../../features/offer/list_offer/data/data_sources/list_offer_data_source.dart';
+import '../../../features/offer/list_offer/data/repositories/list_offer_repository.dart';
+import '../../../features/offer/offer_details/data/data_sources/offer_details_data_source.dart';
+import '../../../features/offer/offer_details/data/repositories/offer_details_repository.dart';
+import '../../../features/offer/create_offer/data/data_sources/create_offer_data_source.dart';
+import '../../../features/offer/create_offer/data/repositories/create_offer_repository.dart';
+import '../../../features/offer/update_offer/data/data_sources/update_offer_data_source.dart';
+import '../../../features/offer/update_offer/data/repositories/update_offer_repository.dart';
+import '../../../features/offer/delete_offer/data/data_sources/delete_offer_data_source.dart';
+import '../../../features/offer/delete_offer/data/repositories/delete_offer_repository.dart';
 import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
 import '../../../features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
@@ -272,4 +282,30 @@ Future<void> init() async {
   );
   sl.registerFactory(() => OrderCancelRepository(sl(), sl()));
   sl.registerFactory(() => OrderCancelBloc(sl()));
+
+  //! Offer List
+  sl.registerFactory<ListOfferRemoteDataSource>(
+    () => ListOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ListOfferRepository(sl(), sl()));
+
+  //! Offer Details
+  sl.registerFactory<OfferDetailsRemoteDataSource>(
+    () => OfferDetailsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => OfferDetailsRepository(sl(), sl()));
+
+  //! Offer Create / Update / Delete
+  sl.registerFactory<CreateOfferRemoteDataSource>(
+    () => CreateOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory<UpdateOfferRemoteDataSource>(
+    () => UpdateOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory<DeleteOfferRemoteDataSource>(
+    () => DeleteOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => CreateOfferRepository(sl(), sl()));
+  sl.registerFactory(() => UpdateOfferRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteOfferRepository(sl(), sl()));
 }
