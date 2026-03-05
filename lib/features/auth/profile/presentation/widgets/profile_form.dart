@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 
@@ -15,6 +16,7 @@ class ProfileForm extends StatelessWidget {
   final TextEditingController addressController;
   final VoidCallback onUpdate;
   final bool isLoading;
+  final VoidCallback onChangeLanguage;
 
   const ProfileForm({
     super.key,
@@ -26,6 +28,7 @@ class ProfileForm extends StatelessWidget {
     required this.addressController,
     required     this.onUpdate,
     required this.isLoading,
+    required this.onChangeLanguage,
   });
 
   @override
@@ -33,6 +36,7 @@ class ProfileForm extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
+        spacing: AppSize.s24.h,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CustomTextField(
@@ -40,19 +44,16 @@ class ProfileForm extends StatelessWidget {
             hintText: AppTranslation.firstName,
             controller: firstNameController,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomTextField(
             title: AppTranslation.lastName,
             hintText: AppTranslation.lastName,
             controller: lastNameController,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomTextField(
             title: AppTranslation.phone,
             hintText: AppTranslation.enterPhone,
             controller: phoneController,
           ),
-          SizedBox(height: AppHeight.s24),
           CustomTextField(
             title: AppTranslation.address,
             hintText: AppTranslation.enterAddress,
@@ -70,4 +71,3 @@ class ProfileForm extends StatelessWidget {
     );
   }
 }
-

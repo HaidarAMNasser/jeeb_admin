@@ -48,3 +48,7 @@ class UpdateProfile extends ProfileEvent {
       ];
 }
 
+class FormValuesInitialized extends ProfileEvent {
+  const FormValuesInitialized();
+}
+

@@ -125,6 +125,9 @@ class AppTranslation {
   static String get selectCountry => 'select_country'.tr();
   static String get selectCity => 'select_city'.tr();
   static String get notificationChannel => 'notification_channel'.tr();
+  static String get verifyAccountMethodTitle => 'verify_account_method_title'.tr();
+  static String get verifyEmailOtp => 'verify_email_otp'.tr();
+  static String get verifyWhatsAppOtp => 'verify_whatsapp_otp'.tr();
   static String get verifyAccount => 'verify_account'.tr();
   static String get enterOtp => 'enter_otp'.tr();
   static String get otp => 'otp'.tr();
@@ -218,5 +221,28 @@ class AppTranslation {
   static String get areYouSureCancelOrder => 'are_you_sure_cancel_order'.tr();
   static String get completeOrder => 'complete_order'.tr();
   static String get cancelOrder => 'cancel_order'.tr();
+
+  // Offer
+  static String get offers => 'offers'.tr();
+  static String get addOffer => 'add_offer'.tr();
+  static String get editOffer => 'edit_offer'.tr();
+  static String get offerDetails => 'offer_details'.tr();
+  static String get noOffersFound => 'no_offers_found'.tr();
+  static String get offerShortDescription => 'offer_short_description'.tr();
+  static String get offerLongDescription => 'offer_long_description'.tr();
+  static String get selectProducts => 'select_products'.tr();
+  static String get offerStartDate => 'offer_start_date'.tr();
+  static String get offerEndDate => 'offer_end_date'.tr();
+  static String get offerDiscountType => 'offer_discount_type'.tr();
+  static String get offerDiscountValue => 'offer_discount_value'.tr();
+  static String get offerDiscountPercentage => 'offer_discount_percentage'.tr();
+  static String get offerDiscountValueType => 'offer_discount_value_type'.tr();
+  static String get offerProductsCount => 'offer_products_count'.tr();
+  static String get offerDiscount => 'offer_discount'.tr();
+  static String get offerCreatedSuccessfully => 'offer_created_successfully'.tr();
+  static String get offerUpdatedSuccessfully => 'offer_updated_successfully'.tr();
+  static String get offerDeletedSuccessfully => 'offer_deleted_successfully'.tr();
+  static String get areYouSureDeleteOffer => 'are_you_sure_delete_offer'.tr();
+  static String get selectDate => 'select_date'.tr();
 }
 

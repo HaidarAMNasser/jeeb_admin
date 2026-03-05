@@ -5,7 +5,6 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_dropdown.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -24,7 +23,6 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController addressController;
   final TextEditingController restaurantNameController;
   final String? selectedRole;
-  final String? selectedNotificationChannel;
   final CountryEntity? selectedCountry;
   final CityEntity? selectedCity;
   final double? useLocationLatitude;
@@ -34,7 +32,6 @@ class RegisterForm extends StatelessWidget {
   final VoidCallback onUseMyLocation;
   final VoidCallback? onClearDeviceLocation;
   final ValueChanged<String?> onRoleChanged;
-  final ValueChanged<String?> onNotificationChannelChanged;
   final VoidCallback onRegister;
   final bool isLoading;
   final bool isLocationLoading;
@@ -50,7 +47,6 @@ class RegisterForm extends StatelessWidget {
     required this.addressController,
     required this.restaurantNameController,
     this.selectedRole,
-    this.selectedNotificationChannel,
     this.selectedCountry,
     this.selectedCity,
     this.useLocationLatitude,
@@ -60,7 +56,6 @@ class RegisterForm extends StatelessWidget {
     required this.onUseMyLocation,
     this.onClearDeviceLocation,
     required this.onRoleChanged,
-    required this.onNotificationChannelChanged,
     required this.onRegister,
     required this.isLoading,
     this.isLocationLoading = false,
@@ -132,20 +127,6 @@ class RegisterForm extends StatelessWidget {
             isRequired: true,
             isReadOnly: useLocationLatitude != null && useLocationLongitude != null,
           ),
-          CustomDropdown<String>(
-            title: AppTranslation.notificationChannel,
-            value: selectedNotificationChannel,
-            hintText: AppTranslation.notificationChannel,
-            items: const [
-              DropdownMenuItem<String>(value: 'EMAIL', child: Text('EMAIL')),
-              DropdownMenuItem<String>(
-                value: 'WHATSAPP',
-                child: Text('WHATSAPP'),
-              ),
-            ],
-            onChanged: onNotificationChannelChanged,
-          ),
-          SizedBox(height: AppHeight.s8),
           CustomButton(
             text: AppTranslation.register,
             onPressed: onRegister,

@@ -35,8 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
   final _restaurantNameController = TextEditingController();
-  String? _selectedRole = 'MERCHANT';
-  String? _selectedNotificationChannel = 'EMAIL';
+  String? _selectedRole = UserRole.merchant.name;
   CountryEntity? _selectedCountry;
   CityEntity? _selectedCity;
   double? _useLocationLat;
@@ -160,7 +159,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   addressController: _addressController,
                   restaurantNameController: _restaurantNameController,
                   selectedRole: _selectedRole,
-                  selectedNotificationChannel: _selectedNotificationChannel,
                   selectedCountry: _selectedCountry,
                   selectedCity: _selectedCity,
                   useLocationLatitude: _useLocationLat,
@@ -170,8 +168,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   onUseMyLocation: _onUseMyLocation,
                   onClearDeviceLocation: _onClearDeviceLocation,
                   onRoleChanged: (role) => setState(() => _selectedRole = role),
-                  onNotificationChannelChanged: (channel) =>
-                      setState(() => _selectedNotificationChannel = channel),
                   onRegister: _handleRegister,
                   isLoading: state is RegisterLoading,
                   isLocationLoading: _isLocationLoading,

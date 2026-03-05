@@ -204,6 +204,26 @@ abstract class AppApiServiceClient {
 
   @POST("orders/{id}/cancel")
   Future<Response> cancelOrder(@Path('id') String id);
+
+  // Offer endpoints (merchant & admin)
+  @GET("offers")
+  Future<Response> getOffers({
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('restaurantId') String? restaurantId,
+  });
+
+  @GET("offers/{id}")
+  Future<Response> getOfferDetails(@Path('id') String id);
+
+  @POST("offers")
+  Future<Response> createOffer(FormData formData);
+
+  @POST("offers/{id}")
+  Future<Response> updateOffer(@Path('id') String id, FormData formData);
+
+  @POST("offers/{id}/delete")
+  Future<Response> deleteOffer(@Path('id') String id);
 }
 
 // Annotations for API methods (simplified versions)

@@ -7,15 +7,14 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/language_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
 import 'package:easy_localization/easy_localization.dart';
 import '../bloc/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
@@ -24,6 +23,8 @@ import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
 import '../pages/location_map_picker_page.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
+import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -70,15 +71,15 @@ class _ProfilePageState extends State<ProfilePage> {
     if (_formKey.currentState!.validate()) {
       _pendingUpdateSuccess = true;
       context.read<ProfileBloc>().add(
-            UpdateProfile(
-              firstName: _firstNameController.text.trim(),
-              lastName: _lastNameController.text.trim(),
-              phone: _phoneController.text.trim(),
-              address: _addressController.text.trim().isEmpty
-                  ? null
-                  : _addressController.text.trim(),
-            ),
-          );
+        UpdateProfile(
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          address: _addressController.text.trim().isEmpty
+              ? null
+              : _addressController.text.trim(),
+        ),
+      );
     }
   }
 
@@ -170,10 +171,17 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _initFormValuesFromUser(UserEntity user) {
+    _firstNameController.text = user.firstName;
+    _lastNameController.text = user.lastName;
+    _phoneController.text = user.phone;
+    _addressController.text = user.address ?? '';
+  }
+
   Future<void> _handleChangeLanguage() async {
     final storageService = di.sl<StorageService>();
     final currentLanguage = storageService.getAppLanguage();
-    
+
     final selectedLanguage = await showDialog<String>(
       context: context,
       builder: (context) => LanguageSelectionDialog(
@@ -181,21 +189,16 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
 
-    if (selectedLanguage != null && selectedLanguage != currentLanguage && mounted) {
-      // Save selected language
+    if (selectedLanguage != null &&
+        selectedLanguage != currentLanguage &&
+        mounted) {
       await storageService.setAppLanguage(selectedLanguage);
 
       if (!context.mounted) return;
-      // Update app locale
       await context.setLocale(Locale(selectedLanguage));
 
       if (!context.mounted) return;
-      // Show success message
       customToast(msg: AppTranslation.languageChangedSuccessfully);
-      
-      // Restart the app to apply language changes
-      // Note: In a real app, you might want to use a package like flutter_restart
-      // For now, we'll just show a toast and the language will change on next app restart
     }
   }
 
@@ -205,8 +208,6 @@ class _ProfilePageState extends State<ProfilePage> {
       listener: (context, logoutState) {
         if (logoutState is LogoutSuccess) {
           customToast(msg: AppTranslation.logoutSuccess);
-          // Navigate to login screen after clearing storage
-          // Storage is already cleared in the logout bloc before emitting success
           WidgetsBinding.instance.addPostFrameCallback((_) {
             NavigationService().pushNamedAndRemoveUntil(Routes.login);
           });
@@ -219,11 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
           listener: (context, state) {
             if (state is ProfileLoaded) {
               if (!_isProfileLoaded) {
-                // Initial load - update controllers
-                _firstNameController.text = state.user.firstName;
-                _lastNameController.text = state.user.lastName;
-                _phoneController.text = state.user.phone;
-                _addressController.text = state.user.address ?? '';
+                _initFormValuesFromUser(state.user);
                 _isProfileLoaded = true;
               } else if (_pendingUpdateSuccess) {
                 _pendingUpdateSuccess = false;
@@ -234,8 +231,6 @@ class _ProfilePageState extends State<ProfilePage> {
             }
           },
           builder: (context, state) {
-            // Use ModalProgressHUD only for update (PATCH) and logout (POST) operations
-            // Initial profile fetch (GET) uses BlocStateHandler
             final isUpdateLoading = state is ProfileLoading && _isProfileLoaded;
             final isLogoutLoading = logoutState is LogoutLoading;
             final showProgressHUD = isUpdateLoading || isLogoutLoading;
@@ -245,21 +240,18 @@ class _ProfilePageState extends State<ProfilePage> {
               inAsyncCall: showProgressHUD,
               child: Scaffold(
                 backgroundColor: ColorManager.background,
-                appBar: CustomAppBar(
-                  title: AppTranslation.profile,
-                ),
+                appBar: CustomAppBar(title: AppTranslation.profile),
                 body: BlocStateHandler<ProfileBloc, ProfileState>(
                   bloc: context.read<ProfileBloc>(),
-                  isLoading: (state) => state is ProfileLoading && !_isProfileLoaded,
-                  isError: (state) => state is ProfileError && !_isProfileLoaded,
-                  getErrorMessage: (state) => (state as ProfileError).message,
-                  isSuccess: (state) => state is ProfileLoaded,
-                  getRetryCallback: (state) => () {
+                  isLoading: (s) => s is ProfileLoading && !_isProfileLoaded,
+                  isError: (s) => s is ProfileError && !_isProfileLoaded,
+                  getErrorMessage: (s) => (s as ProfileError).message,
+                  isSuccess: (s) => s is ProfileLoaded,
+                  getRetryCallback: (_) => () {
                     context.read<ProfileBloc>().add(const GetProfile());
                   },
                   successBuilder: (context, profileState) {
                     final loadedState = profileState as ProfileLoaded;
-
                     return SingleChildScrollView(
                       padding: EdgeInsets.all(AppPadding.p24),
                       child: Column(
@@ -276,6 +268,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             addressController: _addressController,
                             onUpdate: _handleUpdateProfile,
                             isLoading: isUpdateLoading,
+                            onChangeLanguage: _handleChangeLanguage,
                           ),
                           SizedBox(height: AppHeight.s24),
                           CustomButton(
@@ -379,4 +372,3 @@ class _AccountStatusOption extends StatelessWidget {
     );
   }
 }
-

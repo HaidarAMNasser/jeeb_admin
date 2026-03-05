@@ -143,48 +143,48 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 title: AppTranslation.productDetails,
                 actions: [
                   BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
-              builder: (context, state) {
-                if (state is! ProductDetailsLoaded) {
-                  return const SizedBox.shrink();
-                }
-                return PopupMenuButton<_ProductDetailsAction>(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: ColorManager.titlesColor,
+                    builder: (context, state) {
+                      if (state is! ProductDetailsLoaded) {
+                        return const SizedBox.shrink();
+                      }
+                      return PopupMenuButton<_ProductDetailsAction>(
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: ColorManager.titlesColor,
+                        ),
+                        onSelected: (action) {
+                          if (action == _ProductDetailsAction.edit) {
+                            _onEditProduct(context, state);
+                          } else if (action == _ProductDetailsAction.confirm) {
+                            _showConfirmDialog(context, state);
+                          } else if (action == _ProductDetailsAction.delete) {
+                            _showDeleteDialog(context, state);
+                          }
+                        },
+                        itemBuilder: (context) {
+                          final items = <PopupMenuItem<_ProductDetailsAction>>[
+                            PopupMenuItem(
+                              value: _ProductDetailsAction.edit,
+                              child: Text(AppTranslation.editProduct),
+                            ),
+                            if (_isAdmin)
+                              PopupMenuItem(
+                                value: _ProductDetailsAction.confirm,
+                                child: Text(AppTranslation.confirmProduct),
+                              ),
+                            PopupMenuItem(
+                              value: _ProductDetailsAction.delete,
+                              child: Text(
+                                AppTranslation.deleteProduct,
+                                style: TextStyle(color: ColorManager.error),
+                              ),
+                            ),
+                          ];
+                          return items;
+                        },
+                      );
+                    },
                   ),
-                  onSelected: (action) {
-                    if (action == _ProductDetailsAction.edit) {
-                      _onEditProduct(context, state);
-                    } else if (action == _ProductDetailsAction.confirm) {
-                      _showConfirmDialog(context, state);
-                    } else if (action == _ProductDetailsAction.delete) {
-                      _showDeleteDialog(context, state);
-                    }
-                  },
-                  itemBuilder: (context) {
-                    final items = <PopupMenuItem<_ProductDetailsAction>>[
-                      PopupMenuItem(
-                        value: _ProductDetailsAction.edit,
-                        child: Text(AppTranslation.editProduct),
-                      ),
-                      if (_isAdmin)
-                        PopupMenuItem(
-                          value: _ProductDetailsAction.confirm,
-                          child: Text(AppTranslation.confirmProduct),
-                        ),
-                      PopupMenuItem(
-                        value: _ProductDetailsAction.delete,
-                        child: Text(
-                          AppTranslation.deleteProduct,
-                          style: TextStyle(color: ColorManager.error),
-                        ),
-                      ),
-                    ];
-                    return items;
-                  },
-                  );
-                },
-              ),
                 ],
               ),
               body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
@@ -207,6 +207,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        if (product.images.isNotEmpty)
+                          Container(
+                            height: 200,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(AppRadius.r12),
+                              image: DecorationImage(
+                                image: NetworkImage(product.images.first.url),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        if (product.images.isNotEmpty) SizedBox(height: AppHeight.s16),
                         Text(
                           product.name,
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -214,19 +227,69 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               ),
                         ),
                         SizedBox(height: AppHeight.s8),
-                        if (product.description != null)
+                        if (product.categoryName != null) ...[
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AppPadding.p12,
+                              vertical: AppHeight.s8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ColorManager.primary,
+                              borderRadius: BorderRadius.circular(AppRadius.r20),
+                            ),
+                            child: Text(
+                              product.categoryName!,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: ColorManager.defaultWhite,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: AppHeight.s16),
+                        ],
+                        Row(
+                          children: [
+                            Text(
+                              '\$${(product.price / 100).toStringAsFixed(2)}',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    color: ColorManager.primary,
+                                  ),
+                            ),
+                            if (product.priceAfterDiscount != null) ...[
+                              SizedBox(width: AppWidth.s8),
+                              Text(
+                                '\$${(product.priceAfterDiscount! / 100).toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  decoration: TextDecoration.lineThrough,
+                                  color: ColorManager.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        SizedBox(height: AppHeight.s16),
+                        if (product.description != null) ...[
                           Text(
                             product.description!,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: ColorManager.textColor,
                                 ),
                           ),
-                        SizedBox(height: AppHeight.s16),
-                        Text(
-                          '\$${(product.price / 100).toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: ColorManager.primary,
+                          SizedBox(height: AppHeight.s16),
+                        ],
+                        Row(
+                          children: [
+                            Icon(Icons.inventory, color: ColorManager.primary, size: 20),
+                            SizedBox(width: AppWidth.s8),
+                            Text(
+                              'Stock: ${product.stockQuantity ?? 0}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: ColorManager.textColor,
                               ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

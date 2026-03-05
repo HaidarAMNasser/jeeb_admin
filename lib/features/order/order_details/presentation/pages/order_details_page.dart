@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -10,6 +11,7 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dar
 // import 'package:jeeb_admin/features/order/order_details/presentation/bloc/order_details_bloc.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_details_content.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
@@ -44,10 +46,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       listener: (context, completeState) {
         if (completeState is OrderCompleteSuccess) {
           customToast(msg: AppTranslation.orderCompletedSuccessfully);
-          // Refresh order details
-          // context.read<OrderDetailsBloc>().add(
-          //       GetOrderDetailsEvent(widget.orderId),
-          //     );
         } else if (completeState is OrderCompleteError) {
           customToast(msg: completeState.message);
         }
@@ -57,10 +55,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           listener: (context, cancelState) {
             if (cancelState is OrderCancelSuccess) {
               customToast(msg: AppTranslation.orderCancelledSuccessfully);
-              // Refresh order details
-              // context.read<OrderDetailsBloc>().add(
-              //       GetOrderDetailsEvent(widget.orderId),
-              //     );
             } else if (cancelState is OrderCancelError) {
               customToast(msg: cancelState.message);
             }
@@ -84,11 +78,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       future: di.sl<StorageService>().getUserRole(),
                       builder: (context, snapshot) {
                         final userRole = snapshot.data;
-                        if (userRole?.toLowerCase() == 'merchant') {
+                        if (userRole?.toLowerCase() == UserRole.merchant.name) {
                           final fakeOrder = _generateFakeOrder();
-                          // Only show buttons if order is not completed or cancelled
-                          if (fakeOrder.status?.toLowerCase() != 'completed' &&
-                              fakeOrder.status?.toLowerCase() != 'cancelled') {
+                          if (fakeOrder.statusEnum.canCompleteOrCancel) {
                             return Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -185,7 +177,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       longitude: 35.5018,
       latitude: 33.8938,
       numberOfPeople: 3,
-      status: 'pending',
+      status: OrderStatus.pending.name,
       merchantId: 'merchant_1',
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
       updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
