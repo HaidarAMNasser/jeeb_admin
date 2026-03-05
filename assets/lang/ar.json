@@ -198,5 +198,6 @@
   "offer_updated_successfully": "تم تحديث العرض بنجاح",
   "offer_deleted_successfully": "تم حذف العرض بنجاح",
   "are_you_sure_delete_offer": "هل أنت متأكد أنك تريد حذف هذا العرض؟",
-  "select_date": "اختر التاريخ"
+  "select_date": "اختر التاريخ",
+  "show_all": "عرض الكل"
 }

@@ -162,12 +162,14 @@ class AppRouter {
         );
 
       case Routes.products:
+        final productArgs = settings.arguments as Map<String, dynamic>?;
+        final productMerchantId = productArgs?['merchantId'] as String?;
         return _buildRouteWithBloc(
           const ListProductPage(),
           settings,
           bloc: () =>
               ListProductBloc(di.sl<ListProductRepository>())
-                ..add(const GetProductsEvent()),
+                ..add(GetProductsEvent(merchantId: productMerchantId)),
         );
 
       case Routes.addProduct:
@@ -249,6 +251,10 @@ class AppRouter {
             BlocProvider<ListProductBloc>(
               create: (_) =>
                   ListProductBloc(di.sl<ListProductRepository>()),
+            ),
+            BlocProvider<ListOfferBloc>(
+              create: (_) =>
+                  ListOfferBloc(di.sl<ListOfferRepository>()),
             ),
             BlocProvider<DeleteMerchantBloc>(
               create: (_) =>
@@ -357,12 +363,14 @@ class AppRouter {
         );
 
       case Routes.offers:
+        final offerArgs = settings.arguments as Map<String, dynamic>?;
+        final offerMerchantId = offerArgs?['merchantId'] as String?;
         return _buildRouteWithBloc(
           const ListOfferPage(),
           settings,
           bloc: () =>
               ListOfferBloc(di.sl<ListOfferRepository>())
-                ..add(const GetOffersEvent()),
+                ..add(GetOffersEvent(merchantId: offerMerchantId)),
         );
 
       case Routes.offerDetails:

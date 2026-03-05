@@ -198,5 +198,6 @@
   "offer_updated_successfully": "Offer updated successfully",
   "offer_deleted_successfully": "Offer deleted successfully",
   "are_you_sure_delete_offer": "Are you sure you want to delete this offer?",
-  "select_date": "Select Date"
+  "select_date": "Select Date",
+  "show_all": "Show all"
 }

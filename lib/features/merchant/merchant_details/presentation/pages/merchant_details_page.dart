@@ -13,6 +13,7 @@ import 'package:jeeb_admin/features/merchant/merchant_details/presentation/bloc/
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_details_content.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
+import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
 import 'package:jeeb_admin/features/merchant/delete_merchant/presentation/bloc/delete_merchant_bloc.dart';
 
 class MerchantDetailsPage extends StatefulWidget {
@@ -26,7 +27,6 @@ class MerchantDetailsPage extends StatefulWidget {
 
 class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
   final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -35,35 +35,20 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
     context.read<MerchantDetailsBloc>().add(
       GetMerchantDetailsEvent(id: widget.merchantId),
     );
-    // Load products for this merchant
+    // Load products for this merchant (preview: first page only, section shows 3 + "Show all")
     context.read<ListProductBloc>().add(
       GetProductsEvent(merchantId: widget.merchantId),
     );
-    _scrollController.addListener(_onScroll);
+    // Load offers for this merchant (preview: first page only, section shows 3 + "Show all")
+    context.read<ListOfferBloc>().add(
+      GetOffersEvent(merchantId: widget.merchantId),
+    );
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_isLoadingMore) return;
-
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.8) {
-      final state = context.read<ListProductBloc>().state;
-      if (state is ListProductLoaded && state.hasMore) {
-        setState(() {
-          _isLoadingMore = true;
-        });
-        context.read<ListProductBloc>().add(
-          GetProductsEvent(loadMore: true, merchantId: widget.merchantId),
-        );
-      }
-    }
   }
 
   @override

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/widgets.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -157,23 +162,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
-                
-                // Edit Button
-                ElevatedButton.icon(
-                  onPressed: () {
-                    context.pushReplacementNamed(
-                      Routes.addProduct,
-                      arguments: {'product': loadedState.product},
+                SizedBox(height: AppHeight.s24),
+                // Edit Button (merchant only; hidden for admin)
+                FutureBuilder<String?>(
+                  future: di.sl<StorageService>().getUserRole(),
+                  builder: (context, snapshot) {
+                    final isAdmin = snapshot.data?.toLowerCase() == UserRole.admin.name;
+                    if (isAdmin) return const SizedBox.shrink();
+                    return CustomButton(
+                      text: AppTranslation.editProduct,
+                      onPressed: () {
+                        context.pushReplacementNamed(
+                          Routes.addProduct,
+                          arguments: {'product': loadedState.product},
+                        );
+                      },
+                      color: ColorManager.primary,
                     );
                   },
-                  icon: Icon(Icons.edit),
-                  label: Text('Edit Product'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorManager.primary,
-                    foregroundColor: ColorManager.defaultWhite,
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  ),
                 ),
               ],
             ),

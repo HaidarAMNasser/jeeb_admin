@@ -222,5 +222,6 @@ class AppTranslation {
   static String get offerDeletedSuccessfully => 'offer_deleted_successfully'.tr();
   static String get areYouSureDeleteOffer => 'are_you_sure_delete_offer'.tr();
   static String get selectDate => 'select_date'.tr();
+  static String get showAll => 'show_all'.tr();
 }
 

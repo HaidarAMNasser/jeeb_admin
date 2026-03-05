@@ -12,6 +12,9 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_date_select.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/offer/offer_details/presentation/bloc/offer_details_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
 
@@ -133,15 +136,23 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                   (p) => ProductListItem(product: p),
                 ),
                 SizedBox(height: AppHeight.s24),
-                CustomButton(
-                  text: AppTranslation.editOffer,
-                  onPressed: () {
-                    context.pushReplacementNamed(
-                      Routes.addOffer,
-                      arguments: {'offer': offer},
+                // Edit button: merchant only; hidden for admin
+                FutureBuilder<String?>(
+                  future: di.sl<StorageService>().getUserRole(),
+                  builder: (context, snapshot) {
+                    final isAdmin = snapshot.data?.toLowerCase() == UserRole.admin.name;
+                    if (isAdmin) return const SizedBox.shrink();
+                    return CustomButton(
+                      text: AppTranslation.editOffer,
+                      onPressed: () {
+                        context.pushReplacementNamed(
+                          Routes.addOffer,
+                          arguments: {'offer': offer},
+                        );
+                      },
+                      color: ColorManager.primary,
                     );
                   },
-                  color: ColorManager.primary,
                 ),
               ],
             ),

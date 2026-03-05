@@ -10,35 +10,38 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
-import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
-import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
-import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
+import 'package:jeeb_admin/features/offer/list_offer/domain/entities/offer_entity.dart';
+import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
+import 'package:jeeb_admin/features/offer/list_offer/presentation/widgets/offer_list_item.dart';
 
-/// Maximum number of products to show in the merchant details preview.
-const int _kMerchantProductsPreviewLimit = 3;
+/// Maximum number of offers to show in the merchant details preview.
+const int _kMerchantOffersPreviewLimit = 3;
 
-class MerchantProductsSection extends StatelessWidget {
+class MerchantOffersSection extends StatelessWidget {
   final String merchantId;
 
-  const MerchantProductsSection({super.key, required this.merchantId});
+  const MerchantOffersSection({
+    super.key,
+    required this.merchantId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ListProductBloc, ListProductState>(
+    return BlocBuilder<ListOfferBloc, ListOfferState>(
       builder: (context, state) {
-        if (state is ListProductLoading || state is ListProductInitial) {
+        if (state is ListOfferLoading || state is ListOfferInitial) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: AppTranslation.products,
+                text: AppTranslation.offers,
                 textStyle: getBoldStyle(
                   fontSize: AppFontSize.s20,
                   color: ColorManager.titlesColor,
                 ),
               ),
               SizedBox(height: AppHeight.s16),
-              Center(
+               Center(
                 child: Padding(
                   padding: EdgeInsets.all(AppPadding.p24),
                   child: CustomCircleIndicator(),
@@ -48,12 +51,12 @@ class MerchantProductsSection extends StatelessWidget {
           );
         }
 
-        if (state is ListProductError) {
+        if (state is ListOfferError) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: AppTranslation.products,
+                text: AppTranslation.offers,
                 textStyle: getBoldStyle(
                   fontSize: AppFontSize.s20,
                   color: ColorManager.titlesColor,
@@ -67,15 +70,25 @@ class MerchantProductsSection extends StatelessWidget {
                   color: ColorManager.error,
                 ),
               ),
+              SizedBox(height: AppHeight.s12),
+              CustomButton(
+                text: AppTranslation.retry,
+                onPressed: () {
+                  context.read<ListOfferBloc>().add(
+                    GetOffersEvent(merchantId: merchantId),
+                  );
+                },
+                color: ColorManager.primary,
+              ),
             ],
           );
         }
 
-        final productList = state is ListProductLoaded
-            ? state.products
-            : (state is ListProductLoadingMore)
-            ? state.products
-            : <ProductEntity>[];
+        final offerList = state is ListOfferLoaded
+            ? state.offers
+            : (state is ListOfferLoadingMore)
+                ? state.offers
+                : <OfferEntity>[];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,17 +98,17 @@ class MerchantProductsSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomText(
-                  text: AppTranslation.products,
+                  text: AppTranslation.offers,
                   textStyle: getBoldStyle(
                     fontSize: AppFontSize.s20,
                     color: ColorManager.titlesColor,
                   ),
                 ),
-                if (productList.isNotEmpty)
+                if (offerList.isNotEmpty)
                   InkWell(
                     onTap: () {
                       context.pushNamed(
-                        Routes.products,
+                        Routes.offers,
                         arguments: {'merchantId': merchantId},
                       );
                     },
@@ -128,18 +141,18 @@ class MerchantProductsSection extends StatelessWidget {
               ],
             ),
             SizedBox(height: AppHeight.s16),
-            if (productList.isEmpty)
+            if (offerList.isEmpty)
               CustomText(
-                text: AppTranslation.noProductsFound,
+                text: AppTranslation.noOffersFound,
                 textStyle: getRegularStyle(
                   fontSize: AppFontSize.s14,
                   color: ColorManager.descriptionColor,
                 ),
               )
             else
-              ...productList
-                  .take(_kMerchantProductsPreviewLimit)
-                  .map((p) => ProductListItem(product: p)),
+              ...offerList.take(_kMerchantOffersPreviewLimit).map(
+                    (o) => OfferListItem(offer: o),
+                  ),
           ],
         );
       },

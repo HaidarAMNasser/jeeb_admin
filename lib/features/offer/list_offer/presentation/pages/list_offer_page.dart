@@ -7,6 +7,9 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dar
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/list_offer/presentation/widgets/offer_list_item.dart';
 
@@ -24,7 +27,7 @@ class _ListOfferPageState extends State<ListOfferPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    context.read<ListOfferBloc>().add(const GetOffersEvent());
+    // Initial load is triggered by route when bloc is created
   }
 
   @override
@@ -40,7 +43,7 @@ class _ListOfferPageState extends State<ListOfferPage> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent * 0.8) {
       if (state is ListOfferLoaded && state.hasMore) {
-        context.read<ListOfferBloc>().add(const GetOffersEvent(loadMore: true));
+        context.read<ListOfferBloc>().add(GetOffersEvent(loadMore: true, merchantId: state.merchantId));
       }
     }
   }
@@ -66,7 +69,9 @@ class _ListOfferPageState extends State<ListOfferPage> {
             },
             emptyMessage: AppTranslation.noOffersFound,
             getRetryCallback: (_) => () {
-              context.read<ListOfferBloc>().add(const GetOffersEvent());
+              final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+              final merchantId = args?['merchantId'] as String?;
+              context.read<ListOfferBloc>().add(GetOffersEvent(merchantId: merchantId));
             },
             successBuilder: (context, offerState) {
               final offers = offerState is ListOfferLoaded
@@ -78,7 +83,9 @@ class _ListOfferPageState extends State<ListOfferPage> {
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  context.read<ListOfferBloc>().add(const GetOffersEvent());
+                  final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+                  final merchantId = args?['merchantId'] as String?;
+                  context.read<ListOfferBloc>().add(GetOffersEvent(merchantId: merchantId));
                 },
                 child: ListView.builder(
                   controller: _scrollController,
@@ -99,12 +106,19 @@ class _ListOfferPageState extends State<ListOfferPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorManager.primary,
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.addOffer);
+      floatingActionButton: FutureBuilder<String?>(
+        future: di.sl<StorageService>().getUserRole(),
+        builder: (context, snapshot) {
+          final isAdmin = snapshot.data?.toLowerCase() == UserRole.admin.name;
+          if (isAdmin) return const SizedBox.shrink();
+          return FloatingActionButton(
+            backgroundColor: ColorManager.primary,
+            onPressed: () {
+              Navigator.pushNamed(context, Routes.addOffer);
+            },
+            child: Icon(Icons.add, color: ColorManager.surface),
+          );
         },
-        child: Icon(Icons.add, color: ColorManager.surface),
       ),
     );
   }

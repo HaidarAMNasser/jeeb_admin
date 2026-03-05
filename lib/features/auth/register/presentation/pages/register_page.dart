@@ -95,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
       await storageService.setUserToken('fake_token_for_testing');
 
       // Set user role to admin (lowercase as stored in login)
-      await storageService.setUserRole(UserRole.merchant.name);
+      await storageService.setUserRole(UserRole.admin.name);
 
       customToast(msg: 'Fake registration successful (Testing Mode - Admin)');
 
