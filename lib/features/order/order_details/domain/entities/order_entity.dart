@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
+import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 
 class OrderEntity extends Equatable {
   final String id;
@@ -11,6 +12,9 @@ class OrderEntity extends Equatable {
   final double? latitude;
   final int? numberOfPeople;
   final String? status;
+
+  /// Resolved status for UI logic; use this instead of comparing raw [status] strings.
+  OrderStatus get statusEnum => OrderStatus.fromString(status);
   final String? merchantId;
   final DateTime? createdAt;
   final DateTime? updatedAt;

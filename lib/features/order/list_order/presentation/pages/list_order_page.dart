@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/widgets/search_order_widget.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_list_item.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
@@ -175,7 +173,7 @@ class _ListOrderPageState extends State<ListOrderPage> {
         longitude: 35.5018 + (index * 0.01),
         latitude: 33.8938 + (index * 0.01),
         numberOfPeople: 2 + (index % 5),
-        status: ['pending', 'completed', 'cancelled'][index % 3],
+        status: [OrderStatus.pending, OrderStatus.completed, OrderStatus.cancelled][index % 3].name,
         merchantId: 'merchant_${(index % 5) + 1}',
         createdAt: DateTime.now().subtract(Duration(days: index)),
         updatedAt: DateTime.now().subtract(Duration(hours: index)),

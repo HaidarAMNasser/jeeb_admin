@@ -5,13 +5,13 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_dropdown.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
+import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
 
 class RegisterForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -21,16 +21,20 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController passwordController;
   final TextEditingController phoneController;
   final TextEditingController addressController;
+  final TextEditingController restaurantNameController;
   final String? selectedRole;
-  final String? selectedNotificationChannel;
   final CountryEntity? selectedCountry;
   final CityEntity? selectedCity;
+  final double? useLocationLatitude;
+  final double? useLocationLongitude;
   final ValueChanged<CountryEntity?> onCountryChanged;
   final ValueChanged<CityEntity?> onCityChanged;
+  final VoidCallback onUseMyLocation;
+  final VoidCallback? onClearDeviceLocation;
   final ValueChanged<String?> onRoleChanged;
-  final ValueChanged<String?> onNotificationChannelChanged;
   final VoidCallback onRegister;
   final bool isLoading;
+  final bool isLocationLoading;
 
   const RegisterForm({
     super.key,
@@ -41,16 +45,20 @@ class RegisterForm extends StatelessWidget {
     required this.passwordController,
     required this.phoneController,
     required this.addressController,
+    required this.restaurantNameController,
     this.selectedRole,
-    this.selectedNotificationChannel,
     this.selectedCountry,
     this.selectedCity,
+    this.useLocationLatitude,
+    this.useLocationLongitude,
     required this.onCountryChanged,
     required this.onCityChanged,
+    required this.onUseMyLocation,
+    this.onClearDeviceLocation,
     required this.onRoleChanged,
-    required this.onNotificationChannelChanged,
     required this.onRegister,
     required this.isLoading,
+    this.isLocationLoading = false,
   });
 
   @override
@@ -93,27 +101,32 @@ class RegisterForm extends StatelessWidget {
             hintText: AppTranslation.enterAddress,
             controller: addressController,
           ),
+          CustomTextField(
+            title: AppTranslation.restaurantName,
+            hintText: AppTranslation.enterRestaurantName,
+            controller: restaurantNameController,
+          ),
+          LocationSourceSelector(
+            title: AppTranslation.location,
+            useMyLocationHint: AppTranslation.useMyLocation,
+            locationSetHint: AppTranslation.locationSetFormat,
+            latitude: useLocationLatitude,
+            longitude: useLocationLongitude,
+            isRequired: true,
+            onUseMyLocation: onUseMyLocation,
+            onClearLocation: (useLocationLatitude != null || useLocationLongitude != null)
+                ? onClearDeviceLocation
+                : null,
+            isLoading: isLocationLoading,
+          ),
           CountryCityWidget(
             selectedCountry: selectedCountry,
             selectedCity: selectedCity,
             onSelectCountry: onCountryChanged,
             onSelectCity: onCityChanged,
             isRequired: true,
+            isReadOnly: useLocationLatitude != null && useLocationLongitude != null,
           ),
-          CustomDropdown<String>(
-            title: AppTranslation.notificationChannel,
-            value: selectedNotificationChannel,
-            hintText: AppTranslation.notificationChannel,
-            items: const [
-              DropdownMenuItem<String>(value: 'EMAIL', child: Text('EMAIL')),
-              DropdownMenuItem<String>(
-                value: 'WHATSAPP',
-                child: Text('WHATSAPP'),
-              ),
-            ],
-            onChanged: onNotificationChannelChanged,
-          ),
-          SizedBox(height: AppHeight.s8),
           CustomButton(
             text: AppTranslation.register,
             onPressed: onRegister,

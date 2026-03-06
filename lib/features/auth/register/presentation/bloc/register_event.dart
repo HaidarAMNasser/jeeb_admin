@@ -14,10 +14,13 @@ class RegisterSubmitted extends RegisterEvent {
   final String password;
   final String phone;
   final String role;
-  final int countryId;
-  final int cityId;
+  final int? countryId;
+  final int? cityId;
+  final double? latitude;
+  final double? longitude;
   final String notificationChannel;
   final String? address;
+  final String? restaurantName;
 
   const RegisterSubmitted({
     required this.firstName,
@@ -26,10 +29,13 @@ class RegisterSubmitted extends RegisterEvent {
     required this.password,
     required this.phone,
     required this.role,
-    required this.countryId,
-    required this.cityId,
+    this.countryId,
+    this.cityId,
+    this.latitude,
+    this.longitude,
     required this.notificationChannel,
     this.address,
+    this.restaurantName,
   });
 
   @override
@@ -42,8 +48,11 @@ class RegisterSubmitted extends RegisterEvent {
         role,
         countryId,
         cityId,
+        latitude,
+        longitude,
         notificationChannel,
         address,
+        restaurantName,
       ];
 }
 

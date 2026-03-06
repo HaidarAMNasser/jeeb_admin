@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:jeeb_admin/core/presentation/widgets/verification_method_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
@@ -33,11 +35,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
-  String? _selectedRole = 'MERCHANT';
+  final _restaurantNameController = TextEditingController();
+  String? _selectedRole = UserRole.merchant.name;
   String? _selectedNotificationChannel = 'EMAIL';
   CountryEntity? _selectedCountry;
   CityEntity? _selectedCity;
-
+  bool _isLocationLoading = false;
+  double? _useLocationLat;
+  double? _useLocationLng;
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -46,20 +51,31 @@ class _RegisterPageState extends State<RegisterPage> {
     _passwordController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
+    _restaurantNameController.dispose();
     super.dispose();
   }
 
-  void _onCountryChanged(CountryEntity? country) {
-    setState(() {
-      _selectedCountry = country;
-      _selectedCity = null;
-    });
-  }
-
-  void _onCityChanged(CityEntity? city) {
-    setState(() {
-      _selectedCity = city;
-    });
+  /// On Register tap: validate form, show verification method dialog, then submit.
+  Future<void> _onRegisterTapped() async {
+    if (!_formKey.currentState!.validate()) return;
+    // TODO: uncomment for production – country/city required
+    // if (_selectedCountry == null) {
+    //   customToast(msg: AppTranslation.pleaseSelectCountry);
+    //   return;
+    // }
+    // if (_selectedCity == null) {
+    //   customToast(msg: AppTranslation.pleaseSelectCity);
+    //   return;
+    // }
+    final channel = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const VerificationMethodSelectionDialog(),
+    );
+    if (channel != null && mounted) {
+      setState(() => _selectedNotificationChannel = channel);
+      await _handleFakeRegister();
+    }
   }
 
   // Fake register function for testing - bypasses actual registration
@@ -71,9 +87,9 @@ class _RegisterPageState extends State<RegisterPage> {
       await storageService.setUserToken('fake_token_for_testing');
 
       // Set user role to admin (lowercase as stored in login)
-      await storageService.setUserRole(UserRole.admin.name);
+      await storageService.setUserRole(UserRole.merchant.name);
 
-      customToast(msg: 'Fake registration successful (Testing Mode - Admin)');
+      customToast(msg: 'registration successful');
 
       // Navigate to main navigation
       if (mounted) {
@@ -119,6 +135,48 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  void _onCountryChanged(CountryEntity? country) {
+    setState(() {
+      _selectedCountry = country;
+      _selectedCity = null;
+      _useLocationLat = null;
+      _useLocationLng = null;
+    });
+  }
+
+  void _onCityChanged(CityEntity? city) {
+    setState(() {
+      _selectedCity = city;
+      _useLocationLat = null;
+      _useLocationLng = null;
+    });
+  }
+
+  Future<void> _onUseMyLocation() async {
+    setState(() => _isLocationLoading = true);
+    final position = await LocationPermissionHelper.requestAndGetPosition();
+    if (!mounted) return;
+    setState(() {
+      _isLocationLoading = false;
+      if (position != null) {
+        _useLocationLat = position.latitude;
+        _useLocationLng = position.longitude;
+        _selectedCountry = null;
+        _selectedCity = null;
+      }
+    });
+    if (position == null) {
+      customToast(msg: AppTranslation.locationPermissionDenied);
+    }
+  }
+
+  void _onClearDeviceLocation() {
+    setState(() {
+      _useLocationLat = null;
+      _useLocationLng = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterBloc, RegisterState>(
@@ -142,24 +200,27 @@ class _RegisterPageState extends State<RegisterPage> {
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(AppPadding.p24),
                 child: RegisterForm(
+                  restaurantNameController: _restaurantNameController,
+                  onUseMyLocation: _onUseMyLocation,
+                  isLocationLoading: _isLocationLoading,
+
                   formKey: _formKey,
                   firstNameController: _firstNameController,
                   lastNameController: _lastNameController,
                   emailController: _emailController,
                   passwordController: _passwordController,
                   phoneController: _phoneController,
+                  useLocationLatitude: _useLocationLat,
+                  useLocationLongitude: _useLocationLng,
                   addressController: _addressController,
                   selectedRole: _selectedRole,
-                  selectedNotificationChannel: _selectedNotificationChannel,
                   selectedCountry: _selectedCountry,
                   selectedCity: _selectedCity,
+                  onClearDeviceLocation: _onClearDeviceLocation,
                   onCountryChanged: _onCountryChanged,
                   onCityChanged: _onCityChanged,
                   onRoleChanged: (role) => setState(() => _selectedRole = role),
-                  onNotificationChannelChanged: (channel) =>
-                      setState(() => _selectedNotificationChannel = channel),
-                  onRegister:
-                      _handleFakeRegister, // Using fake register for testing
+                  onRegister: _onRegisterTapped,
                   isLoading: state is RegisterLoading,
                 ),
               ),

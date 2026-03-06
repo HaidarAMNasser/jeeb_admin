@@ -14,6 +14,7 @@ class OrderHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = order.statusEnum;
     return Card(
       color: ColorManager.defaultWhite,
       child: Padding(
@@ -36,15 +37,14 @@ class OrderHeaderCard extends StatelessWidget {
                   vertical: AppPadding.p4,
                 ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(order.status!)
-                      .withOpacity(0.1),
+                  color: status.color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppRadius.r8),
                 ),
                 child: CustomText(
-                  text: order.status!,
+                  text: status.displayLabel,
                   textStyle: getSemiBoldStyle(
                     fontSize: AppFontSize.s12,
-                    color: _getStatusColor(order.status!),
+                    color: status.color,
                   ),
                 ),
               ),
@@ -53,19 +53,6 @@ class OrderHeaderCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return Colors.green;
-      case 'cancelled':
-        return Colors.red;
-      case 'pending':
-        return Colors.orange;
-      default:
-        return ColorManager.primary;
-    }
   }
 }
 

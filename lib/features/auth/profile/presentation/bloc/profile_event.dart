@@ -18,6 +18,9 @@ class UpdateProfile extends ProfileEvent {
   final int? countryId;
   final int? cityId;
   final String? address;
+  final double? latitude;
+  final double? longitude;
+  final bool? isActive;
 
   const UpdateProfile({
     this.firstName,
@@ -26,6 +29,9 @@ class UpdateProfile extends ProfileEvent {
     this.countryId,
     this.cityId,
     this.address,
+    this.latitude,
+    this.longitude,
+    this.isActive,
   });
 
   @override
@@ -36,6 +42,13 @@ class UpdateProfile extends ProfileEvent {
         countryId,
         cityId,
         address,
+        latitude,
+        longitude,
+        isActive,
       ];
+}
+
+class FormValuesInitialized extends ProfileEvent {
+  const FormValuesInitialized();
 }
 

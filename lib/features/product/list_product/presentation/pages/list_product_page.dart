@@ -7,6 +7,9 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dar
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
 
@@ -24,8 +27,7 @@ class _ListProductPageState extends State<ListProductPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Load initial products
-    context.read<ListProductBloc>().add(const GetProductsEvent());
+    // Initial load is triggered by route when bloc is created
   }
 
   @override
@@ -44,7 +46,7 @@ class _ListProductPageState extends State<ListProductPage> {
         _scrollController.position.maxScrollExtent * 0.8) {
       if (state is ListProductLoaded && state.hasMore) {
         context.read<ListProductBloc>().add(
-          const GetProductsEvent(loadMore: true),
+          GetProductsEvent(loadMore: true, merchantId: state.merchantId),
         );
       }
     }
@@ -75,7 +77,9 @@ class _ListProductPageState extends State<ListProductPage> {
             },
             emptyMessage: AppTranslation.noProductsFound,
             getRetryCallback: (state) => () {
-              context.read<ListProductBloc>().add(const GetProductsEvent());
+              final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+              final merchantId = args?['merchantId'] as String?;
+              context.read<ListProductBloc>().add(GetProductsEvent(merchantId: merchantId));
             },
             successBuilder: (context, productState) {
               final products = productState is ListProductLoaded
@@ -87,7 +91,9 @@ class _ListProductPageState extends State<ListProductPage> {
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  context.read<ListProductBloc>().add(const GetProductsEvent());
+                  final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+                  final merchantId = args?['merchantId'] as String?;
+                  context.read<ListProductBloc>().add(GetProductsEvent(merchantId: merchantId));
                 },
                 child: ListView.builder(
                   controller: _scrollController,
@@ -111,12 +117,19 @@ class _ListProductPageState extends State<ListProductPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorManager.primary,
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.addProduct);
+      floatingActionButton: FutureBuilder<String?>(
+        future: di.sl<StorageService>().getUserRole(),
+        builder: (context, snapshot) {
+          final isAdmin = snapshot.data?.toLowerCase() == UserRole.admin.name;
+          if (isAdmin) return const SizedBox.shrink();
+          return FloatingActionButton(
+            backgroundColor: ColorManager.primary,
+            onPressed: () {
+              Navigator.pushNamed(context, Routes.addProduct);
+            },
+            child: Icon(Icons.add, color: ColorManager.surface),
+          );
         },
-        child: Icon(Icons.add, color: ColorManager.surface),
       ),
     );
   }

@@ -1,0 +1,188 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/bloc/create_offer_bloc.dart';
+import 'package:jeeb_admin/features/offer/list_offer/domain/entities/offer_entity.dart';
+import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
+import 'package:jeeb_admin/features/offer/update_offer/presentation/bloc/update_offer_bloc.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_description_fields.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_products_section.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_date_select.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_discount_section.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_form_submit_button.dart';
+
+class CreateOfferForm extends StatefulWidget {
+  final CreateOfferBloc bloc;
+  final CreateOfferState state;
+  final bool isEdit;
+  final OfferEntity? offer;
+
+  const CreateOfferForm({
+    super.key,
+    required this.bloc,
+    required this.state,
+    required this.isEdit,
+    this.offer,
+  });
+
+  @override
+  State<CreateOfferForm> createState() => _CreateOfferFormState();
+}
+
+class _CreateOfferFormState extends State<CreateOfferForm> {
+  late List<ProductEntity> _selectedProducts;
+  late TextEditingController _shortDescController;
+  late TextEditingController _longDescController;
+  late TextEditingController _discountValueController;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedProducts = List.from(widget.offer?.products ?? []);
+    _shortDescController = TextEditingController(
+      text: widget.state.shortDescription,
+    );
+    _longDescController = TextEditingController(
+      text: widget.state.longDescription,
+    );
+    _discountValueController = TextEditingController(
+      text: widget.state.discountValue,
+    );
+  }
+
+  @override
+  void didUpdateWidget(CreateOfferForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.state.shortDescription != _shortDescController.text) {
+      _shortDescController.text = widget.state.shortDescription;
+    }
+    if (widget.state.longDescription != _longDescController.text) {
+      _longDescController.text = widget.state.longDescription;
+    }
+    if (widget.state.discountValue != _discountValueController.text) {
+      _discountValueController.text = widget.state.discountValue;
+    }
+    if (widget.offer != null &&
+        _selectedProducts.isEmpty &&
+        widget.state.productIds.isNotEmpty) {
+      _selectedProducts = widget.offer!.products;
+    }
+  }
+
+  @override
+  void dispose() {
+    _shortDescController.dispose();
+    _longDescController.dispose();
+    _discountValueController.dispose();
+    super.dispose();
+  }
+
+  void _addProduct(ProductEntity? product) {
+    if (product == null) return;
+    if (_selectedProducts.any((p) => p.id == product.id)) return;
+    setState(() {
+      _selectedProducts = [..._selectedProducts, product];
+    });
+    widget.bloc.add(
+      UpdateOfferProductIds(_selectedProducts.map((e) => e.id).toList()),
+    );
+  }
+
+  void _removeProduct(ProductEntity product) {
+    setState(() {
+      _selectedProducts = _selectedProducts
+          .where((p) => p.id != product.id)
+          .toList();
+    });
+    widget.bloc.add(
+      UpdateOfferProductIds(_selectedProducts.map((e) => e.id).toList()),
+    );
+  }
+
+  void _onSubmit() {
+    if (!widget.state.isValid) return;
+    if (widget.isEdit) {
+      context.read<UpdateOfferBloc>().add(
+        UpdateOfferSubmitted(
+          id: widget.state.offerId!,
+          shortDescription: widget.state.shortDescription,
+          longDescription: widget.state.longDescription,
+          productIds: widget.state.productIds,
+          startDate: widget.state.startDate,
+          endDate: widget.state.endDate,
+          discountType: widget.state.discountType,
+          discountValue: num.tryParse(widget.state.discountValue) ?? 0,
+        ),
+      );
+    } else {
+      widget.bloc.add(const CreateOfferSubmitted());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = widget.state;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(AppPadding.p16),
+      child: Column(
+        spacing: AppSize.s16.h,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          OfferProductsSection(
+            selectedProducts: _selectedProducts,
+            onSelectProduct: _addProduct,
+            onRemoveProduct: _removeProduct,
+          ),
+          OfferDiscountSection(
+            state: state,
+            discountValueController: _discountValueController,
+            onDiscountTypeChanged: (v) =>
+                widget.bloc.add(UpdateOfferDiscountType(v)),
+            onDiscountValueChanged: (v) =>
+                widget.bloc.add(UpdateOfferDiscountValue(v)),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: CustomDateSelect(
+                  title: AppTranslation.offerStartDate,
+                  initialValue: state.startDate,
+                  onDateSelected: (date) {
+                    if (date != null) widget.bloc.add(UpdateOfferStartDate(date));
+                  },
+                ),
+              ),
+              SizedBox(width: AppWidth.s16),
+              Expanded(
+                child: CustomDateSelect(
+                  title: AppTranslation.offerEndDate,
+                  initialValue: state.endDate,
+                  onDateSelected: (date) {
+                    if (date != null) widget.bloc.add(UpdateOfferEndDate(date));
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          OfferDescriptionFields(
+            shortDescController: _shortDescController,
+            longDescController: _longDescController,
+            onShortDescChanged: (v) =>
+                widget.bloc.add(UpdateOfferShortDescription(v)),
+            onLongDescChanged: (v) =>
+                widget.bloc.add(UpdateOfferLongDescription(v)),
+          ),
+          OfferFormSubmitButton(
+            state: state,
+            isEdit: widget.isEdit,
+            onSubmit: _onSubmit,
+          ),
+        ],
+      ),
+    );
+  }
+}
