@@ -187,6 +187,9 @@ abstract class AppApiServiceClient {
   @DELETE("users/deliveries/{id}")
   Future<Response> deleteDeliveryMan(@Path('id') String id);
 
+  @POST("users/deliveries/{id}/confirm")
+  Future<Response> confirmDeliveryMan(@Path('id') String id);
+
   // Order endpoints
   @GET("orders")
   Future<Response> getOrders({

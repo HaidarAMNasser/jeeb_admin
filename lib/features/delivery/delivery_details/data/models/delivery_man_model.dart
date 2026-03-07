@@ -43,6 +43,7 @@ class DeliveryManModel {
   final String lastName;
   final String email;
   final String phone;
+  final bool confirmed;
   final String? role;
   final String? notificationChannel;
   final int? countryId;
@@ -64,6 +65,7 @@ class DeliveryManModel {
     required this.lastName,
     required this.email,
     required this.phone,
+    required this.confirmed,
     this.role,
     this.notificationChannel,
     this.countryId,
@@ -87,6 +89,7 @@ class DeliveryManModel {
       lastName: json['lastName']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
+      confirmed: json['confirmed'] as bool? ?? false,
       role: json['role']?.toString(),
       notificationChannel: json['notificationChannel']?.toString(),
       countryId: json['countryId'] as int?,
@@ -127,6 +130,7 @@ class DeliveryManModel {
       'lastName': lastName,
       'email': email,
       'phone': phone,
+      'confirmed': confirmed,
       'role': role,
       'notificationChannel': notificationChannel,
       'countryId': countryId,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -53,16 +54,34 @@ class DeliveryListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomText(
-                      text: deliveryMan.name,
-                      textStyle: getBoldStyle(
-                        fontSize: AppFontSize.s18,
-                        color: ColorManager.productNameColor,
-                      ),
-                      maxLines: 2,
-                      textOverflow: TextOverflow.ellipsis,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomText(
+                          text: deliveryMan.name,
+                          textStyle: getBoldStyle(
+                            fontSize: AppFontSize.s18,
+                            color: ColorManager.productNameColor,
+                          ),
+                          maxLines: 2,
+                          textOverflow: TextOverflow.ellipsis,
+                        ),
+
+                        _buildBadge(
+                          label: deliveryMan.confirmed
+                              ? AppTranslation.confirmed
+                              : AppTranslation.notConfirmed,
+                          backgroundColor: deliveryMan.confirmed
+                              ? ColorManager.success.withOpacity(0.12)
+                              : ColorManager.defaultYellow.withOpacity(0.18),
+                          textColor: deliveryMan.confirmed
+                              ? ColorManager.success
+                              : ColorManager.defaultYellow,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: AppHeight.s4),
+                    SizedBox(height: AppHeight.s10),
+
                     CustomText(
                       text: deliveryMan.email,
                       textStyle: getRegularStyle(
@@ -72,6 +91,7 @@ class DeliveryListItem extends StatelessWidget {
                       maxLines: 1,
                       textOverflow: TextOverflow.ellipsis,
                     ),
+
                     if (deliveryMan.phone.isNotEmpty) ...[
                       SizedBox(height: AppHeight.s8),
                       Row(
@@ -92,36 +112,48 @@ class DeliveryListItem extends StatelessWidget {
                         ],
                       ),
                     ],
-                    if (deliveryMan.isOnline != null) ...[
-                      SizedBox(height: AppHeight.s8),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppPadding.p8,
-                          vertical: AppPadding.p4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: deliveryMan.isOnline == true
-                              ? ColorManager.primary.withOpacity(0.1)
-                              : ColorManager.descriptionColor.withOpacity(0.2),
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.r8),
-                        ),
-                        child: CustomText(
-                          text: deliveryMan.isOnline == true ? 'Online' : 'Offline',
-                          textStyle: getSemiBoldStyle(
-                            fontSize: AppFontSize.s10,
-                            color: deliveryMan.isOnline == true
-                                ? ColorManager.primary
-                                : ColorManager.descriptionColor,
-                          ),
-                        ),
+                    SizedBox(height: AppHeight.s12),
+                    if (deliveryMan.isOnline != null)
+                      _buildBadge(
+                        label: deliveryMan.isOnline == true
+                            ? AppTranslation.online
+                            : AppTranslation.offline,
+                        backgroundColor: deliveryMan.isOnline == true
+                            ? ColorManager.primary.withOpacity(0.1)
+                            : ColorManager.descriptionColor.withOpacity(0.2),
+                        textColor: deliveryMan.isOnline == true
+                            ? ColorManager.primary
+                            : ColorManager.descriptionColor,
                       ),
-                    ],
                   ],
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadge({
+    required String label,
+    required Color backgroundColor,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppPadding.p8,
+        vertical: AppPadding.p4,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(AppRadius.r8),
+      ),
+      child: CustomText(
+        text: label,
+        textStyle: getSemiBoldStyle(
+          fontSize: AppFontSize.s10,
+          color: textColor,
         ),
       ),
     );

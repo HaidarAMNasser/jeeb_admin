@@ -63,6 +63,9 @@ import '../../../features/delivery/update_delivery/data/data_sources/update_deli
 import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
 import '../../../features/delivery/delete_delivery/data/data_sources/delete_delivery_data_source.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/data/data_sources/confirm_delivery_data_source.dart';
+import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
 import '../../../features/order/list_order/data/data_sources/list_order_data_source.dart';
 import '../../../features/order/list_order/data/repositories/list_order_repository.dart';
 import '../../../features/order/order_details/data/data_sources/order_details_data_source.dart';
@@ -250,6 +253,13 @@ Future<void> init() async {
     () => DeliveryDetailsRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => DeliveryDetailsRepository(sl(), sl()));
+
+  //! Delivery Confirm Dependencies
+  sl.registerFactory<ConfirmDeliveryRemoteDataSource>(
+    () => ConfirmDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ConfirmDeliveryRepository(sl(), sl()));
+  sl.registerFactory(() => ConfirmDeliveryBloc(sl()));
 
   //! Delivery Create/Update/Delete Dependencies
   sl.registerFactory<CreateDeliveryRemoteDataSource>(
