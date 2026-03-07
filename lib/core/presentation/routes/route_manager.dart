@@ -20,7 +20,6 @@ import '../../../features/product/product_details/presentation/pages/product_det
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
-import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
 import '../../../features/auth/login/presentation/pages/login_page.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
 import '../../../features/auth/register/presentation/pages/register_page.dart';
@@ -64,6 +63,8 @@ import '../../../features/delivery/update_delivery/presentation/bloc/update_deli
 import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
 import '../../../features/delivery/delete_delivery/presentation/bloc/delete_delivery_bloc.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
+import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
 import '../../../features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 import '../../../features/offer/list_offer/presentation/pages/list_offer_page.dart';
 import '../../../features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
@@ -318,10 +319,14 @@ class AppRouter {
           providers: [
             BlocProvider<DeliveryDetailsBloc>(
               create: (_) =>
-                  DeliveryDetailsBloc(di.sl<DeliveryDetailsRepository>()),
+                  DeliveryDetailsBloc(di.sl<DeliveryDetailsRepository>())
+                    ..add(GetDeliveryManDetailsEvent(id: deliveryManId)),
             ),
             BlocProvider<DeleteDeliveryBloc>(
               create: (_) => DeleteDeliveryBloc(di.sl<DeleteDeliveryRepository>()),
+            ),
+            BlocProvider<ConfirmDeliveryBloc>(
+              create: (_) => ConfirmDeliveryBloc(di.sl<ConfirmDeliveryRepository>()),
             ),
           ],
         );

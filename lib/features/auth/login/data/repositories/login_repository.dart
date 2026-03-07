@@ -10,23 +10,21 @@ import '../data_sources/login_remote_data_source.dart';
 import '../models/token_model.dart';
 
 /// Allowed admin login credentials (bypasses API).
-const String _adminEmail = 'admin@gmail.com';
-const String _adminPassword = '12345678';
+const String _adminEmail = "1";
+const String _adminPassword = "1";
 
 class LoginRepository {
   final LoginRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
 
-  const LoginRepository(
-    this._remoteDataSource,
-    this._networkInfo,
-  );
+  const LoginRepository(this._remoteDataSource, this._networkInfo);
 
   Future<Either<Failure, TokenEntity>> login({
     required String email,
     required String password,
   }) async {
-    if (email.trim().toLowerCase() == _adminEmail && password == _adminPassword) {
+    if (email.trim().toLowerCase() == _adminEmail &&
+        password == _adminPassword) {
       return Right(_adminTokenEntity(email.trim()));
     }
     if (await _networkInfo.isConnected) {
@@ -48,13 +46,15 @@ class LoginRepository {
             return Left(ErrorHandler.handle(domainError));
           }
         } else {
-          return Left(ErrorHandler.handle(
-            DioException(
-              type: DioExceptionType.badResponse,
-              response: response,
-              requestOptions: response.requestOptions,
+          return Left(
+            ErrorHandler.handle(
+              DioException(
+                type: DioExceptionType.badResponse,
+                response: response,
+                requestOptions: response.requestOptions,
+              ),
             ),
-          ));
+          );
         }
       } catch (error) {
         return Left(ErrorHandler.handle(error));
@@ -90,4 +90,3 @@ class LoginRepository {
     return TokenEntity(accessToken: 'admin_login', user: user);
   }
 }
-

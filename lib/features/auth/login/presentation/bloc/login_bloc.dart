@@ -14,25 +14,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     this._loginRepository,
     this._storageService,
   ) : super(const LoginInitial()) {
-    on<LoginEvent>((event, emit) async {
-      if (event is LoginSubmitted) {
-        emit(const LoginLoading());
-        final result = await _loginRepository.login(
-          email: event.email,
-          password: event.password,
-        );
+    on<LoginSubmitted>((event, emit) async {
+      emit(const LoginLoading());
 
-        result.fold(
-          (failure) => emit(LoginError(message: failure.message)),
-          (tokenEntity) async {
-            // Store token
-            await _storageService.setUserToken(tokenEntity.accessToken);
-            // Store user role
-            await _storageService.setUserRole(tokenEntity.user.role.name);
-            emit(const LoginSuccess());
-          },
-        );
-      }
+      final result = await _loginRepository.login(
+        email: event.email,
+        password: event.password,
+      );
+
+      await result.fold(
+        (failure) async {
+          if (emit.isDone) return;
+          emit(LoginError(message: failure.message));
+        },
+        (tokenEntity) async {
+          await _storageService.setUserToken(tokenEntity.accessToken);
+          await _storageService.setUserRole(tokenEntity.user.role.name);
+
+          if (emit.isDone) return;
+          emit(const LoginSuccess());
+        },
+      );
     });
   }
 }

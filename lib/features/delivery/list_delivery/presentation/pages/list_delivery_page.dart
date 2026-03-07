@@ -6,10 +6,10 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/widgets/delivery_list_item.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/widgets/search_delivery_widget.dart';
-import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 
 class ListDeliveryPage extends StatefulWidget {
   const ListDeliveryPage({super.key});
@@ -67,27 +67,63 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
                 }
               },
               builder: (context, state) {
-                final fakeDeliveryMen = _generateFakeDeliveryMen();
+                // Real API-based rendering kept here for easy restore after testing.
+                // if (state is ListDeliveryLoading) {
+                //   return const Center(child: CustomCircleIndicator());
+                // }
+                //
+                // if (state is ListDeliveryError) {
+                //   return Center(
+                //     child: Padding(
+                //       padding: EdgeInsets.all(AppPadding.p16),
+                //       child: Text(
+                //         state.message,
+                //         style: const TextStyle(color: Colors.white),
+                //         textAlign: TextAlign.center,
+                //       ),
+                //     ),
+                //   );
+                // }
+                //
+                // final deliveryMen = state is ListDeliveryLoaded
+                //     ? state.deliveryMen
+                //     : state is ListDeliveryLoadingMore
+                //         ? state.deliveryMen
+                //         : <DeliveryManEntity>[];
+                // final hasMore = state is ListDeliveryLoaded ? state.hasMore : false;
+                //
+                // if (deliveryMen.isEmpty) {
+                //   return Center(
+                //     child: Text(
+                //       AppTranslation.noDeliveryMenFound,
+                //       style: const TextStyle(color: Colors.white),
+                //     ),
+                //   );
+                // }
+
+                final deliveryMen = _generateFakeDeliveryMen();
+                final itemCount = deliveryMen.length;
+
                 return RefreshIndicator(
                   onRefresh: () async {
-                    final state = context.read<ListDeliveryBloc>().state;
-                    String? searchQuery;
-                    if (state is ListDeliveryLoaded) {
-                      searchQuery = state.search;
-                    } else if (state is ListDeliveryLoadingMore) {
-                      searchQuery = state.search;
-                    }
-                    context.read<ListDeliveryBloc>().add(
-                      GetDeliveryMenEvent(search: searchQuery),
-                    );
+                    // final state = context.read<ListDeliveryBloc>().state;
+                    // String? searchQuery;
+                    // if (state is ListDeliveryLoaded) {
+                    //   searchQuery = state.search;
+                    // } else if (state is ListDeliveryLoadingMore) {
+                    //   searchQuery = state.search;
+                    // }
+                    // context.read<ListDeliveryBloc>().add(
+                    //   GetDeliveryMenEvent(search: searchQuery),
+                    // );
                   },
                   child: ListView.builder(
                     controller: _scrollController,
                     padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                    itemCount: fakeDeliveryMen.length,
+                    itemCount: itemCount,
                     itemBuilder: (context, index) {
                       return DeliveryListItem(
-                        deliveryMan: fakeDeliveryMen[index],
+                        deliveryMan: deliveryMen[index],
                       );
                     },
                   ),
@@ -120,6 +156,7 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
       'Samer George',
       'Walid Hani',
     ];
+
     return List.generate(25, (index) {
       final nameIndex = index % names.length;
       return DeliveryManEntity(
@@ -129,6 +166,7 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
         email:
             '${names[nameIndex].toLowerCase().replaceAll(' ', '_')}@delivery.com',
         isOnline: index % 2 == 0,
+        confirmed: index % 3 == 0,
       );
     });
   }

@@ -9,6 +9,7 @@ class DeliveryManEntity extends Equatable {
   final String? countryName;
   final String? image;
   final bool? isOnline;
+  final bool confirmed;
   final int? officeOwnerId;
 
   const DeliveryManEntity({
@@ -20,6 +21,7 @@ class DeliveryManEntity extends Equatable {
     this.countryName,
     this.image,
     this.isOnline,
+    this.confirmed = false,
     this.officeOwnerId,
   });
 
@@ -33,6 +35,7 @@ class DeliveryManEntity extends Equatable {
         countryName,
         image,
         isOnline,
+        confirmed,
         officeOwnerId,
       ];
 }
