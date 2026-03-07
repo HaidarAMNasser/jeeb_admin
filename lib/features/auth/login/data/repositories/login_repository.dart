@@ -10,8 +10,8 @@ import '../data_sources/login_remote_data_source.dart';
 import '../models/token_model.dart';
 
 /// Allowed admin login credentials (bypasses API).
-const String _adminEmail = 'admin@gmail.com';
-const String _adminPassword = '12345678';
+const String _adminEmail = '1';
+const String _adminPassword = '1';
 
 class LoginRepository {
   final LoginRemoteDataSource _remoteDataSource;
