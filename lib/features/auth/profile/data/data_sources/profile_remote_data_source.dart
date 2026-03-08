@@ -1,3 +1,5 @@
+import 'dart:io' show File;
+
 import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
@@ -14,6 +16,7 @@ abstract class ProfileRemoteDataSource {
     double? latitude,
     double? longitude,
     bool? isActive,
+    File? imageFile,
   });
 }
 
@@ -38,17 +41,19 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     double? latitude,
     double? longitude,
     bool? isActive,
+    File? imageFile,
   }) {
     return _appApiServiceClient.updateProfile(
-      firstName,
-      lastName,
-      phone,
-      countryId,
-      cityId,
-      address,
-      latitude,
-      longitude,
-      isActive,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      countryId: countryId,
+      cityId: cityId,
+      address: address,
+      latitude: latitude,
+      longitude: longitude,
+      isActive: isActive,
+      imageFile: imageFile,
     );
   }
 }

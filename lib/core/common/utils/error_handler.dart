@@ -33,7 +33,10 @@ class ErrorHandler {
   static Failure _handleResponse(int? statusCode, dynamic data) {
     switch (statusCode) {
       case 400:
-        return const ServerFailure(message: 'Bad request.', code: 400);
+        return ServerFailure(
+          message: _extractMessage(data) ?? 'Bad request.',
+          code: 400,
+        );
       case 401:
         return const UnauthorizedFailure();
       case 403:

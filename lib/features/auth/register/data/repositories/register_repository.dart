@@ -4,6 +4,8 @@ import '../../../../../core/common/errors/failure.dart';
 import '../../../../../core/common/models/api_response_model.dart';
 import '../../../../../core/common/utils/error_handler.dart';
 import '../../../../../core/infrastructure/network/network_info.dart';
+import 'package:jeeb_admin/features/auth/login/domain/entities/token_entity.dart';
+import 'package:jeeb_admin/features/auth/login/data/models/token_model.dart';
 import '../data_sources/register_remote_data_source.dart';
 
 class RegisterRepository {
@@ -15,7 +17,9 @@ class RegisterRepository {
     this._networkInfo,
   );
 
-  Future<Either<Failure, int>> register({
+  /// Returns [TokenEntity] when the register API returns access_token and user (store in SharedPreferences).
+  /// Returns null when success but no token (e.g. old API only returns userId). Verify will rely on stored token.
+  Future<Either<Failure, TokenEntity?>> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -31,8 +35,7 @@ class RegisterRepository {
     String? restaurantName,
   }) async {
     if (!await _networkInfo.isConnected) {
-      // Fake success when offline so app flow works without real API
-      return const Right(1);
+      return const Left(NetworkFailure());
     }
     try {
       final response = await _remoteDataSource.register(
@@ -53,14 +56,26 @@ class RegisterRepository {
 
       final apiResponse = ApiResponseModel<Map<String, dynamic>>.fromJson(
         response.data as Map<String, dynamic>,
-        null,
+        (json) => json is Map<String, dynamic> ? json : {},
       );
 
       if (apiResponse.isSuccess) {
-        final userId = apiResponse.data?['userId'] as int?;
-        if (userId != null) {
-          return Right(userId);
+        final data = apiResponse.data ?? {};
+        final accessToken = data['access_token'];
+        final user = data['user'];
+        if (accessToken != null &&
+            accessToken.toString().isNotEmpty &&
+            user is Map<String, dynamic>) {
+          try {
+            final tokenModel = TokenModel.fromJson(data);
+            return Right(tokenModel.toDomain());
+          } catch (_) {
+            // Fallback: success with no token (e.g. userId only)
+            return const Right(null);
+          }
         }
+        // Success but no token in response (e.g. only userId)
+        return const Right(null);
       }
 
       return Left(ErrorHandler.handle(
@@ -71,8 +86,7 @@ class RegisterRepository {
         ),
       ));
     } catch (error) {
-      // Fake success when API fails (e.g. not connected) so app flow works
-      return const Right(1);
+      return Left(ErrorHandler.handle(error));
     }
   }
 }

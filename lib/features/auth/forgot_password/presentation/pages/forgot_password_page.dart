@@ -104,7 +104,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       CustomButton(
                         text: AppTranslation.sendOtp,
                         onPressed: _handleForgotPassword,
-                        isLoading: state is ForgotPasswordLoading,
                         color: ColorManager.primary,
                       ),
                     ],

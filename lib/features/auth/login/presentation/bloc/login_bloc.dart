@@ -14,25 +14,37 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     this._loginRepository,
     this._storageService,
   ) : super(const LoginInitial()) {
-    on<LoginEvent>((event, emit) async {
-      if (event is LoginSubmitted) {
-        emit(const LoginLoading());
-        final result = await _loginRepository.login(
-          email: event.email,
-          password: event.password,
-        );
+    on<LoginSubmitted>((event, emit) async {
+      emit(const LoginLoading());
 
-        result.fold(
-          (failure) => emit(LoginError(message: failure.message)),
-          (tokenEntity) async {
-            // Store token
-            await _storageService.setUserToken(tokenEntity.accessToken);
-            // Store user role
-            await _storageService.setUserRole(tokenEntity.user.role.name);
+      final result = await _loginRepository.login(
+        email: event.email,
+        password: event.password,
+      );
+
+      await result.fold(
+        (failure) async {
+          if (emit.isDone) return;
+          emit(LoginError(message: failure.message));
+        },
+        (tokenEntity) async {
+          await _storageService.setUserToken(tokenEntity.accessToken);
+          await _storageService.setUserId(tokenEntity.user.id);
+          await _storageService.setUserRole(tokenEntity.user.role.name);
+
+          if (tokenEntity.user.isVerified) {
+            await _storageService.setLoggedIn(true);
+            await _storageService.setVerified(true);
+            await _storageService.setPendingVerifyEmail(null);
+            if (emit.isDone) return;
             emit(const LoginSuccess());
-          },
-        );
-      }
+          } else {
+            await _storageService.setPendingVerifyEmail(tokenEntity.user.email);
+            if (emit.isDone) return;
+            emit(LoginNeedsVerification(email: tokenEntity.user.email));
+          }
+        },
+      );
     });
   }
 }

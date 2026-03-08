@@ -67,7 +67,7 @@ class LogoutDialog extends StatelessWidget {
             CustomButton(
               text: AppTranslation.logout,
               onPressed: () => Navigator.of(context).pop(true),
-              color: ColorManager.error,
+              color: ColorManager.primary,
             ),
           ],
         ),

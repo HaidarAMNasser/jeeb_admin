@@ -15,6 +15,7 @@ class CustomTextField extends StatelessWidget {
   final Function(String)? onSubmitted;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final TextInputType? keyboardType;
   final Color? filledColor;
   final bool? obscureText;
   const CustomTextField({
@@ -28,6 +29,7 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.filledColor,
     this.obscureText = false,
+    this.keyboardType,
   });
 
   @override
@@ -48,6 +50,7 @@ class CustomTextField extends StatelessWidget {
           ),
         SizedBox(height: AppHeight.s8),
         TextField(
+          keyboardType: keyboardType,
           obscureText: obscureText ?? false,
           textDirection: textDirection,
           textAlign: isRTL ? TextAlign.right : TextAlign.left,

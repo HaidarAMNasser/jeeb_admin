@@ -8,51 +8,68 @@ abstract class RegisterEvent extends Equatable {
 }
 
 class RegisterSubmitted extends RegisterEvent {
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String password;
-  final String phone;
-  final String role;
-  final int? countryId;
-  final int? cityId;
+  const RegisterSubmitted();
+}
+
+class RegisterCountryChanged extends RegisterEvent {
+  final CountryEntity? country;
+
+  const RegisterCountryChanged(this.country);
+
+  @override
+  List<Object?> get props => [country];
+}
+
+class RegisterCityChanged extends RegisterEvent {
+  final CityEntity? city;
+
+  const RegisterCityChanged(this.city);
+
+  @override
+  List<Object?> get props => [city];
+}
+
+class RegisterRoleChanged extends RegisterEvent {
+  final String? role;
+
+  const RegisterRoleChanged(this.role);
+
+  @override
+  List<Object?> get props => [role];
+}
+
+class RegisterNotificationChannelChanged extends RegisterEvent {
+  final String channel;
+
+  const RegisterNotificationChannelChanged(this.channel);
+
+  @override
+  List<Object?> get props => [channel];
+}
+
+class RegisterLocationLoadingChanged extends RegisterEvent {
+  final bool isLoading;
+
+  const RegisterLocationLoadingChanged(this.isLoading);
+
+  @override
+  List<Object?> get props => [isLoading];
+}
+
+class RegisterLocationUpdated extends RegisterEvent {
   final double? latitude;
   final double? longitude;
-  final String notificationChannel;
-  final String? address;
-  final String? restaurantName;
 
-  const RegisterSubmitted({
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.password,
-    required this.phone,
-    required this.role,
-    this.countryId,
-    this.cityId,
+  const RegisterLocationUpdated({
     this.latitude,
     this.longitude,
-    required this.notificationChannel,
-    this.address,
-    this.restaurantName,
   });
 
   @override
-  List<Object?> get props => [
-        firstName,
-        lastName,
-        email,
-        password,
-        phone,
-        role,
-        countryId,
-        cityId,
-        latitude,
-        longitude,
-        notificationChannel,
-        address,
-        restaurantName,
-      ];
+  List<Object?> get props => [latitude, longitude];
+}
+
+class RegisterLocationCleared extends RegisterEvent {
+  const RegisterLocationCleared();
 }
 

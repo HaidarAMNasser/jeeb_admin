@@ -63,6 +63,9 @@ import '../../../features/delivery/update_delivery/data/data_sources/update_deli
 import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
 import '../../../features/delivery/delete_delivery/data/data_sources/delete_delivery_data_source.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/data/data_sources/confirm_delivery_data_source.dart';
+import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
 import '../../../features/order/list_order/data/data_sources/list_order_data_source.dart';
 import '../../../features/order/list_order/data/repositories/list_order_repository.dart';
 import '../../../features/order/order_details/data/data_sources/order_details_data_source.dart';
@@ -171,14 +174,15 @@ Future<void> init() async {
     () => RegisterRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => RegisterRepository(sl(), sl()));
-  sl.registerFactory(() => RegisterBloc(sl()));
+  sl.registerFactory(() => RegisterBloc(sl(), sl<StorageService>()));
 
   //! Auth Dependencies - Verify
   sl.registerFactory<VerifyRemoteDataSource>(
     () => VerifyRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => VerifyRepository(sl(), sl()));
-  sl.registerFactory(() => VerifyBloc(sl()));
+  sl.registerFactory(
+      () => VerifyBloc(sl(), sl<StorageService>(), sl<ProfileRepository>()));
 
   //! Auth Dependencies - Forgot Password
   sl.registerFactory<ForgotPasswordRemoteDataSource>(
@@ -199,7 +203,7 @@ Future<void> init() async {
     () => ProfileRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => ProfileRepository(sl(), sl()));
-  sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>()));
+  sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>(), sl<StorageService>()));
 
   //! Auth Dependencies - Logout
   sl.registerFactory<LogoutRemoteDataSource>(
@@ -250,6 +254,13 @@ Future<void> init() async {
     () => DeliveryDetailsRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => DeliveryDetailsRepository(sl(), sl()));
+
+  //! Delivery Confirm Dependencies
+  sl.registerFactory<ConfirmDeliveryRemoteDataSource>(
+    () => ConfirmDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ConfirmDeliveryRepository(sl(), sl()));
+  sl.registerFactory(() => ConfirmDeliveryBloc(sl()));
 
   //! Delivery Create/Update/Delete Dependencies
   sl.registerFactory<CreateDeliveryRemoteDataSource>(

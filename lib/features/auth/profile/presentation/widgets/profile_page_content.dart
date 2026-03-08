@@ -17,6 +17,7 @@ class ProfilePageContent extends StatelessWidget {
   final VoidCallback onUpdateLocation;
   final ValueChanged<bool> onAccountStatusChanged;
   final bool isUpdateLoading;
+  final VoidCallback? onPickImage;
 
   const ProfilePageContent({
     super.key,
@@ -32,6 +33,7 @@ class ProfilePageContent extends StatelessWidget {
     required this.onUpdateLocation,
     required this.onAccountStatusChanged,
     required this.isUpdateLoading,
+    this.onPickImage,
   });
 
   @override
@@ -41,7 +43,7 @@ class ProfilePageContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ProfileHeader(user: user),
+          ProfileHeader(user: user, onPickImage: onPickImage),
           SizedBox(height: AppHeight.s32),
           ProfileForm(
             isMerchant: isMerchant,

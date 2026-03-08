@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
@@ -14,16 +15,13 @@ import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
-    as di;
-import 'package:jeeb_admin/core/common/classes/user_roles.dart';
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/location_map_picker_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_page_content.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../bloc/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
-import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -38,9 +36,6 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
-  bool _isProfileLoaded = false;
-  bool _pendingUpdateSuccess = false;
-  bool _isMerchant = false;
 
   @override
   void initState() {
@@ -49,7 +44,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _lastNameController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
-    _loadUserRole();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) context.read<ProfileBloc>().add(const GetProfile());
     });
@@ -62,80 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _phoneController.dispose();
     _addressController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadUserRole() async {
-    final role = await di.sl<StorageService>().getUserRole();
-    if (!mounted) return;
-    setState(() => _isMerchant = role == UserRoles.merchant.name);
-  }
-
-  void _handleUpdateProfile() {
-    if (_formKey.currentState!.validate()) {
-      _pendingUpdateSuccess = true;
-      context.read<ProfileBloc>().add(
-        UpdateProfile(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          phone: _phoneController.text.trim(),
-          address: _addressController.text.trim().isEmpty
-              ? null
-              : _addressController.text.trim(),
-        ),
-      );
-    }
-  }
-
-  void _handleLocationPicked(double latitude, double longitude) {
-    _pendingUpdateSuccess = true;
-    context.read<ProfileBloc>().add(
-      UpdateProfile(latitude: latitude, longitude: longitude),
-    );
-  }
-
-  void _handleActiveChanged(bool isActive) {
-    _pendingUpdateSuccess = true;
-    context.read<ProfileBloc>().add(UpdateProfile(isActive: isActive));
-  }
-
-  Future<void> _handleLogout() async {
-    final shouldLogout = await showLogoutDialog(context);
-    if (shouldLogout == true && mounted) {
-      context.read<LogoutBloc>().add(const LogoutSubmitted());
-    }
-  }
-
-  Future<void> _openMapPicker(UserEntity user) async {
-    final result = await Navigator.of(context).push<LocationMapPickerResult>(
-      MaterialPageRoute(
-        builder: (context) => LocationMapPickerPage(
-          initialLatitude: user.currentLat,
-          initialLongitude: user.currentLng,
-        ),
-      ),
-    );
-    if (result != null && mounted)
-      _handleLocationPicked(result.latitude, result.longitude);
-  }
-
-  Future<void> _onChangeLanguage() async {
-    final storageService = di.sl<StorageService>();
-    final currentLanguage = storageService.getAppLanguage();
-    final selectedLanguage = await showDialog<String>(
-      context: context,
-      builder: (context) => LanguageSelectionDialog(
-        currentLanguage: currentLanguage.isEmpty ? null : currentLanguage,
-      ),
-    );
-    if (selectedLanguage == null ||
-        selectedLanguage == currentLanguage ||
-        !mounted)
-      return;
-    await storageService.setAppLanguage(selectedLanguage);
-    if (!context.mounted) return;
-    await context.setLocale(Locale(selectedLanguage));
-    if (!context.mounted) return;
-    customToast(msg: AppTranslation.languageChangedSuccessfully);
   }
 
   @override
@@ -155,22 +75,28 @@ class _ProfilePageState extends State<ProfilePage> {
         return BlocConsumer<ProfileBloc, ProfileState>(
           listener: (context, state) {
             if (state is ProfileLoaded) {
-              if (!_isProfileLoaded) {
+              if (!state.formValuesInitialized) {
                 _firstNameController.text = state.user.firstName;
                 _lastNameController.text = state.user.lastName;
                 _phoneController.text = state.user.phone;
                 _addressController.text = state.user.address ?? '';
-                _isProfileLoaded = true;
-              } else if (_pendingUpdateSuccess) {
-                _pendingUpdateSuccess = false;
+                context.read<ProfileBloc>().add(const FormValuesInitialized());
+              } else if (state.updateSuccess) {
                 customToast(msg: AppTranslation.profileUpdatedSuccess);
+                context.read<ProfileBloc>().add(const ClearUpdateSuccess());
+              }
+              if (state.localeToApply != null) {
+                context.setLocale(state.localeToApply!);
+                customToast(msg: AppTranslation.languageChangedSuccessfully);
+                context.read<ProfileBloc>().add(const ClearLocaleToApply());
               }
             } else if (state is ProfileError) {
               customToast(msg: state.message);
             }
           },
           builder: (context, state) {
-            final isUpdateLoading = state is ProfileLoading && _isProfileLoaded;
+            final loaded = state is ProfileLoaded ? state : null;
+            final isUpdateLoading = loaded?.isUpdating ?? false;
             final isLogoutLoading = logoutState is LogoutLoading;
             return ModalProgressHUD(
               progressIndicator: const CustomCircleIndicator(),
@@ -185,15 +111,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: IconButton(
                         icon: const Icon(Icons.logout),
                         color: ColorManager.defaultWhite,
-                        onPressed: _handleLogout,
+                        onPressed: () async {
+                          final ok = await showLogoutDialog(context);
+                          if (ok == true && mounted) {
+                            context.read<LogoutBloc>().add(const LogoutSubmitted());
+                          }
+                        },
                       ),
                     ),
                   ],
                 ),
                 body: BlocStateHandler<ProfileBloc, ProfileState>(
                   bloc: context.read<ProfileBloc>(),
-                  isLoading: (s) => s is ProfileLoading && !_isProfileLoaded,
-                  isError: (s) => s is ProfileError && !_isProfileLoaded,
+                  isLoading: (s) => s is ProfileLoading,
+                  isError: (s) => s is ProfileError && loaded == null,
                   getErrorMessage: (s) => (s as ProfileError).message,
                   isSuccess: (s) => s is ProfileLoaded,
                   getRetryCallback: (_) =>
@@ -207,12 +138,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       lastNameController: _lastNameController,
                       phoneController: _phoneController,
                       addressController: _addressController,
-                      isMerchant: _isMerchant,
-                      onUpdate: _handleUpdateProfile,
-                      onChangeLanguage: _onChangeLanguage,
-                      onUpdateLocation: () => _openMapPicker(loadedState.user),
-                      onAccountStatusChanged: _handleActiveChanged,
+                      isMerchant: loadedState.isMerchant,
+                      onUpdate: () {
+                        if (_formKey.currentState!.validate()) {
+                          context.read<ProfileBloc>().add(SaveProfile(
+                                firstName: _firstNameController.text.trim(),
+                                lastName: _lastNameController.text.trim(),
+                                phone: _phoneController.text.trim(),
+                                address: _addressController.text.trim().isEmpty
+                                    ? null
+                                    : _addressController.text.trim(),
+                              ));
+                        }
+                      },
+                      onChangeLanguage: () => _showLanguageDialog(context),
+                      onUpdateLocation: () => _openMapPicker(context, loadedState),
+                      onAccountStatusChanged: (v) =>
+                          context.read<ProfileBloc>().add(UpdateAccountActive(v)),
                       isUpdateLoading: isUpdateLoading,
+                      onPickImage: () => _pickAndUpdateImage(context),
                     );
                   },
                 ),
@@ -222,5 +166,43 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
     );
+  }
+
+  Future<void> _showLanguageDialog(BuildContext context) async {
+    final storage = di.sl<StorageService>();
+    final current = storage.getAppLanguage();
+    final selected = await showDialog<String>(
+      context: context,
+      builder: (ctx) => LanguageSelectionDialog(
+        currentLanguage: current.isEmpty ? null : current,
+      ),
+    );
+    if (selected != null && selected != current && mounted) {
+      context.read<ProfileBloc>().add(ChangeLanguage(selected));
+    }
+  }
+
+  Future<void> _pickAndUpdateImage(BuildContext context) async {
+    final xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (xFile != null && context.mounted) {
+      context.read<ProfileBloc>().add(UpdateProfile(imageFile: xFile));
+    }
+  }
+
+  Future<void> _openMapPicker(BuildContext context, ProfileLoaded loaded) async {
+    final result = await Navigator.of(context).push<LocationMapPickerResult>(
+      MaterialPageRoute(
+        builder: (ctx) => LocationMapPickerPage(
+          initialLatitude: loaded.user.currentLat,
+          initialLongitude: loaded.user.currentLng,
+        ),
+      ),
+    );
+    if (result != null && context.mounted) {
+      context.read<ProfileBloc>().add(UpdateLocation(
+            latitude: result.latitude,
+            longitude: result.longitude,
+          ));
+    }
   }
 }

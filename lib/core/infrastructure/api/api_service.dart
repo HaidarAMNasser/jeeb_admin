@@ -9,7 +9,7 @@ abstract class AppApiServiceClient {
       _AppApiServiceClientImpl;
 
   // Authentication endpoints
-  @POST("apiAdmin/Auth_general/login")
+  @POST("auth/login")
   Future<Response> loginWithPhone(
     @Field('phone') String phone,
     @Field('password') String password,
@@ -17,7 +17,7 @@ abstract class AppApiServiceClient {
     @Field('phone_code_id') int phoneCodeId,
   );
 
-  @POST("apiAdmin/Auth_general/login")
+  @POST("auth/login")
   Future<Response> loginWithEmail(
     @Field('email') String email,
     @Field('password') String password,
@@ -64,17 +64,18 @@ abstract class AppApiServiceClient {
   Future<Response> getProfile();
 
   @PATCH("auth/profile")
-  Future<Response> updateProfile(
-    @Field('firstName') String? firstName,
-    @Field('lastName') String? lastName,
-    @Field('phone') String? phone,
-    @Field('countryId') int? countryId,
-    @Field('cityId') int? cityId,
-    @Field('address') String? address,
-    @Field('latitude') double? latitude,
-    @Field('longitude') double? longitude,
-    @Field('isActive') bool? isActive,
-  );
+  Future<Response> updateProfile({
+    String? firstName,
+    String? lastName,
+    String? phone,
+    int? countryId,
+    int? cityId,
+    String? address,
+    double? latitude,
+    double? longitude,
+    bool? isActive,
+    dynamic imageFile,
+  });
 
   @POST("auth/logout")
   Future<Response> logout();
@@ -186,6 +187,9 @@ abstract class AppApiServiceClient {
 
   @DELETE("users/deliveries/{id}")
   Future<Response> deleteDeliveryMan(@Path('id') String id);
+
+  @POST("users/deliveries/{id}/confirm")
+  Future<Response> confirmDeliveryMan(@Path('id') String id);
 
   // Order endpoints
   @GET("orders")

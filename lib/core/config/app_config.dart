@@ -16,8 +16,6 @@ class AppConfig {
 
   // API Configuration
   static String get baseUrl {
-    return isProduction
-        ? 'https://api.production.com'
-        : 'https://api.development.com';
+    return 'https://api.jeeb2.com/api/v1/';
   }
 }

@@ -14,6 +14,7 @@ class UserModel {
   final bool? isOnline;
   final bool? isActive;
   final String? verifiedAt;
+  final bool isVerified;
   final double? currentLat;
   final double? currentLng;
   final int countryId;
@@ -35,6 +36,7 @@ class UserModel {
     this.isOnline,
     this.isActive,
     this.verifiedAt,
+    this.isVerified = false,
     this.currentLat,
     this.currentLng,
     required this.countryId,
@@ -44,6 +46,17 @@ class UserModel {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  static bool _parseIsVerified(Map<String, dynamic> json) {
+    if (json['isVerified'] == true) return true;
+    final verifiedAt = json['verifiedAt'];
+    if (verifiedAt != null && verifiedAt.toString().trim().isNotEmpty) {
+      return true;
+    }
+    final emailVerified = json['emailVerified'] == true;
+    final mobileVerified = json['mobileVerified'] == true;
+    return emailVerified && mobileVerified;
+  }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -58,6 +71,7 @@ class UserModel {
       isOnline: json['isOnline'] as bool?,
       isActive: json['isActive'] as bool?,
       verifiedAt: json['verifiedAt'] as String?,
+      isVerified: _parseIsVerified(json),
       currentLat: json['currentLat'] != null
           ? (json['currentLat'] as num).toDouble()
           : null,
@@ -90,6 +104,7 @@ class UserModel {
       'isOnline': isOnline,
       'isActive': isActive,
       'verifiedAt': verifiedAt,
+      'isVerified': isVerified,
       'currentLat': currentLat,
       'currentLng': currentLng,
       'countryId': countryId,
@@ -144,6 +159,7 @@ class UserModel {
       isOnline: isOnline,
       isActive: isActive,
       verifiedAt: verifiedAt != null ? DateTime.tryParse(verifiedAt!) : null,
+      isVerified: isVerified,
       currentLat: currentLat,
       currentLng: currentLng,
       countryId: countryId,

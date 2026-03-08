@@ -8,6 +8,7 @@ import '../../common/utils/toast_util.dart';
 import '../../presentation/localization/app_translation.dart';
 import 'dio_cache_interceptor.dart';
 import 'storage_service.dart';
+import 'package:chucker_flutter/chucker_flutter.dart';
 
 const String accept = "Accept";
 const String acceptEncoding = "Accept-Encoding";
@@ -69,6 +70,8 @@ class DioFactory {
     dio.interceptors.add(
       AppInterceptors(_storageService, _navigationService, cacheInterceptor),
     );
+
+    dio.interceptors.add(ChuckerDioInterceptor());
     dio.interceptors.add(cacheInterceptor);
 
     return dio;
@@ -123,10 +126,8 @@ class AppInterceptors extends Interceptor {
 
       if (!isLoginRequest) {
         _cacheInterceptor.clearCache();
-        _storageService.clearStorage(clearAuthParams: true).then((val) {
-          // Show not authorized message
-          customToast(msg: AppTranslation.notAuthorized);
-          // Navigate to login on auth error
+        _storageService.clearStorage(clearAuthParams: true).then((_) {
+          customToast(msg: AppTranslation.sessionExpired);
           _navigationService.pushNamedAndRemoveUntil(Routes.login);
         });
       }

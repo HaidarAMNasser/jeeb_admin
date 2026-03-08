@@ -12,6 +12,7 @@ extension DeliveryManMapper on DeliveryManModel {
       countryName: countryName,
       image: imageUrl,
       isOnline: isOnline,
+      confirmed: confirmed,
       officeOwnerId: officeOwnerId,
     );
   }

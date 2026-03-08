@@ -4,7 +4,8 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 class VerifyForm extends StatelessWidget {
@@ -39,17 +40,17 @@ class VerifyForm extends StatelessWidget {
           CustomButton(
             text: AppTranslation.verifyAccount,
             onPressed: onVerify,
-            isLoading: isLoading,
             color: ColorManager.primary,
           ),
           SizedBox(height: AppHeight.s16),
           TextButton(
             onPressed: onResendOtp,
-            child: CustomTextDisplay(
+            child: CustomText(
               text: AppTranslation.resendOtp,
-              fontSize: AppFontSize.s14,
-              color: ColorManager.primary,
-              fontWeight: FontWeight.w600,
+              textStyle: getMediumStyle(
+                fontSize: AppFontSize.s14,
+                color: ColorManager.primary,
+              ),
             ),
           ),
         ],

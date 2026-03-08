@@ -26,6 +26,7 @@ class UserEntity extends Equatable {
   final bool? isOnline;
   final bool? isActive;
   final DateTime? verifiedAt;
+  final bool isVerified;
   final double? currentLat;
   final double? currentLng;
   final int countryId;
@@ -47,6 +48,7 @@ class UserEntity extends Equatable {
     this.isOnline,
     this.isActive,
     this.verifiedAt,
+    this.isVerified = false,
     this.currentLat,
     this.currentLng,
     required this.countryId,
@@ -72,6 +74,7 @@ class UserEntity extends Equatable {
         isOnline,
         isActive,
         verifiedAt,
+        isVerified,
         currentLat,
         currentLng,
         countryId,
