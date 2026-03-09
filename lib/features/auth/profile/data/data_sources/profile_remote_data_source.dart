@@ -42,7 +42,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     double? longitude,
     bool? isActive,
     File? imageFile,
-  }) {
+  }) async {
+    MultipartFile? image;
+    if (imageFile != null) {
+      final path = imageFile.path;
+      final name = path.contains(RegExp(r'[/\\]')) ? path.split(RegExp(r'[/\\]')).last : path;
+      image = await MultipartFile.fromFile(path, filename: name);
+    }
     return _appApiServiceClient.updateProfile(
       firstName: firstName,
       lastName: lastName,
@@ -53,7 +59,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       latitude: latitude,
       longitude: longitude,
       isActive: isActive,
-      imageFile: imageFile,
+      image: image,
     );
   }
 }

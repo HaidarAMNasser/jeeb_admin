@@ -18,4 +18,11 @@ class AppConfig {
   static String get baseUrl {
     return 'https://api.jeeb2.com/api/v1/';
   }
+
+  /// Base URL for user/media assets (profile images etc.). Backend may return relative paths.
+  static String get assetsBaseUrl {
+    final u = baseUrl;
+    final match = RegExp(r'^(https?://[^/]+)').firstMatch(u);
+    return match != null ? '${match.group(1)}/' : u;
+  }
 }

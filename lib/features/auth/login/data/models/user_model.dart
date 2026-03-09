@@ -2,6 +2,33 @@ import '../../domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/country/data/models/country_model.dart';
 import 'package:jeeb_admin/features/city/data/models/city_model.dart';
 
+/// Profile image from backend (Auth_API: user.image = { id, url, mobileUrl, thumbnailUrl, isMain }).
+class UserImageModel {
+  final int id;
+  final String url;
+  final String mobileUrl;
+  final String thumbnailUrl;
+  final bool isMain;
+
+  UserImageModel({
+    required this.id,
+    required this.url,
+    required this.mobileUrl,
+    required this.thumbnailUrl,
+    this.isMain = true,
+  });
+
+  factory UserImageModel.fromJson(Map<String, dynamic> json) {
+    return UserImageModel(
+      id: json['id'] as int? ?? 0,
+      url: json['url']?.toString() ?? '',
+      mobileUrl: json['mobileUrl']?.toString() ?? '',
+      thumbnailUrl: json['thumbnailUrl']?.toString() ?? '',
+      isMain: json['isMain'] as bool? ?? true,
+    );
+  }
+}
+
 class UserModel {
   final int id;
   final String firstName;
@@ -23,6 +50,7 @@ class UserModel {
   final CityModel? city;
   final String createdAt;
   final String updatedAt;
+  final UserImageModel? image;
 
   UserModel({
     required this.id,
@@ -45,6 +73,7 @@ class UserModel {
     this.city,
     required this.createdAt,
     required this.updatedAt,
+    this.image,
   });
 
   static bool _parseIsVerified(Map<String, dynamic> json) {
@@ -88,7 +117,19 @@ class UserModel {
           : null,
       createdAt: json['createdAt'] as String? ?? '',
       updatedAt: json['updatedAt'] as String? ?? '',
+      image: json['image'] is Map<String, dynamic>
+          ? UserImageModel.fromJson(json['image'] as Map<String, dynamic>)
+          : null,
     );
+  }
+
+  /// Best URL for profile avatar (thumbnail, then mobile, then full). May be relative; use assetsBaseUrl if needed.
+  String? get profileImageUrl {
+    if (image == null) return null;
+    final u = image!.thumbnailUrl.isNotEmpty
+        ? image!.thumbnailUrl
+        : (image!.mobileUrl.isNotEmpty ? image!.mobileUrl : image!.url);
+    return u.isNotEmpty ? u : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -168,6 +209,7 @@ class UserModel {
       city: city?.toDomain(),
       createdAt: DateTime.tryParse(createdAt) ?? DateTime.now(),
       updatedAt: DateTime.tryParse(updatedAt) ?? DateTime.now(),
+      profileImageUrl: profileImageUrl,
     );
   }
 }

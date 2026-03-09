@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jeeb_admin/core/config/app_config.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
@@ -32,16 +33,7 @@ class ProfileHeader extends StatelessWidget {
             child: CircleAvatar(
               radius: 40,
               backgroundColor: ColorManager.defaultWhite,
-              child: user.firstName.isNotEmpty
-                  ? CustomText(
-                      textAlign: TextAlign.center,
-                      text: user.firstName[0].toUpperCase(),
-                      textStyle: getBoldStyle(
-                        fontSize: AppFontSize.s24,
-                        color: ColorManager.titlesColor,
-                      ),
-                    )
-                  : Icon(Icons.add_a_photo, size: 32, color: ColorManager.titlesColor),
+              child: _buildAvatarChild(user),
             ),
           ),
           SizedBox(height: AppHeight.s16),
@@ -63,5 +55,36 @@ class ProfileHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static Widget _buildAvatarChild(UserEntity user) {
+    final url = user.profileImageUrl;
+    if (url != null && url.isNotEmpty) {
+      final fullUrl = url.startsWith('http') ? url : '${AppConfig.assetsBaseUrl}$url';
+      return ClipOval(
+        child: Image.network(
+          fullUrl,
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _fallbackAvatar(user),
+        ),
+      );
+    }
+    return _fallbackAvatar(user);
+  }
+
+  static Widget _fallbackAvatar(UserEntity user) {
+    if (user.firstName.isNotEmpty) {
+      return CustomText(
+        textAlign: TextAlign.center,
+        text: user.firstName[0].toUpperCase(),
+        textStyle: getBoldStyle(
+          fontSize: AppFontSize.s24,
+          color: ColorManager.titlesColor,
+        ),
+      );
+    }
+    return Icon(Icons.add_a_photo, size: 32, color: ColorManager.titlesColor);
   }
 }

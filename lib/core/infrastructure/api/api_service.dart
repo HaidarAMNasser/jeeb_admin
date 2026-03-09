@@ -74,7 +74,7 @@ abstract class AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
-    dynamic imageFile,
+    MultipartFile? image,
   });
 
   @POST("auth/logout")

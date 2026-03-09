@@ -35,6 +35,8 @@ class UserEntity extends Equatable {
   final CityEntity? city;
   final DateTime createdAt;
   final DateTime updatedAt;
+  /// Profile image URL from backend (user.image.url / thumbnailUrl / mobileUrl). May be relative.
+  final String? profileImageUrl;
 
   const UserEntity({
     required this.id,
@@ -57,6 +59,7 @@ class UserEntity extends Equatable {
     this.city,
     required this.createdAt,
     required this.updatedAt,
+    this.profileImageUrl,
   });
 
   String get fullName => '$firstName $lastName';
@@ -83,6 +86,7 @@ class UserEntity extends Equatable {
         city,
         createdAt,
         updatedAt,
+        profileImageUrl,
       ];
 }
 
