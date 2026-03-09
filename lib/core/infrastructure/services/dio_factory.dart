@@ -67,11 +67,11 @@ class DioFactory {
       defaultCacheDuration: const Duration(minutes: 5),
     );
 
+    // Chucker first so it sees the real request/response (including failed auth) before any other interceptor
+    dio.interceptors.add(ChuckerDioInterceptor());
     dio.interceptors.add(
       AppInterceptors(_storageService, _navigationService, cacheInterceptor),
     );
-
-    dio.interceptors.add(ChuckerDioInterceptor());
     dio.interceptors.add(cacheInterceptor);
 
     return dio;
@@ -117,32 +117,24 @@ class AppInterceptors extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final status = err.response?.statusCode;
     if (status == 401 || status == 403) {
-      final isLoginRequest =
+      final isAuthRequest =
           err.requestOptions.path.contains('login') ||
           err.requestOptions.path.contains('Login') ||
           err.requestOptions.path.contains('Auth_general') ||
           err.requestOptions.path.contains('auth/login') ||
           err.requestOptions.path.contains('auth/register');
 
-      if (!isLoginRequest) {
+      // Only do session-expired redirect for authenticated requests (invalid/expired token).
+      // For login/register, let the real error through so the UI can show the backend message.
+      if (!isAuthRequest) {
         _cacheInterceptor.clearCache();
         _storageService.clearStorage(clearAuthParams: true).then((_) {
           customToast(msg: AppTranslation.sessionExpired);
           _navigationService.pushNamedAndRemoveUntil(Routes.login);
         });
       }
-      // Don't pass error to UI to avoid "error occurred" messages
-      return handler.resolve(
-        Response(
-          requestOptions: err.requestOptions,
-          data: {},
-          statusCode: 200,
-          statusMessage: 'auth-redirect',
-          headers: Headers.fromMap({
-            'x-auth-redirect': ['true'],
-          }),
-        ),
-      );
+      // Pass the real error through so backend message is shown (and Chucker sees real response)
+      return handler.next(err);
     } else if (err.response?.statusCode == 404) {
       // Handle not found errors if needed
     }
