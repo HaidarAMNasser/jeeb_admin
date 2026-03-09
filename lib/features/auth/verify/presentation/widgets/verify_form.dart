@@ -13,6 +13,7 @@ class VerifyForm extends StatelessWidget {
   final TextEditingController otpController;
   final VoidCallback onVerify;
   final VoidCallback onResendOtp;
+  final VoidCallback onBackToLogin;
   final bool isLoading;
 
   const VerifyForm({
@@ -21,6 +22,7 @@ class VerifyForm extends StatelessWidget {
     required this.otpController,
     required this.onVerify,
     required this.onResendOtp,
+    required this.onBackToLogin,
     required this.isLoading,
   });
 
@@ -47,6 +49,17 @@ class VerifyForm extends StatelessWidget {
             onPressed: onResendOtp,
             child: CustomText(
               text: AppTranslation.resendOtp,
+              textStyle: getMediumStyle(
+                fontSize: AppFontSize.s14,
+                color: ColorManager.primary,
+              ),
+            ),
+          ),
+          SizedBox(height: AppHeight.s8),
+          TextButton(
+            onPressed: onBackToLogin,
+            child: CustomText(
+              text: AppTranslation.backToLogin,
               textStyle: getMediumStyle(
                 fontSize: AppFontSize.s14,
                 color: ColorManager.primary,

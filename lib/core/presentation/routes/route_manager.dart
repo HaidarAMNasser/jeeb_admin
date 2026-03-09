@@ -20,6 +20,8 @@ import '../../../features/product/product_details/presentation/pages/product_det
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
+import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
 import '../../../features/auth/login/presentation/pages/login_page.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
 import '../../../features/auth/register/presentation/pages/register_page.dart';
@@ -183,7 +185,7 @@ class AppRouter {
 //                 ..add(GetProductsEvent(merchantId: productMerchantId)),
 // =======
         return _buildRouteWithBlocs(
-          const ListProductPage(),
+          ListProductPage(merchantId: productMerchantId),
           settings,
           providers: [
             BlocProvider<ListProductBloc>(
@@ -220,6 +222,10 @@ class AppRouter {
             BlocProvider<ProductDetailsBloc>(
               create: (_) =>
                   ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
+            ),
+            BlocProvider<ListCategoryBloc>(
+              create: (_) =>
+                  ListCategoryBloc(di.sl<ListCategoryRepository>()),
             ),
           ],
         );

@@ -348,7 +348,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'GET', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Category/all',
+              'categories',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -395,7 +395,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (limit != null) queryParameters['limit'] = limit;
     if (search != null && search.isNotEmpty) queryParameters['search'] = search;
     if (categoryId != null && categoryId.isNotEmpty) queryParameters['categoryId'] = categoryId;
-    if (restaurantId != null && restaurantId.isNotEmpty) queryParameters['restaurantId'] = restaurantId;
+    if (restaurantId != null && restaurantId.isNotEmpty&&restaurantId!='0') queryParameters['restaurantId'] = restaurantId;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(

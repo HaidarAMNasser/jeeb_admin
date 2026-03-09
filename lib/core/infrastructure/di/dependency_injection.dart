@@ -20,6 +20,7 @@ import '../../../features/product/product_details/data/data_sources/product_deta
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
+import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
 import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
 import '../../../features/auth/login/data/repositories/login_repository.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
@@ -128,6 +129,7 @@ Future<void> init() async {
     () => ListCategoryRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => ListCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => ListCategoryBloc(sl()));
 
   //! Product List Dependencies
   sl.registerFactory<ListProductRemoteDataSource>(

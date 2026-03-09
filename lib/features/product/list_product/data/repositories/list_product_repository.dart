@@ -6,7 +6,6 @@ import 'package:jeeb_admin/core/common/models/base_response_model.dart';
 import 'package:jeeb_admin/core/common/utils/error_handler.dart';
 import 'package:jeeb_admin/core/infrastructure/network/network_info.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
-import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/data/data_sources/list_product_data_source.dart';
 import 'package:jeeb_admin/features/product/list_product/data/mappers/product_mapper.dart';
 import 'package:jeeb_admin/features/product/list_product/data/models/product_model.dart';
@@ -28,7 +27,7 @@ class ListProductRepository {
     String? restaurantId,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return Right(_fakeProducts());
+      return const Left(NetworkFailure());
     }
     try {
       final response = await _remoteDataSource.getProducts(
@@ -85,30 +84,8 @@ class ListProductRepository {
         )));
       }
     } catch (error) {
-      return Right(_fakeProducts());
+      return Left(ErrorHandler.handle(error));
     }
-  }
-
-  static List<ProductEntity> _fakeProducts() {
-    const names = ['Burger', 'Pizza', 'Pasta', 'Salad', 'Sandwich'];
-    return List.generate(10, (i) {
-      return ProductEntity(
-        id: 'fake_${i + 1}',
-        name: names[i % names.length],
-        description: 'Delicious ${names[i % names.length]}',
-        price: 1000 + (i * 500),
-        images: [
-          ProductImageEntity(
-            id: i + 1,
-            url: 'https://picsum.photos/seed/product$i/200/200',
-            mobileUrl: 'https://picsum.photos/seed/product$i/200/200',
-            thumbnailUrl: 'https://picsum.photos/seed/product$i/200/200',
-            isMain: true,
-            displayOrder: 1,
-          ),
-        ],
-      );
-    });
   }
 }
 

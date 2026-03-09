@@ -257,5 +257,6 @@ class AppTranslation {
   static String get areYouSureDeleteOffer => 'are_you_sure_delete_offer'.tr();
   static String get selectDate => 'select_date'.tr();
   static String get showAll => 'show_all'.tr();
+  static String get backToLogin => 'back_to_login'.tr();
 }
 

@@ -50,6 +50,13 @@ class _VerifyPageState extends State<VerifyPage> {
     context.read<VerifyBloc>().add(ResendOtpSubmitted(email: widget.email));
   }
 
+  void _handleBackToLogin() {
+    context.pushNamedAndRemoveUntil(
+      Routes.login,
+      predicate: (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<VerifyBloc, VerifyState>(
@@ -94,6 +101,7 @@ class _VerifyPageState extends State<VerifyPage> {
                         otpController: _otpController,
                         onVerify: _handleVerify,
                         onResendOtp: _handleResendOtp,
+                        onBackToLogin: _handleBackToLogin,
                         isLoading: state is VerifyLoading,
                       ),
                     ],

@@ -107,48 +107,51 @@ class _CreateProductPageState extends State<CreateProductPage> {
                               : null,
                         ),
                         body: isEdit
-                            ? BlocStateHandler<
-                                ProductDetailsBloc,
-                                ProductDetailsState
-                              >(
-                                bloc: context.read<ProductDetailsBloc>(),
-                                isLoading: (state) =>
-                                    state is ProductDetailsLoading,
-                                isError: (state) =>
-                                    state is ProductDetailsError,
-                                getErrorMessage: (state) =>
-                                    (state as ProductDetailsError).message,
-                                isSuccess: (state) =>
-                                    state is ProductDetailsLoaded,
-                                getRetryCallback: (state) => () {
-                                  context.read<ProductDetailsBloc>().add(
-                                    GetProductDetailsEvent(
-                                      id: widget.product!.id,
-                                    ),
-                                  );
+                            ? BlocListener<ProductDetailsBloc, ProductDetailsState>(
+                                listenWhen: (previous, current) =>
+                                    current is ProductDetailsLoaded &&
+                                    previous is! ProductDetailsLoaded,
+                                listener: (context, productDetailsState) {
+                                  if (productDetailsState is ProductDetailsLoaded) {
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      if (mounted) {
+                                        context.read<CreateProductBloc>().add(
+                                          InitializeProductForm(
+                                            product: productDetailsState.product,
+                                          ),
+                                        );
+                                      }
+                                    });
+                                  }
                                 },
-                                successBuilder: (context, productDetailsState) {
-                                  final loadedState =
-                                      productDetailsState
-                                          as ProductDetailsLoaded;
-                                  // Initialize form with fetched product data
-                                  WidgetsBinding.instance.addPostFrameCallback((
-                                    _,
-                                  ) {
-                                    if (mounted) {
-                                      context.read<CreateProductBloc>().add(
-                                        InitializeProductForm(
-                                          product: loadedState.product,
-                                        ),
-                                      );
-                                    }
-                                  });
-                                  return CreateProductForm(
-                                    bloc: context.read<CreateProductBloc>(),
-                                    state: createState,
-                                    isEdit: true,
-                                  );
-                                },
+                                child: BlocStateHandler<
+                                  ProductDetailsBloc,
+                                  ProductDetailsState
+                                >(
+                                  bloc: context.read<ProductDetailsBloc>(),
+                                  isLoading: (state) =>
+                                      state is ProductDetailsLoading,
+                                  isError: (state) =>
+                                      state is ProductDetailsError,
+                                  getErrorMessage: (state) =>
+                                      (state as ProductDetailsError).message,
+                                  isSuccess: (state) =>
+                                      state is ProductDetailsLoaded,
+                                  getRetryCallback: (state) => () {
+                                    context.read<ProductDetailsBloc>().add(
+                                      GetProductDetailsEvent(
+                                        id: widget.product!.id,
+                                      ),
+                                    );
+                                  },
+                                  successBuilder: (context, productDetailsState) {
+                                    return CreateProductForm(
+                                      bloc: context.read<CreateProductBloc>(),
+                                      state: createState,
+                                      isEdit: true,
+                                    );
+                                  },
+                                ),
                               )
                             : _buildCreateView(),
                       ),

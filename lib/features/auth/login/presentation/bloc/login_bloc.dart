@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/common/errors/failure.dart';
 import '../../../../../core/infrastructure/services/storage_service.dart';
 import '../../data/repositories/login_repository.dart';
 
@@ -25,6 +26,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await result.fold(
         (failure) async {
           if (emit.isDone) return;
+          // The API returns 401 Unauthorized for both invalid credentials and unverified accounts.
+          // We check the failure type/code and message to differentiate.
+          if (failure is UnauthorizedFailure &&
+              failure.message.toLowerCase().contains('not verified')) {
+            emit(LoginNeedsVerification(email: event.email));
+            return;
+          }
           emit(LoginError(message: failure.message));
         },
         (tokenEntity) async {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart' as easy_localization;
-import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_paginated_dropdown.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
@@ -32,7 +30,6 @@ class _ProductDropdownWidgetState extends State<ProductDropdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isRTL = context.locale.languageCode == 'ar';
 
     return BlocBuilder<ListProductBloc, ListProductState>(
       builder: (context, state) {
