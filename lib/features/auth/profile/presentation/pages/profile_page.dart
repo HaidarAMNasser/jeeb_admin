@@ -1,331 +1,84 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
-import 'package:jeeb_admin/core/presentation/widgets/language_selection_dialog.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
-import 'package:jeeb_admin/core/common/utils/toast_util.dart';
-import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
-import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
-import 'package:easy_localization/easy_localization.dart';
-import '../bloc/profile_bloc.dart';
-import '../../../logout/presentation/bloc/logout_bloc.dart';
-import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
-import '../widgets/profile_header.dart';
-import '../widgets/profile_form.dart';
-import '../pages/location_map_picker_page.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
+/// Shows a dialog to choose account status (Active / Inactive).
+/// Returns [true] for active, [false] for inactive, [null] if closed without choosing.
+static Future<bool?> show(BuildContext context, {required bool isActive}) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) => AccountStatusDialog(isActive: isActive),
+  );
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _firstNameController;
-  late TextEditingController _lastNameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _addressController;
-  bool _isProfileLoaded = false;
-  /// Set true when we dispatch UpdateProfile; only then show "profile updated" toast.
-  bool _pendingUpdateSuccess = false;
+class AccountStatusDialog extends StatelessWidget {
+  const AccountStatusDialog({
+    super.key,
+    required this.isActive,
+  });
 
-  @override
-  void initState() {
-    super.initState();
-    _firstNameController = TextEditingController();
-    _lastNameController = TextEditingController();
-    _phoneController = TextEditingController();
-    _addressController = TextEditingController();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.read<ProfileBloc>().add(const GetProfile());
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
-    super.dispose();
-  }
-
-  void _handleUpdateProfile() {
-    if (_formKey.currentState!.validate()) {
-      _pendingUpdateSuccess = true;
-      context.read<ProfileBloc>().add(
-            UpdateProfile(
-              firstName: _firstNameController.text.trim(),
-              lastName: _lastNameController.text.trim(),
-              phone: _phoneController.text.trim(),
-              address: _addressController.text.trim().isEmpty
-                  ? null
-                  : _addressController.text.trim(),
-            ),
-          );
-    }
-  }
-
-  void _handleLocationPicked(double latitude, double longitude) {
-    _pendingUpdateSuccess = true;
-    context.read<ProfileBloc>().add(
-          UpdateProfile(
-            latitude: latitude,
-            longitude: longitude,
-          ),
-        );
-  }
-
-  void _handleActiveChanged(bool isActive) {
-    _pendingUpdateSuccess = true;
-    context.read<ProfileBloc>().add(UpdateProfile(isActive: isActive));
-  }
-
-  void _handleLogout() {
-    context.read<LogoutBloc>().add(const LogoutSubmitted());
-  }
-
-  Future<void> _openMapPicker(UserEntity user) async {
-    final result = await Navigator.of(context).push<LocationMapPickerResult>(
-      MaterialPageRoute(
-        builder: (context) => LocationMapPickerPage(
-          initialLatitude: user.currentLat,
-          initialLongitude: user.currentLng,
-        ),
-      ),
-    );
-    if (result != null && mounted) {
-      _handleLocationPicked(result.latitude, result.longitude);
-    }
-  }
-
-  Future<void> _showAccountStatusDialog(UserEntity user) async {
-    final isActive = user.isActive ?? true;
-    final newValue = await showDialog<bool>(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r20),
-        ),
-        child: Container(
-          padding: EdgeInsets.all(AppPadding.p24),
-          decoration: BoxDecoration(
-            color: ColorManager.background,
-            borderRadius: BorderRadius.circular(AppRadius.r20),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CustomText(
-                text: AppTranslation.accountStatus,
-                textStyle: getBoldStyle(
-                  fontSize: AppFontSize.s18,
-                  color: ColorManager.titlesColor,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: AppHeight.s24),
-              _AccountStatusOption(
-                label: AppTranslation.accountActive,
-                isSelected: isActive,
-                onTap: () => Navigator.of(context).pop(true),
-              ),
-              SizedBox(height: AppHeight.s16),
-              _AccountStatusOption(
-                label: AppTranslation.accountInactive,
-                isSelected: !isActive,
-                onTap: () => Navigator.of(context).pop(false),
-              ),
-              SizedBox(height: AppHeight.s24),
-              CustomButton(
-                text: AppTranslation.close,
-                onPressed: () => Navigator.of(context).pop(),
-                isOutlined: true,
-                color: ColorManager.primary,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    if (newValue != null && mounted) {
-      _handleActiveChanged(newValue);
-    }
-  }
-
-  Future<void> _handleChangeLanguage() async {
-    final storageService = di.sl<StorageService>();
-    final currentLanguage = storageService.getAppLanguage();
-    
-    final selectedLanguage = await showDialog<String>(
-      context: context,
-      builder: (context) => LanguageSelectionDialog(
-        currentLanguage: currentLanguage.isEmpty ? null : currentLanguage,
-      ),
-    );
-
-    if (selectedLanguage != null && selectedLanguage != currentLanguage && mounted) {
-      // Save selected language
-      await storageService.setAppLanguage(selectedLanguage);
-
-      if (!context.mounted) return;
-      // Update app locale
-      await context.setLocale(Locale(selectedLanguage));
-
-      if (!context.mounted) return;
-      // Show success message
-      customToast(msg: AppTranslation.languageChangedSuccessfully);
-      
-      // Restart the app to apply language changes
-      // Note: In a real app, you might want to use a package like flutter_restart
-      // For now, we'll just show a toast and the language will change on next app restart
-    }
-  }
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LogoutBloc, LogoutState>(
-      listener: (context, logoutState) {
-        if (logoutState is LogoutSuccess) {
-          customToast(msg: AppTranslation.logoutSuccess);
-          // Navigate to login screen after clearing storage
-          // Storage is already cleared in the logout bloc before emitting success
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            NavigationService().pushNamedAndRemoveUntil(Routes.login);
-          });
-        } else if (logoutState is LogoutError) {
-          customToast(msg: logoutState.message);
-        }
-      },
-      builder: (context, logoutState) {
-        return BlocConsumer<ProfileBloc, ProfileState>(
-          listener: (context, state) {
-            if (state is ProfileLoaded) {
-              if (!_isProfileLoaded) {
-                // Initial load - update controllers
-                _firstNameController.text = state.user.firstName;
-                _lastNameController.text = state.user.lastName;
-                _phoneController.text = state.user.phone;
-                _addressController.text = state.user.address ?? '';
-                _isProfileLoaded = true;
-              } else if (_pendingUpdateSuccess) {
-                _pendingUpdateSuccess = false;
-                customToast(msg: AppTranslation.profileUpdatedSuccess);
-              }
-            } else if (state is ProfileError) {
-              customToast(msg: state.message);
-            }
-          },
-          builder: (context, state) {
-            // Use ModalProgressHUD only for update (PATCH) and logout (POST) operations
-            // Initial profile fetch (GET) uses BlocStateHandler
-            final isUpdateLoading = state is ProfileLoading && _isProfileLoaded;
-            final isLogoutLoading = logoutState is LogoutLoading;
-            final showProgressHUD = isUpdateLoading || isLogoutLoading;
-
-            return ModalProgressHUD(
-              progressIndicator: const CustomCircleIndicator(),
-              inAsyncCall: showProgressHUD,
-              child: Scaffold(
-                backgroundColor: ColorManager.background,
-                appBar: CustomAppBar(
-                  title: AppTranslation.profile,
-                ),
-                body: BlocStateHandler<ProfileBloc, ProfileState>(
-                  bloc: context.read<ProfileBloc>(),
-                  isLoading: (state) => state is ProfileLoading && !_isProfileLoaded,
-                  isError: (state) => state is ProfileError && !_isProfileLoaded,
-                  getErrorMessage: (state) => (state as ProfileError).message,
-                  isSuccess: (state) => state is ProfileLoaded,
-                  getRetryCallback: (state) => () {
-                    context.read<ProfileBloc>().add(const GetProfile());
-                  },
-                  successBuilder: (context, profileState) {
-                    final loadedState = profileState as ProfileLoaded;
-
-                    return SingleChildScrollView(
-                      padding: EdgeInsets.all(AppPadding.p24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ProfileHeader(user: loadedState.user),
-                          SizedBox(height: AppHeight.s32),
-                          ProfileForm(
-                            formKey: _formKey,
-                            user: loadedState.user,
-                            firstNameController: _firstNameController,
-                            lastNameController: _lastNameController,
-                            phoneController: _phoneController,
-                            addressController: _addressController,
-                            onUpdate: _handleUpdateProfile,
-                            isLoading: isUpdateLoading,
-                          ),
-                          SizedBox(height: AppHeight.s24),
-                          CustomButton(
-                            text: AppTranslation.updateLocation,
-                            onPressed: () => _openMapPicker(loadedState.user),
-                            isLoading: false,
-                            color: ColorManager.primary,
-                            isOutlined: true,
-                          ),
-                          if (loadedState.user.role == UserRole.merchant) ...[
-                            SizedBox(height: AppHeight.s16),
-                            CustomButton(
-                              text: AppTranslation.accountStatus,
-                              onPressed: () => _showAccountStatusDialog(loadedState.user),
-                              isLoading: false,
-                              color: ColorManager.primary,
-                              isOutlined: true,
-                            ),
-                          ],
-                          SizedBox(height: AppHeight.s24),
-                          CustomButton(
-                            text: AppTranslation.changeLanguage,
-                            onPressed: _handleChangeLanguage,
-                            isLoading: false,
-                            color: ColorManager.primary,
-                            isOutlined: true,
-                          ),
-                          SizedBox(height: AppHeight.s16),
-                          CustomButton(
-                            text: AppTranslation.logout,
-                            onPressed: _handleLogout,
-                            isLoading: isLogoutLoading,
-                            color: ColorManager.error,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.r20),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(AppPadding.p24),
+        decoration: BoxDecoration(
+          color: ColorManager.background,
+          borderRadius: BorderRadius.circular(AppRadius.r20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CustomText(
+              text: AppTranslation.accountStatus,
+              textStyle: getBoldStyle(
+                fontSize: AppFontSize.s18,
+                color: ColorManager.titlesColor,
               ),
-            );
-          },
-        );
-      },
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppHeight.s24),
+            AccountStatusOption(
+              label: AppTranslation.accountActive,
+              isSelected: isActive,
+              onTap: () => Navigator.of(context).pop(true),
+            ),
+            SizedBox(height: AppHeight.s16),
+            AccountStatusOption(
+              label: AppTranslation.accountInactive,
+              isSelected: !isActive,
+              onTap: () => Navigator.of(context).pop(false),
+            ),
+            SizedBox(height: AppHeight.s24),
+            CustomButton(
+              text: AppTranslation.close,
+              onPressed: () => Navigator.of(context).pop(),
+              isOutlined: true,
+              color: ColorManager.primary,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _AccountStatusOption extends StatelessWidget {
-  const _AccountStatusOption({
+/// Single option row for Active / Inactive (same style as in profile_page).
+class AccountStatusOption extends StatelessWidget {
+  const AccountStatusOption({
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
@@ -380,3 +133,167 @@ class _AccountStatusOption extends StatelessWidget {
   }
 }
 
+////////////////////////
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
+
+/// Default center when no initial location (Cairo).
+const LatLng _defaultCenter = LatLng(30.0444, 31.2357);
+
+/// Result returned when user confirms location.
+class LocationMapPickerResult {
+  const LocationMapPickerResult({
+    required this.latitude,
+    required this.longitude,
+  });
+  final double latitude;
+  final double longitude;
+}
+
+/// Full-screen map to pick a location. Tap to set marker, confirm to return lat/lng.
+class LocationMapPickerPage extends StatefulWidget {
+  const LocationMapPickerPage({
+    super.key,
+    this.initialLatitude,
+    this.initialLongitude,
+  });
+
+  final double? initialLatitude;
+  final double? initialLongitude;
+
+  @override
+  State<LocationMapPickerPage> createState() => _LocationMapPickerPageState();
+}
+
+class _LocationMapPickerPageState extends State<LocationMapPickerPage> {
+  final MapController _mapController = MapController();
+  late LatLng _selectedPoint;
+  static const double _zoom = 14;
+  bool _isLoadingLocation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialLatitude != null && widget.initialLongitude != null) {
+      _selectedPoint = LatLng(widget.initialLatitude!, widget.initialLongitude!);
+    } else {
+      _selectedPoint = _defaultCenter;
+    }
+  }
+
+  LatLng get _initialCenter => _selectedPoint;
+
+  void _onMapTap(TapPosition tapPosition, LatLng point) {
+    setState(() => _selectedPoint = point);
+  }
+
+  Future<void> _goToMyLocation() async {
+    setState(() => _isLoadingLocation = true);
+    final position = await LocationPermissionHelper.requestAndGetPosition();
+    if (!mounted) return;
+    setState(() => _isLoadingLocation = false);
+    if (position != null) {
+      final point = LatLng(position.latitude, position.longitude);
+      setState(() => _selectedPoint = point);
+      _mapController.move(point, _zoom);
+    } else if (mounted) {
+      customToast(msg: AppTranslation.locationPermissionDenied);
+    }
+  }
+
+  void _onConfirm() {
+    Navigator.of(context).pop(LocationMapPickerResult(
+      latitude: _selectedPoint.latitude,
+      longitude: _selectedPoint.longitude,
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ColorManager.background,
+      appBar: CustomAppBar(
+        title: AppTranslation.chooseLocationOnMap,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: _initialCenter,
+                initialZoom: 14,
+                onTap: _onMapTap,
+                interactionOptions: const InteractionOptions(
+                  flags: InteractiveFlag.all,
+                ),
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.jeeb.jeeb_admin',
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: _selectedPoint,
+                      width: 48,
+                      height: 48,
+                      child: Icon(
+                        Icons.location_on,
+                        size: 48,
+                        color: ColorManager.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(AppPadding.p24),
+            color: ColorManager.background,
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    '${AppTranslation.latitude}: ${_selectedPoint.latitude.toStringAsFixed(5)}\n${AppTranslation.longitude}: ${_selectedPoint.longitude.toStringAsFixed(5)}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ColorManager.textColor,
+                    ),
+                  ),
+                  SizedBox(height: AppHeight.s16),
+                  CustomButton(
+                    text: AppTranslation.useMyLocation,
+                    onPressed: _goToMyLocation,
+                    isLoading: _isLoadingLocation,
+                    color: ColorManager.primary,
+                    isOutlined: true,
+                  ),
+                  SizedBox(height: AppHeight.s12),
+                  CustomButton(
+                    text: AppTranslation.confirm,
+                    onPressed: _onConfirm,
+                    color: ColorManager.primary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
