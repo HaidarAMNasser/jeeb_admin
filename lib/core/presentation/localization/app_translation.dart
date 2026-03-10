@@ -236,6 +236,8 @@ class AppTranslation {
 
   // Offer
   static String get offers => 'offers'.tr();
+  static String get offerName => 'offer_name'.tr();
+  static String get pleaseEnterOfferName => 'please_enter_offer_name'.tr();
   static String get addOffer => 'add_offer'.tr();
   static String get editOffer => 'edit_offer'.tr();
   static String get offerDetails => 'offer_details'.tr();
@@ -251,6 +253,11 @@ class AppTranslation {
   static String get offerDiscountValueType => 'offer_discount_value_type'.tr();
   static String get offerProductsCount => 'offer_products_count'.tr();
   static String get offerDiscount => 'offer_discount'.tr();
+  static String get pleaseEnterOfferShortDescription => 'please_enter_offer_short_description'.tr();
+  static String get pleaseSelectAtLeastOneProduct => 'please_select_at_least_one_product'.tr();
+  static String get pleaseSelectDiscountType => 'please_select_discount_type'.tr();
+  static String get pleaseEnterOfferDiscountValue => 'please_enter_offer_discount_value'.tr();
+  static String get invalidOfferDiscountValue => 'invalid_offer_discount_value'.tr();
   static String get offerCreatedSuccessfully => 'offer_created_successfully'.tr();
   static String get offerUpdatedSuccessfully => 'offer_updated_successfully'.tr();
   static String get offerDeletedSuccessfully => 'offer_deleted_successfully'.tr();

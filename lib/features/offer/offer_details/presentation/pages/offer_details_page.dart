@@ -59,11 +59,21 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (offer.name != null && offer.name!.isNotEmpty) ...[
+                  CustomText(
+                    text: offer.name!,
+                    textStyle: getBoldStyle(
+                      fontSize: AppFontSize.s20,
+                      color: ColorManager.defaultWhite,
+                    ),
+                  ),
+                  SizedBox(height: AppHeight.s8),
+                ],
                 if (offer.shortDescription != null) ...[
                   CustomText(
                     text: offer.shortDescription!,
                     textStyle: getBoldStyle(
-                      fontSize: AppFontSize.s20,
+                      fontSize: AppFontSize.s18,
                       color: ColorManager.defaultWhite,
                     ),
                   ),

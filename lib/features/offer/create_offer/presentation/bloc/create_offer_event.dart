@@ -16,6 +16,15 @@ class InitializeOfferForm extends CreateOfferEvent {
   List<Object?> get props => [offer];
 }
 
+class UpdateOfferName extends CreateOfferEvent {
+  final String value;
+
+  const UpdateOfferName(this.value);
+
+  @override
+  List<Object> get props => [value];
+}
+
 class UpdateOfferShortDescription extends CreateOfferEvent {
   final String value;
 

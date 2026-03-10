@@ -1,6 +1,7 @@
 part of 'create_offer_bloc.dart';
 
 abstract class CreateOfferState extends Equatable {
+  final String name;
   final String shortDescription;
   final String longDescription;
   final List<String> productIds;
@@ -12,6 +13,7 @@ abstract class CreateOfferState extends Equatable {
   final bool isValid;
 
   const CreateOfferState({
+    this.name = '',
     this.shortDescription = '',
     this.longDescription = '',
     this.productIds = const [],
@@ -24,6 +26,7 @@ abstract class CreateOfferState extends Equatable {
   });
 
   CreateOfferState copyWith({
+    String? name,
     String? shortDescription,
     String? longDescription,
     List<String>? productIds,
@@ -37,6 +40,7 @@ abstract class CreateOfferState extends Equatable {
 
   @override
   List<Object?> get props => [
+        name,
         shortDescription,
         longDescription,
         productIds,
@@ -51,6 +55,7 @@ abstract class CreateOfferState extends Equatable {
 
 class CreateOfferInitial extends CreateOfferState {
   const CreateOfferInitial({
+    super.name,
     super.shortDescription,
     super.longDescription,
     super.productIds,
@@ -64,6 +69,7 @@ class CreateOfferInitial extends CreateOfferState {
 
   @override
   CreateOfferState copyWith({
+    String? name,
     String? shortDescription,
     String? longDescription,
     List<String>? productIds,
@@ -75,6 +81,7 @@ class CreateOfferInitial extends CreateOfferState {
     bool? isValid,
   }) {
     return CreateOfferInitial(
+      name: name ?? this.name,
       shortDescription: shortDescription ?? this.shortDescription,
       longDescription: longDescription ?? this.longDescription,
       productIds: productIds ?? this.productIds,
@@ -90,6 +97,7 @@ class CreateOfferInitial extends CreateOfferState {
 
 class CreateOfferLoading extends CreateOfferState {
   const CreateOfferLoading({
+    required super.name,
     required super.shortDescription,
     required super.longDescription,
     required super.productIds,
@@ -103,6 +111,7 @@ class CreateOfferLoading extends CreateOfferState {
 
   @override
   CreateOfferState copyWith({
+    String? name,
     String? shortDescription,
     String? longDescription,
     List<String>? productIds,
@@ -114,6 +123,7 @@ class CreateOfferLoading extends CreateOfferState {
     bool? isValid,
   }) {
     return CreateOfferInitial(
+      name: name ?? this.name,
       shortDescription: shortDescription ?? this.shortDescription,
       longDescription: longDescription ?? this.longDescription,
       productIds: productIds ?? this.productIds,
@@ -132,6 +142,7 @@ class CreateOfferSuccess extends CreateOfferState {
 
   @override
   CreateOfferState copyWith({
+    String? name,
     String? shortDescription,
     String? longDescription,
     List<String>? productIds,
@@ -151,6 +162,7 @@ class CreateOfferError extends CreateOfferState {
 
   const CreateOfferError({
     required this.message,
+    required super.name,
     required super.shortDescription,
     required super.longDescription,
     required super.productIds,
@@ -164,6 +176,7 @@ class CreateOfferError extends CreateOfferState {
 
   @override
   CreateOfferState copyWith({
+    String? name,
     String? shortDescription,
     String? longDescription,
     List<String>? productIds,
@@ -176,6 +189,7 @@ class CreateOfferError extends CreateOfferState {
   }) {
     return CreateOfferError(
       message: message,
+      name: name ?? this.name,
       shortDescription: shortDescription ?? this.shortDescription,
       longDescription: longDescription ?? this.longDescription,
       productIds: productIds ?? this.productIds,

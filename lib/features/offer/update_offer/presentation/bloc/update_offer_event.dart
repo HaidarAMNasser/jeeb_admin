@@ -9,6 +9,7 @@ abstract class UpdateOfferEvent extends Equatable {
 
 class UpdateOfferSubmitted extends UpdateOfferEvent {
   final String id;
+  final String name;
   final String shortDescription;
   final String longDescription;
   final List<String> productIds;
@@ -19,6 +20,7 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
 
   const UpdateOfferSubmitted({
     required this.id,
+    required this.name,
     required this.shortDescription,
     required this.longDescription,
     required this.productIds,
@@ -31,6 +33,7 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
   @override
   List<Object?> get props => [
         id,
+        name,
         shortDescription,
         longDescription,
         productIds,

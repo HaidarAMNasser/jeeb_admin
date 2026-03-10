@@ -16,6 +16,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
         if (event.offer != null) {
           final o = event.offer!;
           emit(CreateOfferInitial(
+            name: o.name ?? '',
             shortDescription: o.shortDescription ?? '',
             longDescription: o.longDescription ?? '',
             productIds: o.products.map((p) => p.id).toList(),
@@ -25,6 +26,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
             discountValue: o.discountValue?.toString() ?? '',
             offerId: o.id,
             isValid: _isValid(
+              o.name ?? '',
               o.shortDescription ?? '',
               o.longDescription ?? '',
               o.products.map((p) => p.id).toList(),
@@ -35,6 +37,9 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
         } else {
           emit(const CreateOfferInitial());
         }
+        add(const CheckOfferValidation());
+      } else if (event is UpdateOfferName) {
+        emit(state.copyWith(name: event.value));
         add(const CheckOfferValidation());
       } else if (event is UpdateOfferShortDescription) {
         emit(state.copyWith(shortDescription: event.value));
@@ -60,6 +65,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
       } else if (event is CheckOfferValidation) {
         emit(state.copyWith(
           isValid: _isValid(
+            state.name,
             state.shortDescription,
             state.longDescription,
             state.productIds,
@@ -70,6 +76,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
       } else if (event is CreateOfferSubmitted) {
         if (!state.isValid) return;
         emit(CreateOfferLoading(
+          name: state.name,
           shortDescription: state.shortDescription,
           longDescription: state.longDescription,
           productIds: state.productIds,
@@ -80,23 +87,32 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
           offerId: state.offerId,
           isValid: state.isValid,
         ));
+        // API: discountType PERCENTAGE | FIXED; discountValue number; productIds array of numbers
+        final discountType = state.discountType == 'VALUE' ? 'FIXED' : state.discountType;
+        final discountValue = num.tryParse(state.discountValue) ?? 0;
+        final productIdsNumbers = state.productIds
+            .map((id) => int.tryParse(id))
+            .whereType<int>()
+            .toList();
         final formData = FormData.fromMap({
+          'name': state.name.trim(),
           'shortDescription': state.shortDescription,
           'longDescription': state.longDescription,
           if (state.startDate != null)
             'startDate': state.startDate!.toIso8601String(),
           if (state.endDate != null)
             'endDate': state.endDate!.toIso8601String(),
-          'discountType': state.discountType,
-          'discountValue': num.tryParse(state.discountValue) ?? 0,
+          'discountType': discountType,
+          'discountValue': discountValue,
+          'productIds': productIdsNumbers.isEmpty
+              ? <int>[]
+              : productIdsNumbers,
         });
-        for (final id in state.productIds) {
-          formData.fields.add(MapEntry('productIds', id));
-        }
         final result = await _repository.createOffer(formData);
         result.fold(
           (failure) => emit(CreateOfferError(
             message: failure.message,
+            name: state.name,
             shortDescription: state.shortDescription,
             longDescription: state.longDescription,
             productIds: state.productIds,
@@ -114,12 +130,14 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
   }
 
   bool _isValid(
+    String name,
     String shortDesc,
     String longDesc,
     List<String> ids,
     String type,
     String value,
   ) {
+    if (name.trim().isEmpty) return false;
     if (shortDesc.trim().isEmpty) return false;
     if (ids.isEmpty) return false;
     final v = num.tryParse(value);

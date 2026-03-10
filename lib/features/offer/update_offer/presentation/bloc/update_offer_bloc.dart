@@ -13,19 +13,23 @@ class UpdateOfferBloc extends Bloc<UpdateOfferEvent, UpdateOfferState> {
     on<UpdateOfferEvent>((event, emit) async {
       if (event is UpdateOfferSubmitted) {
         emit(const UpdateOfferLoading());
+        final discountType = event.discountType == 'VALUE' ? 'FIXED' : event.discountType;
+        final productIdsNumbers = event.productIds
+            .map((id) => int.tryParse(id))
+            .whereType<int>()
+            .toList();
         final formData = FormData.fromMap({
+          'name': event.name.trim(),
           'shortDescription': event.shortDescription,
           'longDescription': event.longDescription,
           if (event.startDate != null)
             'startDate': event.startDate!.toIso8601String(),
           if (event.endDate != null)
             'endDate': event.endDate!.toIso8601String(),
-          'discountType': event.discountType,
+          'discountType': discountType,
           'discountValue': event.discountValue,
+          'productIds': productIdsNumbers,
         });
-        for (final id in event.productIds) {
-          formData.fields.add(MapEntry('productIds', id));
-        }
         final result =
             await _repository.updateOffer(event.id, formData);
         result.fold(

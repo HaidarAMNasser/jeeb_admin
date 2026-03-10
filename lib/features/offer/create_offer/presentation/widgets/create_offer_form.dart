@@ -12,6 +12,8 @@ import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offe
 import 'package:jeeb_admin/core/presentation/widgets/custom_date_select.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_discount_section.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_form_submit_button.dart';
+import 'package:jeeb_admin/features/offer/create_offer/helpful_functions/offer_validation.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 
 class CreateOfferForm extends StatefulWidget {
   final CreateOfferBloc bloc;
@@ -33,6 +35,7 @@ class CreateOfferForm extends StatefulWidget {
 
 class _CreateOfferFormState extends State<CreateOfferForm> {
   late List<ProductEntity> _selectedProducts;
+  late TextEditingController _nameController;
   late TextEditingController _shortDescController;
   late TextEditingController _longDescController;
   late TextEditingController _discountValueController;
@@ -41,6 +44,9 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
   void initState() {
     super.initState();
     _selectedProducts = List.from(widget.offer?.products ?? []);
+    _nameController = TextEditingController(
+      text: widget.state.name,
+    );
     _shortDescController = TextEditingController(
       text: widget.state.shortDescription,
     );
@@ -55,6 +61,9 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
   @override
   void didUpdateWidget(CreateOfferForm oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.state.name != _nameController.text) {
+      _nameController.text = widget.state.name;
+    }
     if (widget.state.shortDescription != _shortDescController.text) {
       _shortDescController.text = widget.state.shortDescription;
     }
@@ -73,6 +82,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _shortDescController.dispose();
     _longDescController.dispose();
     _discountValueController.dispose();
@@ -102,11 +112,19 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
   }
 
   void _onSubmit() {
+    offerValidationToast(
+      name: widget.state.name,
+      shortDescription: widget.state.shortDescription,
+      productIds: widget.state.productIds,
+      discountType: widget.state.discountType,
+      discountValue: widget.state.discountValue,
+    );
     if (!widget.state.isValid) return;
     if (widget.isEdit) {
       context.read<UpdateOfferBloc>().add(
         UpdateOfferSubmitted(
           id: widget.state.offerId!,
+          name: widget.state.name,
           shortDescription: widget.state.shortDescription,
           longDescription: widget.state.longDescription,
           productIds: widget.state.productIds,
@@ -131,6 +149,12 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
         spacing: AppSize.s16.h,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          CustomTextField(
+            title: AppTranslation.offerName,
+            hintText: AppTranslation.offerName,
+            controller: _nameController,
+            onChanged: (value) => widget.bloc.add(UpdateOfferName(value)),
+          ),
           OfferProductsSection(
             selectedProducts: _selectedProducts,
             onSelectProduct: _addProduct,

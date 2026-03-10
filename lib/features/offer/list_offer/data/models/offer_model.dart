@@ -2,6 +2,7 @@ import 'package:jeeb_admin/features/product/list_product/data/models/product_mod
 
 class OfferModel {
   final String id;
+  final String? name;
   final String? shortDescription;
   final String? longDescription;
   final List<ProductModel> products;
@@ -12,6 +13,7 @@ class OfferModel {
 
   OfferModel({
     required this.id,
+    this.name,
     this.shortDescription,
     this.longDescription,
     this.products = const [],
@@ -24,6 +26,7 @@ class OfferModel {
   factory OfferModel.fromJson(Map<String, dynamic> json) {
     return OfferModel(
       id: json['id']?.toString() ?? '',
+      name: json['name']?.toString(),
       shortDescription: json['shortDescription']?.toString(),
       longDescription: json['longDescription']?.toString(),
       products: json['products'] != null
@@ -49,6 +52,7 @@ class OfferModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'name': name,
       'shortDescription': shortDescription,
       'longDescription': longDescription,
       'products': products.map((e) => e.toJson()).toList(),

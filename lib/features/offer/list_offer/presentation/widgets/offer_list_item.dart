@@ -45,7 +45,7 @@ class OfferListItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomText(
-                      text: offer.shortDescription ?? offer.id,
+                      text: offer.name ?? offer.shortDescription ?? offer.id,
                       textStyle: getBoldStyle(
                         fontSize: AppFontSize.s18,
                         color: ColorManager.productNameColor,
