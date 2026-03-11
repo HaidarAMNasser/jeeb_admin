@@ -82,7 +82,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
         // Convert price from decimal to smallest currency unit (e.g., 12.99 -> 1299)
         final priceInSmallestUnit = ((double.tryParse(priceController.text.trim()) ?? 0.0) * 100).toInt();
         
-        // Build FormData
+        // Build FormData with text fields
         final formData = FormData.fromMap({
           'name': nameController.text.trim(),
           if (descriptionController.text.trim().isNotEmpty)
@@ -92,12 +92,17 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
           if (quantityController.text.trim().isNotEmpty)
             'stockQuantity': int.tryParse(quantityController.text.trim()),
         });
-        
-        // Add images individually to FormData
-        for (var image in state.images) {
-          formData.fields.add(MapEntry('images', image));
+
+        // Add images as actual file uploads (not path strings). The server expects
+        // multipart files; sending path strings would make images null in the response.
+        for (final path in state.images) {
+          if (path.startsWith('http')) continue; // existing URL, skip or handle if API supports
+          formData.files.add(MapEntry(
+            'images',
+            await MultipartFile.fromFile(path),
+          ));
         }
-        
+
         final result = await _createRepository.createProduct(formData);
         result.fold(
           (failure) => emit(CreateProductError(

@@ -18,14 +18,22 @@ import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_orde
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 class MerchantNavigation extends StatefulWidget {
-  const MerchantNavigation({super.key});
+  final int initialIndex;
+
+  const MerchantNavigation({super.key, this.initialIndex = 0});
 
   @override
   State<MerchantNavigation> createState() => _MerchantNavigationState();
 }
 
 class _MerchantNavigationState extends State<MerchantNavigation> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
 
   Widget _buildScreen(int index) {
     switch (index) {

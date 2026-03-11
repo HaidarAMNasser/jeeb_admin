@@ -232,5 +232,6 @@
   "offer_deleted_successfully": "تم حذف العرض بنجاح",
   "are_you_sure_delete_offer": "هل أنت متأكد أنك تريد حذف هذا العرض؟",
   "select_date": "اختر التاريخ",
-  "show_all": "عرض الكل"
+  "show_all": "عرض الكل",
+  "back_to_login": "العودة إلى تسجيل الدخول"
 }

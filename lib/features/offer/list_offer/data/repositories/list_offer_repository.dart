@@ -19,14 +19,14 @@ class ListOfferRepository {
   Future<Either<Failure, List<OfferEntity>>> getOffers({
     int? page,
     int? limit,
-    String? restaurantId,
+    String? merchantId,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.getOffers(
           page: page,
           limit: limit,
-          restaurantId: restaurantId,
+          merchantId: merchantId,
         );
 
         BaseResponseModel<List<OfferModel>> baseResponseModel =

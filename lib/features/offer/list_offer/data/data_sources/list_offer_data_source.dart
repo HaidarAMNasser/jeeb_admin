@@ -5,7 +5,7 @@ abstract class ListOfferRemoteDataSource {
   Future<Response> getOffers({
     int? page,
     int? limit,
-    String? restaurantId,
+    String? merchantId,
   });
 }
 
@@ -18,12 +18,12 @@ class ListOfferRemoteDataSourceImpl implements ListOfferRemoteDataSource {
   Future<Response> getOffers({
     int? page,
     int? limit,
-    String? restaurantId,
+    String? merchantId,
   }) {
     return _client.getOffers(
       page: page,
       limit: limit,
-      restaurantId: restaurantId,
+      merchantId: merchantId,
     );
   }
 }

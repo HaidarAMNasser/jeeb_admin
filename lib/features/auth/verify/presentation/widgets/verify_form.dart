@@ -31,7 +31,7 @@ class VerifyForm extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CustomTextField(
             title: AppTranslation.otp,
@@ -45,30 +45,34 @@ class VerifyForm extends StatelessWidget {
             color: ColorManager.primary,
           ),
           SizedBox(height: AppHeight.s16),
-          TextButton(
-            onPressed: onResendOtp,
-            child: CustomText(
-              text: AppTranslation.resendOtp,
-              textStyle: getMediumStyle(
-                fontSize: AppFontSize.s14,
-                color: ColorManager.primary,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: onResendOtp,
+                child: CustomText(
+                  text: AppTranslation.resendOtp,
+                  textStyle: getMediumStyle(
+                    fontSize: AppFontSize.s14,
+                    color: ColorManager.primary,
+                  ),
+                ),
               ),
-            ),
-          ),
-          SizedBox(height: AppHeight.s8),
-          TextButton(
-            onPressed: onBackToLogin,
-            child: CustomText(
-              text: AppTranslation.backToLogin,
-              textStyle: getMediumStyle(
-                fontSize: AppFontSize.s14,
-                color: ColorManager.primary,
+              TextButton(
+                onPressed: onBackToLogin,
+                child: CustomText(
+                  text: AppTranslation.backToLogin,
+                  textStyle: getMediumStyle(
+                    fontSize: AppFontSize.s14,
+                    color: ColorManager.primary,
+                  ),
+                ),
               ),
+            ],
             ),
-          ),
+          
         ],
       ),
     );
   }
 }
-

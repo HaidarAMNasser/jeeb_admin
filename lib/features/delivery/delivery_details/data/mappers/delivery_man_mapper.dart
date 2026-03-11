@@ -10,7 +10,7 @@ extension DeliveryManMapper on DeliveryManModel {
       email: email,
       cityName: cityName,
       countryName: countryName,
-      image: imageUrl,
+      image: imageUrlFull,
       isOnline: isOnline,
       confirmed: confirmed,
       officeOwnerId: officeOwnerId,

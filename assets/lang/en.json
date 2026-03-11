@@ -130,7 +130,7 @@
   "please_enter_otp": "Please enter the OTP",
   "send_otp": "Send OTP",
   "passwords_do_not_match": "Passwords do not match",
-  "profile_updated_success": "Profile updated successfully",
+  "profile_updated_success": "Profile updated successfully",    
   "logout_success": "Logged out successfully",
   "logout_error": "Failed to logout. Please try again",
   "are_you_sure_logout": "Are you sure you want to logout?",
@@ -232,5 +232,6 @@
   "offer_deleted_successfully": "Offer deleted successfully",
   "are_you_sure_delete_offer": "Are you sure you want to delete this offer?",
   "select_date": "Select Date",
-  "show_all": "Show all"
+  "show_all": "Show all",
+  "back_to_login": "Back to login"
 }

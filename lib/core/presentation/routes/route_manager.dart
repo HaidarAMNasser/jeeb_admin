@@ -233,8 +233,9 @@ class AppRouter {
       case Routes.productDetails:
         final args = settings.arguments as Map<String, dynamic>?;
         final productId = args?['productId'] as String? ?? '';
+        final tabIndexOnBack = args?['tabIndexOnBack'] as int? ?? 0;
         return _buildRouteWithBlocs(
-          ProductDetailsPage(productId: productId),
+          ProductDetailsPage(productId: productId, tabIndexOnBack: tabIndexOnBack),
           settings,
           providers: [
             BlocProvider<ProductDetailsBloc>(
@@ -252,8 +253,10 @@ class AppRouter {
         );
 
       case Routes.mainNavigation:
+        final mainArgs = settings.arguments as Map<String, dynamic>?;
+        final tabIndex = mainArgs?['tabIndex'] as int? ?? 0;
         return _buildRoute(
-          const MainNavigationPage(),
+          MainNavigationPage(initialTabIndex: tabIndex),
           settings,
         );
 
@@ -351,6 +354,12 @@ class AppRouter {
           AddDeliveryPage(deliveryMan: deliveryMan),
           settings,
           providers: [
+            BlocProvider<CountryBloc>(
+              create: (_) => di.sl<CountryBloc>(),
+            ),
+            BlocProvider<CityBloc>(
+              create: (_) => di.sl<CityBloc>(),
+            ),
             BlocProvider<CreateDeliveryBloc>(
               create: (_) =>
                   CreateDeliveryBloc(di.sl<CreateDeliveryRepository>()),

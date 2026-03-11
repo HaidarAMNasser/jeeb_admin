@@ -39,73 +39,82 @@ class MerchantListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      if (merchant.image != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(AppRadius.r100),
-                          ),
-                          child: Container(
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (merchant.image != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppRadius.r100),
+                            ),
+                            child: Container(
+                              width: AppWidth.s50,
+                              height: AppHeight.s50,
+                              color: ColorManager.background,
+                              child: Image.network(
+                                merchant.image!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: ColorManager.background,
+                                    child: Icon(
+                                      Icons.store,
+                                      color: ColorManager.primary,
+                                      size: AppSize.s28,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          )
+                        else
+                          Container(
                             width: AppWidth.s50,
                             height: AppHeight.s50,
-                            color: ColorManager.background,
-                            child: Image.network(
-                              merchant.image!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: ColorManager.background,
-                                  child: Icon(
-                                    Icons.store,
-                                    color: ColorManager.primary,
-                                    size: AppSize.s28,
-                                  ),
-                                );
-                              },
+                            decoration: BoxDecoration(
+                              color: ColorManager.background,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.store,
+                              color: ColorManager.primary,
+                              size: AppSize.s28,
                             ),
                           ),
-                        )
-                      else
-                        Container(
-                          width: AppWidth.s50,
-                          height: AppHeight.s50,
-                          decoration: BoxDecoration(
-                            color: ColorManager.background,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.store,
-                            color: ColorManager.primary,
-                            size: AppSize.s28,
+                        SizedBox(width: AppWidth.s12),
+                        Expanded(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minWidth: 0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: merchant.name,
+                                textStyle: getBoldStyle(
+                                  fontSize: AppFontSize.s18,
+                                  color: ColorManager.productNameColor,
+                                ),
+                                maxLines: 2,
+                                textOverflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: AppHeight.s4),
+                              CustomText(
+                                text: merchant.email,
+                                textStyle: getRegularStyle(
+                                  fontSize: AppFontSize.s12,
+                                  color: ColorManager.descriptionColor,
+                                ),
+                                maxLines: 1,
+                                textOverflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                         ),
-                      SizedBox(width: AppWidth.s12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: merchant.name,
-                            textStyle: getBoldStyle(
-                              fontSize: AppFontSize.s18,
-                              color: ColorManager.productNameColor,
-                            ),
-                            maxLines: 2,
-                            textOverflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: AppHeight.s4),
-                          CustomText(
-                            text: merchant.email,
-                            textStyle: getRegularStyle(
-                              fontSize: AppFontSize.s12,
-                              color: ColorManager.descriptionColor,
-                            ),
-                            maxLines: 1,
-                            textOverflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

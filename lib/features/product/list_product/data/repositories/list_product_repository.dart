@@ -38,41 +38,58 @@ class ListProductRepository {
         restaurantId: restaurantId,
       );
 
+      final responseData = response.data;
+      if (responseData == null) {
+        return Left(ErrorHandler.handle(DioException(
+          type: DioExceptionType.badResponse,
+          response: response,
+          requestOptions: response.requestOptions,
+        )));
+      }
+
       BaseResponseModel<List<ProductModel>> baseResponseModel =
           BaseResponseModel<List<ProductModel>>.fromJson(
-        response.data!,
+        responseData,
         (json) {
-          if (json is String) {
-            final parsedJson = jsonDecode(json) as List<dynamic>;
-            return parsedJson
-                .map((item) =>
-                    ProductModel.fromJson(item as Map<String, dynamic>))
-                .toList();
+          List<dynamic> rawList;
+          if (json == null) {
+            rawList = [];
+          } else if (json is String) {
+            final parsedJson = jsonDecode(json) as List<dynamic>? ?? [];
+            rawList = parsedJson;
           } else if (json is List) {
-            return json
-                .map((item) =>
-                    ProductModel.fromJson(item as Map<String, dynamic>))
-                .toList();
+            rawList = json;
+          } else if (json is Map<String, dynamic>) {
+            final list = json['items'] ?? json['content'] ?? json['data'];
+            if (list is List) {
+              rawList = list;
+            } else if (list == null) {
+              rawList = [];
+            } else {
+              throw FormatException(
+                  'Expected data to be String, List, or Map with items/content/data, but got map with non-list value');
+            }
           } else {
             throw FormatException(
-                'Expected data to be String or List, but got ${json.runtimeType}');
+                'Expected data to be String, List, or Map, but got ${json.runtimeType}');
           }
+          return rawList
+              .whereType<Map>()
+              .map((item) => ProductModel.fromJson(Map<String, dynamic>.from(item)))
+              .where((model) => model.id.isNotEmpty)
+              .toList();
         },
       );
 
       if (baseResponseModel.status == 200 ||
           baseResponseModel.success == true ||
           baseResponseModel.statusCode == 200) {
-        if (baseResponseModel.data == null) {
-          return Left(ErrorHandler.handle(DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: RequestOptions(),
-          )));
+        final data = baseResponseModel.data;
+        if (data == null) {
+          return const Right([]);
         }
-
         try {
-          return Right(baseResponseModel.data!.toDomain());
+          return Right(data.toDomain());
         } catch (domainError) {
           return Left(ErrorHandler.handle(domainError));
         }
@@ -80,7 +97,7 @@ class ListProductRepository {
         return Left(ErrorHandler.handle(DioException(
           type: DioExceptionType.badResponse,
           response: response,
-          requestOptions: RequestOptions(),
+          requestOptions: response.requestOptions,
         )));
       }
     } catch (error) {

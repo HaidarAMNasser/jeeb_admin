@@ -8,7 +8,9 @@ import '../../../../core/common/classes/user_roles.dart';
 import '../../../../core/presentation/routes/routes.dart';
 
 class MainNavigationPage extends StatefulWidget {
-  const MainNavigationPage({super.key});
+  final int initialTabIndex;
+
+  const MainNavigationPage({super.key, this.initialTabIndex = 0});
 
   @override
   State<MainNavigationPage> createState() => _MainNavigationPageState();
@@ -46,9 +48,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
     // Route based on user role (ConfirmProductBloc only provided for admin flow via routes)
     if (_userRole == UserRoles.merchant.name) {
-      return const MerchantNavigation();
+      return MerchantNavigation(initialIndex: widget.initialTabIndex);
     } else if (_userRole == UserRoles.admin.name) {
-      return const AdminNavigation();
+      return AdminNavigation(initialIndex: widget.initialTabIndex);
     } else {
       // If no role found or unsupported role, redirect to login
       WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
-import 'package:jeeb_admin/features/delivery/create_delivery/presentation/bloc/create_delivery_bloc.dart';
-import 'package:jeeb_admin/features/delivery/update_delivery/presentation/bloc/update_delivery_bloc.dart';
+import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
+import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
+import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/helpful_functions/delivery_validation.dart';
+import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_controllers.dart';
+import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_values.dart';
 
 class CreateDeliveryForm extends StatelessWidget {
   final bool isEdit;
   final String? deliveryManId;
-  final TextEditingController firstNameController;
-  final TextEditingController lastNameController;
-  final TextEditingController phoneController;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
+  final DeliveryFormControllers controllers;
+  final String? imagePath;
+  final CountryEntity? selectedCountry;
+  final CityEntity? selectedCity;
+  final void Function(CountryEntity?) onCountryChanged;
+  final void Function(CityEntity?) onCityChanged;
   final GlobalKey<FormState> formKey;
+  final void Function(DeliveryFormValues values) onSubmit;
 
   const CreateDeliveryForm({
     super.key,
     required this.isEdit,
     this.deliveryManId,
-    required this.firstNameController,
-    required this.lastNameController,
-    required this.phoneController,
-    required this.emailController,
-    required this.passwordController,
+    required this.controllers,
+    this.imagePath,
+    this.selectedCountry,
+    this.selectedCity,
+    required this.onCountryChanged,
+    required this.onCityChanged,
     required this.formKey,
+    required this.onSubmit,
   });
 
   @override
@@ -39,93 +45,134 @@ class CreateDeliveryForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CustomTextField(
-              controller: firstNameController,
-              title: AppTranslation.firstName,
-              hintText: AppTranslation.enterFirstName,
+            _DeliveryFormFields(
+              controllers: controllers,
+              isEdit: isEdit,
             ),
             SizedBox(height: AppHeight.s16),
-            CustomTextField(
-              controller: lastNameController,
-              title: AppTranslation.lastName,
-              hintText: AppTranslation.enterLastName,
+            CountryCityWidget(
+              selectedCountry: selectedCountry,
+              selectedCity: selectedCity,
+              onSelectCountry: onCountryChanged,
+              onSelectCity: onCityChanged,
+              isRequired: false,
             ),
-            SizedBox(height: AppHeight.s16),
-            CustomTextField(
-              controller: phoneController,
-              title: AppTranslation.phone,
-              hintText: AppTranslation.enterPhone,
-            ),
-            SizedBox(height: AppHeight.s16),
-            CustomTextField(
-              controller: emailController,
-              title: AppTranslation.email,
-              hintText: AppTranslation.enterEmail,
-            ),
-            if (!isEdit) ...[
-              SizedBox(height: AppHeight.s16),
-              CustomTextField(
-                controller: passwordController,
-                title: AppTranslation.password,
-                hintText: AppTranslation.enterPassword,
-                obscureText: true,
-              ),
-            ],
             SizedBox(height: AppHeight.s24),
             CustomButton(
               text: isEdit ? AppTranslation.save : AppTranslation.addDeliveryMan,
-              onPressed: () {
-                // Show validation toast if form is invalid
-                deliveryValidationToast(
-                  firstName: firstNameController.text.trim(),
-                  lastName: lastNameController.text.trim(),
-                  phone: phoneController.text.trim(),
-                  email: emailController.text.trim(),
-                  password: passwordController.text.trim(),
-                  isEditMode: isEdit,
-                );
-
-                // Only proceed if form is valid
-                if (!isDeliveryFormValid(
-                  firstName: firstNameController.text.trim(),
-                  lastName: lastNameController.text.trim(),
-                  phone: phoneController.text.trim(),
-                  email: emailController.text.trim(),
-                  password: passwordController.text.trim(),
-                  isEditMode: isEdit,
-                )) {
-                  return;
-                }
-
-                if (isEdit && deliveryManId != null) {
-                  context.read<UpdateDeliveryBloc>().add(
-                        UpdateDeliverySubmitted(
-                          id: deliveryManId!,
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          phone: phoneController.text.trim(),
-                          email: emailController.text.trim(),
-                        ),
-                      );
-                } else {
-                  context.read<CreateDeliveryBloc>().add(
-                        CreateDeliverySubmitted(
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          phone: phoneController.text.trim(),
-                          email: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                          notificationChannel: 'WHATSAPP', // Default value
-                        ),
-                      );
-                }
-              },
-              isLoading: false, // ModalProgressHUD handles loading overlay
+              onPressed: () => _handleSubmit(context),
+              isLoading: false,
             ),
           ],
         ),
       ),
     );
   }
+
+  void _handleSubmit(BuildContext context) {
+    final firstName = controllers.firstName.text.trim();
+    final lastName = controllers.lastName.text.trim();
+    final phone = controllers.phone.text.trim();
+    final email = controllers.email.text.trim();
+    final password = controllers.password.text.trim();
+
+    deliveryValidationToast(
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      password: password,
+      isEditMode: isEdit,
+    );
+
+    if (!isDeliveryFormValid(
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      password: password,
+      isEditMode: isEdit,
+    )) {
+      return;
+    }
+
+    final address = controllers.address.text.trim();
+    final birthday = controllers.birthday.text.trim();
+
+    onSubmit(DeliveryFormValues(
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      password: password,
+      address: address.isEmpty ? null : address,
+      birthday: birthday.isEmpty ? null : birthday,
+      imagePath: imagePath,
+      countryId: selectedCountry?.id,
+      cityId: selectedCity?.id,
+    ));
+  }
 }
 
+class _DeliveryFormFields extends StatelessWidget {
+  final DeliveryFormControllers controllers;
+  final bool isEdit;
+
+  const _DeliveryFormFields({
+    required this.controllers,
+    required this.isEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CustomTextField(
+          controller: controllers.firstName,
+          title: AppTranslation.firstName,
+          hintText: AppTranslation.enterFirstName,
+        ),
+        SizedBox(height: AppHeight.s16),
+        CustomTextField(
+          controller: controllers.lastName,
+          title: AppTranslation.lastName,
+          hintText: AppTranslation.enterLastName,
+        ),
+        SizedBox(height: AppHeight.s16),
+        CustomTextField(
+          controller: controllers.phone,
+          title: AppTranslation.phone,
+          hintText: AppTranslation.enterPhone,
+        ),
+        SizedBox(height: AppHeight.s16),
+        CustomTextField(
+          controller: controllers.email,
+          title: AppTranslation.email,
+          hintText: AppTranslation.enterEmail,
+        ),
+        if (!isEdit) ...[
+          SizedBox(height: AppHeight.s16),
+          CustomTextField(
+            controller: controllers.password,
+            title: AppTranslation.password,
+            hintText: AppTranslation.enterPassword,
+            obscureText: true,
+          ),
+        ],
+        SizedBox(height: AppHeight.s16),
+        CustomTextField(
+          controller: controllers.address,
+          title: AppTranslation.address,
+          hintText: AppTranslation.enterAddress,
+        ),
+        SizedBox(height: AppHeight.s16),
+        CustomTextField(
+          controller: controllers.birthday,
+          title: 'Birthday',
+          hintText: 'YYYY-MM-DD',
+        ),
+      ],
+    );
+  }
+}

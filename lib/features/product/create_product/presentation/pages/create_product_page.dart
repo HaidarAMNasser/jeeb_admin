@@ -8,7 +8,6 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dar
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/features/product/create_product/presentation/bloc/create_product_bloc.dart';
-import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/product/create_product/presentation/widgets/create_product_form.dart';
 import 'package:jeeb_admin/features/product/update_product/presentation/bloc/update_product_bloc.dart';
@@ -50,7 +49,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
       listener: (context, deleteState) {
         if (deleteState is DeleteProductSuccess) {
           customToast(msg: AppTranslation.productDeletedSuccessfully);
-          context.pushNamed(Routes.products);
+          _goToMainWithProductsTab(context);
         } else if (deleteState is DeleteProductError) {
           customToast(msg: deleteState.message);
         }
@@ -60,7 +59,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
           listener: (context, updateState) {
             if (updateState is UpdateProductSuccess) {
               customToast(msg: AppTranslation.productUpdatedSuccessfully);
-              context.pushNamed(Routes.products);
+              _goToMainWithProductsTab(context);
             } else if (updateState is UpdateProductError) {
               customToast(msg: updateState.message);
             }
@@ -70,7 +69,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               listener: (context, createState) {
                 if (createState is CreateProductSuccess) {
                   customToast(msg: AppTranslation.productCreatedSuccessfully);
-                  context.pushNamed(Routes.products);
+                  _goToMainWithProductsTab(context);
                 } else if (createState is CreateProductError) {
                   customToast(msg: createState.message);
                 }
@@ -163,6 +162,14 @@ class _CreateProductPageState extends State<CreateProductPage> {
           },
         );
       },
+    );
+  }
+
+  void _goToMainWithProductsTab(BuildContext context) {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      Routes.mainNavigation,
+      (_) => false,
+      arguments: {'tabIndex': 0},
     );
   }
 

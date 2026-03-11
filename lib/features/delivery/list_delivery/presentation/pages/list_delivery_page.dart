@@ -6,7 +6,8 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
-import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
+import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/widgets/delivery_list_item.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/widgets/search_delivery_widget.dart';
@@ -67,66 +68,57 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
                 }
               },
               builder: (context, state) {
-                // Real API-based rendering kept here for easy restore after testing.
-                // if (state is ListDeliveryLoading) {
-                //   return const Center(child: CustomCircleIndicator());
-                // }
-                //
-                // if (state is ListDeliveryError) {
-                //   return Center(
-                //     child: Padding(
-                //       padding: EdgeInsets.all(AppPadding.p16),
-                //       child: Text(
-                //         state.message,
-                //         style: const TextStyle(color: Colors.white),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   );
-                // }
-                //
-                // final deliveryMen = state is ListDeliveryLoaded
-                //     ? state.deliveryMen
-                //     : state is ListDeliveryLoadingMore
-                //         ? state.deliveryMen
-                //         : <DeliveryManEntity>[];
-                // final hasMore = state is ListDeliveryLoaded ? state.hasMore : false;
-                //
-                // if (deliveryMen.isEmpty) {
-                //   return Center(
-                //     child: Text(
-                //       AppTranslation.noDeliveryMenFound,
-                //       style: const TextStyle(color: Colors.white),
-                //     ),
-                //   );
-                // }
-
-                final deliveryMen = _generateFakeDeliveryMen();
-                final itemCount = deliveryMen.length;
-
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    // final state = context.read<ListDeliveryBloc>().state;
-                    // String? searchQuery;
-                    // if (state is ListDeliveryLoaded) {
-                    //   searchQuery = state.search;
-                    // } else if (state is ListDeliveryLoadingMore) {
-                    //   searchQuery = state.search;
-                    // }
-                    // context.read<ListDeliveryBloc>().add(
-                    //   GetDeliveryMenEvent(search: searchQuery),
-                    // );
+                return BlocStateHandler<ListDeliveryBloc, ListDeliveryState>(
+                  bloc: context.read<ListDeliveryBloc>(),
+                  isLoading: (s) => s is ListDeliveryLoading,
+                  isError: (s) => s is ListDeliveryError,
+                  getErrorMessage: (s) => (s as ListDeliveryError).message,
+                  isSuccess: (s) =>
+                      s is ListDeliveryLoaded || s is ListDeliveryLoadingMore,
+                  isEmpty: (s) {
+                    if (s is ListDeliveryLoaded) return s.deliveryMen.isEmpty;
+                    if (s is ListDeliveryLoadingMore) return s.deliveryMen.isEmpty;
+                    return false;
                   },
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                    itemCount: itemCount,
-                    itemBuilder: (context, index) {
-                      return DeliveryListItem(
-                        deliveryMan: deliveryMen[index],
-                      );
-                    },
-                  ),
+                  emptyMessage: AppTranslation.noDeliveryMenFound,
+                  getRetryCallback: (_) => () => context
+                      .read<ListDeliveryBloc>()
+                      .add(const GetDeliveryMenEvent()),
+                  successBuilder: (context, deliveryState) {
+                    final deliveryMen = deliveryState is ListDeliveryLoaded
+                        ? deliveryState.deliveryMen
+                        : (deliveryState as ListDeliveryLoadingMore).deliveryMen;
+                    final hasMore = deliveryState is ListDeliveryLoaded
+                        ? deliveryState.hasMore
+                        : false;
+                    final search = deliveryState is ListDeliveryLoaded
+                        ? deliveryState.search
+                        : (deliveryState as ListDeliveryLoadingMore).search;
+
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<ListDeliveryBloc>().add(
+                              GetDeliveryMenEvent(search: search),
+                            );
+                      },
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
+                        itemCount: deliveryMen.length + (hasMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == deliveryMen.length) {
+                            return Padding(
+                              padding: EdgeInsets.all(AppPadding.p16),
+                              child: const CustomCircleIndicator(),
+                            );
+                          }
+                          return DeliveryListItem(
+                            deliveryMan: deliveryMen[index],
+                          );
+                        },
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -141,33 +133,5 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
-  }
-
-  List<DeliveryManEntity> _generateFakeDeliveryMen() {
-    final names = [
-      'Ahmad Hassan',
-      'Mohammad Ali',
-      'Omar Khalil',
-      'Youssef Ibrahim',
-      'Karim Mahmoud',
-      'Tarek Nasser',
-      'Bassam Saleh',
-      'Rami Fadi',
-      'Samer George',
-      'Walid Hani',
-    ];
-
-    return List.generate(25, (index) {
-      final nameIndex = index % names.length;
-      return DeliveryManEntity(
-        id: '${index + 1}',
-        name: names[nameIndex],
-        phone: '+961 ${3 + (index % 7)}${1000000 + index}',
-        email:
-            '${names[nameIndex].toLowerCase().replaceAll(' ', '_')}@delivery.com',
-        isOnline: index % 2 == 0,
-        confirmed: index % 3 == 0,
-      );
-    });
   }
 }

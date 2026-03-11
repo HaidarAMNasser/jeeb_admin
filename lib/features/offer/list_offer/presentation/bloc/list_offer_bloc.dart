@@ -24,7 +24,7 @@ class ListOfferBloc extends Bloc<ListOfferEvent, ListOfferState> {
             final result = await _repository.getOffers(
               page: nextPage,
               limit: _pageSize,
-              restaurantId: currentState.merchantId,
+              merchantId: currentState.merchantId,
             );
             result.fold(
               (failure) => emit(ListOfferError(message: failure.message)),
@@ -41,7 +41,7 @@ class ListOfferBloc extends Bloc<ListOfferEvent, ListOfferState> {
           final result = await _repository.getOffers(
             page: 1,
             limit: _pageSize,
-            restaurantId: event.merchantId,
+            merchantId: event.merchantId,
           );
           result.fold(
             (failure) => emit(ListOfferError(message: failure.message)),

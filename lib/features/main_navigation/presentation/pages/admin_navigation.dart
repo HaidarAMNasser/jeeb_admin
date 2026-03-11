@@ -17,14 +17,22 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/lis
 import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 class AdminNavigation extends StatefulWidget {
-  const AdminNavigation({super.key});
+  final int initialIndex;
+
+  const AdminNavigation({super.key, this.initialIndex = 0});
 
   @override
   State<AdminNavigation> createState() => _AdminNavigationState();
 }
 
 class _AdminNavigationState extends State<AdminNavigation> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
 
   Widget _buildScreen(int index) {
     switch (index) {

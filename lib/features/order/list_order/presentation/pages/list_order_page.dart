@@ -3,14 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
-import 'package:jeeb_admin/features/order/list_order/presentation/widgets/search_order_widget.dart';
-import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_list_item.dart';
-import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
-import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
-import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
-import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
-import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/widgets/list_order_content.dart';
 
 class ListOrderPage extends StatefulWidget {
   const ListOrderPage({super.key});
@@ -26,10 +21,6 @@ class _ListOrderPageState extends State<ListOrderPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Load initial orders
-    // context.read<ListOrderBloc>().add(
-    //   GetOrdersEvent(merchantId: _merchantId),
-    // );
   }
 
   @override
@@ -75,137 +66,57 @@ class _ListOrderPageState extends State<ListOrderPage> {
             currentSearch = state.search;
           }
 
-          // return BlocStateHandler<ListOrderBloc, ListOrderState>(
-          //   bloc: context.read<ListOrderBloc>(),
-          //   isLoading: (state) => state is ListOrderLoading,
-          //   isError: (state) => state is ListOrderError,
-          //   getErrorMessage: (state) => (state as ListOrderError).message,
-          //   isSuccess: (state) =>
-          //       state is ListOrderLoaded || state is ListOrderLoadingMore,
-          //   isEmpty: (state) {
-          //     if (state is ListOrderLoaded) {
-          //       return state.orders.isEmpty;
-          //     }
-          //     if (state is ListOrderLoadingMore) {
-          //       return state.orders.isEmpty;
-          //     }
-          //     return false;
-          //   },
-          //   emptyMessage: AppTranslation.noOrdersFound,
-          //   getRetryCallback: (state) => () {
-          //     context.read<ListOrderBloc>().add(
-          //           GetOrdersEvent(merchantId: merchantId),
-          //         );
-          //   },
-          //   successBuilder: (context, orderState) {
-          //     final orders = orderState is ListOrderLoaded
-          //         ? orderState.orders
-          //         : (orderState as ListOrderLoadingMore).orders;
-          //     final hasMore = orderState is ListOrderLoaded
-          //         ? orderState.hasMore
-          //         : false;
+          return BlocStateHandler<ListOrderBloc, ListOrderState>(
+            bloc: context.read<ListOrderBloc>(),
+            isLoading: (state) => state is ListOrderLoading,
+            isError: (state) => state is ListOrderError,
+            getErrorMessage: (state) => (state as ListOrderError).message,
+            isSuccess: (state) =>
+                state is ListOrderLoaded || state is ListOrderLoadingMore,
+            isEmpty: (state) {
+              if (state is ListOrderLoaded) return state.orders.isEmpty;
+              if (state is ListOrderLoadingMore) return state.orders.isEmpty;
+              return false;
+            },
+            emptyMessage: AppTranslation.noOrdersFound,
+            getRetryCallback: (state) => () {
+              final merchantId = state is ListOrderLoaded
+                  ? state.merchantId
+                  : (state is ListOrderLoadingMore ? state.merchantId : null);
+              context.read<ListOrderBloc>().add(
+                    GetOrdersEvent(search: currentSearch, merchantId: merchantId),
+                  );
+            },
+            successBuilder: (context, orderState) {
+              final orders = orderState is ListOrderLoaded
+                  ? orderState.orders
+                  : (orderState as ListOrderLoadingMore).orders;
+              final hasMore = orderState is ListOrderLoaded
+                  ? orderState.hasMore
+                  : false;
+              final merchantId = orderState is ListOrderLoaded
+                  ? orderState.merchantId
+                  : (orderState as ListOrderLoadingMore).merchantId;
 
-          //     return ListOrderContent(
-          //       orders: orders,
-          //       hasMore: hasMore,
-          //       scrollController: _scrollController,
-          //       onRefresh: () {
-          //         context.read<ListOrderBloc>().add(
-          //           GetOrdersEvent(
-          //             search: currentSearch,
-          //             merchantId: merchantId,
-          //           ),
-          //         );
-          //       },
-          //       currentSearch: currentSearch,
-          //       merchantId: merchantId,
-          //     );
-          //   },
-          // );
-
-          // Fake data ListView for UI testing with search
-          final fakeOrders = _generateFakeOrders();
-          final searchQuery = currentSearch?.toLowerCase() ?? '';
-          final filteredOrders = searchQuery.isEmpty
-              ? fakeOrders
-              : fakeOrders.where((order) {
-                  final status = order.status?.toLowerCase() ?? '';
-                  return order.id.toLowerCase().contains(searchQuery) ||
-                      status.contains(searchQuery);
-                }).toList();
-
-          return Column(
-            children: [
-              // Search field
-              const SearchOrderWidget(),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<ListOrderBloc>().add(
-                      GetOrdersEvent(search: currentSearch),
-                    );
-                  },
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                    itemCount: filteredOrders.length,
-                    itemBuilder: (context, index) {
-                      final order = filteredOrders[index];
-                      return OrderListItem(order: order);
-                    },
-                  ),
-                ),
-              ),
-            ],
+              return ListOrderContent(
+                orders: orders,
+                hasMore: hasMore,
+                scrollController: _scrollController,
+                onRefresh: () {
+                  context.read<ListOrderBloc>().add(
+                        GetOrdersEvent(
+                          search: currentSearch,
+                          merchantId: merchantId,
+                        ),
+                      );
+                },
+                currentSearch: currentSearch,
+                merchantId: merchantId,
+              );
+            },
           );
         },
       ),
     );
-  }
-
-  // Fake data generation for UI testing
-  List<OrderEntity> _generateFakeOrders() {
-    return List.generate(25, (index) {
-      return OrderEntity(
-        id: '${index + 1}',
-        products: _generateFakeProductsForOrder(index),
-        date: DateTime.now().subtract(Duration(days: index)),
-        longitude: 35.5018 + (index * 0.01),
-        latitude: 33.8938 + (index * 0.01),
-        numberOfPeople: 2 + (index % 5),
-        status: [OrderStatus.pending, OrderStatus.completed, OrderStatus.cancelled][index % 3].name,
-        merchantId: 'merchant_${(index % 5) + 1}',
-        createdAt: DateTime.now().subtract(Duration(days: index)),
-        updatedAt: DateTime.now().subtract(Duration(hours: index)),
-      );
-    });
-  }
-
-  List<ProductEntity> _generateFakeProductsForOrder(int orderIndex) {
-    final productNames = ['Burger', 'Pizza', 'Pasta', 'Salad', 'Sandwich'];
-    return List.generate(2 + (orderIndex % 3), (productIndex) {
-      return ProductEntity(
-        id: 'product_${orderIndex}_$productIndex',
-        name: productNames[productIndex % productNames.length],
-        description:
-            'Delicious ${productNames[productIndex % productNames.length]}',
-        price: 1000 + (productIndex * 500),
-        categoryId: 'cat1',
-        categoryName: 'Fast Food',
-        images: [
-          ProductImageEntity(
-            id: productIndex + 1,
-            url:
-                'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
-            mobileUrl:
-                'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
-            thumbnailUrl:
-                'https://picsum.photos/seed/product${orderIndex}_$productIndex/200/200',
-            isMain: true,
-            displayOrder: 1,
-          ),
-        ],
-      );
-    });
   }
 }

@@ -991,14 +991,14 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> getOffers({
     int? page,
     int? limit,
-    String? restaurantId,
+    String? merchantId,
   }) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     if (page != null) queryParameters['page'] = page;
     if (limit != null) queryParameters['limit'] = limit;
-    if (restaurantId != null && restaurantId.isNotEmpty) {
-      queryParameters['restaurantId'] = restaurantId;
+    if (merchantId != null && merchantId.isNotEmpty) {
+      queryParameters['merchantId'] = merchantId;
     }
     final headers = <String, dynamic>{};
 

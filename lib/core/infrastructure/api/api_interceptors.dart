@@ -10,7 +10,19 @@ class ApiInterceptor extends Interceptor {
     print('📤 REQUEST[${options.method}] => PATH: ${options.path}');
     print('Headers: ${options.headers}');
     print('Query Parameters: ${options.queryParameters}');
-    print('Body: ${options.data}');
+    final data = options.data;
+    if (data is FormData) {
+      print('Body: FormData (multipart)');
+      print('  Fields: ${data.fields.length}');
+      print('  Files: ${data.files.length}');
+      for (var i = 0; i < data.files.length; i++) {
+        final entry = data.files[i];
+        final file = entry.value;
+        print('    [$i] "${entry.key}" => ${file.filename}');
+      }
+    } else {
+      print('Body: $data');
+    }
     print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     super.onRequest(options, handler);

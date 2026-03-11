@@ -214,7 +214,7 @@ abstract class AppApiServiceClient {
   Future<Response> getOffers({
     @Query('page') int? page,
     @Query('limit') int? limit,
-    @Query('restaurantId') String? restaurantId,
+    @Query('merchantId') String? merchantId,
   });
 
   @GET("offers/{id}")
