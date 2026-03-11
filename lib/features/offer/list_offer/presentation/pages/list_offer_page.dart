@@ -73,6 +73,11 @@ class _ListOfferPageState extends State<ListOfferPage> {
               final merchantId = args?['merchantId'] as String?;
               context.read<ListOfferBloc>().add(GetOffersEvent(merchantId: merchantId));
             },
+            getEmptyRetryCallback: (_) => () {
+              final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+              final merchantId = args?['merchantId'] as String?;
+              context.read<ListOfferBloc>().add(GetOffersEvent(merchantId: merchantId));
+            },
             successBuilder: (context, offerState) {
               final offers = offerState is ListOfferLoaded
                   ? offerState.offers

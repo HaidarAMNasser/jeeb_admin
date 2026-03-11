@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_search_field.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
-import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 
 class SearchOrderWidget extends StatefulWidget {
@@ -17,55 +15,36 @@ class _SearchOrderWidgetState extends State<SearchOrderWidget> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  void _onSearchSubmitted(String query) {
-    context.read<ListOrderBloc>().add(
-          GetOrdersEvent(search: query.isEmpty ? null : query),
-        );
-  }
-
-  void _onClearSearch() {
-    _searchController.clear();
-    context.read<ListOrderBloc>().add(
-      const GetOrdersEvent(),
-    );
-  }
-
-  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
+  void _refetch() {
+    final state = context.read<ListOrderBloc>().state;
+    final merchantId = state is ListOrderLoaded
+        ? state.merchantId
+        : (state is ListOrderLoadingMore ? state.merchantId : null);
+    context.read<ListOrderBloc>().add(
+          GetOrdersEvent(search: null, merchantId: merchantId),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(AppPadding.p16),
-      child: CustomTextField(
-        hintText: AppTranslation.searchOrdersHint,
-        controller: _searchController,
-        onSubmitted: _onSearchSubmitted,
-        prefixIcon: Icon(
-          Icons.search,
-          color: ColorManager.primary,
-        ),
-        suffixIcon: _searchController.text.isNotEmpty
-            ? IconButton(
-                icon: Icon(
-                  Icons.clear,
-                  color: ColorManager.descriptionColor,
-                ),
-                onPressed: _onClearSearch,
-              )
-            : null,
-      ),
+    return CustomSearchField(
+      hintText: AppTranslation.searchOrdersHint,
+      controller: _searchController,
+      onSubmitted: (query) {
+        final state = context.read<ListOrderBloc>().state;
+        final merchantId = state is ListOrderLoaded
+            ? state.merchantId
+            : (state is ListOrderLoadingMore ? state.merchantId : null);
+        context.read<ListOrderBloc>().add(
+              GetOrdersEvent(search: query.isEmpty ? null : query, merchantId: merchantId),
+            );
+      },
+      onRefetch: _refetch,
     );
   }
 }
-

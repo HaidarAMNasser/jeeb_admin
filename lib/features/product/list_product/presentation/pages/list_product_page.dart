@@ -78,7 +78,10 @@ class _ListProductPageState extends State<ListProductPage> {
             },
             emptyMessage: AppTranslation.noProductsFound,
             getRetryCallback: (state) => () {
-              context.read<ListProductBloc>().add(GetProductsEvent(merchantId:widget.merchantId??'0'));
+              context.read<ListProductBloc>().add(GetProductsEvent(merchantId: widget.merchantId ?? '0'));
+            },
+            getEmptyRetryCallback: (state) => () {
+              context.read<ListProductBloc>().add(GetProductsEvent(merchantId: widget.merchantId ?? '0'));
             },
             successBuilder: (context, productState) {
               final products = productState is ListProductLoaded

@@ -82,6 +82,9 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
             getRetryCallback: (state) => () {
               context.read<ListMerchantBloc>().add(const GetMerchantsEvent());
             },
+            getEmptyRetryCallback: (state) => () {
+              context.read<ListMerchantBloc>().add(const GetMerchantsEvent());
+            },
             successBuilder: (context, merchantState) {
               final merchants = merchantState is ListMerchantLoaded
                   ? merchantState.merchants

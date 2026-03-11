@@ -84,6 +84,9 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
                   getRetryCallback: (_) => () => context
                       .read<ListDeliveryBloc>()
                       .add(const GetDeliveryMenEvent()),
+                  getEmptyRetryCallback: (_) => () => context
+                      .read<ListDeliveryBloc>()
+                      .add(const GetDeliveryMenEvent()),
                   successBuilder: (context, deliveryState) {
                     final deliveryMen = deliveryState is ListDeliveryLoaded
                         ? deliveryState.deliveryMen
