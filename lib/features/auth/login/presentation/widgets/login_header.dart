@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
 import 'package:jeeb_admin/core/presentation/widgets/gradient_text.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -23,10 +24,12 @@ class LoginHeader extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         SizedBox(height: AppHeight.s8),
-        CustomTextDisplay(
+        CustomText(
           text: AppTranslation.welcome,
-          fontSize: AppFontSize.s16,
-          color: ColorManager.textColor,
+          textStyle: getRegularStyle(
+            fontSize: AppFontSize.s16,
+            color: ColorManager.textColor,
+          ),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: AppHeight.s50),
@@ -34,4 +37,3 @@ class LoginHeader extends StatelessWidget {
     );
   }
 }
-

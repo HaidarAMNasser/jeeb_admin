@@ -15,8 +15,9 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class VerifyPage extends StatefulWidget {
   final String email;
+  final String? password;
 
-  const VerifyPage({super.key, required this.email});
+  const VerifyPage({super.key, required this.email, this.password});
 
   @override
   State<VerifyPage> createState() => _VerifyPageState();
@@ -25,6 +26,17 @@ class VerifyPage extends StatefulWidget {
 class _VerifyPageState extends State<VerifyPage> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Send OTP automatically when opening the verify screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.email.isNotEmpty) {
+        context.read<VerifyBloc>().add(ResendOtpSubmitted(email: widget.email));
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -41,7 +53,11 @@ class _VerifyPageState extends State<VerifyPage> {
       }
 
       context.read<VerifyBloc>().add(
-        VerifySubmitted(email: widget.email, otp: otp),
+        VerifySubmitted(
+          email: widget.email,
+          otp: otp,
+          password: widget.password,
+        ),
       );
     }
   }
@@ -50,51 +66,77 @@ class _VerifyPageState extends State<VerifyPage> {
     context.read<VerifyBloc>().add(ResendOtpSubmitted(email: widget.email));
   }
 
+  void _handleBackToLogin() {
+    context.pushNamedAndRemoveUntil(
+      Routes.login,
+      predicate: (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<VerifyBloc, VerifyState>(
+    return BlocListener<VerifyBloc, VerifyState>(
       listener: (context, state) {
         if (state is VerifySuccess) {
-          customToast(msg: AppTranslation.accountVerifiedSuccess);
-          context.pushNamedAndRemoveUntil(
-            Routes.login,
-            predicate: (route) => false,
-          );
+          if (state.goToMain) {
+            customToast(msg: AppTranslation.accountVerifiedSuccess);
+            context.pushNamedAndRemoveUntil(
+              Routes.mainNavigation,
+              predicate: (route) => false,
+            );
+          } else {
+            customToast(msg: AppTranslation.registerSuccess);
+            context.pushNamedAndRemoveUntil(
+              Routes.login,
+              predicate: (route) => false,
+            );
+          }
         } else if (state is VerifyOtpResent) {
           customToast(msg: AppTranslation.otpSentSuccess);
         } else if (state is VerifyError) {
           customToast(msg: state.message);
         }
       },
-      builder: (context, state) {
-        return ModalProgressHUD(
-          progressIndicator: const CustomCircleIndicator(),
-          inAsyncCall: state is VerifyLoading,
-          child: Scaffold(
-            backgroundColor: ColorManager.background,
-            appBar: CustomAppBar(title: AppTranslation.verifyAccount),
-
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(AppPadding.p24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    VerifyHeader(email: widget.email),
-                    VerifyForm(
-                      formKey: _formKey,
-                      otpController: _otpController,
-                      onVerify: _handleVerify,
-                      onResendOtp: _handleResendOtp,
-                      isLoading: state is VerifyLoading,
-                    ),
-                  ],
+      child: BlocBuilder<VerifyBloc, VerifyState>(
+        builder: (context, state) {
+          return ModalProgressHUD(
+            progressIndicator: const CustomCircleIndicator(),
+            inAsyncCall: state is VerifyLoading || state is VerifyLoggingIn,
+            child: Scaffold(
+              backgroundColor: ColorManager.background,
+              appBar: CustomAppBar(title: AppTranslation.verifyAccount,
+              onBackPressed: ()
+              {
+                _handleBackToLogin();
+              },),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(AppPadding.p24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      VerifyHeader(email: widget.email),
+                      VerifyForm(
+                        formKey: _formKey,
+                        otpController: _otpController,
+                        onVerify: _handleVerify,
+                        onResendOtp: _handleResendOtp,
+                        onBackToLogin: _handleBackToLogin,
+                        isLoading: state is VerifyLoading,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
+
+
+
+
+

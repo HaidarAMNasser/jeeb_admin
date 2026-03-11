@@ -4,7 +4,8 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 class VerifyForm extends StatelessWidget {
@@ -12,6 +13,7 @@ class VerifyForm extends StatelessWidget {
   final TextEditingController otpController;
   final VoidCallback onVerify;
   final VoidCallback onResendOtp;
+  final VoidCallback onBackToLogin;
   final bool isLoading;
 
   const VerifyForm({
@@ -20,6 +22,7 @@ class VerifyForm extends StatelessWidget {
     required this.otpController,
     required this.onVerify,
     required this.onResendOtp,
+    required this.onBackToLogin,
     required this.isLoading,
   });
 
@@ -28,7 +31,7 @@ class VerifyForm extends StatelessWidget {
     return Form(
       key: formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CustomTextField(
             title: AppTranslation.otp,
@@ -39,22 +42,37 @@ class VerifyForm extends StatelessWidget {
           CustomButton(
             text: AppTranslation.verifyAccount,
             onPressed: onVerify,
-            isLoading: isLoading,
             color: ColorManager.primary,
           ),
           SizedBox(height: AppHeight.s16),
-          TextButton(
-            onPressed: onResendOtp,
-            child: CustomTextDisplay(
-              text: AppTranslation.resendOtp,
-              fontSize: AppFontSize.s14,
-              color: ColorManager.primary,
-              fontWeight: FontWeight.w600,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: onResendOtp,
+                child: CustomText(
+                  text: AppTranslation.resendOtp,
+                  textStyle: getMediumStyle(
+                    fontSize: AppFontSize.s14,
+                    color: ColorManager.primary,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: onBackToLogin,
+                child: CustomText(
+                  text: AppTranslation.backToLogin,
+                  textStyle: getMediumStyle(
+                    fontSize: AppFontSize.s14,
+                    color: ColorManager.primary,
+                  ),
+                ),
+              ),
+            ],
             ),
-          ),
+          
         ],
       ),
     );
   }
 }
-

@@ -103,8 +103,10 @@
   "enter_phone": "أدخل رقم الهاتف",
   "address": "العنوان",
   "enter_address": "أدخل العنوان",
-  "restaurant_name": "اسم المطعم",
-  "enter_restaurant_name": "أدخل اسم المطعم",
+  "please_enter_address": "الرجاء إدخال العنوان",
+  "restaurant_name": "اسم المتجر",
+  "enter_restaurant_name": "أدخل اسم المتجر",
+  "please_enter_restaurant_name": "الرجاء إدخال اسم المتجر",
   "select_country": "اختر الدولة",
   "select_city": "اختر المدينة",
   "notification_channel": "قناة الإشعارات",
@@ -119,6 +121,7 @@
   "account_verified_success": "تم التحقق من الحساب بنجاح",
   "otp_sent_success": "تم إرسال رمز التحقق بنجاح",
   "not_authorized": "غير مصرح. يرجى تسجيل الدخول مرة أخرى",
+  "session_expired": "انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى",
   "please_enter_email": "الرجاء إدخال بريدك الإلكتروني",
   "please_enter_password": "الرجاء إدخال كلمة المرور",
   "please_select_country": "الرجاء اختيار دولة",
@@ -144,6 +147,7 @@
   "location": "الموقع",
   "use_my_location": "استخدام موقعي",
   "location_set_format": "خط العرض: {lat}، خط الطول: {lng}",
+  "please_select_location": "الرجاء تحديد موقعك",
   "please_select_country_or_location": "الرجاء اختيار الدولة والمدينة أو استخدام موقعك",
   "location_permission_denied": "تم رفض إذن الموقع",
   "location_unavailable": "الموقع غير متاح. الرجاء اختيار الدولة والمدينة",
@@ -228,5 +232,6 @@
   "offer_deleted_successfully": "تم حذف العرض بنجاح",
   "are_you_sure_delete_offer": "هل أنت متأكد أنك تريد حذف هذا العرض؟",
   "select_date": "اختر التاريخ",
-  "show_all": "عرض الكل"
+  "show_all": "عرض الكل",
+  "back_to_login": "العودة إلى تسجيل الدخول"
 }

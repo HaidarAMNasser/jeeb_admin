@@ -48,7 +48,9 @@ class ProfileForm extends StatelessWidget {
       child: Column(
         spacing: AppSize.s24.h,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [    if (isMerchant)    CustomCheckbox(
+        children: [
+          if (isMerchant)
+            CustomCheckbox(
               value: user.isActive ?? true,
               onChanged: (value) {
                 if (value != null) {
@@ -125,12 +127,10 @@ class ProfileForm extends StatelessWidget {
                 ),
               ),
             ),
-    
           ],
           CustomButton(
             text: AppTranslation.save,
-            onPressed: onUpdate,
-            isLoading: isLoading,
+            onPressed: isLoading ? null : onUpdate,
             color: ColorManager.primary,
           ),
         ],

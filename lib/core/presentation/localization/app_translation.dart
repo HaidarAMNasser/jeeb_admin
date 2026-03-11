@@ -121,8 +121,10 @@ class AppTranslation {
   static String get enterPhone => 'enter_phone'.tr();
   static String get address => 'address'.tr();
   static String get enterAddress => 'enter_address'.tr();
+  static String get pleaseEnterAddress => 'please_enter_address'.tr();
   static String get restaurantName => 'restaurant_name'.tr();
   static String get enterRestaurantName => 'enter_restaurant_name'.tr();
+  static String get pleaseEnterRestaurantName => 'please_enter_restaurant_name'.tr();
   static String get selectCountry => 'select_country'.tr();
   static String get selectCity => 'select_city'.tr();
   static String get notificationChannel => 'notification_channel'.tr();
@@ -140,6 +142,7 @@ class AppTranslation {
   static String get accountVerifiedSuccess => 'account_verified_success'.tr();
   static String get otpSentSuccess => 'otp_sent_success'.tr();
   static String get notAuthorized => 'not_authorized'.tr();
+  static String get sessionExpired => 'session_expired'.tr();
   static String get pleaseEnterEmail => 'please_enter_email'.tr();
   static String get pleaseEnterPassword => 'please_enter_password'.tr();
   static String get pleaseSelectCountry => 'please_select_country'.tr();
@@ -164,6 +167,7 @@ class AppTranslation {
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
   static String get location => 'location'.tr();
   static String get useMyLocation => 'use_my_location'.tr();
+  static String get pleaseSelectLocation => 'please_select_location'.tr();
   static String get locationSetFormat => 'location_set_format'.tr();
   static String get pleaseSelectCountryOrLocation =>
       'please_select_country_or_location'.tr();
@@ -232,6 +236,8 @@ class AppTranslation {
 
   // Offer
   static String get offers => 'offers'.tr();
+  static String get offerName => 'offer_name'.tr();
+  static String get pleaseEnterOfferName => 'please_enter_offer_name'.tr();
   static String get addOffer => 'add_offer'.tr();
   static String get editOffer => 'edit_offer'.tr();
   static String get offerDetails => 'offer_details'.tr();
@@ -247,11 +253,17 @@ class AppTranslation {
   static String get offerDiscountValueType => 'offer_discount_value_type'.tr();
   static String get offerProductsCount => 'offer_products_count'.tr();
   static String get offerDiscount => 'offer_discount'.tr();
+  static String get pleaseEnterOfferShortDescription => 'please_enter_offer_short_description'.tr();
+  static String get pleaseSelectAtLeastOneProduct => 'please_select_at_least_one_product'.tr();
+  static String get pleaseSelectDiscountType => 'please_select_discount_type'.tr();
+  static String get pleaseEnterOfferDiscountValue => 'please_enter_offer_discount_value'.tr();
+  static String get invalidOfferDiscountValue => 'invalid_offer_discount_value'.tr();
   static String get offerCreatedSuccessfully => 'offer_created_successfully'.tr();
   static String get offerUpdatedSuccessfully => 'offer_updated_successfully'.tr();
   static String get offerDeletedSuccessfully => 'offer_deleted_successfully'.tr();
   static String get areYouSureDeleteOffer => 'are_you_sure_delete_offer'.tr();
   static String get selectDate => 'select_date'.tr();
   static String get showAll => 'show_all'.tr();
+  static String get backToLogin => 'back_to_login'.tr();
 }
 

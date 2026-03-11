@@ -32,19 +32,7 @@ class DeliveryDetailsContent extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: AppWidth.s100,
-                    height: AppHeight.s100,
-                    decoration: BoxDecoration(
-                      color: ColorManager.background,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.delivery_dining,
-                      color: ColorManager.primary,
-                      size: AppSize.s40,
-                    ),
-                  ),
+                  _DeliveryAvatar(imageUrl: deliveryMan.image),
                   SizedBox(width: AppWidth.s16),
                   Expanded(
                     child: Column(
@@ -185,6 +173,46 @@ class DeliveryDetailsContent extends StatelessWidget {
           fontSize: AppFontSize.s10,
           color: textColor,
         ),
+      ),
+    );
+  }
+}
+
+class _DeliveryAvatar extends StatelessWidget {
+  final String? imageUrl;
+
+  const _DeliveryAvatar({this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return ClipOval(
+        child: SizedBox(
+          width: AppWidth.s100,
+          height: AppHeight.s100,
+          child: Image.network(
+            imageUrl!,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _placeholder(),
+          ),
+        ),
+      );
+    }
+    return _placeholder();
+  }
+
+  Widget _placeholder() {
+    return Container(
+      width: AppWidth.s100,
+      height: AppHeight.s100,
+      decoration: BoxDecoration(
+        color: ColorManager.background,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        Icons.delivery_dining,
+        color: ColorManager.primary,
+        size: AppSize.s40,
       ),
     );
   }

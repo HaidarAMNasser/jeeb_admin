@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
+import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_item_image_carousel.dart';
 
 class ProductDetailsContent extends StatelessWidget {
   final ProductEntity product;
@@ -27,7 +28,7 @@ class ProductDetailsContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (product.images.isNotEmpty) _ProductImage(url: product.images.first.url),
+          ProductItemImageCarousel(images: product.images),
           SizedBox(height: AppHeight.s16),
           CustomText(
             text: product.name,
@@ -58,27 +59,6 @@ class ProductDetailsContent extends StatelessWidget {
               color: ColorManager.primary,
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _ProductImage extends StatelessWidget {
-  final String url;
-
-  const _ProductImage({required this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.r12),
-        image: DecorationImage(
-          image: NetworkImage(url),
-          fit: BoxFit.cover,
-        ),
       ),
     );
   }

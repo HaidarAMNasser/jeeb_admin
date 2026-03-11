@@ -3,16 +3,18 @@ import 'package:jeeb_admin/features/product/list_product/domain/entities/product
 
 class OfferEntity extends Equatable {
   final String id;
+  final String? name;
   final String? shortDescription;
   final String? longDescription;
   final List<ProductEntity> products;
   final DateTime? startDate;
   final DateTime? endDate;
-  final String? discountType; // 'PERCENTAGE' or 'VALUE'
+  final String? discountType; // 'PERCENTAGE' or 'VALUE' / 'FIXED'
   final num? discountValue;
 
   const OfferEntity({
     required this.id,
+    this.name,
     this.shortDescription,
     this.longDescription,
     this.products = const [],
@@ -25,6 +27,7 @@ class OfferEntity extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        name,
         shortDescription,
         longDescription,
         products,

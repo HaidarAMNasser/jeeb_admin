@@ -20,6 +20,8 @@ import '../../../features/product/product_details/presentation/pages/product_det
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
+import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
 import '../../../features/auth/login/presentation/pages/login_page.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
 import '../../../features/auth/register/presentation/pages/register_page.dart';
@@ -128,10 +130,18 @@ class AppRouter {
       case Routes.verify:
         final args = settings.arguments as Map<String, dynamic>?;
         final email = args?['email'] as String? ?? '';
-        return _buildRouteWithBloc(
-          VerifyPage(email: email),
+        final password = args?['password'] as String?;
+        final registerBloc = args?['registerBloc'] as RegisterBloc?;
+        return _buildRouteWithBlocs(
+          VerifyPage(email: email, password: password),
           settings,
-          bloc: () => di.sl<VerifyBloc>(),
+          providers: [
+            BlocProvider<VerifyBloc>(
+              create: (_) => di.sl<VerifyBloc>(),
+            ),
+            if (registerBloc != null)
+              BlocProvider<RegisterBloc>.value(value: registerBloc),
+          ],
         );
 
       case Routes.forgotPassword:
@@ -176,7 +186,7 @@ class AppRouter {
 //                 ..add(GetProductsEvent(merchantId: productMerchantId)),
 // =======
         return _buildRouteWithBlocs(
-          const ListProductPage(),
+          ListProductPage(merchantId: productMerchantId),
           settings,
           providers: [
             BlocProvider<ListProductBloc>(
@@ -214,14 +224,19 @@ class AppRouter {
               create: (_) =>
                   ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
             ),
+            BlocProvider<ListCategoryBloc>(
+              create: (_) =>
+                  ListCategoryBloc(di.sl<ListCategoryRepository>()),
+            ),
           ],
         );
 
       case Routes.productDetails:
         final args = settings.arguments as Map<String, dynamic>?;
         final productId = args?['productId'] as String? ?? '';
+        final tabIndexOnBack = args?['tabIndexOnBack'] as int? ?? 0;
         return _buildRouteWithBlocs(
-          ProductDetailsPage(productId: productId),
+          ProductDetailsPage(productId: productId, tabIndexOnBack: tabIndexOnBack),
           settings,
           providers: [
             BlocProvider<ProductDetailsBloc>(
@@ -239,8 +254,10 @@ class AppRouter {
         );
 
       case Routes.mainNavigation:
+        final mainArgs = settings.arguments as Map<String, dynamic>?;
+        final tabIndex = mainArgs?['tabIndex'] as int? ?? 0;
         return _buildRoute(
-          const MainNavigationPage(),
+          MainNavigationPage(initialTabIndex: tabIndex),
           settings,
         );
 
@@ -338,6 +355,12 @@ class AppRouter {
           AddDeliveryPage(deliveryMan: deliveryMan),
           settings,
           providers: [
+            BlocProvider<CountryBloc>(
+              create: (_) => di.sl<CountryBloc>(),
+            ),
+            BlocProvider<CityBloc>(
+              create: (_) => di.sl<CityBloc>(),
+            ),
             BlocProvider<CreateDeliveryBloc>(
               create: (_) =>
                   CreateDeliveryBloc(di.sl<CreateDeliveryRepository>()),

@@ -1,39 +1,83 @@
 part of 'register_bloc.dart';
 
 abstract class RegisterState extends Equatable {
-  const RegisterState();
+  final CountryEntity? selectedCountry;
+  final CityEntity? selectedCity;
+  final bool isLocationLoading;
+  final double? useLocationLat;
+  final double? useLocationLng;
+
+  const RegisterState({
+    this.selectedCountry,
+    this.selectedCity,
+    this.isLocationLoading = false,
+    this.useLocationLat,
+    this.useLocationLng,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+        selectedCountry,
+        selectedCity,
+        isLocationLoading,
+        useLocationLat,
+        useLocationLng,
+      ];
 }
 
 class RegisterInitial extends RegisterState {
-  const RegisterInitial();
+  const RegisterInitial({
+    super.selectedCountry,
+    super.selectedCity,
+    super.isLocationLoading,
+    super.useLocationLat,
+    super.useLocationLng,
+  });
 }
 
 class RegisterLoading extends RegisterState {
-  const RegisterLoading();
+  const RegisterLoading({
+    super.selectedCountry,
+    super.selectedCity,
+    super.isLocationLoading,
+    super.useLocationLat,
+    super.useLocationLng,
+  });
 }
 
 class RegisterSuccess extends RegisterState {
   final int userId;
   final String email;
+  final String password;
 
   const RegisterSuccess({
     required this.userId,
     required this.email,
+    required this.password,
+    super.selectedCountry,
+    super.selectedCity,
+    super.isLocationLoading,
+    super.useLocationLat,
+    super.useLocationLng,
   });
 
   @override
-  List<Object> get props => [userId, email];
+  List<Object?> get props => [...super.props, userId, email, password];
 }
 
 class RegisterError extends RegisterState {
   final String message;
 
-  const RegisterError({required this.message});
+  const RegisterError({
+    required this.message,
+    super.selectedCountry,
+    super.selectedCity,
+    super.isLocationLoading,
+    super.useLocationLat,
+    super.useLocationLng,
+  });
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [...super.props, message];
 }
 

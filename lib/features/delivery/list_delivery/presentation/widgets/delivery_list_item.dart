@@ -36,47 +36,45 @@ class DeliveryListItem extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: AppWidth.s50,
-                height: AppHeight.s50,
-                decoration: BoxDecoration(
-                  color: ColorManager.background,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.delivery_dining,
-                  color: ColorManager.primary,
-                  size: AppSize.s28,
-                ),
-              ),
+              _DeliveryAvatar(imageUrl: deliveryMan.image),
               SizedBox(width: AppWidth.s12),
               Expanded(
-                child: Column(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 0),
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CustomText(
-                          text: deliveryMan.name,
-                          textStyle: getBoldStyle(
-                            fontSize: AppFontSize.s18,
-                            color: ColorManager.productNameColor,
+                        Expanded(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minWidth: 0),
+                            child: CustomText(
+                              text: deliveryMan.name,
+                              textStyle: getBoldStyle(
+                                fontSize: AppFontSize.s18,
+                                color: ColorManager.productNameColor,
+                              ),
+                              maxLines: 2,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          maxLines: 2,
-                          textOverflow: TextOverflow.ellipsis,
                         ),
-
-                        _buildBadge(
-                          label: deliveryMan.confirmed
-                              ? AppTranslation.confirmed
-                              : AppTranslation.notConfirmed,
-                          backgroundColor: deliveryMan.confirmed
-                              ? ColorManager.success.withOpacity(0.12)
-                              : ColorManager.defaultYellow.withOpacity(0.18),
-                          textColor: deliveryMan.confirmed
-                              ? ColorManager.success
-                              : ColorManager.defaultYellow,
+                        SizedBox(width: AppWidth.s8),
+                        Flexible(
+                          child: _buildBadge(
+                            label: deliveryMan.confirmed
+                                ? AppTranslation.confirmed
+                                : AppTranslation.notConfirmed,
+                            backgroundColor: deliveryMan.confirmed
+                                ? ColorManager.success.withOpacity(0.12)
+                                : ColorManager.defaultYellow.withOpacity(0.18),
+                            textColor: deliveryMan.confirmed
+                                ? ColorManager.success
+                                : ColorManager.defaultYellow,
+                          ),
                         ),
                       ],
                     ),
@@ -102,11 +100,15 @@ class DeliveryListItem extends StatelessWidget {
                             color: ColorManager.descriptionColor,
                           ),
                           SizedBox(width: AppWidth.s4),
-                          CustomText(
-                            text: deliveryMan.phone,
-                            textStyle: getRegularStyle(
-                              fontSize: AppFontSize.s12,
-                              color: ColorManager.descriptionColor,
+                          Expanded(
+                            child: CustomText(
+                              text: deliveryMan.phone,
+                              textStyle: getRegularStyle(
+                                fontSize: AppFontSize.s12,
+                                color: ColorManager.descriptionColor,
+                              ),
+                              maxLines: 1,
+                              textOverflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -126,6 +128,7 @@ class DeliveryListItem extends StatelessWidget {
                             : ColorManager.descriptionColor,
                       ),
                   ],
+                ),
                 ),
               ),
             ],
@@ -155,6 +158,47 @@ class DeliveryListItem extends StatelessWidget {
           fontSize: AppFontSize.s10,
           color: textColor,
         ),
+      ),
+    );
+  }
+}
+
+class _DeliveryAvatar extends StatelessWidget {
+  final String? imageUrl;
+
+  const _DeliveryAvatar({this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = AppWidth.s50;
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return ClipOval(
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: Image.network(
+            imageUrl!,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _placeholder(size),
+          ),
+        ),
+      );
+    }
+    return _placeholder(size);
+  }
+
+  Widget _placeholder(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: ColorManager.background,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        Icons.delivery_dining,
+        color: ColorManager.primary,
+        size: AppSize.s28,
       ),
     );
   }

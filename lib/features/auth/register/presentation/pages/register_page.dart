@@ -4,177 +4,75 @@ import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/verification_method_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
-    as di;
-import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
-import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
-import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
+import 'package:jeeb_admin/features/auth/register/data/helpful_functions/register_form_validate.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import '../bloc/register_bloc.dart';
 import '../widgets/register_form.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
-  @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
+  /// On Register tap: validate form, call register API, then navigate to verify on success.
+  Future<void> _onRegisterTapped(BuildContext context) async {
+    final bloc = context.read<RegisterBloc>();
 
-class _RegisterPageState extends State<RegisterPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _restaurantNameController = TextEditingController();
-  String? _selectedRole = UserRole.merchant.name;
-  String? _selectedNotificationChannel = 'EMAIL';
-  CountryEntity? _selectedCountry;
-  CityEntity? _selectedCity;
-  bool _isLocationLoading = false;
-  double? _useLocationLat;
-  double? _useLocationLng;
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
-    _restaurantNameController.dispose();
-    super.dispose();
-  }
-
-  /// On Register tap: validate form, show verification method dialog, then submit.
-  Future<void> _onRegisterTapped() async {
-    if (!_formKey.currentState!.validate()) return;
-    // TODO: uncomment for production – country/city required
-    // if (_selectedCountry == null) {
-    //   customToast(msg: AppTranslation.pleaseSelectCountry);
-    //   return;
-    // }
-    // if (_selectedCity == null) {
-    //   customToast(msg: AppTranslation.pleaseSelectCity);
-    //   return;
-    // }
-    final channel = await showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const VerificationMethodSelectionDialog(),
+    registerValidationToast(
+      firstName: bloc.firstNameController.text.trim(),
+      lastName: bloc.lastNameController.text.trim(),
+      email: bloc.emailController.text.trim(),
+      phone: bloc.phoneController.text.trim(),
+      password: bloc.passwordController.text.trim(),
+      address: bloc.addressController.text.trim(),
+      restaurantName: bloc.restaurantNameController.text.trim(),
+      latitude: bloc.useLocationLat,
+      longitude: bloc.useLocationLng,
+      countryId: bloc.selectedCountry?.id,
+      cityId: bloc.selectedCity?.id,
     );
-    if (channel != null && mounted) {
-      setState(() => _selectedNotificationChannel = channel);
-      await _handleFakeRegister();
+
+    if (!isRegisterFormValid(
+      firstName: bloc.firstNameController.text.trim(),
+      lastName: bloc.lastNameController.text.trim(),
+      email: bloc.emailController.text.trim(),
+      phone: bloc.phoneController.text.trim(),
+      password: bloc.passwordController.text.trim(),
+      address: bloc.addressController.text.trim(),
+      restaurantName: bloc.restaurantNameController.text.trim(),
+      latitude: bloc.useLocationLat,
+      longitude: bloc.useLocationLng,
+      countryId: bloc.selectedCountry?.id,
+      cityId: bloc.selectedCity?.id,
+    )) {
+      return;
     }
+
+    bloc.add(const RegisterSubmitted());
   }
 
-  // Fake register function for testing - bypasses actual registration
-  Future<void> _handleFakeRegister() async {
-    try {
-      final storageService = di.sl<StorageService>();
+  Future<void> _onUseMyLocation(BuildContext context) async {
+    final bloc = context.read<RegisterBloc>();
 
-      // Set fake token for testing
-      await storageService.setUserToken('fake_token_for_testing');
+    bloc.add(const RegisterLocationLoadingChanged(true));
+    final position = await LocationPermissionHelper.requestAndGetPosition();
+    if (!context.mounted) return;
 
-      // Set user role to admin (lowercase as stored in login)
-      await storageService.setUserRole(UserRole.merchant.name);
+    bloc.add(const RegisterLocationLoadingChanged(false));
 
-      customToast(msg: 'registration successful');
-
-      // Navigate to main navigation
-      if (mounted) {
-        context.pushNamedAndRemoveUntil(
-          Routes.mainNavigation,
-          predicate: (route) => false,
-        );
-      }
-    } catch (e) {
-      customToast(msg: 'Error in fake register: $e');
-    }
-  }
-
-  // Original register function - kept for future use when real registration is needed
-  // ignore: unused_element
-  void _handleRegister() {
-    if (_formKey.currentState!.validate()) {
-      if (_selectedCountry == null) {
-        customToast(msg: AppTranslation.pleaseSelectCountry);
-        return;
-      }
-      if (_selectedCity == null) {
-        customToast(msg: AppTranslation.pleaseSelectCity);
-        return;
-      }
-
-      context.read<RegisterBloc>().add(
-        RegisterSubmitted(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-          phone: _phoneController.text.trim(),
-          role: _selectedRole!,
-          countryId: _selectedCountry!.id,
-          cityId: _selectedCity!.id,
-          notificationChannel: _selectedNotificationChannel!,
-          address: _addressController.text.trim().isEmpty
-              ? null
-              : _addressController.text.trim(),
+    if (position != null) {
+      bloc.add(
+        RegisterLocationUpdated(
+          latitude: position.latitude,
+          longitude: position.longitude,
         ),
       );
+      return;
     }
-  }
 
-  void _onCountryChanged(CountryEntity? country) {
-    setState(() {
-      _selectedCountry = country;
-      _selectedCity = null;
-      _useLocationLat = null;
-      _useLocationLng = null;
-    });
-  }
-
-  void _onCityChanged(CityEntity? city) {
-    setState(() {
-      _selectedCity = city;
-      _useLocationLat = null;
-      _useLocationLng = null;
-    });
-  }
-
-  Future<void> _onUseMyLocation() async {
-    setState(() => _isLocationLoading = true);
-    final position = await LocationPermissionHelper.requestAndGetPosition();
-    if (!mounted) return;
-    setState(() {
-      _isLocationLoading = false;
-      if (position != null) {
-        _useLocationLat = position.latitude;
-        _useLocationLng = position.longitude;
-        _selectedCountry = null;
-        _selectedCity = null;
-      }
-    });
-    if (position == null) {
-      customToast(msg: AppTranslation.locationPermissionDenied);
-    }
-  }
-
-  void _onClearDeviceLocation() {
-    setState(() {
-      _useLocationLat = null;
-      _useLocationLng = null;
-    });
+    customToast(msg: AppTranslation.locationPermissionDenied);
   }
 
   @override
@@ -182,8 +80,10 @@ class _RegisterPageState extends State<RegisterPage> {
     return BlocConsumer<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterSuccess) {
-          customToast(msg: AppTranslation.registerSuccess);
-          context.pushNamed(Routes.verify, arguments: {'email': state.email});
+          context.pushNamed(
+            Routes.verify,
+            arguments: {'email': state.email, 'password': state.password},
+          );
         } else if (state is RegisterError) {
           customToast(msg: state.message);
         }
@@ -192,40 +92,20 @@ class _RegisterPageState extends State<RegisterPage> {
         return ModalProgressHUD(
           progressIndicator: const CustomCircleIndicator(),
           inAsyncCall: state is RegisterLoading,
-          child: Scaffold(
-            backgroundColor: ColorManager.background,
-            appBar: CustomAppBar(title: AppTranslation.register),
-
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(AppPadding.p24),
-                child: RegisterForm(
-                  restaurantNameController: _restaurantNameController,
-                  onUseMyLocation: _onUseMyLocation,
-                  isLocationLoading: _isLocationLoading,
-
-                  formKey: _formKey,
-                  firstNameController: _firstNameController,
-                  lastNameController: _lastNameController,
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  phoneController: _phoneController,
-                  useLocationLatitude: _useLocationLat,
-                  useLocationLongitude: _useLocationLng,
-                  addressController: _addressController,
-                  selectedRole: _selectedRole,
-                  selectedCountry: _selectedCountry,
-                  selectedCity: _selectedCity,
-                  onClearDeviceLocation: _onClearDeviceLocation,
-                  onCountryChanged: _onCountryChanged,
-                  onCityChanged: _onCityChanged,
-                  onRoleChanged: (role) => setState(() => _selectedRole = role),
-                  onRegister: _onRegisterTapped,
-                  isLoading: state is RegisterLoading,
-                ),
-              ),
+          child: 
+        
+        Scaffold(
+        backgroundColor: ColorManager.background,
+        appBar: CustomAppBar(title: AppTranslation.register),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(AppPadding.p24),
+            child: RegisterForm(
+              onRegister: () => _onRegisterTapped(context),
+              onUseMyLocation: () => _onUseMyLocation(context),
             ),
           ),
+          ),)
         );
       },
     );

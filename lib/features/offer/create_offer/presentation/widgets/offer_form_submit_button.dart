@@ -24,7 +24,7 @@ class OfferFormSubmitButton extends StatelessWidget {
       builder: (context, updateState) {
         return CustomButton(
           text: isEdit ? AppTranslation.save : AppTranslation.addOffer,
-          onPressed: state.isValid ? onSubmit : null,
+          onPressed: onSubmit,
           isLoading: false,
           color: state.isValid
               ? ColorManager.primary

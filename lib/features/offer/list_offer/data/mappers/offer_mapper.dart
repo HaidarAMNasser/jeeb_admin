@@ -6,6 +6,7 @@ extension OfferMapper on OfferModel {
   OfferEntity toDomain() {
     return OfferEntity(
       id: id,
+      name: name,
       shortDescription: shortDescription,
       longDescription: longDescription,
       products: products.map((p) => p.toDomain()).toList(),

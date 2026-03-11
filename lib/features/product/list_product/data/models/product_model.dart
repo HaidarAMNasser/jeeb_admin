@@ -49,6 +49,34 @@ class ProductModel {
     this.updatedAt,
   });
 
+  static List<ProductImageModel> _parseImages(dynamic imagesJson, dynamic singleImageUrl) {
+    if (imagesJson != null && imagesJson is List && imagesJson.isNotEmpty) {
+      return imagesJson
+          .map((item) {
+            if (item is Map) {
+              return ProductImageModel.fromJson(Map<String, dynamic>.from(item));
+            }
+            if (item is String && item.isNotEmpty) {
+              return ProductImageModel(
+                id: 0,
+                url: item,
+                isMain: false,
+                displayOrder: 0,
+              );
+            }
+            return null;
+          })
+          .whereType<ProductImageModel>()
+          .toList();
+    }
+    if (singleImageUrl is String && singleImageUrl.isNotEmpty) {
+      return [
+        ProductImageModel(id: 0, url: singleImageUrl, isMain: true, displayOrder: 0),
+      ];
+    }
+    return [];
+  }
+
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id']?.toString() ?? '',
@@ -69,11 +97,7 @@ class ProductModel {
       externalProvider: json['externalProvider']?.toString(),
       externalId: json['externalId']?.toString(),
       merchantId: json['merchantId']?.toString(),
-      images: json['images'] != null
-          ? (json['images'] as List)
-              .map((item) => ProductImageModel.fromJson(item as Map<String, dynamic>))
-              .toList()
-          : [],
+      images: _parseImages(json['images'], json['image']),
       rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)

@@ -15,8 +15,18 @@ class VerifyLoading extends VerifyState {
   const VerifyLoading();
 }
 
+/// Shown after verify 200 while performing background login (modal progress).
+class VerifyLoggingIn extends VerifyState {
+  const VerifyLoggingIn();
+}
+
 class VerifySuccess extends VerifyState {
-  const VerifySuccess();
+  final bool goToMain;
+
+  const VerifySuccess({this.goToMain = true});
+
+  @override
+  List<Object?> get props => [goToMain];
 }
 
 class VerifyOtpResent extends VerifyState {

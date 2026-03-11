@@ -31,11 +31,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _navigateToAuth() async {
-    // Check if language is set in SharedPreferences
     final storageService = di.sl<StorageService>();
+    await storageService.setFirstLaunchCompleted();
+
     final storedLanguage = storageService.getAppLanguage();
 
-    // Only show language dialog if language is not set (empty)
     if (storedLanguage.isEmpty) {
       // Show language dialog and wait for selection
       final selectedLanguage = await showDialog<String>(

@@ -14,7 +14,8 @@ import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
 
 class ListProductPage extends StatefulWidget {
-  const ListProductPage({super.key});
+  final String  ? merchantId;
+  const ListProductPage({super.key,  this.merchantId});
 
   @override
   State<ListProductPage> createState() => _ListProductPageState();
@@ -77,9 +78,10 @@ class _ListProductPageState extends State<ListProductPage> {
             },
             emptyMessage: AppTranslation.noProductsFound,
             getRetryCallback: (state) => () {
-              final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-              final merchantId = args?['merchantId'] as String?;
-              context.read<ListProductBloc>().add(GetProductsEvent(merchantId: merchantId));
+              context.read<ListProductBloc>().add(GetProductsEvent(merchantId: widget.merchantId ?? '0'));
+            },
+            getEmptyRetryCallback: (state) => () {
+              context.read<ListProductBloc>().add(GetProductsEvent(merchantId: widget.merchantId ?? '0'));
             },
             successBuilder: (context, productState) {
               final products = productState is ListProductLoaded

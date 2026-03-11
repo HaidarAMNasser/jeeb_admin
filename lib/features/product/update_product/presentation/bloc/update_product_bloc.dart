@@ -19,7 +19,7 @@ class UpdateProductBloc extends Bloc<UpdateProductEvent, UpdateProductState> {
         // Convert price from decimal to smallest currency unit (e.g., 12.99 -> 1299)
         final priceInSmallestUnit = (event.price * 100).toInt();
         
-        // Build FormData
+        // Build FormData with text fields
         final formData = FormData.fromMap({
           'name': event.name,
           if (event.description != null && event.description!.isNotEmpty)
@@ -29,12 +29,16 @@ class UpdateProductBloc extends Bloc<UpdateProductEvent, UpdateProductState> {
           if (event.quantity != null)
             'stockQuantity': event.quantity,
         });
-        
-        // Add images individually to FormData
-        for (var image in event.images) {
-          formData.fields.add(MapEntry('images', image));
+
+        // Add images as actual file uploads (not path strings)
+        for (final path in event.images) {
+          if (path.startsWith('http')) continue; // existing URL
+          formData.files.add(MapEntry(
+            'images',
+            await MultipartFile.fromFile(path),
+          ));
         }
-        
+
         final result = await _updateRepository.updateProduct(
           id: event.id,
           formData: formData,

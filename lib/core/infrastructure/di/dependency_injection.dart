@@ -20,6 +20,7 @@ import '../../../features/product/product_details/data/data_sources/product_deta
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
+import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
 import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
 import '../../../features/auth/login/data/repositories/login_repository.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
@@ -128,6 +129,7 @@ Future<void> init() async {
     () => ListCategoryRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => ListCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => ListCategoryBloc(sl()));
 
   //! Product List Dependencies
   sl.registerFactory<ListProductRemoteDataSource>(
@@ -174,14 +176,15 @@ Future<void> init() async {
     () => RegisterRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => RegisterRepository(sl(), sl()));
-  sl.registerFactory(() => RegisterBloc(sl()));
+  sl.registerFactory(() => RegisterBloc(sl(), sl<StorageService>()));
 
   //! Auth Dependencies - Verify
   sl.registerFactory<VerifyRemoteDataSource>(
     () => VerifyRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => VerifyRepository(sl(), sl()));
-  sl.registerFactory(() => VerifyBloc(sl()));
+  sl.registerFactory(
+      () => VerifyBloc(sl(), sl<StorageService>(), sl<ProfileRepository>(), sl<LoginRepository>()));
 
   //! Auth Dependencies - Forgot Password
   sl.registerFactory<ForgotPasswordRemoteDataSource>(
@@ -202,7 +205,7 @@ Future<void> init() async {
     () => ProfileRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => ProfileRepository(sl(), sl()));
-  sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>()));
+  sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>(), sl<StorageService>()));
 
   //! Auth Dependencies - Logout
   sl.registerFactory<LogoutRemoteDataSource>(

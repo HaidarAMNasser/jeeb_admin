@@ -34,8 +34,6 @@ class CountryCityWidget extends StatefulWidget {
 }
 
 class _CountryCityWidgetState extends State<CountryCityWidget> {
-  final Key _cityKey = UniqueKey();
-
   @override
   void initState() {
     super.initState();
@@ -48,22 +46,24 @@ class _CountryCityWidgetState extends State<CountryCityWidget> {
     super.didUpdateWidget(oldWidget);
     // If country changed, reset city
     if (widget.selectedCountry?.id != oldWidget.selectedCountry?.id) {
-      setState(() {
-        // Reset city when country changes
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        // Reset city when country changes after the current build completes.
         widget.onSelectCity(null);
+
+        if (widget.selectedCountry != null) {
+          context.read<CityBloc>().add(const ResetCities());
+          context.read<CityBloc>().add(
+                LoadCities(
+                  countryId: widget.selectedCountry!.id,
+                  withLoading: true,
+                ),
+              );
+        } else {
+          context.read<CityBloc>().add(const ResetCities());
+        }
       });
-      // Load cities for new country
-      if (widget.selectedCountry != null) {
-        context.read<CityBloc>().add(const ResetCities());
-        context.read<CityBloc>().add(
-              LoadCities(
-                countryId: widget.selectedCountry!.id,
-                withLoading: true,
-              ),
-            );
-      } else {
-        context.read<CityBloc>().add(const ResetCities());
-      }
     }
   }
 
@@ -138,7 +138,6 @@ class _CountryCityWidgetState extends State<CountryCityWidget> {
         SizedBox(height: AppHeight.s24),
         // City Dropdown
         BlocBuilder<CityBloc, CityState>(
-          key: _cityKey,
           builder: (context, state) {
             List<CityEntity> cities = [];
             bool isLoading = false;

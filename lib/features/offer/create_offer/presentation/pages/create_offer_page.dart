@@ -6,7 +6,6 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/bloc/create_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/create_offer_form.dart';
@@ -47,7 +46,7 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
       listener: (context, deleteState) {
         if (deleteState is DeleteOfferSuccess) {
           customToast(msg: AppTranslation.offerDeletedSuccessfully);
-          context.pushNamed(Routes.offers);
+          _goToMainWithOffersTab(context);
         } else if (deleteState is DeleteOfferError) {
           customToast(msg: deleteState.message);
         }
@@ -57,7 +56,7 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
           listener: (context, updateState) {
             if (updateState is UpdateOfferSuccess) {
               customToast(msg: AppTranslation.offerUpdatedSuccessfully);
-              context.pushNamed(Routes.offers);
+              _goToMainWithOffersTab(context);
             } else if (updateState is UpdateOfferError) {
               customToast(msg: updateState.message);
             }
@@ -67,7 +66,7 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
               listener: (context, createState) {
                 if (createState is CreateOfferSuccess) {
                   customToast(msg: AppTranslation.offerCreatedSuccessfully);
-                  context.pushNamed(Routes.offers);
+                  _goToMainWithOffersTab(context);
                 } else if (createState is CreateOfferError) {
                   customToast(msg: createState.message);
                 }
@@ -136,6 +135,14 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
           offer: null,
         );
       },
+    );
+  }
+
+  void _goToMainWithOffersTab(BuildContext context) {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      Routes.mainNavigation,
+      (_) => false,
+      arguments: {'tabIndex': 1},
     );
   }
 

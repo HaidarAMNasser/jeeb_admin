@@ -4,15 +4,20 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   final String message;
   final IconData icon;
+  /// When set, a "Retry" button is shown; on press re-fetches the list.
+  final VoidCallback? onPress;
 
   const EmptyStateWidget({
     super.key,
     required this.message,
     this.icon = Icons.inbox_outlined,
+    this.onPress,
   });
 
   @override
@@ -37,6 +42,14 @@ class EmptyStateWidget extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            if (onPress != null) ...[
+              SizedBox(height: AppHeight.s24),
+              CustomButton(
+                text: AppTranslation.retry,
+                onPressed: onPress!,
+                isLoading: false,
+              ),
+            ],
           ],
         ),
       ),

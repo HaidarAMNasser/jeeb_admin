@@ -1,3 +1,4 @@
+import '../../../../../core/config/app_config.dart';
 import '../../../../country/data/models/country_model.dart';
 import '../../../../city/data/models/city_model.dart';
 
@@ -122,6 +123,17 @@ class DeliveryManModel {
       ? country?.name.en
       : (country?.name.ar.isNotEmpty == true ? country?.name.ar : null);
   String? get imageUrl => image?.url;
+
+  /// Full URL for display (resolves relative backend paths like "users/33/...").
+  String? get imageUrlFull {
+    if (image == null) return null;
+    final u = image!.thumbnailUrl.isNotEmpty
+        ? image!.thumbnailUrl
+        : (image!.mobileUrl.isNotEmpty ? image!.mobileUrl : image!.url);
+    if (u.isEmpty) return null;
+    if (u.startsWith('http')) return u;
+    return '${AppConfig.assetsBaseUrl}uploads/$u';
+  }
 
   Map<String, dynamic> toJson() {
     return {

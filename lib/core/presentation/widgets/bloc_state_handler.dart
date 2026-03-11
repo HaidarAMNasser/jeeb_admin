@@ -45,6 +45,9 @@ class BlocStateHandler<B extends StateStreamable<S>, S> extends StatelessWidget 
   /// Function to get retry callback (optional)
   final VoidCallback? Function(S state)? getRetryCallback;
 
+  /// Function to get callback for empty state (re-fetch list). When set, empty state shows a retry button.
+  final VoidCallback? Function(S state)? getEmptyRetryCallback;
+
   /// Empty state message (used if emptyBuilder is not provided)
   final String? emptyMessage;
 
@@ -61,6 +64,7 @@ class BlocStateHandler<B extends StateStreamable<S>, S> extends StatelessWidget 
     this.isSuccess,
     this.isEmpty,
     this.getRetryCallback,
+    this.getEmptyRetryCallback,
     this.emptyMessage,
   });
 
@@ -98,8 +102,10 @@ class BlocStateHandler<B extends StateStreamable<S>, S> extends StatelessWidget 
           if (emptyBuilder != null) {
             return emptyBuilder!(context);
           }
+          final onEmptyPress = getEmptyRetryCallback?.call(state);
           return EmptyStateWidget(
             message: emptyMessage ?? 'No data available',
+            onPress: onEmptyPress,
           );
         }
 
