@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           // We check the failure type/code and message to differentiate.
           if (failure is UnauthorizedFailure &&
               failure.message.toLowerCase().contains('not verified')) {
-            emit(LoginNeedsVerification(email: event.email));
+            emit(LoginNeedsVerification(email: event.email, password: event.password));
             return;
           }
           emit(LoginError(message: failure.message));
@@ -49,7 +49,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           } else {
             await _storageService.setPendingVerifyEmail(tokenEntity.user.email);
             if (emit.isDone) return;
-            emit(LoginNeedsVerification(email: tokenEntity.user.email));
+            emit(LoginNeedsVerification(
+              email: tokenEntity.user.email,
+              password: event.password,
+            ));
           }
         },
       );

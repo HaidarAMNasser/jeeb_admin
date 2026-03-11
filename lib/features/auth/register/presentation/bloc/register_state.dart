@@ -48,10 +48,12 @@ class RegisterLoading extends RegisterState {
 class RegisterSuccess extends RegisterState {
   final int userId;
   final String email;
+  final String password;
 
   const RegisterSuccess({
     required this.userId,
     required this.email,
+    required this.password,
     super.selectedCountry,
     super.selectedCity,
     super.isLocationLoading,
@@ -60,7 +62,7 @@ class RegisterSuccess extends RegisterState {
   });
 
   @override
-  List<Object?> get props => [...super.props, userId, email];
+  List<Object?> get props => [...super.props, userId, email, password];
 }
 
 class RegisterError extends RegisterState {

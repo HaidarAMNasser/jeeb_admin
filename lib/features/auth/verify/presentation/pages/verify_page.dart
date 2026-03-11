@@ -15,8 +15,9 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class VerifyPage extends StatefulWidget {
   final String email;
+  final String? password;
 
-  const VerifyPage({super.key, required this.email});
+  const VerifyPage({super.key, required this.email, this.password});
 
   @override
   State<VerifyPage> createState() => _VerifyPageState();
@@ -25,6 +26,17 @@ class VerifyPage extends StatefulWidget {
 class _VerifyPageState extends State<VerifyPage> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Send OTP automatically when opening the verify screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.email.isNotEmpty) {
+        context.read<VerifyBloc>().add(ResendOtpSubmitted(email: widget.email));
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -41,7 +53,11 @@ class _VerifyPageState extends State<VerifyPage> {
       }
 
       context.read<VerifyBloc>().add(
-        VerifySubmitted(email: widget.email, otp: otp),
+        VerifySubmitted(
+          email: widget.email,
+          otp: otp,
+          password: widget.password,
+        ),
       );
     }
   }
@@ -85,10 +101,14 @@ class _VerifyPageState extends State<VerifyPage> {
         builder: (context, state) {
           return ModalProgressHUD(
             progressIndicator: const CustomCircleIndicator(),
-            inAsyncCall: state is VerifyLoading,
+            inAsyncCall: state is VerifyLoading || state is VerifyLoggingIn,
             child: Scaffold(
               backgroundColor: ColorManager.background,
-              appBar: CustomAppBar(title: AppTranslation.verifyAccount),
+              appBar: CustomAppBar(title: AppTranslation.verifyAccount,
+              onBackPressed: ()
+              {
+                _handleBackToLogin();
+              },),
               body: SafeArea(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.all(AppPadding.p24),

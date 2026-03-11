@@ -21,11 +21,12 @@ class LoginSuccess extends LoginState {
 
 class LoginNeedsVerification extends LoginState {
   final String email;
+  final String password;
 
-  const LoginNeedsVerification({required this.email});
+  const LoginNeedsVerification({this.email = '', this.password = ''});
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => [email, password];
 }
 
 class LoginError extends LoginState {

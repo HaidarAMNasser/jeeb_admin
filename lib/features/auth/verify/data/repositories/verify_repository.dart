@@ -27,9 +27,22 @@ class VerifyRepository {
           otp: otp,
         );
 
+        final raw = response.data;
+        final jsonMap = raw is Map ? Map<String, dynamic>.from(raw) : null;
+        if (jsonMap == null) {
+          return Left(ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
+          ));
+        }
         final apiResponse = ApiResponseModel<Map<String, dynamic>>.fromJson(
-          response.data as Map<String, dynamic>,
-          (json) => json is Map<String, dynamic> ? json : {},
+          jsonMap,
+          (json) => json != null && json is Map
+              ? Map<String, dynamic>.from(json)
+              : <String, dynamic>{},
         );
 
         if (apiResponse.isSuccess) {

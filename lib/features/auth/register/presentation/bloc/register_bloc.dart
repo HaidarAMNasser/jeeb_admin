@@ -112,6 +112,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
               RegisterSuccess(
                 userId: tokenEntity?.user.id ?? 0,
                 email: emailController.text.trim(),
+                password: passwordController.text.trim(),
                 selectedCountry: selectedCountry,
                 selectedCity: selectedCity,
                 isLocationLoading: isLocationLoading,

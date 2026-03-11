@@ -82,7 +82,7 @@ class RegisterPage extends StatelessWidget {
         if (state is RegisterSuccess) {
           context.pushNamed(
             Routes.verify,
-            arguments: {'email': state.email},
+            arguments: {'email': state.email, 'password': state.password},
           );
         } else if (state is RegisterError) {
           customToast(msg: state.message);

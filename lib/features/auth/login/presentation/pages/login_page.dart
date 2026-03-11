@@ -65,10 +65,12 @@ class _LoginPageState extends State<LoginPage> {
             predicate: (route) => false,
           );
         } else if (state is LoginNeedsVerification) {
+          final args = <String, dynamic>{'email': state.email};
+          if (state.password.isNotEmpty) args['password'] = state.password;
           context.pushNamedAndRemoveUntil(
             Routes.verify,
             predicate: (route) => false,
-            arguments: {'email': state.email},
+            arguments: args,
           );
         } else if (state is LoginError) {
           customToast(msg: state.message);

@@ -130,9 +130,10 @@ class AppRouter {
       case Routes.verify:
         final args = settings.arguments as Map<String, dynamic>?;
         final email = args?['email'] as String? ?? '';
+        final password = args?['password'] as String?;
         final registerBloc = args?['registerBloc'] as RegisterBloc?;
         return _buildRouteWithBlocs(
-          VerifyPage(email: email),
+          VerifyPage(email: email, password: password),
           settings,
           providers: [
             BlocProvider<VerifyBloc>(

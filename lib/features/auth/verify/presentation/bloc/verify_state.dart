@@ -15,6 +15,11 @@ class VerifyLoading extends VerifyState {
   const VerifyLoading();
 }
 
+/// Shown after verify 200 while performing background login (modal progress).
+class VerifyLoggingIn extends VerifyState {
+  const VerifyLoggingIn();
+}
+
 class VerifySuccess extends VerifyState {
   final bool goToMain;
 
