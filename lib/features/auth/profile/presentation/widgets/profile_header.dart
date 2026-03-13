@@ -4,6 +4,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import '../../../login/domain/entities/user_entity.dart';
 
@@ -61,14 +62,13 @@ class ProfileHeader extends StatelessWidget {
     final url = user.profileImageUrl;
     if (url != null && url.isNotEmpty) {
       final fullUrl = url.startsWith('http') ? url : '${AppConfig.assetsBaseUrl}$url';
-      return ClipOval(
-        child: Image.network(
-          fullUrl,
-          width: 80,
-          height: 80,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _fallbackAvatar(user),
-        ),
+      return CustomCachedNetworkImage(
+        imageUrl: fullUrl,
+        width: 80,
+        height: 80,
+        fit: BoxFit.cover,
+        borderRadius: BorderRadius.circular(40),
+        errorWidget: _fallbackAvatar(user),
       );
     }
     return _fallbackAvatar(user);

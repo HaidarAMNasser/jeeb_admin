@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_header.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_form.dart';
@@ -12,6 +14,7 @@ class ProfilePageContent extends StatelessWidget {
   final TextEditingController phoneController;
   final TextEditingController addressController;
   final bool isMerchant;
+  final bool isAdminFromStorage;
   final VoidCallback onUpdate;
   final VoidCallback onChangeLanguage;
   final VoidCallback onUpdateLocation;
@@ -28,6 +31,7 @@ class ProfilePageContent extends StatelessWidget {
     required this.phoneController,
     required this.addressController,
     required this.isMerchant,
+    required this.isAdminFromStorage,
     required this.onUpdate,
     required this.onChangeLanguage,
     required this.onUpdateLocation,
@@ -58,6 +62,9 @@ class ProfilePageContent extends StatelessWidget {
             addressController: addressController,
             onUpdate: onUpdate,
             isLoading: isUpdateLoading,
+            onSettingsTap: isAdminFromStorage
+                ? () => NavigationService().pushNamed(Routes.settings)
+                : null,
           ),
           SizedBox(height: AppHeight.s24),
         ],

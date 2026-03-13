@@ -20,14 +20,16 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
             emit(ListProductLoadingMore(
               products: currentState.products,
               currentPage: currentState.currentPage,
+              merchantId: currentState.merchantId,
+              search: currentState.search,
             ));
 
             final nextPage = currentState.currentPage + 1;
-            
             final result = await _repository.getProducts(
               page: nextPage,
               limit: _pageSize,
               restaurantId: currentState.merchantId,
+              search: currentState.search,
             );
 
             result.fold(
@@ -42,6 +44,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
                   hasMore: products.length == _pageSize,
                   currentPage: nextPage,
                   merchantId: currentState.merchantId,
+                  search: currentState.search,
                 ));
               },
             );
@@ -49,11 +52,12 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
         } else {
           // Initial load or refresh
           emit(const ListProductLoading());
-          
+
           final result = await _repository.getProducts(
             page: 1,
             limit: _pageSize,
             restaurantId: event.merchantId,
+            search: event.search,
           );
 
           result.fold(
@@ -63,6 +67,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
               hasMore: products.length == _pageSize,
               currentPage: 1,
               merchantId: event.merchantId,
+              search: event.search,
             )),
           );
         }

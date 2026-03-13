@@ -9,6 +9,7 @@ import 'package:jeeb_admin/features/product/list_product/domain/entities/product
 import 'package:jeeb_admin/features/offer/update_offer/presentation/bloc/update_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_description_fields.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_products_section.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_totals_section.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_date_select.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_discount_section.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_form_submit_button.dart';
@@ -159,6 +160,10 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
             selectedProducts: _selectedProducts,
             onSelectProduct: _addProduct,
             onRemoveProduct: _removeProduct,
+          ),
+          OfferTotalsSection(
+            selectedProducts: _selectedProducts,
+            state: state,
           ),
           OfferDiscountSection(
             state: state,

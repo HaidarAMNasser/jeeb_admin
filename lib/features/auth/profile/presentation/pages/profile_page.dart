@@ -36,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
+  bool _isAdminFromStorage = false;
 
   @override
   void initState() {
@@ -44,8 +45,11 @@ class _ProfilePageState extends State<ProfilePage> {
     _lastNameController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<ProfileBloc>().add(const GetProfile());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      context.read<ProfileBloc>().add(const GetProfile());
+      final role = await di.sl<StorageService>().getUserRole();
+      if (mounted) setState(() => _isAdminFromStorage = (role?.toLowerCase() == 'admin'));
     });
   }
 
@@ -139,6 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       phoneController: _phoneController,
                       addressController: _addressController,
                       isMerchant: loadedState.isMerchant,
+                      isAdminFromStorage: _isAdminFromStorage,
                       onUpdate: () {
                         if (_formKey.currentState!.validate()) {
                           context.read<ProfileBloc>().add(SaveProfile(

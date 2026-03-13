@@ -71,6 +71,18 @@ class ProductFormFields extends StatelessWidget {
         ),
         SizedBox(height: AppHeight.s16),
 
+        // Number of people this dish covers (optional)
+        CustomTextField(
+          title: AppTranslation.productServesCount,
+          hintText: AppTranslation.productServesCountHint,
+          controller: bloc.servesCountController,
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            bloc.add(UpdateProductServesCount(servesCount: value));
+          },
+        ),
+        SizedBox(height: AppHeight.s16),
+
         // Category (real API)
         CategoryWidget(
           selectedCategoryId: state.selectedCategoryId,

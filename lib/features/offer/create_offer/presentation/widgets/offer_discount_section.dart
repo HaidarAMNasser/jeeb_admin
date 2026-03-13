@@ -77,6 +77,7 @@ class OfferDiscountSection extends StatelessWidget {
           },
         ),
         CustomTextField(
+          keyboardType: TextInputType.number,
           title: AppTranslation.offerDiscountValue,
           hintText: hintText,
           controller: discountValueController,

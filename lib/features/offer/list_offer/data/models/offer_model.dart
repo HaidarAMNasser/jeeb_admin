@@ -24,11 +24,15 @@ class OfferModel {
   });
 
   factory OfferModel.fromJson(Map<String, dynamic> json) {
+    // API returns single "description"; fill shortDescription so edit form shows it
+    final apiDescription = json['description']?.toString();
+    final short = json['shortDescription']?.toString() ?? apiDescription;
+    final long = json['longDescription']?.toString();
     return OfferModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString(),
-      shortDescription: json['shortDescription']?.toString(),
-      longDescription: json['longDescription']?.toString(),
+      shortDescription: short,
+      longDescription: long ?? apiDescription,
       products: json['products'] != null
           ? (json['products'] as List)
               .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))

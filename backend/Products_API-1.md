@@ -52,23 +52,24 @@ Base URL: `http://localhost:3000/api/v1`
 
 ### Payload (FormData)
 
-| Key                | Type   | Required    | Description                                    |
-| ------------------ | ------ | ----------- | ---------------------------------------------- |
-| `name`             | Text   | Yes         | اسم المنتج.                                    |
-| `description`      | Text   | No          | وصف المنتج.                                    |
-| `shortDescription` | Text   | No          | وصف قصير.                                      |
-| `price`            | Text   | Yes         | السعر كعدد صحيح (أصغر وحدة).                   |
-| `restaurantId`     | Text   | Yes         | معرف المطعم.                                   |
-| `categoryId`       | Text   | No          | التصنيف: MENU مرتبط بمطعم المنتج، CUISINE عام. |
-| `discount`         | Text   | No          | قيمة الحسم.                                    |
-| `discountType`     | Text   | No          | نوع الحسم: `PERCENTAGE` أو `FIXED`.            |
-| `hasStock`         | Text   | No          | `true`/`false`.                                |
-| `stockQuantity`    | Text   | Conditional | مطلوب إذا `hasStock = true`.                   |
-| `isAvailable`      | Text   | No          | `true`/`false`.                                |
-| `isExternal`       | Text   | No          | `true`/`false`.                                |
-| `externalProvider` | Text   | Conditional | مطلوب فقط إذا `isExternal = true`.             |
-| `externalId`       | Text   | Conditional | مطلوب فقط إذا `isExternal = true`.             |
-| `images`           | File[] | No          | حتى 5 صور (jpg، png، webp).                    |
+| Key                | Type   | Required    | Description                                      |
+| ------------------ | ------ | ----------- | ------------------------------------------------ |
+| `name`             | Text   | Yes         | اسم المنتج.                                      |
+| `description`      | Text   | No          | وصف المنتج.                                      |
+| `shortDescription` | Text   | No          | وصف قصير.                                        |
+| `price`            | Text   | Yes         | السعر كعدد صحيح (أصغر وحدة).                     |
+| `personCount`      | Text   | No          | عدد الأشخاص الذين يكفيهم المنتج (معلومات للعرض). |
+| `restaurantId`     | Text   | Yes         | معرف المطعم.                                     |
+| `categoryId`       | Text   | No          | التصنيف: MENU مرتبط بمطعم المنتج، CUISINE عام.   |
+| `discount`         | Text   | No          | قيمة الحسم.                                      |
+| `discountType`     | Text   | No          | نوع الحسم: `PERCENTAGE` أو `FIXED`.              |
+| `hasStock`         | Text   | No          | `true`/`false`.                                  |
+| `stockQuantity`    | Text   | Conditional | مطلوب إذا `hasStock = true`.                     |
+| `isAvailable`      | Text   | No          | `true`/`false`.                                  |
+| `isExternal`       | Text   | No          | `true`/`false`.                                  |
+| `externalProvider` | Text   | Conditional | مطلوب فقط إذا `isExternal = true`.               |
+| `externalId`       | Text   | Conditional | مطلوب فقط إذا `isExternal = true`.               |
+| `images`           | File[] | No          | حتى 5 صور (jpg، png، webp).                      |
 
 ### Response (Success - 201 Created)
 
@@ -295,6 +296,7 @@ Base URL: `http://localhost:3000/api/v1`
 | `name`             | Text   | اسم جديد.                                                                           |
 | `description`      | Text   | وصف جديد.                                                                           |
 | `shortDescription` | Text   | وصف قصير جديد.                                                                      |
+| `personCount`      | Text   | عدد الأشخاص الذين يكفيهم المنتج (معلومات للعرض).                                    |
 | `price`            | Text   | سعر جديد كعدد صحيح.                                                                 |
 | `stockQuantity`    | Text   | الكمية.                                                                             |
 | `isAvailable`      | Text   | `true`/`false`.                                                                     |

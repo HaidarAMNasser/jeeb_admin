@@ -62,6 +62,8 @@ class AppTranslation {
   static String get productDescription => 'product_description'.tr();
   static String get productPrice => 'product_price'.tr();
   static String get productQuantity => 'product_quantity'.tr();
+  static String get productServesCount => 'product_serves_count'.tr();
+  static String get productServesCountHint => 'product_serves_count_hint'.tr();
   static String get selectCategory => 'select_category'.tr();
   static String get productImages => 'product_images'.tr();
   static String get addImage => 'add_image'.tr();
@@ -95,6 +97,7 @@ class AppTranslation {
   static String get confirm => 'confirm'.tr();
   static String get rating => 'rating'.tr();
   static String get noProductsFound => 'no_products_found'.tr();
+  static String get searchProductsHint => 'search_products_hint'.tr();
   static String get noCategoriesFound => 'no_categories_found'.tr();
   static String get loading => 'loading'.tr();
   static String get errorOccurred => 'error_occurred'.tr();
@@ -242,6 +245,7 @@ class AppTranslation {
   static String get editOffer => 'edit_offer'.tr();
   static String get offerDetails => 'offer_details'.tr();
   static String get noOffersFound => 'no_offers_found'.tr();
+  static String get searchOffersHint => 'search_offers_hint'.tr();
   static String get offerShortDescription => 'offer_short_description'.tr();
   static String get offerLongDescription => 'offer_long_description'.tr();
   static String get selectProducts => 'select_products'.tr();
@@ -253,6 +257,8 @@ class AppTranslation {
   static String get offerDiscountValueType => 'offer_discount_value_type'.tr();
   static String get offerProductsCount => 'offer_products_count'.tr();
   static String get offerDiscount => 'offer_discount'.tr();
+  static String get offerTotalBeforeDiscount => 'offer_total_before_discount'.tr();
+  static String get offerTotalAfterDiscount => 'offer_total_after_discount'.tr();
   static String get pleaseEnterOfferShortDescription => 'please_enter_offer_short_description'.tr();
   static String get pleaseSelectAtLeastOneProduct => 'please_select_at_least_one_product'.tr();
   static String get pleaseSelectDiscountType => 'please_select_discount_type'.tr();
@@ -265,5 +271,15 @@ class AppTranslation {
   static String get selectDate => 'select_date'.tr();
   static String get showAll => 'show_all'.tr();
   static String get backToLogin => 'back_to_login'.tr();
+
+  // Settings (admin)
+  static String get supportPhone => 'support_phone'.tr();
+  static String get enterSupportPhone => 'enter_support_phone'.tr();
+  static String get whatsappNumber => 'whatsapp_number'.tr();
+  static String get enterWhatsappNumber => 'enter_whatsapp_number'.tr();
+  static String get defaultCommissionRate => 'default_commission_rate'.tr();
+  static String get enterCommissionRate => 'enter_commission_rate'.tr();
+  static String get pleaseEnterValidCommissionRate => 'please_enter_valid_commission_rate'.tr();
+  static String get settingsUpdatedSuccessfully => 'settings_updated_successfully'.tr();
 }
 

@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/features/offer/list_offer/domain/entities/offer_entity.dart';
@@ -87,28 +86,33 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
           offerId: state.offerId,
           isValid: state.isValid,
         ));
-        // API: discountType PERCENTAGE | FIXED; discountValue number; productIds array of numbers
+        // Backend expects application/json with a single object (not FormData)
         final discountType = state.discountType == 'VALUE' ? 'FIXED' : state.discountType;
         final discountValue = num.tryParse(state.discountValue) ?? 0;
         final productIdsNumbers = state.productIds
             .map((id) => int.tryParse(id))
             .whereType<int>()
             .toList();
-        final formData = FormData.fromMap({
+        final short = state.shortDescription.trim();
+        final long = state.longDescription.trim();
+        final description = short.isNotEmpty && long.isNotEmpty
+            ? '$short\n\n$long'
+            : (short.isNotEmpty ? short : long);
+        final body = <String, dynamic>{
           'name': state.name.trim(),
-          'shortDescription': state.shortDescription,
-          'longDescription': state.longDescription,
-          if (state.startDate != null)
-            'startDate': state.startDate!.toIso8601String(),
-          if (state.endDate != null)
-            'endDate': state.endDate!.toIso8601String(),
+          'description': description,
           'discountType': discountType,
           'discountValue': discountValue,
-          'productIds': productIdsNumbers.isEmpty
-              ? <int>[]
-              : productIdsNumbers,
-        });
-        final result = await _repository.createOffer(formData);
+          'productIds': productIdsNumbers,
+          'isActive': true,
+        };
+        if (state.startDate != null) {
+          body['startDate'] = state.startDate!.toIso8601String();
+        }
+        if (state.endDate != null) {
+          body['endDate'] = state.endDate!.toIso8601String();
+        }
+        final result = await _repository.createOffer(body);
         result.fold(
           (failure) => emit(CreateOfferError(
             message: failure.message,

@@ -1,4 +1,5 @@
 export 'custom_button.dart';
+export 'custom_cached_network_image.dart';
 export 'text_widget.dart';
 export 'custom_circle_indicator.dart';
 export 'error_state_widget.dart';

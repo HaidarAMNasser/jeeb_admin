@@ -138,7 +138,7 @@ class MerchantProductsSection extends StatelessWidget {
             else
               ...productList
                   .take(_kMerchantProductsPreviewLimit)
-                  .map((p) => ProductListItem(product: p)),
+                  .map((p) => ProductListItem(product: p, enableSmallDesign: true)),
           ],
         );
       },

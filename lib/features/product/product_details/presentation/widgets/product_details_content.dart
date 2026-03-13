@@ -51,6 +51,20 @@ class ProductDetailsContent extends StatelessWidget {
               text: product.description!,
               textStyle: getRegularStyle(color: ColorManager.textColor),
             ),
+          if (product.servesCount != null) ...[
+            SizedBox(height: AppHeight.s16),
+            CustomText(
+              text: '${AppTranslation.productServesCount}: ${product.servesCount}',
+              textStyle: getRegularStyle(color: ColorManager.descriptionColor),
+            ),
+          ],
+          if (product.hasStock == true && product.stockQuantity != null) ...[
+            SizedBox(height: AppHeight.s16),
+            CustomText(
+              text: '${AppTranslation.productQuantity}: ${product.stockQuantity}',
+              textStyle: getRegularStyle(color: ColorManager.descriptionColor),
+            ),
+          ],
           SizedBox(height: AppHeight.s24),
           if (!isAdmin)
             CustomButton(

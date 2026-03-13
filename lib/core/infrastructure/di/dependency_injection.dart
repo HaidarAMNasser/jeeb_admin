@@ -92,6 +92,12 @@ import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc
 import '../../../features/product/confirm_product/data/data_sources/confirm_product_data_source.dart';
 import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
 import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import '../../../features/settings/get_settings/data/data_sources/get_settings_data_source.dart';
+import '../../../features/settings/get_settings/data/repositories/get_settings_repository.dart';
+import '../../../features/settings/get_settings/presentation/bloc/get_settings_bloc.dart';
+import '../../../features/settings/edit_settings/data/data_sources/edit_settings_data_source.dart';
+import '../../../features/settings/edit_settings/data/repositories/edit_settings_repository.dart';
+import '../../../features/settings/edit_settings/presentation/bloc/edit_settings_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -143,6 +149,20 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ConfirmProductRepository(sl(), sl()));
   sl.registerFactory(() => ConfirmProductBloc(sl()));
+
+  //! Settings - Get Settings
+  sl.registerFactory<GetSettingsRemoteDataSource>(
+    () => GetSettingsRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => GetSettingsRepository(sl(), sl()));
+  sl.registerFactory(() => GetSettingsBloc(sl()));
+
+  //! Settings - Edit Settings
+  sl.registerFactory<EditSettingsRemoteDataSource>(
+    () => EditSettingsRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => EditSettingsRepository(sl(), sl()));
+  sl.registerFactory(() => EditSettingsBloc(sl()));
 
   //! Product Details Dependencies
   sl.registerFactory<ProductDetailsRemoteDataSource>(

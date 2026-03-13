@@ -12,6 +12,7 @@ import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_list_item.dart';
+import 'package:jeeb_admin/features/product/list_product/presentation/widgets/search_product_widget.dart';
 
 class ListProductPage extends StatefulWidget {
   final String  ? merchantId;
@@ -47,7 +48,11 @@ class _ListProductPageState extends State<ListProductPage> {
         _scrollController.position.maxScrollExtent * 0.8) {
       if (state is ListProductLoaded && state.hasMore) {
         context.read<ListProductBloc>().add(
-          GetProductsEvent(loadMore: true, merchantId: state.merchantId),
+          GetProductsEvent(
+            loadMore: true,
+            merchantId: state.merchantId,
+            search: state.search,
+          ),
         );
       }
     }
@@ -90,30 +95,44 @@ class _ListProductPageState extends State<ListProductPage> {
               final hasMore = productState is ListProductLoaded
                   ? productState.hasMore
                   : false;
+              final currentSearch = productState is ListProductLoaded
+                  ? productState.search
+                  : (productState as ListProductLoadingMore).search;
+              final currentMerchantId = productState is ListProductLoaded
+                  ? productState.merchantId
+                  : (productState as ListProductLoadingMore).merchantId;
 
-              return RefreshIndicator(
-                onRefresh: () async {
-                  final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-                  final merchantId = args?['merchantId'] as String?;
-                  context.read<ListProductBloc>().add(GetProductsEvent(merchantId: merchantId));
-                },
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: EdgeInsets.all(AppPadding.p16),
-                  itemCount: products.length + (hasMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == products.length) {
-                      // Loading more indicator
-                      return Padding(
+              return Column(
+                children: [
+                  SearchProductWidget(merchantId: widget.merchantId ?? currentMerchantId),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<ListProductBloc>().add(
+                              GetProductsEvent(
+                                merchantId: widget.merchantId ?? currentMerchantId ?? '0',
+                                search: currentSearch,
+                              ),
+                            );
+                      },
+                      child: ListView.builder(
+                        controller: _scrollController,
                         padding: EdgeInsets.all(AppPadding.p16),
-                        child: const CustomCircleIndicator(),
-                      );
-                    }
-
-                    final product = products[index];
-                    return ProductListItem(product: product);
-                  },
-                ),
+                        itemCount: products.length + (hasMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == products.length) {
+                            return Padding(
+                              padding: EdgeInsets.all(AppPadding.p16),
+                              child: const CustomCircleIndicator(),
+                            );
+                          }
+                          final product = products[index];
+                          return ProductListItem(product: product);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           );

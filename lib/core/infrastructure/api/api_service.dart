@@ -221,13 +221,20 @@ abstract class AppApiServiceClient {
   Future<Response> getOfferDetails(@Path('id') String id);
 
   @POST("offers")
-  Future<Response> createOffer(FormData formData);
+  Future<Response> createOffer(Map<String, dynamic> body);
 
   @POST("offers/{id}")
-  Future<Response> updateOffer(@Path('id') String id, FormData formData);
+  Future<Response> updateOffer(@Path('id') String id, Map<String, dynamic> body);
 
   @POST("offers/{id}/delete")
   Future<Response> deleteOffer(@Path('id') String id);
+
+  // Settings endpoints (admin only for PATCH)
+  @GET("settings")
+  Future<Response> getSettings();
+
+  @PATCH("settings")
+  Future<Response> patchSettings(List<Map<String, dynamic>> body);
 }
 
 // Annotations for API methods (simplified versions)

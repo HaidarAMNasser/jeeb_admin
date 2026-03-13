@@ -14,6 +14,7 @@ class ProductEntity extends Equatable {
   final String? discountType; // 'PERCENTAGE' or 'FIXED'
   final bool? hasStock;
   final int? stockQuantity;
+  final int? servesCount;
   final bool? isAvailable;
   final bool? isExternal;
   final String? externalProvider;
@@ -38,6 +39,7 @@ class ProductEntity extends Equatable {
     this.discountType,
     this.hasStock,
     this.stockQuantity,
+    this.servesCount,
     this.isAvailable,
     this.isExternal,
     this.externalProvider,
@@ -64,6 +66,7 @@ class ProductEntity extends Equatable {
         discountType,
         hasStock,
         stockQuantity,
+        servesCount,
         isAvailable,
         isExternal,
         externalProvider,

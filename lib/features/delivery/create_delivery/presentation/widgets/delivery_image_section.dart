@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 class DeliveryImageSection extends StatelessWidget {
@@ -108,14 +109,12 @@ class _DeliveryImageItem extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.r12),
             child: imagePath.startsWith('http')
-                ? Image.network(
-                    imagePath,
+                ? CustomCachedNetworkImage(
+                    imageUrl: imagePath,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildPlaceholder();
-                    },
+                    errorWidget: _buildPlaceholder(),
                   )
                 : Image.file(
                     File(imagePath),

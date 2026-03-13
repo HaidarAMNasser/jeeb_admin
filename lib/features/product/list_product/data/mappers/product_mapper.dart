@@ -38,6 +38,7 @@ extension ProductMapper on ProductModel {
       discountType: discountType,
       hasStock: hasStock,
       stockQuantity: stockQuantity,
+      servesCount: servesCount,
       isAvailable: isAvailable,
       isExternal: isExternal,
       externalProvider: externalProvider,

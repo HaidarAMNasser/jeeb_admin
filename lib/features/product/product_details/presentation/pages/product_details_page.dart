@@ -143,46 +143,58 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           },
         ),
       ],
-      child: BlocBuilder<ConfirmProductBloc, ConfirmProductState>(
-        builder: (context, confirmState) {
-          return ModalProgressHUD(
-            progressIndicator: const CustomCircleIndicator(),
-            inAsyncCall: confirmState is ConfirmProductLoading,
-            child: PopScope(
-              canPop: false,
-              onPopInvokedWithResult: (didPop, result) {
-                if (didPop) return;
-                _goToMainWithTab(context);
-              },
-              child: Scaffold(
-                backgroundColor: ColorManager.background,
-                appBar: CustomAppBar(
-                  onBackPressed: () => _goToMainWithTab(context),
-                  title: AppTranslation.productDetails,
-                  actions: [_buildOptionsButton(context)],
-                ),
-                body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
-                  bloc: context.read<ProductDetailsBloc>(),
-                  isLoading: (state) => state is ProductDetailsLoading,
-                  isError: (state) => state is ProductDetailsError,
-                  getErrorMessage: (state) =>
-                      (state as ProductDetailsError).message,
-                  isSuccess: (state) => state is ProductDetailsLoaded,
-                  getRetryCallback: (state) =>
-                      () => context.read<ProductDetailsBloc>().add(
-                        GetProductDetailsEvent(id: widget.productId),
-                      ),
-                  successBuilder: (context, productState) {
-                    final loadedState = productState as ProductDetailsLoaded;
-                    return ProductDetailsContent(
-                      product: loadedState.product,
-                      isAdmin: _isAdmin,
-                      onEdit: () => _onEditProduct(context, loadedState),
-                    );
+      child: BlocBuilder<DeleteProductBloc, DeleteProductState>(
+        builder: (context, deleteState) {
+          return BlocBuilder<ConfirmProductBloc, ConfirmProductState>(
+            builder: (context, confirmState) {
+              return ModalProgressHUD(
+                progressIndicator: const CustomCircleIndicator(),
+                inAsyncCall:
+                    confirmState is ConfirmProductLoading ||
+                    deleteState is DeleteProductLoading,
+                child: PopScope(
+                  canPop: false,
+                  onPopInvokedWithResult: (didPop, result) {
+                    if (didPop) return;
+                    _goToMainWithTab(context);
                   },
+                  child: Scaffold(
+                    backgroundColor: ColorManager.background,
+                    appBar: CustomAppBar(
+                      onBackPressed: () => _goToMainWithTab(context),
+                      title: AppTranslation.productDetails,
+                      actions: [_buildOptionsButton(context)],
+                    ),
+                    body:
+                        BlocStateHandler<
+                          ProductDetailsBloc,
+                          ProductDetailsState
+                        >(
+                          bloc: context.read<ProductDetailsBloc>(),
+                          isLoading: (state) => state is ProductDetailsLoading,
+                          isError: (state) => state is ProductDetailsError,
+                          getErrorMessage: (state) =>
+                              (state as ProductDetailsError).message,
+                          isSuccess: (state) => state is ProductDetailsLoaded,
+                          getRetryCallback: (state) =>
+                              () => context.read<ProductDetailsBloc>().add(
+                                GetProductDetailsEvent(id: widget.productId),
+                              ),
+                          successBuilder: (context, productState) {
+                            final loadedState =
+                                productState as ProductDetailsLoaded;
+                            return ProductDetailsContent(
+                              product: loadedState.product,
+                              isAdmin: _isAdmin,
+                              onEdit: () =>
+                                  _onEditProduct(context, loadedState),
+                            );
+                          },
+                        ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
