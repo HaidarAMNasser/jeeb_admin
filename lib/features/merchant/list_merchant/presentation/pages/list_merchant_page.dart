@@ -105,7 +105,11 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
                       },
                       child: ListView.builder(
                         controller: _scrollController,
-                        padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
+                        padding: EdgeInsets.only(
+                          left: AppPadding.p16,
+                          right: AppPadding.p16,
+                          bottom: 24,
+                        ),
                         itemCount: merchants.length + (hasMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == merchants.length) {

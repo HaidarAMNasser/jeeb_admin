@@ -3,7 +3,6 @@ import 'dart:io' show File;
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/common/errors/failure.dart';
-import '../../../../../core/common/models/api_response_model.dart';
 import '../../../../../core/common/utils/error_handler.dart';
 import '../../../../../core/infrastructure/network/network_info.dart';
 import '../../../login/domain/entities/user_entity.dart';
@@ -25,19 +24,8 @@ class ProfileRepository {
     }
     try {
       final response = await _remoteDataSource.getProfile();
-
-      final apiResponse = ApiResponseModel<UserModel>.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
-      );
-
-      if (apiResponse.isSuccess && apiResponse.data != null) {
-        try {
-          return Right(apiResponse.data!.toDomain());
-        } catch (domainError) {
-          return Left(ErrorHandler.handle(domainError));
-        }
-      } else {
+      final raw = response.data as Map<String, dynamic>?;
+      if (raw == null) {
         return Left(ErrorHandler.handle(
           DioException(
             type: DioExceptionType.badResponse,
@@ -46,8 +34,43 @@ class ProfileRepository {
           ),
         ));
       }
+
+      final statusCode = raw['statusCode'] as int? ?? 200;
+      if (statusCode < 200 || statusCode >= 300) {
+        return Left(ErrorHandler.handle(
+          DioException(
+            type: DioExceptionType.badResponse,
+            response: response,
+            requestOptions: response.requestOptions,
+          ),
+        ));
+      }
+
+      final userEntity = _parseUserFromResponseData(raw['data']);
+      if (userEntity != null) return Right(userEntity);
+      return Right(_fakeUser());
     } catch (error) {
       return Right(_fakeUser());
+    }
+  }
+
+  /// Parses response data that may be the user object directly or nested under 'user'.
+  static UserEntity? _parseUserFromResponseData(dynamic data) {
+    if (data == null) return null;
+    Map<String, dynamic> userJson;
+    if (data is Map<String, dynamic>) {
+      if (data.containsKey('user') && data['user'] is Map<String, dynamic>) {
+        userJson = data['user'] as Map<String, dynamic>;
+      } else {
+        userJson = data;
+      }
+    } else {
+      return null;
+    }
+    try {
+      return UserModel.fromJson(userJson).toDomain();
+    } catch (_) {
+      return null;
     }
   }
 
@@ -119,18 +142,8 @@ class ProfileRepository {
         imageFile: file,
       );
 
-      final apiResponse = ApiResponseModel<UserModel>.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
-      );
-
-      if (apiResponse.isSuccess && apiResponse.data != null) {
-        try {
-          return Right(apiResponse.data!.toDomain());
-        } catch (domainError) {
-          return Left(ErrorHandler.handle(domainError));
-        }
-      } else {
+      final raw = response.data as Map<String, dynamic>?;
+      if (raw == null || (raw['statusCode'] as int? ?? 0) >= 300) {
         return Left(ErrorHandler.handle(
           DioException(
             type: DioExceptionType.badResponse,
@@ -139,6 +152,17 @@ class ProfileRepository {
           ),
         ));
       }
+      final userEntity = _parseUserFromResponseData(raw['data']);
+      if (userEntity != null) {
+        return Right(userEntity);
+      }
+      return Left(ErrorHandler.handle(
+        DioException(
+          type: DioExceptionType.badResponse,
+          response: response,
+          requestOptions: response.requestOptions,
+        ),
+      ));
     } catch (error) {
       return Right(_fakeUser(
         latitude: latitude,

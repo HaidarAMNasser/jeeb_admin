@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
@@ -65,13 +66,13 @@ class DeliveryListItem extends StatelessWidget {
                         SizedBox(width: AppWidth.s8),
                         Flexible(
                           child: _buildBadge(
-                            label: deliveryMan.confirmed
+                            label: (deliveryMan.isActive == true || deliveryMan.confirmed)
                                 ? AppTranslation.confirmed
                                 : AppTranslation.notConfirmed,
-                            backgroundColor: deliveryMan.confirmed
+                            backgroundColor: (deliveryMan.isActive == true || deliveryMan.confirmed)
                                 ? ColorManager.success.withOpacity(0.12)
                                 : ColorManager.defaultYellow.withOpacity(0.18),
-                            textColor: deliveryMan.confirmed
+                            textColor: (deliveryMan.isActive == true || deliveryMan.confirmed)
                                 ? ColorManager.success
                                 : ColorManager.defaultYellow,
                           ),
@@ -79,7 +80,6 @@ class DeliveryListItem extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: AppHeight.s10),
-
                     CustomText(
                       text: deliveryMan.email,
                       textStyle: getRegularStyle(
@@ -172,15 +172,16 @@ class _DeliveryAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = AppWidth.s50;
     if (imageUrl != null && imageUrl!.isNotEmpty) {
-      return ClipOval(
-        child: SizedBox(
+      return SizedBox(
+        width: size,
+        height: size,
+        child: CustomCachedNetworkImage(
+          imageUrl: imageUrl!,
+          fit: BoxFit.cover,
           width: size,
           height: size,
-          child: Image.network(
-            imageUrl!,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => _placeholder(size),
-          ),
+          borderRadius: BorderRadius.circular(size / 2),
+          errorWidget: _placeholder(size),
         ),
       );
     }

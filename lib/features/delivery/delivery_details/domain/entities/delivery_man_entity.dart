@@ -10,6 +10,8 @@ class DeliveryManEntity extends Equatable {
   final String? image;
   final bool? isOnline;
   final bool confirmed;
+  /// When true, account is active (admin has activated). When false/null, OTP verified but admin has not activated yet.
+  final bool? isActive;
   final int? officeOwnerId;
 
   const DeliveryManEntity({
@@ -22,6 +24,7 @@ class DeliveryManEntity extends Equatable {
     this.image,
     this.isOnline,
     this.confirmed = false,
+    this.isActive,
     this.officeOwnerId,
   });
 
@@ -36,6 +39,7 @@ class DeliveryManEntity extends Equatable {
         image,
         isOnline,
         confirmed,
+        isActive,
         officeOwnerId,
       ];
 }

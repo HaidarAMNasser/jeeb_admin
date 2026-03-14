@@ -12,10 +12,10 @@ class UpdateOfferRepository {
 
   const UpdateOfferRepository(this._remoteDataSource, this._networkInfo);
 
-  Future<Either<Failure, void>> updateOffer(String id, FormData formData) async {
+  Future<Either<Failure, void>> updateOffer(String id, Map<String, dynamic> body) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.updateOffer(id, formData);
+        final response = await _remoteDataSource.updateOffer(id, body);
         BaseResponseModel<dynamic> base =
             BaseResponseModel<dynamic>.fromJson(response.data!, (json) => json);
         if (base.status == 200 ||

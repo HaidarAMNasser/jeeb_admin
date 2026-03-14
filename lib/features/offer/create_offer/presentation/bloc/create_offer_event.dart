@@ -25,19 +25,10 @@ class UpdateOfferName extends CreateOfferEvent {
   List<Object> get props => [value];
 }
 
-class UpdateOfferShortDescription extends CreateOfferEvent {
+class UpdateOfferDescription extends CreateOfferEvent {
   final String value;
 
-  const UpdateOfferShortDescription(this.value);
-
-  @override
-  List<Object> get props => [value];
-}
-
-class UpdateOfferLongDescription extends CreateOfferEvent {
-  final String value;
-
-  const UpdateOfferLongDescription(this.value);
+  const UpdateOfferDescription(this.value);
 
   @override
   List<Object> get props => [value];

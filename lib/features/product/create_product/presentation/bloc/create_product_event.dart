@@ -52,6 +52,15 @@ class UpdateProductQuantity extends CreateProductEvent {
   List<Object> get props => [quantity];
 }
 
+class UpdateProductServesCount extends CreateProductEvent {
+  final String servesCount;
+
+  const UpdateProductServesCount({required this.servesCount});
+
+  @override
+  List<Object> get props => [servesCount];
+}
+
 class UpdateSelectedCategory extends CreateProductEvent {
   final String? categoryId;
 

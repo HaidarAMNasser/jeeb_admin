@@ -54,7 +54,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
         if (widget.selectedCategoryId != null && categories.isNotEmpty) {
           try {
             selectedItem = categories.firstWhere(
-              (c) => c.id == widget.selectedCategoryId,
+              (c) => c.id.toString() == widget.selectedCategoryId,
             );
           } catch (_) {
             selectedItem = null;

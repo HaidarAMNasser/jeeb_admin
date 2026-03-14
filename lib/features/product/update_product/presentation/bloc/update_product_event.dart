@@ -14,6 +14,7 @@ class UpdateProductSubmitted extends UpdateProductEvent {
   final double price;
   final String categoryId;
   final int? quantity;
+  final int? servesCount;
   final List<String> images;
 
   const UpdateProductSubmitted({
@@ -23,6 +24,7 @@ class UpdateProductSubmitted extends UpdateProductEvent {
     required this.price,
     required this.categoryId,
     this.quantity,
+    this.servesCount,
     required this.images,
   });
 
@@ -34,6 +36,7 @@ class UpdateProductSubmitted extends UpdateProductEvent {
         price,
         categoryId,
         quantity,
+        servesCount,
         images,
       ];
 }

@@ -12,6 +12,8 @@ import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/list_offer/presentation/widgets/offer_list_item.dart';
+import 'package:jeeb_admin/features/offer/list_offer/presentation/widgets/search_offer_widget.dart';
+import 'package:jeeb_admin/features/offer/list_offer/domain/entities/offer_entity.dart';
 
 class ListOfferPage extends StatefulWidget {
   const ListOfferPage({super.key});
@@ -22,6 +24,8 @@ class ListOfferPage extends StatefulWidget {
 
 class _ListOfferPageState extends State<ListOfferPage> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -34,7 +38,14 @@ class _ListOfferPageState extends State<ListOfferPage> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  List<OfferEntity> _filterOffers(List<OfferEntity> offers, String query) {
+    if (query.trim().isEmpty) return offers;
+    final lower = query.trim().toLowerCase();
+    return offers.where((o) => (o.name ?? '').toLowerCase().contains(lower)).toList();
   }
 
   void _onScroll() {
@@ -85,27 +96,38 @@ class _ListOfferPageState extends State<ListOfferPage> {
               final hasMore = offerState is ListOfferLoaded
                   ? offerState.hasMore
                   : false;
+              final filteredOffers = _filterOffers(offers, _searchQuery);
 
-              return RefreshIndicator(
-                onRefresh: () async {
-                  final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-                  final merchantId = args?['merchantId'] as String?;
-                  context.read<ListOfferBloc>().add(GetOffersEvent(merchantId: merchantId));
-                },
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: EdgeInsets.all(AppPadding.p16),
-                  itemCount: offers.length + (hasMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == offers.length) {
-                      return Padding(
+              return Column(
+                children: [
+                  SearchOfferWidget(
+                    controller: _searchController,
+                    onSearchChanged: (query) => setState(() => _searchQuery = query),
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+                        final merchantId = args?['merchantId'] as String?;
+                        context.read<ListOfferBloc>().add(GetOffersEvent(merchantId: merchantId));
+                      },
+                      child: ListView.builder(
+                        controller: _scrollController,
                         padding: EdgeInsets.all(AppPadding.p16),
-                        child: const CustomCircleIndicator(),
-                      );
-                    }
-                    return OfferListItem(offer: offers[index]);
-                  },
-                ),
+                        itemCount: filteredOffers.length + (hasMore && _searchQuery.isEmpty ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == filteredOffers.length) {
+                            return Padding(
+                              padding: EdgeInsets.all(AppPadding.p16),
+                              child: const CustomCircleIndicator(),
+                            );
+                          }
+                          return OfferListItem(offer: filteredOffers[index]);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           );

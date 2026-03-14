@@ -19,7 +19,8 @@ class NetworkInfoImpl implements NetworkInfo {
   @override
   Future<bool> get isConnected async {
     try {
-      return await connectionChecker.hasConnection;
+      return  true;
+      // connectionChecker.hasConnection
     } catch (e) {
       // If check fails, assume connected (let API handle the error)
       return true;

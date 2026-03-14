@@ -12,10 +12,10 @@ class CreateOfferRepository {
 
   const CreateOfferRepository(this._remoteDataSource, this._networkInfo);
 
-  Future<Either<Failure, void>> createOffer(FormData formData) async {
+  Future<Either<Failure, void>> createOffer(Map<String, dynamic> body) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.createOffer(formData);
+        final response = await _remoteDataSource.createOffer(body);
         BaseResponseModel<dynamic> base =
             BaseResponseModel<dynamic>.fromJson(response.data!, (json) => json);
         if (base.status == 200 ||

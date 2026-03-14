@@ -26,8 +26,10 @@ class UpdateProductBloc extends Bloc<UpdateProductEvent, UpdateProductState> {
             'description': event.description,
           'price': priceInSmallestUnit,
           'categoryId': event.categoryId,
-          if (event.quantity != null)
-            'stockQuantity': event.quantity,
+          if (event.quantity != null) 'hasStock': true,
+          if (event.quantity != null) 'stockQuantity': event.quantity,
+          if (event.servesCount != null)
+            'personCount': event.servesCount,
         });
 
         // Add images as actual file uploads (not path strings)

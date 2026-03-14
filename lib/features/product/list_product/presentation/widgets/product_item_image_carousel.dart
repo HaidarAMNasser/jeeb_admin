@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_image_entity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductItemImageCarousel extends StatefulWidget {
   final List<ProductImageEntity> images;
+  final bool enableSmallDesign; 
 
-  const ProductItemImageCarousel({super.key, required this.images});
+  const ProductItemImageCarousel({super.key, required this.images, this.enableSmallDesign = false});
 
   @override
   State<ProductItemImageCarousel> createState() =>
@@ -36,7 +38,7 @@ class _ProductItemImageCarouselState extends State<ProductItemImageCarousel> {
     final itemCount = hasImages ? widget.images.length : 1;
 
     return SizedBox(
-      height: 150.h,
+      height: widget.enableSmallDesign ? 100.h : 150.h,
       width: double.infinity,
       child: Stack(
         children: [
@@ -62,16 +64,22 @@ class _ImagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: ColorManager.background,
-      child: url != null
-          ? Image.network(
-              url!,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const _PlaceholderImage(),
-            )
-          : const _PlaceholderImage(),
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(AppRadius.r12),
+        topRight: Radius.circular(AppRadius.r12),
+      ),
+      child: Container(
+        width: double.infinity,
+        color: ColorManager.background,
+        child: url != null
+            ? CustomCachedNetworkImage(
+                imageUrl: url!,
+                fit: BoxFit.cover,
+                errorWidget: const _PlaceholderImage(),
+              )
+            : const _PlaceholderImage(),
+      ),
     );
   }
 }

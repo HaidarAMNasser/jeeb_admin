@@ -4,6 +4,7 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
@@ -48,23 +49,23 @@ class MerchantListItem extends StatelessWidget {
                             borderRadius: BorderRadius.all(
                               Radius.circular(AppRadius.r100),
                             ),
-                            child: Container(
+                            child: SizedBox(
                               width: AppWidth.s50,
                               height: AppHeight.s50,
-                              color: ColorManager.background,
-                              child: Image.network(
-                                merchant.image!,
+                              child: CustomCachedNetworkImage(
+                                imageUrl: merchant.image!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    color: ColorManager.background,
-                                    child: Icon(
-                                      Icons.store,
-                                      color: ColorManager.primary,
-                                      size: AppSize.s28,
-                                    ),
-                                  );
-                                },
+                                width: AppWidth.s50,
+                                height: AppHeight.s50,
+                                borderRadius: BorderRadius.circular(AppRadius.r100),
+                                errorWidget: Container(
+                                  color: ColorManager.background,
+                                  child: Icon(
+                                    Icons.store,
+                                    color: ColorManager.primary,
+                                    size: AppSize.s28,
+                                  ),
+                                ),
                               ),
                             ),
                           )

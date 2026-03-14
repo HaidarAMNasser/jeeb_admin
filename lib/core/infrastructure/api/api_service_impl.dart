@@ -359,20 +359,66 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> addCategory(String name) async {
+  Future<Response> addCategory(FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
-    final data = {'name': name};
+    final headers = <String, dynamic>{
+      'Content-Type': 'multipart/form-data',
+    };
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'POST', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Category/create',
+              'categories',
               queryParameters: queryParameters,
-              data: data,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> updateCategory(String id, FormData formData) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{
+      'Content-Type': 'multipart/form-data',
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'categories/$id',
+              queryParameters: queryParameters,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> deleteCategory(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'DELETE', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'categories/$id',
+              queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -395,7 +441,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (limit != null) queryParameters['limit'] = limit;
     if (search != null && search.isNotEmpty) queryParameters['search'] = search;
     if (categoryId != null && categoryId.isNotEmpty) queryParameters['categoryId'] = categoryId;
-    if (restaurantId != null && restaurantId.isNotEmpty&&restaurantId!='0') queryParameters['restaurantId'] = restaurantId;
+    if (restaurantId != null && restaurantId.isNotEmpty && restaurantId != '0') queryParameters['merchantId'] = restaurantId;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(
@@ -1039,10 +1085,12 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> createOffer(FormData formData) async {
+  Future<Response> createOffer(Map<String, dynamic> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
+    final headers = <String, dynamic>{
+      'Content-Type': 'application/json',
+    };
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -1051,7 +1099,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'offers',
               queryParameters: queryParameters,
-              data: formData,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -1061,10 +1109,12 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> updateOffer(String id, FormData formData) async {
+  Future<Response> updateOffer(String id, Map<String, dynamic> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
+    final headers = <String, dynamic>{
+      'Content-Type': 'application/json',
+    };
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -1073,7 +1123,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'offers/$id',
               queryParameters: queryParameters,
-              data: formData,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -1095,6 +1145,51 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'offers/$id/delete',
               queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getSettings() async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'settings',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> patchSettings(List<Map<String, dynamic>> body) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{
+      'Content-Type': 'application/json',
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'settings',
+              queryParameters: queryParameters,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

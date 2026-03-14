@@ -13,6 +13,7 @@ extension DeliveryManMapper on DeliveryManModel {
       image: imageUrlFull,
       isOnline: isOnline,
       confirmed: confirmed,
+      isActive: isActive,
       officeOwnerId: officeOwnerId,
     );
   }

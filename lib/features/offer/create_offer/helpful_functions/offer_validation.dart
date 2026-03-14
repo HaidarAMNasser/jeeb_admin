@@ -3,7 +3,7 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 void offerValidationToast({
   String? name,
-  String? shortDescription,
+  String? description,
   List<String>? productIds,
   String? discountType,
   String? discountValue,
@@ -12,8 +12,8 @@ void offerValidationToast({
     customToast(msg: AppTranslation.pleaseEnterOfferName);
     return;
   }
-  if (shortDescription == null || shortDescription.trim().isEmpty) {
-    customToast(msg: AppTranslation.pleaseEnterOfferShortDescription);
+  if (description == null || description.trim().isEmpty) {
+    customToast(msg: AppTranslation.pleaseEnterOfferDescription);
     return;
   }
   if (productIds == null || productIds.isEmpty) {

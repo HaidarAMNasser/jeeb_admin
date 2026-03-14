@@ -1,0 +1,2447 @@
+{
+  "info": {
+    "name": "Jeeb Delivery API",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "",
+      "item": [
+        {
+          "name": "Get Profile Marchent",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "",
+                "type": "string"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "path": ["auth", "profile"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "path": ["auth", "profile"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:22:40 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1434"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "99"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "494"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "491"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1993"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "2891"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"59a-qRW0er5q0DY+rbcjCp325okvnqE\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\"statusCode\":200,\"message\":\"Operation successful\",\"data\":{\"currentLat\":null,\"currentLng\":null,\"id\":27,\"firstName\":\"Updated Name\",\"lastName\":\"Doe\",\"email\":\"merchant4@example.com\",\"phone\":\"+9639123455\",\"role\":\"MERCHANT\",\"notificationChannel\":\"WHATSAPP\",\"countryId\":1,\"country\":{\"id\":1,\"name\":{\"ar\":\"سوريا\",\"en\":\"Syria\"},\"code\":\"SY\",\"callingCode\":\"+963\",\"currencyCode\":\"SYP\",\"currencySymbol\":\"£\",\"currencySmallestUnit\":\"Piastre\",\"currencyFactor\":100,\"isActive\":true},\"cityId\":1,\"city\":{\"id\":1,\"name\":{\"ar\":\"دمشق\",\"en\":\"Damascus\"},\"countryId\":1},\"address\":\"Damascus, Merchant Street 123\",\"isOnline\":true,\"verifiedAt\":\"2026-03-10T10:39:17.846Z\",\"location\":{\"lat\":33.5138,\"lng\":36.2765},\"birthday\":\"1990-05-15\",\"createdAt\":\"2026-03-10T10:39:17.846Z\",\"updatedAt\":\"2026-03-10T13:55:59.554Z\",\"officeOwnerId\":null,\"imageId\":27,\"image\":{\"id\":27,\"entityType\":\"USER\",\"entityId\":27,\"url\":\"https://api.jeeb2.com/uploads/users/27/1773139884918_images2.webp\",\"mobileUrl\":\"https://api.jeeb2.com/uploads/users/27/1773139884918_images2_mobile.webp\",\"thumbnailUrl\":\"https://api.jeeb2.com/uploads/users/27/1773139884918_images2_thumb.webp\",\"isMain\":true,\"displayOrder\":0,\"createdAt\":\"2026-03-10T10:51:25.168Z\",\"updatedAt\":\"2026-03-10T10:51:25.168Z\"},\"restaurantName\":\"true\",\"isOpen\":true,\"description\":\"hellllgleewewbrb\",\"estimatedDeliveryMinutes\":30,\"merchantIsActive\":true},\"timestamp\":\"2026-03-10T21:22:40.797Z\",\"path\":\"/api/v1/auth/profile\"}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Get Profile admin",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "",
+                "type": "string"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "path": ["auth", "profile"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "path": ["auth", "profile"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:24:01 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "868"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "99"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "493"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "410"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1992"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "2810"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"364-d5suFnEyxQmwd2x4JY+KOsr5SE4\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\"statusCode\":200,\"message\":\"Operation successful\",\"data\":{\"currentLat\":null,\"currentLng\":null,\"id\":12,\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"user23@example.com\",\"phone\":\"+96391234\",\"role\":\"CUSTOMER\",\"notificationChannel\":\"EMAIL\",\"countryId\":1,\"country\":{\"id\":1,\"name\":{\"ar\":\"سوريا\",\"en\":\"Syria\"},\"code\":\"SY\",\"callingCode\":\"+963\",\"currencyCode\":\"SYP\",\"currencySymbol\":\"£\",\"currencySmallestUnit\":\"Piastre\",\"currencyFactor\":100,\"isActive\":true},\"cityId\":1,\"city\":{\"id\":1,\"name\":{\"ar\":\"دمشق\",\"en\":\"Damascus\"},\"countryId\":1},\"address\":\"Damascus, User Street 123\",\"isOnline\":true,\"verifiedAt\":\"2026-03-08T16:33:56.616Z\",\"location\":null,\"birthday\":\"1990-05-15\",\"createdAt\":\"2026-03-08T16:33:56.616Z\",\"updatedAt\":\"2026-03-08T16:33:56.616Z\",\"officeOwnerId\":null,\"imageId\":null,\"image\":null},\"timestamp\":\"2026-03-10T21:24:01.802Z\",\"path\":\"/api/v1/auth/profile\"}"
+            },
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "path": ["auth", "profile"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:24:45 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "608"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "98"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "17"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "492"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "367"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1991"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "2767"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"260-fo86TRqf/dWzqhEABdQCVclCrIg\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\"statusCode\":200,\"message\":\"Operation successful\",\"data\":{\"currentLat\":null,\"currentLng\":null,\"id\":3,\"firstName\":\"Admin\",\"lastName\":\"System\",\"email\":\"admin3@jeeb.com\",\"phone\":\"+963950000003\",\"role\":\"ADMIN\",\"notificationChannel\":\"EMAIL\",\"countryId\":null,\"country\":null,\"cityId\":null,\"city\":null,\"address\":\"Damascus, Syria\",\"isOnline\":true,\"verifiedAt\":\"2026-03-07T18:23:26.969Z\",\"location\":null,\"birthday\":null,\"createdAt\":\"2026-03-07T18:23:27.006Z\",\"updatedAt\":\"2026-03-07T18:23:27.006Z\",\"officeOwnerId\":null,\"imageId\":null,\"image\":null},\"timestamp\":\"2026-03-10T21:24:45.267Z\",\"path\":\"/api/v1/auth/profile\"}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Register (Customer)",
+          "description": "",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.data.userId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "firstName",
+                  "value": "Test",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "lastName",
+                  "value": "User",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "email",
+                  "value": "customer@example.com",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "password",
+                  "value": "password123",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "phone",
+                  "value": "+963912345678",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "role",
+                  "value": "CUSTOMER",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "countryId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "cityId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "address",
+                  "value": "Damascus, Street 1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "notificationChannel",
+                  "value": "WHATSAPP",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "birthday",
+                  "value": ["1990-01-15", "1990-01-15"],
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "location",
+                  "value": "{\"lat\": 33.5138, \"lng\": 36.2765}",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "disabled": false
+                }
+              ]
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "path": ["auth", "register"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success - WhatsApp OTP",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "path": ["auth", "register"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+963912345678\",\n    \"role\": \"CUSTOMER\",\n    \"countryId\": 1,\n    \"cityId\": 1,\n    \"address\": \"Damascus, Street 1\",\n    \"notificationChannel\": \"WHATSAPP\",\n    \"birthday\": \"1990-01-15\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"message\": \"User registered successfully. Please verify your account using the OTP sent to your phone.\",\n    \"data\": {\n        \"userId\": 1,\n        \"message\": \"User registered successfully. Please verify your account using the OTP sent to your phone.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/register\"\n}"
+            },
+            {
+              "name": "Success - Email OTP",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "path": ["auth", "register"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"email\": \"customer_email@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+963912345678\",\n    \"role\": \"CUSTOMER\",\n    \"countryId\": 1,\n    \"cityId\": 1,\n    \"address\": \"Damascus, Street 1\",\n    \"notificationChannel\": \"EMAIL\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"message\": \"User registered successfully. Please verify your account using the OTP sent to your email.\",\n    \"data\": {\n        \"userId\": 1,\n        \"message\": \"User registered successfully. Please verify your account using the OTP sent to your email.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/register\"\n}"
+            },
+            {
+              "name": "Error - User Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "path": ["auth", "register"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+963912345678\",\n    \"role\": \"CUSTOMER\",\n    \"countryId\": 1,\n    \"cityId\": 1,\n    \"address\": \"Damascus, Street 1\",\n    \"notificationChannel\": \"WHATSAPP\",\n    \"birthday\": \"1990-01-15\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 400,\n    \"message\": \"User already exists\",\n    \"data\": null,\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/register\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Register (Merchant)",
+          "description": "",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.data.userId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "firstName",
+                  "value": "Merchant",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "lastName",
+                  "value": "One",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "email",
+                  "value": "merchant@example.com",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "password",
+                  "value": "password",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "phone",
+                  "value": "+963987654321",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "role",
+                  "value": "MERCHANT",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "countryId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "cityId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "address",
+                  "value": "Damascus, Street 2",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "notificationChannel",
+                  "value": "EMAIL",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "restaurantName",
+                  "value": "Pizza Hut Damascus",
+                  "description": "Restaurant name (required for MERCHANT role)",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "location",
+                  "value": "{\"lat\": 33.5138, \"lng\": 36.2765}",
+                  "description": "Restaurant location as JSON",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "disabled": false
+                }
+              ]
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "path": ["auth", "register"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "path": ["auth", "register"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"firstName\": \"Merchant\",\n    \"lastName\": \"One\",\n    \"email\": \"merchant@example.com\",\n    \"password\": \"password\",\n    \"phone\": \"+963987654321\",\n    \"role\": \"MERCHANT\",\n    \"countryId\": 1,\n    \"cityId\": 1,\n    \"address\": \"Damascus, Street 2\",\n    \"notificationChannel\": \"EMAIL\",\n    \"restaurantName\": \"Pizza Hut Damascus\",\n    \"location\": \"{\\\"lat\\\": 33.5138, \\\"lng\\\": 36.2765}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"message\": \"User registered successfully. Please verify your account using the OTP sent to your phone.\",\n    \"data\": {\n        \"userId\": 2,\n        \"message\": \"User registered successfully. Please verify your account using the OTP sent to your phone.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/register\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Register (Delivery)",
+          "description": "",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.data.userId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "firstName",
+                  "value": "Driver",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "lastName",
+                  "value": "One",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "email",
+                  "value": "driver@example.com",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "password",
+                  "value": "password",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "phone",
+                  "value": "+963987654321",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "role",
+                  "value": "DELIVERY",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "countryId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "cityId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "address",
+                  "value": "Damascus, Street 3",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "notificationChannel",
+                  "value": "WHATSAPP",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "location",
+                  "value": "{\"lat\": 33.5138, \"lng\": 36.2765}",
+                  "description": "Driver location as JSON",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "disabled": false
+                }
+              ]
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "path": ["auth", "register"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success - Delivery Pending Approval",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "path": ["auth", "register"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"firstName\": \"Driver\",\n    \"lastName\": \"One\",\n    \"email\": \"driver@example.com\",\n    \"password\": \"password\",\n    \"phone\": \"+963987654321\",\n    \"role\": \"DELIVERY\",\n    \"countryId\": 1,\n    \"cityId\": 1,\n    \"address\": \"Damascus, Street 3\",\n    \"notificationChannel\": \"WHATSAPP\",\n    \"location\": \"{\\\"lat\\\": 33.5138, \\\"lng\\\": 36.2765}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"message\": \"Delivery registered successfully. Your account is pending approval. Please verify your account using the OTP sent to your phone.\",\n    \"data\": {\n        \"userId\": 3,\n        \"message\": \"Delivery registered successfully. Your account is pending approval. Please verify your account using the OTP sent to your phone.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/register\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Login (Unified) Admin",
+          "description": "",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.data.access_token);",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin3@jeeb.com\",\n    \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "path": ["auth", "login"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Error - Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "path": ["auth", "login"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 401,\n    \"message\": \"Invalid credentials\",\n    \"data\": null,\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/login\"\n}"
+            },
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "path": ["auth", "login"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"admin3@jeeb.com\",\n    \"password\": \"password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:14:36 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "826"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "99"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "497"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "443"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1997"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "3443"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"33a-+PeXvGy6JXrvPV3tZEoaeaYNve4\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoiYWRtaW4zQGplZWIuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzczMTc3Mjc2LCJleHAiOjE3NzMyNjM2NzZ9.rAt0qkFd3tkkNPTktLjXhGxSUAEzgtA-5zWhFlAr-_I\",\n        \"user\": {\n            \"currentLat\": null,\n            \"currentLng\": null,\n            \"id\": 3,\n            \"firstName\": \"Admin\",\n            \"lastName\": \"System\",\n            \"email\": \"admin3@jeeb.com\",\n            \"phone\": \"+963950000003\",\n            \"role\": \"ADMIN\",\n            \"notificationChannel\": \"EMAIL\",\n            \"countryId\": null,\n            \"country\": null,\n            \"cityId\": null,\n            \"city\": null,\n            \"address\": \"Damascus, Syria\",\n            \"isOnline\": true,\n            \"verifiedAt\": \"2026-03-07T18:23:26.969Z\",\n            \"location\": null,\n            \"birthday\": null,\n            \"createdAt\": \"2026-03-07T18:23:27.006Z\",\n            \"updatedAt\": \"2026-03-07T18:23:27.006Z\",\n            \"officeOwnerId\": null,\n            \"imageId\": null,\n            \"image\": null\n        }\n    },\n    \"timestamp\": \"2026-03-10T21:14:36.722Z\",\n    \"path\": \"/api/v1/auth/login\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Login (Unified) Marchent",
+          "description": "",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.data.access_token);",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"merchant4@example.com\",\n    \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "path": ["auth", "login"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Error - Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "path": ["auth", "login"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 401,\n    \"message\": \"Invalid credentials\",\n    \"data\": null,\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/login\"\n}"
+            },
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "path": ["auth", "login"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"merchant4@example.com\",\n    \"password\": \"password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:12:31 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1666"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "98"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "29"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "498"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "569"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1998"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "3569"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"682-IbvDCGJe2k5+n8EN/W8hwJx0iQo\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI3LCJlbWFpbCI6Im1lcmNoYW50NEBleGFtcGxlLmNvbSIsInJvbGUiOiJNRVJDSEFOVCIsImlhdCI6MTc3MzE3NzE1MSwiZXhwIjoxNzczNzgxOTUxfQ.mtG3qq_9vPw6gjlHAgER--YeWuHFfs4ss7fhNIwLyko\",\n        \"user\": {\n            \"currentLat\": null,\n            \"currentLng\": null,\n            \"id\": 27,\n            \"firstName\": \"Updated Name\",\n            \"lastName\": \"Doe\",\n            \"email\": \"merchant4@example.com\",\n            \"phone\": \"+9639123455\",\n            \"role\": \"MERCHANT\",\n            \"notificationChannel\": \"WHATSAPP\",\n            \"countryId\": 1,\n            \"country\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"سوريا\",\n                    \"en\": \"Syria\"\n                },\n                \"code\": \"SY\",\n                \"callingCode\": \"+963\",\n                \"currencyCode\": \"SYP\",\n                \"currencySymbol\": \"£\",\n                \"currencySmallestUnit\": \"Piastre\",\n                \"currencyFactor\": 100,\n                \"isActive\": true\n            },\n            \"cityId\": 1,\n            \"city\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"دمشق\",\n                    \"en\": \"Damascus\"\n                },\n                \"countryId\": 1\n            },\n            \"address\": \"Damascus, Merchant Street 123\",\n            \"isOnline\": true,\n            \"verifiedAt\": \"2026-03-10T10:39:17.846Z\",\n            \"location\": {\n                \"lat\": 33.5138,\n                \"lng\": 36.2765\n            },\n            \"birthday\": \"1990-05-15\",\n            \"createdAt\": \"2026-03-10T10:39:17.846Z\",\n            \"updatedAt\": \"2026-03-10T13:55:59.554Z\",\n            \"officeOwnerId\": null,\n            \"imageId\": 27,\n            \"image\": {\n                \"id\": 27,\n                \"entityType\": \"USER\",\n                \"entityId\": 27,\n                \"url\": \"https://api.jeeb2.com/uploads/users/27/1773139884918_images2.webp\",\n                \"mobileUrl\": \"https://api.jeeb2.com/uploads/users/27/1773139884918_images2_mobile.webp\",\n                \"thumbnailUrl\": \"https://api.jeeb2.com/uploads/users/27/1773139884918_images2_thumb.webp\",\n                \"isMain\": true,\n                \"displayOrder\": 0,\n                \"createdAt\": \"2026-03-10T10:51:25.168Z\",\n                \"updatedAt\": \"2026-03-10T10:51:25.168Z\"\n            },\n            \"restaurantName\": \"true\",\n            \"isOpen\": true,\n            \"description\": \"hellllgleewewbrb\",\n            \"estimatedDeliveryMinutes\": 30,\n            \"merchantIsActive\": true\n        }\n    },\n    \"timestamp\": \"2026-03-10T21:12:31.148Z\",\n    \"path\": \"/api/v1/auth/login\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Login (Unified) User",
+          "description": "",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.data.access_token);",
+                  "    pm.collectionVariables.set(\"userId\", jsonData.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user23@example.com\",\n    \"password\": \"strongPassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "path": ["auth", "login"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Error - Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "path": ["auth", "login"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 401,\n    \"message\": \"Invalid credentials\",\n    \"data\": null,\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/login\"\n}"
+            },
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "path": ["auth", "login"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"user23@example.com\",\n    \"password\": \"strongPassword123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:11:59 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1096"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "99"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "499"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "600"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1999"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "3600"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"448-pAY2tHmKyQsQLMjp++F6QVHuksA\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InVzZXIyM0BleGFtcGxlLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc3MzE3NzExOSwiZXhwIjoxNzc1NzY5MTE5fQ.DJiMAOcQPt8msMG6MethNIML-A9z_Rt9fnlxWjW_UMI\",\n        \"user\": {\n            \"currentLat\": null,\n            \"currentLng\": null,\n            \"id\": 12,\n            \"firstName\": \"John\",\n            \"lastName\": \"Doe\",\n            \"email\": \"user23@example.com\",\n            \"phone\": \"+96391234\",\n            \"role\": \"CUSTOMER\",\n            \"notificationChannel\": \"EMAIL\",\n            \"countryId\": 1,\n            \"country\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"سوريا\",\n                    \"en\": \"Syria\"\n                },\n                \"code\": \"SY\",\n                \"callingCode\": \"+963\",\n                \"currencyCode\": \"SYP\",\n                \"currencySymbol\": \"£\",\n                \"currencySmallestUnit\": \"Piastre\",\n                \"currencyFactor\": 100,\n                \"isActive\": true\n            },\n            \"cityId\": 1,\n            \"city\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"دمشق\",\n                    \"en\": \"Damascus\"\n                },\n                \"countryId\": 1\n            },\n            \"address\": \"Damascus, User Street 123\",\n            \"isOnline\": true,\n            \"verifiedAt\": \"2026-03-08T16:33:56.616Z\",\n            \"location\": null,\n            \"birthday\": \"1990-05-15\",\n            \"createdAt\": \"2026-03-08T16:33:56.616Z\",\n            \"updatedAt\": \"2026-03-08T16:33:56.616Z\",\n            \"officeOwnerId\": null,\n            \"imageId\": null,\n            \"image\": null\n        }\n    },\n    \"timestamp\": \"2026-03-10T21:11:59.220Z\",\n    \"path\": \"/api/v1/auth/login\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Verify Account",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"khderhabib2016@gmail.com\",\n    \"otp\": \"217143\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify",
+              "path": ["auth", "verify"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/verify",
+                  "path": ["auth", "verify"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"khderhabib2016@gmail.com\",\n    \"otp\": \"217143\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Account verified successfully\",\n    \"data\": {\n        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n        \"user\": {\n            \"id\": 1,\n            \"firstName\": \"Test\",\n            \"lastName\": \"User\",\n            \"email\": \"khderhabib2016@gmail.com\",\n            \"phone\": \"+963994636381\",\n            \"role\": \"CUSTOMER\",\n            \"notificationChannel\": \"EMAIL\",\n            \"countryId\": 1,\n            \"country\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"سوريا\",\n                    \"en\": \"Syria\"\n                },\n                \"code\": \"SY\",\n                \"callingCode\": \"+963\",\n                \"currencyCode\": \"SYP\",\n                \"currencySymbol\": \"£\",\n                \"currencySmallestUnit\": \"Piastre\",\n                \"currencyFactor\": 100,\n                \"isActive\": true\n            },\n            \"cityId\": 1,\n            \"city\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"دمشق\",\n                    \"en\": \"Damascus\"\n                },\n                \"countryId\": 1\n            },\n            \"address\": \"Damascus, Street 1\",\n            \"isOnline\": false,\n            \"verifiedAt\": \"2026-02-21T14:24:35.612Z\",\n            \"currentLat\": null,\n            \"currentLng\": null,\n            \"createdAt\": \"2026-02-21T14:17:13.299Z\",\n            \"updatedAt\": \"2026-02-21T22:07:21.076Z\"\n        }\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/verify\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"customer@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "path": ["auth", "resend-otp"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/resend-otp",
+                  "path": ["auth", "resend-otp"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"customer@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"OTP resent successfully to your phone.\",\n    \"data\": {\n        \"message\": \"OTP resent successfully to your phone.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/resend-otp\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"customer@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "path": ["auth", "forgot-password"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/forgot-password",
+                  "path": ["auth", "forgot-password"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"customer@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"OTP sent successfully to your phone.\",\n    \"data\": {\n        \"message\": \"OTP sent successfully to your phone.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/forgot-password\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Reset Password",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"customer@example.com\",\n    \"otp\": \"123456\",\n    \"password\": \"newpassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "path": ["auth", "reset-password"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "path": ["auth", "reset-password"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"customer@example.com\",\n    \"otp\": \"123456\",\n    \"password\": \"newpassword123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Password reset successfully. You can now login.\",\n    \"data\": {\n        \"message\": \"Password reset successfully. You can now login.\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/reset-password\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Get Profile user",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "",
+                "type": "string"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "path": ["auth", "profile"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "path": ["auth", "profile"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Server",
+                  "value": "nginx"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 10 Mar 2026 21:24:01 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "868"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "X-RateLimit-Limit-short",
+                  "value": "100"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-short",
+                  "value": "99"
+                },
+                {
+                  "key": "X-RateLimit-Reset-short",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Limit-medium",
+                  "value": "500"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-medium",
+                  "value": "493"
+                },
+                {
+                  "key": "X-RateLimit-Reset-medium",
+                  "value": "410"
+                },
+                {
+                  "key": "X-RateLimit-Limit-long",
+                  "value": "2000"
+                },
+                {
+                  "key": "X-RateLimit-Remaining-long",
+                  "value": "1992"
+                },
+                {
+                  "key": "X-RateLimit-Reset-long",
+                  "value": "2810"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"364-d5suFnEyxQmwd2x4JY+KOsr5SE4\""
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "strict-origin-when-cross-origin"
+                },
+                {
+                  "key": "Permissions-Policy",
+                  "value": "geolocation=(), microphone=(), camera=()"
+                }
+              ],
+              "body": "{\"statusCode\":200,\"message\":\"Operation successful\",\"data\":{\"currentLat\":null,\"currentLng\":null,\"id\":12,\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"user23@example.com\",\"phone\":\"+96391234\",\"role\":\"CUSTOMER\",\"notificationChannel\":\"EMAIL\",\"countryId\":1,\"country\":{\"id\":1,\"name\":{\"ar\":\"سوريا\",\"en\":\"Syria\"},\"code\":\"SY\",\"callingCode\":\"+963\",\"currencyCode\":\"SYP\",\"currencySymbol\":\"£\",\"currencySmallestUnit\":\"Piastre\",\"currencyFactor\":100,\"isActive\":true},\"cityId\":1,\"city\":{\"id\":1,\"name\":{\"ar\":\"دمشق\",\"en\":\"Damascus\"},\"countryId\":1},\"address\":\"Damascus, User Street 123\",\"isOnline\":true,\"verifiedAt\":\"2026-03-08T16:33:56.616Z\",\"location\":null,\"birthday\":\"1990-05-15\",\"createdAt\":\"2026-03-08T16:33:56.616Z\",\"updatedAt\":\"2026-03-08T16:33:56.616Z\",\"officeOwnerId\":null,\"imageId\":null,\"image\":null},\"timestamp\":\"2026-03-10T21:24:01.802Z\",\"path\":\"/api/v1/auth/profile\"}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Update Profile",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "PATCH",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "firstName",
+                  "value": "Updated Name",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "lastName",
+                  "value": "Updated Last Name",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "phone",
+                  "value": "+963987654321",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "birthday",
+                  "value": "1990-01-15",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "{\"lat\": 33.5138, \"lng\": 36.2765}",
+                  "description": "User location as JSON",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "disabled": true
+                },
+                {
+                  "key": "restaurantName",
+                  "value": "true",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "isOpen",
+                  "value": "true",
+                  "type": "text",
+                  "disabled": false
+                },
+                {
+                  "key": "description",
+                  "value": "hellllgleewewbrb",
+                  "type": "text",
+                  "disabled": false
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "",
+                "type": "string"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "path": ["auth", "profile"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "path": ["auth", "profile"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"firstName\": \"Updated Name\",\n    \"lastName\": \"Updated Last Name\",\n    \"birthday\": \"1990-01-15\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"id\": 1,\n        \"firstName\": \"Updated Name\",\n        \"lastName\": \"Updated Last Name\",\n        \"email\": \"customer@example.com\",\n        \"phone\": \"+963994636381\",\n        \"role\": \"CUSTOMER\",\n        \"notificationChannel\": \"EMAIL\",\n        \"countryId\": 1,\n        \"country\": {\n            \"id\": 1,\n            \"name\": {\n                \"ar\": \"سوريا\",\n                \"en\": \"Syria\"\n            },\n            \"code\": \"SY\",\n            \"callingCode\": \"+963\",\n            \"currencyCode\": \"SYP\",\n            \"currencySymbol\": \"£\",\n            \"currencySmallestUnit\": \"Piastre\",\n            \"currencyFactor\": 100,\n            \"isActive\": true\n        },\n        \"cityId\": 1,\n        \"city\": {\n            \"id\": 1,\n            \"name\": {\n                \"ar\": \"دمشق\",\n                \"en\": \"Damascus\"\n            },\n            \"countryId\": 1\n        },\n        \"address\": \"Damascus, Street 1\",\n        \"isOnline\": false,\n        \"verifiedAt\": \"2026-02-21T14:24:35.612Z\",\n        \"currentLat\": null,\n        \"currentLng\": null,\n        \"createdAt\": \"2026-02-21T14:17:13.299Z\",\n        \"updatedAt\": \"2026-02-21T22:07:21.076Z\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/profile\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Delete Account",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "DELETE",
+            "body": {},
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "",
+                "type": "string"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "path": ["auth", "profile"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/profile",
+                  "path": ["auth", "profile"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Profile deleted successfully\",\n    \"data\": {\n        \"message\": \"Profile deleted successfully\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/profile\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Logout",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "POST",
+            "body": {},
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "",
+                "type": "string"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "path": ["auth", "logout"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}",
+                    "description": "",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/logout",
+                  "path": ["auth", "logout"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Logged out successfully\",\n    \"data\": {\n        \"message\": \"Logged out successfully\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/auth/logout\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "auth": {}
+    },
+    {
+      "name": "Countries & Cities",
+      "description": "",
+      "item": [
+        {
+          "name": "Get All Countries",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/countries",
+              "path": ["countries"],
+              "host": ["{{baseUrl}}"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "syria",
+                  "description": "Search by country name (English)",
+                  "type": "string"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "",
+                  "type": "string"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "",
+                  "type": "string"
+                }
+              ],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/countries",
+                  "path": ["countries"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "syria",
+                      "description": "Search by country name (English)",
+                      "disabled": false
+                    },
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "",
+                      "disabled": false
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "description": "",
+                      "disabled": false
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": {\n                \"ar\": \"سوريا\",\n                \"en\": \"Syria\"\n            },\n            \"code\": \"SY\",\n            \"callingCode\": \"+963\",\n            \"currencyCode\": \"SYP\",\n            \"currencySymbol\": \"£\",\n            \"currencySmallestUnit\": \"Piastre\",\n            \"currencyFactor\": 100,\n            \"isActive\": true\n        }\n    ],\n    \"total\": 1,\n    \"page\": 1,\n    \"limit\": 10\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Get One Country",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/countries/1",
+              "path": ["countries", "1"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/countries/1",
+                  "path": ["countries", "1"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Syria\",\n        \"code\": \"SY\",\n        \"currency\": \"SYP\"\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/countries/1\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Get Cities (By Country)",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cities",
+              "path": ["cities"],
+              "host": ["{{baseUrl}}"],
+              "query": [
+                {
+                  "key": "countryId",
+                  "value": "1",
+                  "description": "Filter by country ID",
+                  "type": "string"
+                },
+                {
+                  "key": "search",
+                  "value": "damascus",
+                  "description": "Search by city name (English)",
+                  "type": "string"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "",
+                  "type": "string"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "",
+                  "type": "string"
+                }
+              ],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/cities",
+                  "path": ["cities"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [
+                    {
+                      "key": "countryId",
+                      "value": "1",
+                      "description": "Filter by country ID",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "damascus",
+                      "description": "Search by city name (English)",
+                      "disabled": false
+                    },
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "",
+                      "disabled": false
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "description": "",
+                      "disabled": false
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": {\n                \"ar\": \"دمشق\",\n                \"en\": \"Damascus\"\n            },\n            \"countryId\": 1,\n            \"country\": {\n                \"id\": 1,\n                \"name\": {\n                    \"ar\": \"سوريا\",\n                    \"en\": \"Syria\"\n                },\n                \"code\": \"SY\",\n                \"callingCode\": \"+963\",\n                \"currencyCode\": \"SYP\",\n                \"currencySymbol\": \"£\",\n                \"currencySmallestUnit\": \"Piastre\",\n                \"currencyFactor\": 100,\n                \"isActive\": true\n            }\n        }\n    ],\n    \"total\": 1,\n    \"page\": 1,\n    \"limit\": 10\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        },
+        {
+          "name": "Get One City",
+          "description": "",
+          "event": [],
+          "auth": {},
+          "request": {
+            "auth": {},
+            "method": "GET",
+            "body": {},
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cities/1",
+              "path": ["cities", "1"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/cities/1",
+                  "path": ["cities", "1"],
+                  "host": ["{{baseUrl}}"],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {}
+              },
+              "cookie": [],
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Damascus\",\n        \"countryId\": 1\n    },\n    \"timestamp\": \"2023-10-27T10:00:00.000Z\",\n    \"path\": \"/api/v1/cities/1\"\n}"
+            }
+          ],
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          }
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "auth": {}
+    }
+  ],
+  "variable": [],
+  "event": [],
+  "auth": {}
+}

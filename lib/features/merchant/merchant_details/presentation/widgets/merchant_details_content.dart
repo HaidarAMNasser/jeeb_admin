@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_offers_section.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_products_section.dart';
@@ -43,27 +44,22 @@ class MerchantDetailsContent extends StatelessWidget {
                   Row(
                     children: [
                       if (merchant.image != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(AppRadius.r100),
-                          ),
-                          child: Container(
+                        SizedBox(
+                          width: AppWidth.s100,
+                          height: AppHeight.s100,
+                          child: CustomCachedNetworkImage(
+                            imageUrl: merchant.image!,
+                            fit: BoxFit.cover,
                             width: AppWidth.s100,
                             height: AppHeight.s100,
-                            color: ColorManager.background,
-                            child: Image.network(
-                              merchant.image!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: ColorManager.background,
-                                  child: Icon(
-                                    Icons.store,
-                                    color: ColorManager.primary,
-                                    size: AppSize.s40,
-                                  ),
-                                );
-                              },
+                            borderRadius: BorderRadius.circular(AppRadius.r100),
+                            errorWidget: Container(
+                              color: ColorManager.background,
+                              child: Icon(
+                                Icons.store,
+                                color: ColorManager.primary,
+                                size: AppSize.s40,
+                              ),
                             ),
                           ),
                         )

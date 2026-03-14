@@ -16,6 +16,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
+  TextEditingController servesCountController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   // State values accessible directly
@@ -32,6 +33,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
           descriptionController.text = event.product!.description ?? '';
           priceController.text = (event.product!.price / 100).toString(); // Convert from smallest unit to decimal
           quantityController.text = event.product!.stockQuantity?.toString() ?? '';
+          servesCountController.text = event.product!.servesCount?.toString() ?? '';
           emit(CreateProductInitial(
             images: event.product!.images.map((img) => img.url).toList(), // Extract URLs from image entities
             selectedCategoryId: event.product!.categoryId ?? '',
@@ -56,6 +58,10 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
         add(const CheckValidationEvent());
       } else if (event is UpdateProductQuantity) {
         quantityController.text = event.quantity;
+        emit(state.copyWith());
+        add(const CheckValidationEvent());
+      } else if (event is UpdateProductServesCount) {
+        servesCountController.text = event.servesCount;
         emit(state.copyWith());
       } else if (event is UpdateSelectedCategory) {
         emit(state.copyWith(selectedCategoryId: event.categoryId));
@@ -83,14 +89,18 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
         final priceInSmallestUnit = ((double.tryParse(priceController.text.trim()) ?? 0.0) * 100).toInt();
         
         // Build FormData with text fields
+        final hasStockQty = quantityController.text.trim().isNotEmpty;
         final formData = FormData.fromMap({
           'name': nameController.text.trim(),
           if (descriptionController.text.trim().isNotEmpty)
             'description': descriptionController.text.trim(),
           'price': priceInSmallestUnit,
           'categoryId': state.selectedCategoryId ?? '',
-          if (quantityController.text.trim().isNotEmpty)
+          if (hasStockQty) 'hasStock': true,
+          if (hasStockQty)
             'stockQuantity': int.tryParse(quantityController.text.trim()),
+          if (servesCountController.text.trim().isNotEmpty)
+            'personCount': int.tryParse(servesCountController.text.trim()),
         });
 
         // Add images as actual file uploads (not path strings). The server expects
@@ -122,6 +132,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
         descriptionController.clear();
         priceController.clear();
         quantityController.clear();
+        servesCountController.clear();
         emit(const CreateProductInitial());
       }
     });
@@ -147,6 +158,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
     descriptionController.dispose();
     priceController.dispose();
     quantityController.dispose();
+    servesCountController.dispose();
     return super.close();
   }
 }

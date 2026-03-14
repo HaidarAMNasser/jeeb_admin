@@ -115,9 +115,9 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
 
         return IconButton(
           icon: Icon(Icons.more_vert, color: ColorManager.titlesColor),
-          onPressed: () => DeliveryDetailsOptionsDialog.show(
+            onPressed: () => DeliveryDetailsOptionsDialog.show(
             context: context,
-            showConfirm: !state.deliveryMan.confirmed,
+            showConfirm: state.deliveryMan.isActive != true,
             onEdit: () {
               AppRouter.navigateTo(
                 context,

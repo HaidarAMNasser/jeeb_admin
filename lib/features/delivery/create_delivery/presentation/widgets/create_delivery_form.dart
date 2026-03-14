@@ -45,10 +45,7 @@ class CreateDeliveryForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _DeliveryFormFields(
-              controllers: controllers,
-              isEdit: isEdit,
-            ),
+            _DeliveryFormFields(controllers: controllers, isEdit: isEdit),
             SizedBox(height: AppHeight.s16),
             CountryCityWidget(
               selectedCountry: selectedCountry,
@@ -59,7 +56,9 @@ class CreateDeliveryForm extends StatelessWidget {
             ),
             SizedBox(height: AppHeight.s24),
             CustomButton(
-              text: isEdit ? AppTranslation.save : AppTranslation.addDeliveryMan,
+              text: isEdit
+                  ? AppTranslation.save
+                  : AppTranslation.addDeliveryMan,
               onPressed: () => _handleSubmit(context),
               isLoading: false,
             ),
@@ -99,18 +98,20 @@ class CreateDeliveryForm extends StatelessWidget {
     final address = controllers.address.text.trim();
     final birthday = controllers.birthday.text.trim();
 
-    onSubmit(DeliveryFormValues(
-      firstName: firstName,
-      lastName: lastName,
-      phone: phone,
-      email: email,
-      password: password,
-      address: address.isEmpty ? null : address,
-      birthday: birthday.isEmpty ? null : birthday,
-      imagePath: imagePath,
-      countryId: selectedCountry?.id,
-      cityId: selectedCity?.id,
-    ));
+    onSubmit(
+      DeliveryFormValues(
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        password: password,
+        address: address.isEmpty ? null : address,
+        birthday: birthday.isEmpty ? null : birthday,
+        imagePath: imagePath,
+        countryId: selectedCountry?.id,
+        cityId: selectedCity?.id,
+      ),
+    );
   }
 }
 
@@ -118,10 +119,7 @@ class _DeliveryFormFields extends StatelessWidget {
   final DeliveryFormControllers controllers;
   final bool isEdit;
 
-  const _DeliveryFormFields({
-    required this.controllers,
-    required this.isEdit,
-  });
+  const _DeliveryFormFields({required this.controllers, required this.isEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +139,7 @@ class _DeliveryFormFields extends StatelessWidget {
         ),
         SizedBox(height: AppHeight.s16),
         CustomTextField(
+          keyboardType: TextInputType.phone,
           controller: controllers.phone,
           title: AppTranslation.phone,
           hintText: AppTranslation.enterPhone,

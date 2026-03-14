@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/features/product/create_product/presentation/bloc/create_product_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -126,19 +127,17 @@ class _ImageItem extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.r12),
             child: imagePath.startsWith('http')
-                ? Image.network(
-                    imagePath,
+                ? CustomCachedNetworkImage(
+                    imageUrl: imagePath,
                     fit: BoxFit.fill,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: ColorManager.background,
-                        child: Icon(
-                          Icons.image,
-                          color: ColorManager.defaultWhite.withOpacity(0.3),
-                          size: AppSize.s40,
-                        ),
-                      );
-                    },
+                    errorWidget: Container(
+                      color: ColorManager.background,
+                      child: Icon(
+                        Icons.image,
+                        color: ColorManager.defaultWhite.withOpacity(0.3),
+                        size: AppSize.s40,
+                      ),
+                    ),
                   )
                 : Image.file(
                     File(imagePath),
