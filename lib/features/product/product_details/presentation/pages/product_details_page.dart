@@ -15,7 +15,6 @@ import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_input_dialog.dart';
 
 import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 import 'package:jeeb_admin/features/product/delete_product/presentation/bloc/delete_product_bloc.dart';
@@ -53,37 +52,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final role = await di.sl<StorageService>().getUserRole();
     if (!mounted) return;
     setState(() => _isAdmin = role == UserRoles.admin.name);
-  }
-
-  Future<void> _showConfirmDialog(
-    BuildContext context,
-    ProductDetailsLoaded state,
-  ) async {
-    final product = state.product;
-    final currentPrice = (product.price / 100).toStringAsFixed(2);
-    final result = await CustomInputDialog.show(
-      context: context,
-      title: AppTranslation.confirmProduct,
-      label: AppTranslation.newPrice,
-      hintText: AppTranslation.enterNewPrice,
-      initialValue: currentPrice,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty)
-          return AppTranslation.pleaseEnterProductPrice;
-        final parsed = double.tryParse(value.replaceAll(',', ''));
-        if (parsed == null || parsed <= 0)
-          return AppTranslation.invalidProductPrice;
-        return null;
-      },
-    );
-    if (result == null || result.isEmpty) return;
-    context.read<ConfirmProductBloc>().add(
-      ConfirmProductSubmitted(
-        productId: product.id,
-        newPrice: double.parse(result.replaceAll(',', '')),
-      ),
-    );
   }
 
   void _showDeleteDialog(BuildContext context, ProductDetailsLoaded state) {
@@ -211,7 +179,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             context: context,
             isAdmin: _isAdmin,
             onEdit: () => _onEditProduct(context, state),
-            onConfirm: () => _showConfirmDialog(context, state),
+            onConfirm: () => () {},
             onDelete: () => _showDeleteDialog(context, state),
           ),
         );
@@ -219,3 +187,33 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 }
+  // Future<void> _showConfirmDialog(
+  //   BuildContext context,
+  //   ProductDetailsLoaded state,
+  // ) async {
+  //   final product = state.product;
+  //   final currentPrice = (product.price / 100).toStringAsFixed(2);
+  //   final result = await CustomInputDialog.show(
+  //     context: context,
+  //     title: AppTranslation.confirmProduct,
+  //     label: AppTranslation.newPrice,
+  //     hintText: AppTranslation.enterNewPrice,
+  //     initialValue: currentPrice,
+  //     keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  //     validator: (value) {
+  //       if (value == null || value.trim().isEmpty)
+  //         return AppTranslation.pleaseEnterProductPrice;
+  //       final parsed = double.tryParse(value.replaceAll(',', ''));
+  //       if (parsed == null || parsed <= 0)
+  //         return AppTranslation.invalidProductPrice;
+  //       return null;
+  //     },
+  //   );
+  //   if (result == null || result.isEmpty) return;
+  //   context.read<ConfirmProductBloc>().add(
+  //     ConfirmProductSubmitted(
+  //       productId: product.id,
+  //       newPrice: double.parse(result.replaceAll(',', '')),
+  //     ),
+  //   );
+  // }

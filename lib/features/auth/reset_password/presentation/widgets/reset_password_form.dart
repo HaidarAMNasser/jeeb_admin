@@ -53,7 +53,6 @@ class ResetPasswordForm extends StatelessWidget {
           CustomButton(
             text: AppTranslation.resetPassword,
             onPressed: onReset,
-            isLoading: isLoading,
             color: ColorManager.primary,
           ),
         ],

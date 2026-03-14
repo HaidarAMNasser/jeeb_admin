@@ -53,6 +53,10 @@ class AppTranslation {
   static String get categoryName => 'category_name'.tr();
   static String get pleaseEnterCategoryName => 'please_enter_category_name'.tr();
   static String get categoryAddedSuccessfully => 'category_added_successfully'.tr();
+  static String get editCategory => 'edit_category'.tr();
+  static String get categoryUpdatedSuccessfully => 'category_updated_successfully'.tr();
+  static String get categoryDeletedSuccessfully => 'category_deleted_successfully'.tr();
+  static String get areYouSureDeleteCategory => 'are_you_sure_delete_category'.tr();
 
   // Product
   static String get products => 'products'.tr();
@@ -246,6 +250,8 @@ class AppTranslation {
   static String get offerDetails => 'offer_details'.tr();
   static String get noOffersFound => 'no_offers_found'.tr();
   static String get searchOffersHint => 'search_offers_hint'.tr();
+  static String get offerDescription => 'offer_description'.tr();
+  static String get pleaseEnterOfferDescription => 'please_enter_offer_description'.tr();
   static String get offerShortDescription => 'offer_short_description'.tr();
   static String get offerLongDescription => 'offer_long_description'.tr();
   static String get selectProducts => 'select_products'.tr();

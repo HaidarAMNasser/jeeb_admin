@@ -14,10 +14,12 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
       if (event is InitializeOfferForm) {
         if (event.offer != null) {
           final o = event.offer!;
+          final desc = (o.shortDescription ?? o.longDescription ?? '').trim().isNotEmpty
+              ? (o.shortDescription ?? o.longDescription ?? '')
+              : '';
           emit(CreateOfferInitial(
             name: o.name ?? '',
-            shortDescription: o.shortDescription ?? '',
-            longDescription: o.longDescription ?? '',
+            description: desc,
             productIds: o.products.map((p) => p.id).toList(),
             startDate: o.startDate,
             endDate: o.endDate,
@@ -26,8 +28,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
             offerId: o.id,
             isValid: _isValid(
               o.name ?? '',
-              o.shortDescription ?? '',
-              o.longDescription ?? '',
+              desc,
               o.products.map((p) => p.id).toList(),
               o.discountType ?? 'PERCENTAGE',
               o.discountValue?.toString() ?? '',
@@ -40,11 +41,8 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
       } else if (event is UpdateOfferName) {
         emit(state.copyWith(name: event.value));
         add(const CheckOfferValidation());
-      } else if (event is UpdateOfferShortDescription) {
-        emit(state.copyWith(shortDescription: event.value));
-        add(const CheckOfferValidation());
-      } else if (event is UpdateOfferLongDescription) {
-        emit(state.copyWith(longDescription: event.value));
+      } else if (event is UpdateOfferDescription) {
+        emit(state.copyWith(description: event.value));
         add(const CheckOfferValidation());
       } else if (event is UpdateOfferProductIds) {
         emit(state.copyWith(productIds: event.productIds));
@@ -65,8 +63,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
         emit(state.copyWith(
           isValid: _isValid(
             state.name,
-            state.shortDescription,
-            state.longDescription,
+            state.description,
             state.productIds,
             state.discountType,
             state.discountValue,
@@ -76,8 +73,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
         if (!state.isValid) return;
         emit(CreateOfferLoading(
           name: state.name,
-          shortDescription: state.shortDescription,
-          longDescription: state.longDescription,
+          description: state.description,
           productIds: state.productIds,
           startDate: state.startDate,
           endDate: state.endDate,
@@ -93,14 +89,9 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
             .map((id) => int.tryParse(id))
             .whereType<int>()
             .toList();
-        final short = state.shortDescription.trim();
-        final long = state.longDescription.trim();
-        final description = short.isNotEmpty && long.isNotEmpty
-            ? '$short\n\n$long'
-            : (short.isNotEmpty ? short : long);
         final body = <String, dynamic>{
           'name': state.name.trim(),
-          'description': description,
+          'description': state.description.trim(),
           'discountType': discountType,
           'discountValue': discountValue,
           'productIds': productIdsNumbers,
@@ -117,8 +108,7 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
           (failure) => emit(CreateOfferError(
             message: failure.message,
             name: state.name,
-            shortDescription: state.shortDescription,
-            longDescription: state.longDescription,
+            description: state.description,
             productIds: state.productIds,
             startDate: state.startDate,
             endDate: state.endDate,
@@ -135,14 +125,13 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
 
   bool _isValid(
     String name,
-    String shortDesc,
-    String longDesc,
+    String description,
     List<String> ids,
     String type,
     String value,
   ) {
     if (name.trim().isEmpty) return false;
-    if (shortDesc.trim().isEmpty) return false;
+    if (description.trim().isEmpty) return false;
     if (ids.isEmpty) return false;
     final v = num.tryParse(value);
     if (v == null || v < 0) return false;

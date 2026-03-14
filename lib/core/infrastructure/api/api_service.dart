@@ -85,7 +85,13 @@ abstract class AppApiServiceClient {
   Future<Response> getCategories();
 
   @POST("apiAdmin/Category/create")
-  Future<Response> addCategory(@Field('name') String name);
+  Future<Response> addCategory(FormData formData);
+
+  @PATCH("apiAdmin/Category/update/{id}")
+  Future<Response> updateCategory(@Path('id') String id, FormData formData);
+
+  @DELETE("apiAdmin/Category/delete/{id}")
+  Future<Response> deleteCategory(@Path('id') String id);
 
   // Product endpoints
   @GET("products")

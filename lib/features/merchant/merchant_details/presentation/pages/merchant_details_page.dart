@@ -57,7 +57,11 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
       listener: (context, deleteState) {
         if (deleteState is DeleteMerchantSuccess) {
           customToast(msg: AppTranslation.merchantDeletedSuccessfully);
-          AppRouter.navigateTo(context, Routes.merchants);
+          AppRouter.navigateAndRemoveUntil(
+            context,
+            Routes.mainNavigation,
+            arguments: {'tabIndex': 0},
+          );
         } else if (deleteState is DeleteMerchantError) {
           customToast(msg: deleteState.message);
         }

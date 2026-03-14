@@ -21,6 +21,15 @@ import '../../../features/product/product_details/data/repositories/product_deta
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
 import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
+import '../../../features/category/add_category/data/data_sources/add_category_data_source.dart';
+import '../../../features/category/add_category/data/repositories/add_category_repository.dart';
+import '../../../features/category/add_category/presentation/bloc/add_category_bloc.dart';
+import '../../../features/category/update_category/data/data_sources/update_category_data_source.dart';
+import '../../../features/category/update_category/data/repositories/update_category_repository.dart';
+import '../../../features/category/update_category/presentation/bloc/update_category_bloc.dart';
+import '../../../features/category/delete_category/data/data_sources/delete_category_data_source.dart';
+import '../../../features/category/delete_category/data/repositories/delete_category_repository.dart';
+import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
 import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
 import '../../../features/auth/login/data/repositories/login_repository.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
@@ -136,6 +145,27 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ListCategoryRepository(sl(), sl()));
   sl.registerFactory(() => ListCategoryBloc(sl()));
+
+  //! Category Add Dependencies
+  sl.registerFactory<AddCategoryRemoteDataSource>(
+    () => AddCategoryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => AddCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => AddCategoryBloc(sl()));
+
+  //! Category Update Dependencies
+  sl.registerFactory<UpdateCategoryRemoteDataSource>(
+    () => UpdateCategoryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => UpdateCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => UpdateCategoryBloc(sl()));
+
+  //! Category Delete Dependencies
+  sl.registerFactory<DeleteCategoryRemoteDataSource>(
+    () => DeleteCategoryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => DeleteCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteCategoryBloc(sl()));
 
   //! Product List Dependencies
   sl.registerFactory<ListProductRemoteDataSource>(

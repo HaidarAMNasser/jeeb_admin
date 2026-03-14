@@ -13,7 +13,7 @@ class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
     on<AddCategoryEvent>((event, emit) async {
       if (event is AddCategorySubmitted) {
         emit(const AddCategoryLoading());
-        final result = await _repository.addCategory(name: event.name);
+        final result = await _repository.addCategory(name: event.name, imagePath: event.imagePath);
         result.fold(
           (failure) => emit(AddCategoryError(message: failure.message)),
           (category) => emit(AddCategorySuccess(category: category)),

@@ -17,15 +17,9 @@ class UpdateOfferBloc extends Bloc<UpdateOfferEvent, UpdateOfferState> {
             .map((id) => int.tryParse(id))
             .whereType<int>()
             .toList();
-        // Backend expects single "description" (combine short + long for API)
-        final short = event.shortDescription.trim();
-        final long = event.longDescription.trim();
-        final description = short.isNotEmpty && long.isNotEmpty
-            ? '$short\n\n$long'
-            : (short.isNotEmpty ? short : long);
         final body = <String, dynamic>{
           'name': event.name.trim(),
-          'description': description,
+          'description': event.description.trim(),
           'discountType': discountType,
           'discountValue': event.discountValue,
           'productIds': productIdsNumbers,

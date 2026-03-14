@@ -12,6 +12,7 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import '../bloc/forgot_password_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -77,18 +78,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(height: AppHeight.s50),
-                      Text(
-                        AppTranslation.forgotPassword,
-                        style: getBoldStyle(
+                      CustomText(
+                        text: AppTranslation.forgotPassword,
+                        textStyle: getBoldStyle(
                           fontSize: AppFontSize.s24,
                           color: ColorManager.titlesColor,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: AppHeight.s8),
-                      Text(
-                        AppTranslation.forgotPasswordDescription,
-                        style: getRegularStyle(
+                      CustomText(
+                        text: AppTranslation.forgotPasswordDescription,
+                        textStyle: getRegularStyle(
                           fontSize: AppFontSize.s14,
                           color: ColorManager.textColor,
                         ),

@@ -359,11 +359,12 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> addCategory(String name) async {
+  Future<Response> addCategory(FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
-    final data = {'name': name};
+    final headers = <String, dynamic>{
+      'Content-Type': 'multipart/form-data',
+    };
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -372,7 +373,52 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'apiAdmin/Category/create',
               queryParameters: queryParameters,
-              data: data,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> updateCategory(String id, FormData formData) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{
+      'Content-Type': 'multipart/form-data',
+    };
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'apiAdmin/Category/update/$id',
+              queryParameters: queryParameters,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> deleteCategory(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'DELETE', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'apiAdmin/Category/delete/$id',
+              queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

@@ -117,7 +117,7 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                   ),
                 ),
                 SizedBox(height: AppHeight.s8),
-                ...offer.products.map((p) => ProductListItem(product: p)),
+                ...offer.products.map((p) => ProductListItem(product: p, enableSmallDesign :true )),
                 SizedBox(height: AppHeight.s24),
                 if ((offer.shortDescription ?? offer.longDescription ?? '').trim().isNotEmpty)
                   Container(

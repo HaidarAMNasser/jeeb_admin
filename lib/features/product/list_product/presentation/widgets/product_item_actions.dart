@@ -23,7 +23,7 @@ class ProductItemActions extends StatelessWidget {
     this.stockQuantity,
     this.hasStock,
   });
-
+  
   @override
   Widget build(BuildContext context) {
     return Column(

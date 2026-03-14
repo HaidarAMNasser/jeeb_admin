@@ -84,6 +84,10 @@ import '../../../features/offer/list_offer/domain/entities/offer_entity.dart';
 import '../../../features/settings/presentation/pages/settings_page.dart';
 import '../../../features/settings/get_settings/presentation/bloc/get_settings_bloc.dart';
 import '../../../features/settings/edit_settings/presentation/bloc/edit_settings_bloc.dart';
+import '../../../features/category/presentation/pages/categories_page.dart';
+import '../../../features/category/add_category/presentation/bloc/add_category_bloc.dart';
+import '../../../features/category/update_category/presentation/bloc/update_category_bloc.dart';
+import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -186,6 +190,26 @@ class AppRouter {
             ),
             BlocProvider<EditSettingsBloc>(
               create: (_) => di.sl<EditSettingsBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.categories:
+        return _buildRouteWithBlocs(
+          const CategoriesPage(),
+          settings,
+          providers: [
+            BlocProvider<ListCategoryBloc>(
+              create: (_) => di.sl<ListCategoryBloc>(),
+            ),
+            BlocProvider<AddCategoryBloc>(
+              create: (_) => di.sl<AddCategoryBloc>(),
+            ),
+            BlocProvider<UpdateCategoryBloc>(
+              create: (_) => di.sl<UpdateCategoryBloc>(),
+            ),
+            BlocProvider<DeleteCategoryBloc>(
+              create: (_) => di.sl<DeleteCategoryBloc>(),
             ),
           ],
         );

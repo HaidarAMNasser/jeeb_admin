@@ -37,8 +37,7 @@ class CreateOfferForm extends StatefulWidget {
 class _CreateOfferFormState extends State<CreateOfferForm> {
   late List<ProductEntity> _selectedProducts;
   late TextEditingController _nameController;
-  late TextEditingController _shortDescController;
-  late TextEditingController _longDescController;
+  late TextEditingController _descController;
   late TextEditingController _discountValueController;
 
   @override
@@ -48,11 +47,8 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     _nameController = TextEditingController(
       text: widget.state.name,
     );
-    _shortDescController = TextEditingController(
-      text: widget.state.shortDescription,
-    );
-    _longDescController = TextEditingController(
-      text: widget.state.longDescription,
+    _descController = TextEditingController(
+      text: widget.state.description,
     );
     _discountValueController = TextEditingController(
       text: widget.state.discountValue,
@@ -65,11 +61,8 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     if (widget.state.name != _nameController.text) {
       _nameController.text = widget.state.name;
     }
-    if (widget.state.shortDescription != _shortDescController.text) {
-      _shortDescController.text = widget.state.shortDescription;
-    }
-    if (widget.state.longDescription != _longDescController.text) {
-      _longDescController.text = widget.state.longDescription;
+    if (widget.state.description != _descController.text) {
+      _descController.text = widget.state.description;
     }
     if (widget.state.discountValue != _discountValueController.text) {
       _discountValueController.text = widget.state.discountValue;
@@ -84,8 +77,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
   @override
   void dispose() {
     _nameController.dispose();
-    _shortDescController.dispose();
-    _longDescController.dispose();
+    _descController.dispose();
     _discountValueController.dispose();
     super.dispose();
   }
@@ -115,7 +107,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
   void _onSubmit() {
     offerValidationToast(
       name: widget.state.name,
-      shortDescription: widget.state.shortDescription,
+      description: widget.state.description,
       productIds: widget.state.productIds,
       discountType: widget.state.discountType,
       discountValue: widget.state.discountValue,
@@ -126,8 +118,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
         UpdateOfferSubmitted(
           id: widget.state.offerId!,
           name: widget.state.name,
-          shortDescription: widget.state.shortDescription,
-          longDescription: widget.state.longDescription,
+          description: widget.state.description,
           productIds: widget.state.productIds,
           startDate: widget.state.startDate,
           endDate: widget.state.endDate,
@@ -198,12 +189,9 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
           ),
 
           OfferDescriptionFields(
-            shortDescController: _shortDescController,
-            longDescController: _longDescController,
-            onShortDescChanged: (v) =>
-                widget.bloc.add(UpdateOfferShortDescription(v)),
-            onLongDescChanged: (v) =>
-                widget.bloc.add(UpdateOfferLongDescription(v)),
+            descriptionController: _descController,
+            onDescriptionChanged: (v) =>
+                widget.bloc.add(UpdateOfferDescription(v)),
           ),
           OfferFormSubmitButton(
             state: state,
