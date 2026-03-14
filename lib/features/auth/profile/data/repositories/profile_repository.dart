@@ -1,3 +1,5 @@
+import 'dart:io' show File;
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/common/errors/failure.dart';
@@ -69,6 +71,7 @@ class ProfileRepository {
       updatedAt: now,
       address: null,
       isActive: isActive ?? true,
+      isVerified: true,
       currentLat: latitude,
       currentLng: longitude,
     );
@@ -84,6 +87,7 @@ class ProfileRepository {
     double? latitude,
     double? longitude,
     bool? isActive,
+    dynamic imageFile,
   }) async {
     if (!await _networkInfo.isConnected) {
       return Right(_fakeUser(
@@ -93,6 +97,15 @@ class ProfileRepository {
       ));
     }
     try {
+      File? file;
+      if (imageFile != null) {
+        if (imageFile is File) {
+          file = imageFile;
+        } else {
+          final path = (imageFile as dynamic).path as String?;
+          if (path != null && path.isNotEmpty) file = File(path);
+        }
+      }
       final response = await _remoteDataSource.updateProfile(
         firstName: firstName,
         lastName: lastName,
@@ -103,6 +116,7 @@ class ProfileRepository {
         latitude: latitude,
         longitude: longitude,
         isActive: isActive,
+        imageFile: file,
       );
 
       final apiResponse = ApiResponseModel<UserModel>.fromJson(

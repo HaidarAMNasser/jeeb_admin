@@ -13,6 +13,7 @@ class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> 
     on<ProductDetailsEvent>((event, emit) async {
       if (event is GetProductDetailsEvent) {
         emit(const ProductDetailsLoading());
+
         final result = await _repository.getProductDetails(event.id);
         result.fold(
           (failure) => emit(ProductDetailsError(message: failure.message)),

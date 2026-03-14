@@ -1,5 +1,4 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 /// Helper for location permission and fetching current position.
 /// Used when merchant chooses "Use my location" during registration.
@@ -11,16 +10,31 @@ class LocationPermissionHelper {
   /// If permanently denied, opens app settings.
   static Future<bool> requestLocationPermission() async {
     try {
-      final status = await Permission.locationWhenInUse.status;
-
-      if (status.isGranted) return true;
-      if (status.isPermanentlyDenied) {
-        await openAppSettings();
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
         return false;
       }
 
-      final result = await Permission.locationWhenInUse.request();
-      return result.isGranted;
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        return true;
+      }
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.always ||
+            permission == LocationPermission.whileInUse) {
+          return true;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
+      }
+
+      return false;
     } catch (_) {
       return false;
     }
@@ -29,8 +43,9 @@ class LocationPermissionHelper {
   /// Check if location permission is granted.
   static Future<bool> isLocationPermissionGranted() async {
     try {
-      final status = await Permission.locationWhenInUse.status;
-      return status.isGranted;
+      final permission = await Geolocator.checkPermission();
+      return permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse;
     } catch (_) {
       return false;
     }

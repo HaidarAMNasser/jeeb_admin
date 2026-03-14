@@ -90,8 +90,8 @@ class _CustomPaginatedDropdownState<T>
           children: [
             CustomText(
               text: widget.title,
-              textStyle: getSemiBoldStyle(
-                fontSize: AppFontSize.s16,
+              textStyle: getMediumStyle(
+                fontSize: AppFontSize.s15,
                 color: ColorManager.defaultWhite,
               ),
             ),
@@ -114,9 +114,18 @@ class _CustomPaginatedDropdownState<T>
             borderWidth: 3.0,
             child: Container(
               height: AppHeight.s56,
+              padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
               decoration: BoxDecoration(
                 color: ColorManager.defaultWhite,
                 borderRadius: BorderRadius.circular(AppRadius.r18),
+              ),
+              alignment: Alignment.centerLeft,
+              child: CustomText(
+                text: widget.hintText,
+                textStyle: getRegularStyle(
+                  fontSize: AppFontSize.s14,
+                  color: ColorManager.descriptionColor,
+                ),
               ),
             ),
           )

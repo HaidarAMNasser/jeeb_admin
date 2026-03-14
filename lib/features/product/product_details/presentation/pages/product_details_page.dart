@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_input_dialog.dart';
-import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+
+import 'package:jeeb_admin/core/common/classes/user_roles.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
-import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
-import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/common/classes/user_roles.dart';
-import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_input_dialog.dart';
+
 import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 import 'package:jeeb_admin/features/product/delete_product/presentation/bloc/delete_product_bloc.dart';
+import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
+import 'package:jeeb_admin/features/product/product_details/presentation/widgets/product_details_content.dart';
+import 'package:jeeb_admin/features/product/product_details/presentation/widgets/product_details_options_dialog.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final String productId;
@@ -35,9 +38,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   void initState() {
     super.initState();
     _loadUserRole();
-    context.read<ProductDetailsBloc>().add(
-          GetProductDetailsEvent(id: widget.productId),
-        );
+    context.read<ProductDetailsBloc>().add(GetProductDetailsEvent(id: widget.productId));
   }
 
   Future<void> _loadUserRole() async {
@@ -49,38 +50,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Future<void> _showConfirmDialog(BuildContext context, ProductDetailsLoaded state) async {
     final product = state.product;
     final currentPrice = (product.price / 100).toStringAsFixed(2);
-
     final result = await CustomInputDialog.show(
       context: context,
       title: AppTranslation.confirmProduct,
       label: AppTranslation.newPrice,
       hintText: AppTranslation.enterNewPrice,
       initialValue: currentPrice,
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: true,
-        signed: false,
-      ),
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
       validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return AppTranslation.pleaseEnterProductPrice;
-        }
+        if (value == null || value.trim().isEmpty) return AppTranslation.pleaseEnterProductPrice;
         final parsed = double.tryParse(value.replaceAll(',', ''));
-        if (parsed == null || parsed <= 0) {
-          return AppTranslation.invalidProductPrice;
-        }
+        if (parsed == null || parsed <= 0) return AppTranslation.invalidProductPrice;
         return null;
       },
     );
-
     if (result == null || result.isEmpty) return;
-
-    final newPrice = double.parse(result.replaceAll(',', ''));
-
     context.read<ConfirmProductBloc>().add(
-          ConfirmProductSubmitted(
-            productId: product.id,
-            newPrice: newPrice,
-          ),
+          ConfirmProductSubmitted(productId: product.id, newPrice: double.parse(result.replaceAll(',', ''))),
         );
   }
 
@@ -90,19 +76,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       title: AppTranslation.areYouSureWantToDeleteThisProduct,
       confirmText: AppTranslation.delete,
       confirmColor: ColorManager.primary,
-      onConfirm: () {
-        context.read<DeleteProductBloc>().add(
-              DeleteProductSubmitted(productId: state.product.id),
-            );
-      },
+      onConfirm: () => context.read<DeleteProductBloc>().add(DeleteProductSubmitted(productId: state.product.id)),
     );
   }
 
   void _onEditProduct(BuildContext context, ProductDetailsLoaded state) {
-    context.pushReplacementNamed(
-      Routes.addProduct,
-      arguments: {'product': state.product},
-    );
+    context.pushReplacementNamed(Routes.addProduct, arguments: {'product': state.product});
   }
 
   @override
@@ -113,9 +92,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           listener: (context, state) {
             if (state is ConfirmProductSuccess) {
               customToast(msg: AppTranslation.productConfirmedSuccessfully);
-              context.read<ProductDetailsBloc>().add(
-                    GetProductDetailsEvent(id: widget.productId),
-                  );
+              context.read<ProductDetailsBloc>().add(GetProductDetailsEvent(id: widget.productId));
             } else if (state is ConfirmProductError) {
               customToast(msg: state.message);
             }
@@ -126,9 +103,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             if (state is DeleteProductSuccess) {
               customToast(msg: AppTranslation.productDeletedSuccessfully);
               context.pushNamed(Routes.products);
-            } else if (state is DeleteProductError) {
-              customToast(msg: state.message);
-            }
+            } else if (state is DeleteProductError) customToast(msg: state.message);
           },
         ),
       ],
@@ -141,51 +116,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               backgroundColor: ColorManager.background,
               appBar: CustomAppBar(
                 title: AppTranslation.productDetails,
-                actions: [
-                  BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
-              builder: (context, state) {
-                if (state is! ProductDetailsLoaded) {
-                  return const SizedBox.shrink();
-                }
-                return PopupMenuButton<_ProductDetailsAction>(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: ColorManager.titlesColor,
-                  ),
-                  onSelected: (action) {
-                    if (action == _ProductDetailsAction.edit) {
-                      _onEditProduct(context, state);
-                    } else if (action == _ProductDetailsAction.confirm) {
-                      _showConfirmDialog(context, state);
-                    } else if (action == _ProductDetailsAction.delete) {
-                      _showDeleteDialog(context, state);
-                    }
-                  },
-                  itemBuilder: (context) {
-                    final items = <PopupMenuItem<_ProductDetailsAction>>[
-                      PopupMenuItem(
-                        value: _ProductDetailsAction.edit,
-                        child: Text(AppTranslation.editProduct),
-                      ),
-                      if (_isAdmin)
-                        PopupMenuItem(
-                          value: _ProductDetailsAction.confirm,
-                          child: Text(AppTranslation.confirmProduct),
-                        ),
-                      PopupMenuItem(
-                        value: _ProductDetailsAction.delete,
-                        child: Text(
-                          AppTranslation.deleteProduct,
-                          style: TextStyle(color: ColorManager.error),
-                        ),
-                      ),
-                    ];
-                    return items;
-                  },
-                  );
-                },
-              ),
-                ],
+                actions: [_buildOptionsButton(context)],
               ),
               body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
                 bloc: context.read<ProductDetailsBloc>(),
@@ -193,43 +124,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 isError: (state) => state is ProductDetailsError,
                 getErrorMessage: (state) => (state as ProductDetailsError).message,
                 isSuccess: (state) => state is ProductDetailsLoaded,
-                getRetryCallback: (state) => () {
-                  context.read<ProductDetailsBloc>().add(
-                        GetProductDetailsEvent(id: widget.productId),
-                      );
-                },
+                getRetryCallback: (state) => () => context.read<ProductDetailsBloc>().add(GetProductDetailsEvent(id: widget.productId)),
                 successBuilder: (context, productState) {
                   final loadedState = productState as ProductDetailsLoaded;
-                  final product = loadedState.product;
-
-                  return SingleChildScrollView(
-                    padding: EdgeInsets.all(AppPadding.p16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          product.name,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: ColorManager.titlesColor,
-                              ),
-                        ),
-                        SizedBox(height: AppHeight.s8),
-                        if (product.description != null)
-                          Text(
-                            product.description!,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: ColorManager.textColor,
-                                ),
-                          ),
-                        SizedBox(height: AppHeight.s16),
-                        Text(
-                          '\$${(product.price / 100).toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: ColorManager.primary,
-                              ),
-                        ),
-                      ],
-                    ),
+                  return ProductDetailsContent(
+                    product: loadedState.product,
+                    isAdmin: _isAdmin,
+                    onEdit: () => _onEditProduct(context, loadedState),
                   );
                 },
               ),
@@ -239,10 +140,22 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ),
     );
   }
-}
 
-enum _ProductDetailsAction {
-  edit,
-  confirm,
-  delete,
+  Widget _buildOptionsButton(BuildContext context) {
+    return BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
+      builder: (context, state) {
+        if (state is! ProductDetailsLoaded) return const SizedBox.shrink();
+        return IconButton(
+          icon: Icon(Icons.more_vert, color: ColorManager.titlesColor),
+          onPressed: () => ProductDetailsOptionsDialog.show(
+            context: context,
+            isAdmin: _isAdmin,
+            onEdit: () => _onEditProduct(context, state),
+            onConfirm: () => _showConfirmDialog(context, state),
+            onDelete: () => _showDeleteDialog(context, state),
+          ),
+        );
+      },
+    );
+  }
 }

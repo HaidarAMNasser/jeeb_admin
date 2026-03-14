@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as el;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import '../../../../core/presentation/routes/routes.dart';
 import '../../../../core/presentation/theme/colors_manager.dart';
-import '../../../../core/presentation/widgets/text_widget.dart';
 import '../../../../core/presentation/widgets/language_selection_dialog.dart';
-import '../../../../core/presentation/localization/app_translation.dart';
 import '../../../../core/infrastructure/services/storage_service.dart';
 import '../../../../core/infrastructure/di/dependency_injection.dart' as di;
 import '../bloc/onboarding_bloc.dart';
+import '../onboarding_strings.dart';
 import '../widgets/onboarding_content.dart';
 import '../widgets/onboarding_bottom_section.dart';
 
@@ -29,11 +31,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _navigateToAuth() async {
-    // Check if language is set in SharedPreferences
     final storageService = di.sl<StorageService>();
+    await storageService.setFirstLaunchCompleted();
+
     final storedLanguage = storageService.getAppLanguage();
-    
-    // Only show language dialog if language is not set (empty)
+
     if (storedLanguage.isEmpty) {
       // Show language dialog and wait for selection
       final selectedLanguage = await showDialog<String>(
@@ -45,12 +47,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
       if (selectedLanguage != null && mounted) {
         // Save selected language
         await storageService.setAppLanguage(selectedLanguage);
-        
+
         // Update app locale
         await context.setLocale(Locale(selectedLanguage));
       }
     }
-    
+
     if (mounted) {
       Navigator.pushReplacementNamed(context, Routes.login);
     }
@@ -66,61 +68,61 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.background,
-      body: SafeArea(
-        child: BlocListener<OnboardingBloc, OnboardingState>(
-          listener: (context, state) {
-            if (state is OnboardingLoaded &&
-                state.notificationPermissionGranted == true) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: CustomText(
-                    text: AppTranslation.notificationsEnabledSuccess,
-                  ),
-                  backgroundColor: ColorManager.success,
-                ),
-              );
-            }
-          },
-          child: BlocBuilder<OnboardingBloc, OnboardingState>(
-            builder: (context, state) {
-              if (state is OnboardingLoaded) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: state.pages.length,
-                        onPageChanged: (index) {
+      body: Directionality(
+        textDirection: TextDirection.ltr,
+        child: SafeArea(
+          child: BlocListener<OnboardingBloc, OnboardingState>(
+            listener: (context, state) {
+              if (state is OnboardingLoaded &&
+                  state.notificationPermissionGranted == true) {
+                customToast(msg: OnboardingStrings.notificationsEnabledSuccess);
+              }
+            },
+            child: BlocBuilder<OnboardingBloc, OnboardingState>(
+              builder: (context, state) {
+                if (state is OnboardingLoaded) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: state.pages.length,
+                          onPageChanged: (index) {
+                            context.read<OnboardingBloc>().add(
+                              OnboardingPageChanged(index),
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: AppSize.s20.h),
+                              child: OnboardingContentWidget(
+                                content: state.pages[index],
+                                pageIndex: index,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      OnboardingBottomSection(
+                        state: state,
+                        onGetStarted: _navigateToAuth,
+                        onNext: () {
                           context.read<OnboardingBloc>().add(
-                            OnboardingPageChanged(index),
+                            const OnboardingNextPage(),
                           );
-                        },
-                        itemBuilder: (context, index) {
-                          return OnboardingContentWidget(
-                            content: state.pages[index],
-                            pageIndex: index,
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
                           );
                         },
                       ),
-                    ),
-                    OnboardingBottomSection(
-                      state: state,
-                      onGetStarted: _navigateToAuth,
-                      onNext: () {
-                        context.read<OnboardingBloc>().add(
-                          const OnboardingNextPage(),
-                        );
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 400),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                  ],
-                );
-              }
-              return const SizedBox.shrink();
-            },
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ),
       ),

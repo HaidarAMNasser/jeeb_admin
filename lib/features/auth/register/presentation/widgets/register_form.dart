@@ -1,194 +1,137 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_text_display.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_dropdown.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
-import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
-import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
+import 'package:jeeb_admin/features/auth/register/presentation/bloc/register_bloc.dart';
+import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
 
 class RegisterForm extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final TextEditingController firstNameController;
-  final TextEditingController lastNameController;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final TextEditingController phoneController;
-  final TextEditingController addressController;
-  final TextEditingController restaurantNameController;
-  final String? selectedRole;
-  final String? selectedNotificationChannel;
-  final CountryEntity? selectedCountry;
-  final CityEntity? selectedCity;
-  final double? useLocationLatitude;
-  final double? useLocationLongitude;
-  final ValueChanged<CountryEntity?> onCountryChanged;
-  final ValueChanged<CityEntity?> onCityChanged;
-  final VoidCallback onUseMyLocation;
-  final VoidCallback? onClearDeviceLocation;
-  final ValueChanged<String?> onRoleChanged;
-  final ValueChanged<String?> onNotificationChannelChanged;
   final VoidCallback onRegister;
-  final bool isLoading;
-  final bool isLocationLoading;
+  final Future<void> Function() onUseMyLocation;
 
   const RegisterForm({
     super.key,
-    required this.formKey,
-    required this.firstNameController,
-    required this.lastNameController,
-    required this.emailController,
-    required this.passwordController,
-    required this.phoneController,
-    required this.addressController,
-    required this.restaurantNameController,
-    this.selectedRole,
-    this.selectedNotificationChannel,
-    this.selectedCountry,
-    this.selectedCity,
-    this.useLocationLatitude,
-    this.useLocationLongitude,
-    required this.onCountryChanged,
-    required this.onCityChanged,
-    required this.onUseMyLocation,
-    this.onClearDeviceLocation,
-    required this.onRoleChanged,
-    required this.onNotificationChannelChanged,
     required this.onRegister,
-    required this.isLoading,
-    this.isLocationLoading = false,
+    required this.onUseMyLocation,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        spacing: AppHeight.s24,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          CustomTextField(
-            title: AppTranslation.firstName,
-            hintText: AppTranslation.firstName,
-            controller: firstNameController,
-          ),
-          CustomTextField(
-            title: AppTranslation.lastName,
-            hintText: AppTranslation.lastName,
-            controller: lastNameController,
-          ),
-          CustomTextField(
-            title: AppTranslation.email,
-            hintText: AppTranslation.enterEmail,
-            controller: emailController,
-          ),
-          CustomTextField(
-            title: AppTranslation.phone,
-            hintText: AppTranslation.enterPhone,
-            controller: phoneController,
-          ),
-          CustomTextField(
-            obscureText: true,
-            title: AppTranslation.password,
-            hintText: AppTranslation.enterPassword,
-            controller: passwordController,
-          ),
+    final bloc = context.read<RegisterBloc>();
 
-          CustomTextField(
-            title: AppTranslation.address,
-            hintText: AppTranslation.enterAddress,
-            controller: addressController,
-          ),
-          CustomTextField(
-            title: AppTranslation.restaurantName,
-            hintText: AppTranslation.enterRestaurantName,
-            controller: restaurantNameController,
-          ),
-          LocationSourceSelector(
-            title: AppTranslation.location,
-            useMyLocationHint: AppTranslation.useMyLocation,
-            locationSetHint: AppTranslation.locationSetFormat,
-            latitude: useLocationLatitude,
-            longitude: useLocationLongitude,
-            isRequired: true,
-            onUseMyLocation: onUseMyLocation,
-            onClearLocation: (useLocationLatitude != null || useLocationLongitude != null)
-                ? onClearDeviceLocation
-                : null,
-            isLoading: isLocationLoading,
-          ),
-          CountryCityWidget(
-            selectedCountry: selectedCountry,
-            selectedCity: selectedCity,
-            onSelectCountry: onCountryChanged,
-            onSelectCity: onCityChanged,
-            isRequired: true,
-            isReadOnly: useLocationLatitude != null && useLocationLongitude != null,
-          ),
-          CustomDropdown<String>(
-            title: AppTranslation.notificationChannel,
-            value: selectedNotificationChannel,
-            hintText: AppTranslation.notificationChannel,
-            items: const [
-              DropdownMenuItem<String>(value: 'EMAIL', child: Text('EMAIL')),
-              DropdownMenuItem<String>(
-                value: 'WHATSAPP',
-                child: Text('WHATSAPP'),
-              ),
-            ],
-            onChanged: onNotificationChannelChanged,
-          ),
-          SizedBox(height: AppHeight.s8),
-          CustomButton(
-            text: AppTranslation.register,
-            onPressed: onRegister,
-            isLoading: isLoading,
-            color: ColorManager.primary,
-          ),
-
-          // CustomDropdown<String>(
-          //   title: 'Role (Admin or Merchant)',
-          //   value: selectedRole,
-          //   hintText: 'Select Role',
-          //   items: const [
-          //     DropdownMenuItem<String>(
-          //       value: 'MERCHANT',
-          //       child: Text('MERCHANT'),
-          //     ),
-          //     DropdownMenuItem<String>(value: 'ADMIN', child: Text('ADMIN')),
-          //   ],
-          //   onChanged: onRoleChanged,
-          // ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return BlocBuilder<RegisterBloc, RegisterState>(
+      builder: (context, state) {
+        return Form(
+          key: bloc.formKey,
+          child: Column(
+            spacing: AppHeight.s24,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CustomTextDisplay(
-                text: AppTranslation.alreadyHaveAccount,
-                fontSize: AppFontSize.s14,
-                color: ColorManager.textColor,
+              CustomTextField(
+                title: AppTranslation.firstName,
+                hintText: AppTranslation.firstName,
+                controller: bloc.firstNameController,
               ),
-              TextButton(
-                onPressed: () {
-                  context.pushNamed(Routes.login);
+              CustomTextField(
+                title: AppTranslation.lastName,
+                hintText: AppTranslation.lastName,
+                controller: bloc.lastNameController,
+              ),
+              CustomTextField(
+                title: AppTranslation.email,
+                hintText: AppTranslation.enterEmail,
+                controller: bloc.emailController,
+              ),
+              CustomTextField(
+                keyboardType: TextInputType.phone,
+                title: AppTranslation.phone,
+                hintText: AppTranslation.enterPhone,
+                controller: bloc.phoneController,
+              ),
+              CustomTextField(
+                obscureText: true,
+                title: AppTranslation.password,
+                hintText: AppTranslation.enterPassword,
+                controller: bloc.passwordController,
+              ),
+              CustomTextField(
+                title: AppTranslation.address,
+                hintText: AppTranslation.enterAddress,
+                controller: bloc.addressController,
+              ),
+              CustomTextField(
+                title: AppTranslation.restaurantName,
+                hintText: AppTranslation.enterRestaurantName,
+                controller: bloc.restaurantNameController,
+              ),
+              LocationSourceSelector(
+                title: AppTranslation.location,
+                useMyLocationHint: AppTranslation.useMyLocation,
+                locationSetHint: AppTranslation.locationSetFormat,
+                latitude: state.useLocationLat,
+                longitude: state.useLocationLng,
+                isRequired: true,
+                onUseMyLocation: onUseMyLocation,
+                onClearLocation:
+                    (state.useLocationLat != null || state.useLocationLng != null)
+                        ? () => bloc.add(const RegisterLocationCleared())
+                        : null,
+                isLoading: state.isLocationLoading,
+              ),
+              CountryCityWidget(
+                selectedCountry: state.selectedCountry,
+                selectedCity: state.selectedCity,
+                onSelectCountry: (country) {
+                  bloc.add(RegisterCountryChanged(country));
                 },
-                child: CustomTextDisplay(
-                  text: AppTranslation.login,
-                  fontSize: AppFontSize.s14,
-                  color: ColorManager.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+                onSelectCity: (city) {
+                  bloc.add(RegisterCityChanged(city));
+                },
+                isRequired: true,
+                isReadOnly: false,
+              ),
+              CustomButton(
+                text: AppTranslation.register,
+                onPressed: onRegister,
+                color: ColorManager.primary,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomText(
+                    text: AppTranslation.alreadyHaveAccount,
+                    textStyle: getRegularStyle(
+                      fontSize: AppFontSize.s14,
+                      color: ColorManager.textColor,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.pushNamed(Routes.login);
+                    },
+                    child: CustomText(
+                      text: AppTranslation.login,
+                      textStyle: getMediumStyle(
+                        fontSize: AppFontSize.s14,
+                        color: ColorManager.primary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

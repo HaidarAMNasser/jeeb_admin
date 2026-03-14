@@ -16,7 +16,12 @@ class VerifyLoading extends VerifyState {
 }
 
 class VerifySuccess extends VerifyState {
-  const VerifySuccess();
+  final bool goToMain;
+
+  const VerifySuccess({this.goToMain = true});
+
+  @override
+  List<Object?> get props => [goToMain];
 }
 
 class VerifyOtpResent extends VerifyState {

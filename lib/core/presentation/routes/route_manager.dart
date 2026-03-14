@@ -20,7 +20,8 @@ import '../../../features/product/product_details/presentation/pages/product_det
 import '../../../features/product/product_details/presentation/bloc/product_details_bloc.dart';
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
-import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
+import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
+import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
 import '../../../features/auth/login/presentation/pages/login_page.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
 import '../../../features/auth/register/presentation/pages/register_page.dart';
@@ -64,7 +65,23 @@ import '../../../features/delivery/update_delivery/presentation/bloc/update_deli
 import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
 import '../../../features/delivery/delete_delivery/presentation/bloc/delete_delivery_bloc.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
+import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
 import '../../../features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
+import '../../../features/offer/list_offer/presentation/pages/list_offer_page.dart';
+import '../../../features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
+import '../../../features/offer/list_offer/data/repositories/list_offer_repository.dart';
+import '../../../features/offer/offer_details/presentation/pages/offer_details_page.dart';
+import '../../../features/offer/offer_details/presentation/bloc/offer_details_bloc.dart';
+import '../../../features/offer/offer_details/data/repositories/offer_details_repository.dart';
+import '../../../features/offer/create_offer/presentation/pages/create_offer_page.dart';
+import '../../../features/offer/create_offer/presentation/bloc/create_offer_bloc.dart';
+import '../../../features/offer/create_offer/data/repositories/create_offer_repository.dart';
+import '../../../features/offer/update_offer/presentation/bloc/update_offer_bloc.dart';
+import '../../../features/offer/update_offer/data/repositories/update_offer_repository.dart';
+import '../../../features/offer/delete_offer/presentation/bloc/delete_offer_bloc.dart';
+import '../../../features/offer/delete_offer/data/repositories/delete_offer_repository.dart';
+import '../../../features/offer/list_offer/domain/entities/offer_entity.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -113,10 +130,17 @@ class AppRouter {
       case Routes.verify:
         final args = settings.arguments as Map<String, dynamic>?;
         final email = args?['email'] as String? ?? '';
-        return _buildRouteWithBloc(
+        final registerBloc = args?['registerBloc'] as RegisterBloc?;
+        return _buildRouteWithBlocs(
           VerifyPage(email: email),
           settings,
-          bloc: () => di.sl<VerifyBloc>(),
+          providers: [
+            BlocProvider<VerifyBloc>(
+              create: (_) => di.sl<VerifyBloc>(),
+            ),
+            if (registerBloc != null)
+              BlocProvider<RegisterBloc>.value(value: registerBloc),
+          ],
         );
 
       case Routes.forgotPassword:
@@ -150,19 +174,30 @@ class AppRouter {
         );
 
       case Routes.products:
+// <<<<<<< HEAD
+        final productArgs = settings.arguments as Map<String, dynamic>?;
+        final productMerchantId = productArgs?['merchantId'] as String?;
+//         return _buildRouteWithBloc(
+//           const ListProductPage(),
+//           settings,
+//           bloc: () =>
+//               ListProductBloc(di.sl<ListProductRepository>())
+//                 ..add(GetProductsEvent(merchantId: productMerchantId)),
+// =======
         return _buildRouteWithBlocs(
-          const ListProductPage(),
+          ListProductPage(merchantId: productMerchantId),
           settings,
           providers: [
             BlocProvider<ListProductBloc>(
               create: (_) =>
-                  ListProductBloc(di.sl<ListProductRepository>())
-                    ..add(const GetProductsEvent()),
+                 ListProductBloc(di.sl<ListProductRepository>())
+                ..add(GetProductsEvent(merchantId: productMerchantId)),
             ),
             BlocProvider<ConfirmProductBloc>(
               create: (_) => di.sl<ConfirmProductBloc>(),
             ),
           ],
+// >>>>>>> 01548bdab41b53e5162e3d8617375f258e8805f2
         );
 
       case Routes.addProduct:
@@ -187,6 +222,10 @@ class AppRouter {
             BlocProvider<ProductDetailsBloc>(
               create: (_) =>
                   ProductDetailsBloc(di.sl<ProductDetailsRepository>()),
+            ),
+            BlocProvider<ListCategoryBloc>(
+              create: (_) =>
+                  ListCategoryBloc(di.sl<ListCategoryRepository>()),
             ),
           ],
         );
@@ -252,6 +291,10 @@ class AppRouter {
               create: (_) =>
                   ListProductBloc(di.sl<ListProductRepository>()),
             ),
+            BlocProvider<ListOfferBloc>(
+              create: (_) =>
+                  ListOfferBloc(di.sl<ListOfferRepository>()),
+            ),
             BlocProvider<DeleteMerchantBloc>(
               create: (_) =>
                   DeleteMerchantBloc(di.sl<DeleteMerchantRepository>()),
@@ -289,10 +332,14 @@ class AppRouter {
           providers: [
             BlocProvider<DeliveryDetailsBloc>(
               create: (_) =>
-                  DeliveryDetailsBloc(di.sl<DeliveryDetailsRepository>()),
+                  DeliveryDetailsBloc(di.sl<DeliveryDetailsRepository>())
+                    ..add(GetDeliveryManDetailsEvent(id: deliveryManId)),
             ),
             BlocProvider<DeleteDeliveryBloc>(
               create: (_) => DeleteDeliveryBloc(di.sl<DeleteDeliveryRepository>()),
+            ),
+            BlocProvider<ConfirmDeliveryBloc>(
+              create: (_) => ConfirmDeliveryBloc(di.sl<ConfirmDeliveryRepository>()),
             ),
           ],
         );
@@ -354,6 +401,66 @@ class AppRouter {
             ),
             BlocProvider<OrderCancelBloc>(
               create: (_) => di.sl<OrderCancelBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.offers:
+        final offerArgs = settings.arguments as Map<String, dynamic>?;
+        final offerMerchantId = offerArgs?['merchantId'] as String?;
+        return _buildRouteWithBloc(
+          const ListOfferPage(),
+          settings,
+          bloc: () =>
+              ListOfferBloc(di.sl<ListOfferRepository>())
+                ..add(GetOffersEvent(merchantId: offerMerchantId)),
+        );
+
+      case Routes.offerDetails:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final offerId = args?['offerId'] as String? ?? '';
+        if (offerId.isEmpty) {
+          return _buildRoute(
+            Scaffold(
+              body: Center(child: Text('Offer ID not provided')),
+            ),
+            settings,
+          );
+        }
+        return _buildRouteWithBlocs(
+          OfferDetailsPage(offerId: offerId),
+          settings,
+          providers: [
+            BlocProvider<OfferDetailsBloc>(
+              create: (_) =>
+                  OfferDetailsBloc(di.sl<OfferDetailsRepository>()),
+            ),
+          ],
+        );
+
+      case Routes.addOffer:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final offer = args?['offer'] as OfferEntity?;
+        return _buildRouteWithBlocs(
+          CreateOfferPage(offer: offer),
+          settings,
+          providers: [
+            BlocProvider<ListProductBloc>(
+              create: (_) =>
+                  ListProductBloc(di.sl<ListProductRepository>())
+                    ..add(const GetProductsEvent()),
+            ),
+            BlocProvider<CreateOfferBloc>(
+              create: (_) =>
+                  CreateOfferBloc(di.sl<CreateOfferRepository>()),
+            ),
+            BlocProvider<UpdateOfferBloc>(
+              create: (_) =>
+                  UpdateOfferBloc(di.sl<UpdateOfferRepository>()),
+            ),
+            BlocProvider<DeleteOfferBloc>(
+              create: (_) =>
+                  DeleteOfferBloc(di.sl<DeleteOfferRepository>()),
             ),
           ],
         );

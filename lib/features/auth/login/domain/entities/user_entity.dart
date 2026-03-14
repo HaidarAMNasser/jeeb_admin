@@ -26,6 +26,7 @@ class UserEntity extends Equatable {
   final bool? isOnline;
   final bool? isActive;
   final DateTime? verifiedAt;
+  final bool isVerified;
   final double? currentLat;
   final double? currentLng;
   final int countryId;
@@ -34,6 +35,8 @@ class UserEntity extends Equatable {
   final CityEntity? city;
   final DateTime createdAt;
   final DateTime updatedAt;
+  /// Profile image URL from backend (user.image.url / thumbnailUrl / mobileUrl). May be relative.
+  final String? profileImageUrl;
 
   const UserEntity({
     required this.id,
@@ -47,6 +50,7 @@ class UserEntity extends Equatable {
     this.isOnline,
     this.isActive,
     this.verifiedAt,
+    this.isVerified = false,
     this.currentLat,
     this.currentLng,
     required this.countryId,
@@ -55,6 +59,7 @@ class UserEntity extends Equatable {
     this.city,
     required this.createdAt,
     required this.updatedAt,
+    this.profileImageUrl,
   });
 
   String get fullName => '$firstName $lastName';
@@ -72,6 +77,7 @@ class UserEntity extends Equatable {
         isOnline,
         isActive,
         verifiedAt,
+        isVerified,
         currentLat,
         currentLng,
         countryId,
@@ -80,6 +86,7 @@ class UserEntity extends Equatable {
         city,
         createdAt,
         updatedAt,
+        profileImageUrl,
       ];
 }
 

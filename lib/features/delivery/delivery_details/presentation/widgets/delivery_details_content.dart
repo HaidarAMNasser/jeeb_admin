@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
@@ -64,6 +65,36 @@ class DeliveryDetailsContent extends StatelessWidget {
                             color: ColorManager.descriptionColor,
                           ),
                         ),
+                        SizedBox(height: AppHeight.s8),
+                        Wrap(
+                          spacing: AppWidth.s8,
+                          runSpacing: AppHeight.s8,
+                          children: [
+                            _buildBadge(
+                              label: deliveryMan.confirmed
+                                  ? AppTranslation.confirmed
+                                  : AppTranslation.notConfirmed,
+                              backgroundColor: deliveryMan.confirmed
+                                  ? ColorManager.success.withOpacity(0.12)
+                                  : ColorManager.defaultYellow.withOpacity(0.18),
+                              textColor: deliveryMan.confirmed
+                                  ? ColorManager.success
+                                  : ColorManager.defaultYellow,
+                            ),
+                            if (deliveryMan.isOnline != null)
+                              _buildBadge(
+                                label: deliveryMan.isOnline == true
+                                    ? AppTranslation.online
+                                    : AppTranslation.offline,
+                                backgroundColor: deliveryMan.isOnline == true
+                                    ? ColorManager.primary.withOpacity(0.1)
+                                    : ColorManager.descriptionColor.withOpacity(0.2),
+                                textColor: deliveryMan.isOnline == true
+                                    ? ColorManager.primary
+                                    : ColorManager.descriptionColor,
+                              ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -71,7 +102,7 @@ class DeliveryDetailsContent extends StatelessWidget {
               ),
               SizedBox(height: AppHeight.s24),
               if (deliveryMan.phone.isNotEmpty)
-                _buildInfoRow(Icons.phone, 'Phone', deliveryMan.phone),
+                _buildInfoRow(Icons.phone, AppTranslation.phone, deliveryMan.phone),
               if (deliveryMan.cityName != null &&
                   deliveryMan.cityName!.isNotEmpty) ...[
                 SizedBox(height: AppHeight.s12),
@@ -86,8 +117,10 @@ class DeliveryDetailsContent extends StatelessWidget {
                 SizedBox(height: AppHeight.s12),
                 _buildInfoRow(
                   Icons.circle,
-                  'Status',
-                  deliveryMan.isOnline == true ? 'Online' : 'Offline',
+                  AppTranslation.status,
+                  deliveryMan.isOnline == true
+                      ? AppTranslation.online
+                      : AppTranslation.offline,
                 ),
               ],
             ],
@@ -129,6 +162,30 @@ class DeliveryDetailsContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildBadge({
+    required String label,
+    required Color backgroundColor,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppPadding.p8,
+        vertical: AppPadding.p4,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(AppRadius.r8),
+      ),
+      child: CustomText(
+        text: label,
+        textStyle: getSemiBoldStyle(
+          fontSize: AppFontSize.s10,
+          color: textColor,
+        ),
+      ),
     );
   }
 }

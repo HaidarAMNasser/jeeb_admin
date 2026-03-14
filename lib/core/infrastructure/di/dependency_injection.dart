@@ -20,6 +20,7 @@ import '../../../features/product/product_details/data/data_sources/product_deta
 import '../../../features/product/product_details/data/repositories/product_details_repository.dart';
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
+import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
 import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
 import '../../../features/auth/login/data/repositories/login_repository.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
@@ -63,6 +64,9 @@ import '../../../features/delivery/update_delivery/data/data_sources/update_deli
 import '../../../features/delivery/update_delivery/data/repositories/update_delivery_repository.dart';
 import '../../../features/delivery/delete_delivery/data/data_sources/delete_delivery_data_source.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/data/data_sources/confirm_delivery_data_source.dart';
+import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
+import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
 import '../../../features/order/list_order/data/data_sources/list_order_data_source.dart';
 import '../../../features/order/list_order/data/repositories/list_order_repository.dart';
 import '../../../features/order/order_details/data/data_sources/order_details_data_source.dart';
@@ -72,6 +76,16 @@ import '../../../features/order/order_complete/data/repositories/order_complete_
 import '../../../features/order/order_cancel/data/data_sources/order_cancel_data_source.dart';
 import '../../../features/order/order_cancel/data/repositories/order_cancel_repository.dart';
 import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import '../../../features/offer/list_offer/data/data_sources/list_offer_data_source.dart';
+import '../../../features/offer/list_offer/data/repositories/list_offer_repository.dart';
+import '../../../features/offer/offer_details/data/data_sources/offer_details_data_source.dart';
+import '../../../features/offer/offer_details/data/repositories/offer_details_repository.dart';
+import '../../../features/offer/create_offer/data/data_sources/create_offer_data_source.dart';
+import '../../../features/offer/create_offer/data/repositories/create_offer_repository.dart';
+import '../../../features/offer/update_offer/data/data_sources/update_offer_data_source.dart';
+import '../../../features/offer/update_offer/data/repositories/update_offer_repository.dart';
+import '../../../features/offer/delete_offer/data/data_sources/delete_offer_data_source.dart';
+import '../../../features/offer/delete_offer/data/repositories/delete_offer_repository.dart';
 import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
 import '../../../features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
@@ -115,6 +129,7 @@ Future<void> init() async {
     () => ListCategoryRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => ListCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => ListCategoryBloc(sl()));
 
   //! Product List Dependencies
   sl.registerFactory<ListProductRemoteDataSource>(
@@ -161,14 +176,15 @@ Future<void> init() async {
     () => RegisterRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => RegisterRepository(sl(), sl()));
-  sl.registerFactory(() => RegisterBloc(sl()));
+  sl.registerFactory(() => RegisterBloc(sl(), sl<StorageService>()));
 
   //! Auth Dependencies - Verify
   sl.registerFactory<VerifyRemoteDataSource>(
     () => VerifyRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => VerifyRepository(sl(), sl()));
-  sl.registerFactory(() => VerifyBloc(sl()));
+  sl.registerFactory(
+      () => VerifyBloc(sl(), sl<StorageService>(), sl<ProfileRepository>()));
 
   //! Auth Dependencies - Forgot Password
   sl.registerFactory<ForgotPasswordRemoteDataSource>(
@@ -189,7 +205,7 @@ Future<void> init() async {
     () => ProfileRemoteDataSourceImpl(sl<AppApiServiceClient>()),
   );
   sl.registerFactory(() => ProfileRepository(sl(), sl()));
-  sl.registerFactory(() => ProfileBloc(sl()));
+  sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>(), sl<StorageService>()));
 
   //! Auth Dependencies - Logout
   sl.registerFactory<LogoutRemoteDataSource>(
@@ -241,6 +257,13 @@ Future<void> init() async {
   );
   sl.registerFactory(() => DeliveryDetailsRepository(sl(), sl()));
 
+  //! Delivery Confirm Dependencies
+  sl.registerFactory<ConfirmDeliveryRemoteDataSource>(
+    () => ConfirmDeliveryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ConfirmDeliveryRepository(sl(), sl()));
+  sl.registerFactory(() => ConfirmDeliveryBloc(sl()));
+
   //! Delivery Create/Update/Delete Dependencies
   sl.registerFactory<CreateDeliveryRemoteDataSource>(
     () => CreateDeliveryRemoteDataSourceImpl(sl()),
@@ -282,4 +305,30 @@ Future<void> init() async {
   );
   sl.registerFactory(() => OrderCancelRepository(sl(), sl()));
   sl.registerFactory(() => OrderCancelBloc(sl()));
+
+  //! Offer List
+  sl.registerFactory<ListOfferRemoteDataSource>(
+    () => ListOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ListOfferRepository(sl(), sl()));
+
+  //! Offer Details
+  sl.registerFactory<OfferDetailsRemoteDataSource>(
+    () => OfferDetailsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => OfferDetailsRepository(sl(), sl()));
+
+  //! Offer Create / Update / Delete
+  sl.registerFactory<CreateOfferRemoteDataSource>(
+    () => CreateOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory<UpdateOfferRemoteDataSource>(
+    () => UpdateOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory<DeleteOfferRemoteDataSource>(
+    () => DeleteOfferRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => CreateOfferRepository(sl(), sl()));
+  sl.registerFactory(() => UpdateOfferRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteOfferRepository(sl(), sl()));
 }

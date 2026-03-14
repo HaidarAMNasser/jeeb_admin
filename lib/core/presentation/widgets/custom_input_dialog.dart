@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
-import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
-/// A reusable input dialog with a single text field.
+/// A reusable input dialog matching the app's language/confirmation dialog UI.
 class CustomInputDialog extends StatefulWidget {
   final String title;
   final String? label;
@@ -74,44 +77,87 @@ class _CustomInputDialogState extends State<CustomInputDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ColorManager.surface,
-      title: Text(
-        widget.title,
-        style: getMediumStyle(
-          fontSize: AppFontSize.s20,
-          color: ColorManager.textDarkColor,
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.r20),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(AppPadding.p24),
+        decoration: BoxDecoration(
+          color: ColorManager.background,
+          borderRadius: BorderRadius.circular(AppRadius.r20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CustomText(
+              text: widget.title,
+              textStyle: getBoldStyle(
+                fontSize: AppFontSize.s18,
+                color: ColorManager.titlesColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppHeight.s24),
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: _controller,
+                keyboardType: widget.keyboardType,
+                style: getRegularStyle(
+                  fontSize: AppFontSize.s14,
+                  color: ColorManager.titlesColor,
+                ),
+                decoration: InputDecoration(
+                  labelText: widget.label,
+                  hintText: widget.hintText,
+                  labelStyle: getRegularStyle(
+                    color: ColorManager.textColor,
+                    fontSize: AppFontSize.s14,
+                  ),
+                  hintStyle: getRegularStyle(
+                    color: ColorManager.descriptionColor,
+                    fontSize: AppFontSize.s13,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.r12),
+                    borderSide: BorderSide(color: ColorManager.borderColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.r12),
+                    borderSide: BorderSide(color: ColorManager.primary),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.r12),
+                    borderSide: BorderSide(color: ColorManager.error),
+                  ),
+                  filled: true,
+                  fillColor: ColorManager.background,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: AppPadding.p16,
+                    vertical: AppHeight.s16,
+                  ),
+                ),
+                validator: widget.validator,
+              ),
+            ),
+            SizedBox(height: AppHeight.s24),
+            CustomButton(
+              text: AppTranslation.cancel,
+              onPressed: () => Navigator.of(context).pop(),
+              isOutlined: true,
+              color: ColorManager.primary,
+            ),
+            SizedBox(height: AppHeight.s16),
+            CustomButton(
+              text: AppTranslation.confirm,
+              onPressed: _onConfirm,
+              color: ColorManager.primary,
+            ),
+          ],
         ),
       ),
-      content: Form(
-        key: _formKey,
-        child: TextFormField(
-          controller: _controller,
-          keyboardType: widget.keyboardType,
-          decoration: InputDecoration(
-            labelText: widget.label,
-            hintText: widget.hintText,
-          ),
-          validator: widget.validator,
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            AppTranslation.cancel,
-            style: TextStyle(color: ColorManager.textSecondary),
-          ),
-        ),
-        TextButton(
-          onPressed: _onConfirm,
-          child: Text(
-            AppTranslation.confirm,
-            style: TextStyle(color: ColorManager.primary),
-          ),
-        ),
-      ],
     );
   }
 }
-

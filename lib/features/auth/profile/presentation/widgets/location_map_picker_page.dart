@@ -3,8 +3,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
@@ -131,10 +134,10 @@ class _LocationMapPickerPageState extends State<LocationMapPickerPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    '${AppTranslation.latitude}: ${_selectedPoint.latitude.toStringAsFixed(5)}\n${AppTranslation.longitude}: ${_selectedPoint.longitude.toStringAsFixed(5)}',
-                    style: TextStyle(
-                      fontSize: 14,
+                  CustomText(
+                    text: '${AppTranslation.latitude}: ${_selectedPoint.latitude.toStringAsFixed(5)}\n${AppTranslation.longitude}: ${_selectedPoint.longitude.toStringAsFixed(5)}',
+                    textStyle: getRegularStyle(
+                      fontSize: AppFontSize.s14,
                       color: ColorManager.textColor,
                     ),
                   ),

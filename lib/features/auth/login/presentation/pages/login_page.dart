@@ -64,6 +64,12 @@ class _LoginPageState extends State<LoginPage> {
             Routes.mainNavigation,
             predicate: (route) => false,
           );
+        } else if (state is LoginNeedsVerification) {
+          context.pushNamedAndRemoveUntil(
+            Routes.verify,
+            predicate: (route) => false,
+            arguments: {'email': state.email},
+          );
         } else if (state is LoginError) {
           customToast(msg: state.message);
         }

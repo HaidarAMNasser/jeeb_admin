@@ -10,8 +10,12 @@ import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.da
 import 'package:jeeb_admin/features/product/list_product/presentation/pages/list_product_page.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/data/repositories/list_product_repository.dart';
+import 'package:jeeb_admin/features/offer/list_offer/presentation/pages/list_offer_page.dart';
+import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
+import 'package:jeeb_admin/features/offer/list_offer/data/repositories/list_offer_repository.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
 class MerchantNavigation extends StatefulWidget {
   const MerchantNavigation({super.key});
@@ -32,12 +36,18 @@ class _MerchantNavigationState extends State<MerchantNavigation> {
           child: const ListProductPage(),
         );
       case 1:
+        return BlocProvider<ListOfferBloc>(
+          create: (_) => ListOfferBloc(di.sl<ListOfferRepository>())
+            ..add(const GetOffersEvent()),
+          child: const ListOfferPage(),
+        );
+      case 2:
         return BlocProvider<ListOrderBloc>(
           create: (_) => di.sl<ListOrderBloc>()
             ..add(const GetOrdersEvent()),
           child: const ListOrderPage(),
         );
-      case 2:
+      case 3:
         return MultiBlocProvider(
           providers: [
             BlocProvider<ProfileBloc>(
@@ -89,21 +99,26 @@ class _MerchantNavigationState extends State<MerchantNavigation> {
             fontSize: AppFontSize.s12,
             color: ColorManager.textSecondary,
           ),
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.inventory_2_outlined),
               activeIcon: Icon(Icons.inventory_2),
-              label: 'Products',
+              label: AppTranslation.products,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.local_offer_outlined),
+              activeIcon: Icon(Icons.local_offer),
+              label: AppTranslation.offers,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_bag_outlined),
               activeIcon: Icon(Icons.shopping_bag),
-              label: 'Orders',
+              label: AppTranslation.orders,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
-              label: 'Profile',
+              label: AppTranslation.profile,
             ),
           ],
         ),

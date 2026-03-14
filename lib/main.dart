@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:chucker_flutter/chucker_flutter.dart';
 import 'core/presentation/routes/route_manager.dart';
 import 'core/presentation/routes/routes.dart';
 import 'core/presentation/routes/navigation_service.dart';
@@ -30,6 +31,9 @@ void main() async {
   // Initialize dependency injection
   await di.init();
 
+  ChuckerFlutter.showOnRelease = true;
+  ChuckerFlutter.showNotification = false;
+
   // Get stored language from SharedPreferences
   final storageService = di.sl<StorageService>();
   final storedLanguage = storageService.getAppLanguage();
@@ -48,8 +52,26 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Offset _chuckerButtonOffset = const Offset(300, 500);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+      setState(() {
+        _chuckerButtonOffset = Offset(size.width - 72, size.height - 160);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +83,31 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Jeeb App',
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [
+            ChuckerFlutter.navigatorObserver,
+          ],
+          builder: (context, child) {
+            return Stack(
+              children: [
+                child ?? const SizedBox.shrink(),
+                Positioned(
+                  left: _chuckerButtonOffset.dx,
+                  top: _chuckerButtonOffset.dy,
+                  child: GestureDetector(
+                    onPanUpdate: (details) {
+                      setState(() {
+                        _chuckerButtonOffset += details.delta;
+                      });
+                    },
+                    child: Transform.scale(
+                      scale: 0.7,
+                      child: ChuckerFlutter.chuckerButton,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
           // theme: AppTheme.lightTheme,
           // darkTheme:  AppTheme.darkTheme,
           themeMode: ThemeMode.system,
