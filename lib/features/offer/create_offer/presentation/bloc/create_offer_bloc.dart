@@ -48,7 +48,13 @@ class CreateOfferBloc extends Bloc<CreateOfferEvent, CreateOfferState> {
         emit(state.copyWith(productIds: event.productIds));
         add(const CheckOfferValidation());
       } else if (event is UpdateOfferStartDate) {
-        emit(state.copyWith(startDate: event.value));
+        final start = event.value;
+        final end = state.endDate;
+        final clearEnd = start != null && end != null && start.isAfter(end);
+        emit(state.copyWith(
+          startDate: start,
+          endDate: clearEnd ? null : end,
+        ));
         add(const CheckOfferValidation());
       } else if (event is UpdateOfferEndDate) {
         emit(state.copyWith(endDate: event.value));

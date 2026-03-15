@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class DeleteCategoryRemoteDataSource {
-  Future<Response> deleteCategory(String id);
+
+  Future<Response> deleteCategory(int id);
 }
 
 class DeleteCategoryRemoteDataSourceImpl
@@ -12,7 +13,8 @@ class DeleteCategoryRemoteDataSourceImpl
   DeleteCategoryRemoteDataSourceImpl(this._appApiServiceClient);
 
   @override
-  Future<Response> deleteCategory(String id) {
-    return _appApiServiceClient.deleteCategory(id);
+
+  Future<Response> deleteCategory(int id) {
+    return _appApiServiceClient.deleteCategory(id.toString());
   }
 }

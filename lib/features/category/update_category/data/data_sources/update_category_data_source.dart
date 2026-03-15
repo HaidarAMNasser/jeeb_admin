@@ -3,7 +3,8 @@ import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class UpdateCategoryRemoteDataSource {
   Future<Response> updateCategory({
-    required String id,
+
+    required int id,
     required String name,
     String? imagePath,
   });
@@ -17,7 +18,8 @@ class UpdateCategoryRemoteDataSourceImpl
 
   @override
   Future<Response> updateCategory({
-    required String id,
+
+    required int id,
     required String name,
     String? imagePath,
   }) async {
@@ -26,6 +28,7 @@ class UpdateCategoryRemoteDataSourceImpl
       formDataMap['image'] = await MultipartFile.fromFile(imagePath);
     }
     final formData = FormData.fromMap(formDataMap);
-    return _appApiServiceClient.updateCategory(id, formData);
+
+    return _appApiServiceClient.updateCategory(id.toString(), formData);
   }
 }

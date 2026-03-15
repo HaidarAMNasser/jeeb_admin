@@ -127,7 +127,7 @@ class _ListProductPageState extends State<ListProductPage> {
                             );
                           }
                           final product = products[index];
-                          return ProductListItem(product: product);
+                          return ProductListItem(product: product,enableSmallDesign: true,);
                         },
                       ),
                     ),

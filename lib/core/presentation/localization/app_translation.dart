@@ -230,6 +230,8 @@ class AppTranslation {
   static String get orderCompletedSuccessfully => 'order_completed_successfully'.tr();
   static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
   static String get order => 'order'.tr();
+  static String get customer => 'customer'.tr();
+  static String get orderSummary => 'order_summary'.tr();
   static String get productsCount => 'products_count'.tr();
   static String get people => 'people'.tr();
   static String get latitude => 'latitude'.tr();

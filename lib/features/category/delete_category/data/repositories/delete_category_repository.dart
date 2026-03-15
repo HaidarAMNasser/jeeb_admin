@@ -15,7 +15,8 @@ class DeleteCategoryRepository {
     this._networkInfo,
   );
 
-  Future<Either<Failure, void>> deleteCategory(String id) async {
+
+  Future<Either<Failure, void>> deleteCategory(int id) async {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.deleteCategory(id);

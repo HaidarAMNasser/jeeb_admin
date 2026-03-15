@@ -24,7 +24,7 @@ TextStyle _getTextStyle({
 TextStyle getRegularStyle({
   String? fontFamily,
   double? fontSize,
-  Color color = ColorManager.textColor,
+  Color color = ColorManager.descriptionColor,
   TextDecoration textDecoration = TextDecoration.none,
   Color? backgroundColor,
 }) {
@@ -42,7 +42,7 @@ TextStyle getMediumStyle({
   String? fontFamily,
   int? maxlines,
   double? fontSize,
-  Color color = ColorManager.textColor,
+  Color color = ColorManager.descriptionColor,
   TextDecoration textDecoration = TextDecoration.none,
   Color? backgroundColor,
 }) {

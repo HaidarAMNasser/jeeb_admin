@@ -180,6 +180,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
                 child: CustomDateSelect(
                   title: AppTranslation.offerEndDate,
                   initialValue: state.endDate,
+                  firstDate: state.startDate,
                   onDateSelected: (date) {
                     if (date != null) widget.bloc.add(UpdateOfferEndDate(date));
                   },

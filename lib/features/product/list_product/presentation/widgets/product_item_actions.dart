@@ -42,34 +42,6 @@ class ProductItemActions extends StatelessWidget {
                   ),
                 ),
               ),
-            // if (showConfirmProduct) ...[
-            //   SizedBox(width: AppWidth.s8),
-            //   OutlinedButton.icon(
-            //     onPressed: () => _onConfirmProduct(context),
-            //     style: OutlinedButton.styleFrom(
-            //       side: BorderSide(color: ColorManager.primary),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(AppRadius.r20),
-            //       ),
-            //       padding: EdgeInsets.symmetric(
-            //         horizontal: AppPadding.p12,
-            //         vertical: AppHeight.s8,
-            //       ),
-            //     ),
-            //     icon: Icon(
-            //       Icons.check_circle_outline,
-            //       size: AppSize.s16,
-            //       color: ColorManager.primary,
-            //     ),
-            //     label: CustomText(
-            //       text: AppTranslation.confirmProduct,
-            //       textStyle: getSemiBoldStyle(
-            //         fontSize: AppFontSize.s12,
-            //         color: ColorManager.primary,
-            //       ),
-            //     ),
-            //   ),
-            // ],
           ],
         ),
         if (stockQuantity != null && hasStock == true) ...[
@@ -77,7 +49,7 @@ class ProductItemActions extends StatelessWidget {
           CustomText(
             text: '${AppTranslation.productQuantity}: $stockQuantity',
             textStyle: getRegularStyle(
-              fontSize: AppFontSize.s12,
+              fontSize: AppFontSize.s14,
               color: ColorManager.descriptionColor,
             ),
           ),

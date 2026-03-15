@@ -8,7 +8,8 @@ abstract class DeleteCategoryEvent extends Equatable {
 }
 
 class DeleteCategorySubmitted extends DeleteCategoryEvent {
-  final String categoryId;
+
+  final int categoryId;
 
   const DeleteCategorySubmitted({required this.categoryId});
 

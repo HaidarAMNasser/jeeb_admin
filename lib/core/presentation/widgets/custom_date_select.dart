@@ -35,7 +35,10 @@ class CustomDateSelect extends StatelessWidget {
     final now = DateTime.now();
     final first = firstDate ?? now.subtract(const Duration(days: 365));
     final last = lastDate ?? now.add(const Duration(days: 365 * 2));
-    final initial = initialValue ?? now;
+    var initial = initialValue ?? now;
+    // Clamp so initialDate is within [first, last] (required by showDatePicker)
+    if (initial.isBefore(first)) initial = first;
+    if (initial.isAfter(last)) initial = last;
 
     final picked = await showDatePicker(
       context: context,

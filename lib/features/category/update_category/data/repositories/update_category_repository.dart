@@ -18,7 +18,8 @@ class UpdateCategoryRepository {
   );
 
   Future<Either<Failure, CategoryEntity>> updateCategory({
-    required String id,
+
+    required int id,
     required String name,
     String? imagePath,
   }) async {
@@ -53,7 +54,8 @@ class UpdateCategoryRepository {
               }
             }
             final categoryEntity = CategoryEntity(
-              id: data['id']?.toString() ?? id,
+
+              id: (data['id'] as num?)?.toInt() ?? id,
               name: data['name']?.toString() ?? name,
               imageUrl: imageUrl,
             );

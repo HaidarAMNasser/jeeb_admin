@@ -189,6 +189,8 @@
   "order_completed_successfully": "Order completed successfully",
   "order_cancelled_successfully": "Order cancelled successfully",
   "order": "Order",
+  "customer": "Customer",
+  "order_summary": "Order Summary",
   "products_count": "product(s)",
   "people": "people",
   "latitude": "Latitude",

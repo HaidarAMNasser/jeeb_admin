@@ -371,7 +371,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'POST', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Category/create',
+              'categories',
               queryParameters: queryParameters,
               data: formData,
             )
@@ -395,7 +395,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Category/update/$id',
+              'categories/$id',
               queryParameters: queryParameters,
               data: formData,
             )
@@ -417,7 +417,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'DELETE', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'apiAdmin/Category/delete/$id',
+              'categories/$id',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
@@ -1118,7 +1118,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
-        Options(method: 'POST', headers: headers, extra: extra)
+        Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
               'offers/$id',
@@ -1140,7 +1140,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
-        Options(method: 'POST', headers: headers, extra: extra)
+        Options(method: 'DELETE', headers: headers, extra: extra)
             .compose(
               dio.options,
               'offers/$id/delete',

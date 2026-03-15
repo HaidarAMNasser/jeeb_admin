@@ -59,7 +59,6 @@ class ProductListItem extends StatelessWidget {
                     enableSmallDesign: enableSmallDesign,
                     product: product,
                   ),
-                  SizedBox(height: AppHeight.s12),
                   ProductItemActions(
                     enableSmallDesign: enableSmallDesign,
                     productId: product.id,

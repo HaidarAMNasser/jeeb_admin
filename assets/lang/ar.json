@@ -189,6 +189,8 @@
   "order_completed_successfully": "تم إكمال الطلب بنجاح",
   "order_cancelled_successfully": "تم إلغاء الطلب بنجاح",
   "order": "الطلب",
+  "customer": "العميل",
+  "order_summary": "ملخص الطلب",
   "products_count": "منتج(منتجات)",
   "people": "أشخاص",
   "latitude": "خط العرض",

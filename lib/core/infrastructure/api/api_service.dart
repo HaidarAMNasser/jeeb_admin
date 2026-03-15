@@ -81,16 +81,17 @@ abstract class AppApiServiceClient {
   Future<Response> logout();
 
   // Category endpoints
-  @GET("apiAdmin/Category/all")
+  @GET("categories")
   Future<Response> getCategories();
 
-  @POST("apiAdmin/Category/create")
+
+  @POST("categories")
   Future<Response> addCategory(FormData formData);
 
-  @PATCH("apiAdmin/Category/update/{id}")
+  @PATCH("categories/{id}")
   Future<Response> updateCategory(@Path('id') String id, FormData formData);
 
-  @DELETE("apiAdmin/Category/delete/{id}")
+  @DELETE("categories/{id}")
   Future<Response> deleteCategory(@Path('id') String id);
 
   // Product endpoints

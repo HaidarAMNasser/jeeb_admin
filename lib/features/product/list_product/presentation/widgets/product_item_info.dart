@@ -56,10 +56,7 @@ class ProductItemInfo extends StatelessWidget {
           SizedBox(height: AppHeight.s4),
           CustomText(
             text: product.description!,
-            textStyle: getRegularStyle(
-              fontSize: AppFontSize.s12,
-              color: ColorManager.descriptionColor,
-            ),
+            textStyle: getRegularStyle(),
             maxLines: 2,
             textOverflow: TextOverflow.ellipsis,
           ),

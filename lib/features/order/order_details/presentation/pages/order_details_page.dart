@@ -104,6 +104,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   bloc: context.read<OrderDetailsBloc>(),
                   isLoading: (state) => state is OrderDetailsLoading,
                   isError: (state) => state is OrderDetailsError,
+                  isSuccess: (state) => state is OrderDetailsLoaded,
                   getErrorMessage: (state) =>
                       (state as OrderDetailsError).message,
                   getRetryCallback: (state) => () {

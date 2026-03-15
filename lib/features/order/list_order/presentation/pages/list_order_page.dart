@@ -92,7 +92,7 @@ class _ListOrderPageState extends State<ListOrderPage> {
                   ? state.merchantId
                   : (state is ListOrderLoadingMore ? state.merchantId : null);
               context.read<ListOrderBloc>().add(
-                    GetOrdersEvent(search: currentSearch, merchantId: merchantId),
+                    GetOrdersEvent( merchantId: merchantId),
                   );
             },
             successBuilder: (context, orderState) {

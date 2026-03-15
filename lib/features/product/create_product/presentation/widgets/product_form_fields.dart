@@ -90,7 +90,7 @@ class ProductFormFields extends StatelessWidget {
         CategoryWidget(
           selectedCategoryId: state.selectedCategoryId,
           onSelectCategory: (category) {
-            bloc.add(UpdateSelectedCategory(categoryId: category?.id));
+            bloc.add(UpdateSelectedCategory(categoryId: category?.id.toString()));
           },
           isRequired: true,
         ),

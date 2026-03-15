@@ -50,13 +50,14 @@ class AddCategoryRepository {
               }
             }
             final categoryEntity = CategoryEntity(
-              id: data['id']?.toString() ?? '',
+              id: (data['id'] as num?)?.toInt() ?? 0,
               name: data['name']?.toString() ?? name,
               imageUrl: imageUrl,
             );
             return Right(categoryEntity);
           } else {
-            return Right(CategoryEntity(id: '', name: name, imageUrl: null));
+
+            return Right(CategoryEntity(id: 0, name: name, imageUrl: null));
           }
         } else {
           return Left(ErrorHandler.handle(DioException(

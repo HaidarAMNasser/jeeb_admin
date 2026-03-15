@@ -8,7 +8,8 @@ abstract class UpdateCategoryEvent extends Equatable {
 }
 
 class UpdateCategorySubmitted extends UpdateCategoryEvent {
-  final String id;
+
+  final int id;
   final String name;
   final String? imagePath;
 
