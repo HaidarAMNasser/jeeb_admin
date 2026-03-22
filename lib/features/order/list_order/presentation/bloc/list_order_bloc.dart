@@ -14,43 +14,39 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
     on<ListOrderEvent>((event, emit) async {
       if (event is GetOrdersEvent) {
         if (event.loadMore) {
-          // Load more orders
           final currentState = state;
-          if (currentState is ListOrderLoaded) {
-            emit(ListOrderLoadingMore(
-              orders: currentState.orders,
-              currentPage: currentState.currentPage,
-              search: currentState.search,
-              merchantId: currentState.merchantId,
-            ));
+          if (currentState is! ListOrderLoaded) return;
+          if (!currentState.hasMore || currentState.isLoadingMore) return;
 
-            final nextPage = currentState.currentPage + 1;
-            final searchQuery = event.search ?? currentState.search;
-            final merchantId = event.merchantId ?? currentState.merchantId;
-            final result = await _repository.getOrders(
-              page: nextPage,
-              limit: _pageSize,
-              search: searchQuery,
-              merchantId: merchantId,
-            );
+          final searchQuery = event.search ?? currentState.search;
+          final merchantId = event.merchantId ?? currentState.merchantId;
+          emit(currentState.copyWith(isLoadingMore: true));
 
-            result.fold(
-              (failure) => emit(ListOrderError(message: failure.message)),
-              (newOrders) {
-                final updatedOrders = [
-                  ...currentState.orders,
-                  ...newOrders,
-                ];
-                emit(ListOrderLoaded(
-                  orders: updatedOrders,
-                  hasMore: newOrders.length == _pageSize,
-                  currentPage: nextPage,
-                  search: searchQuery,
-                  merchantId: merchantId,
-                ));
-              },
-            );
-          }
+          final nextPage = currentState.currentPage + 1;
+          final result = await _repository.getOrders(
+            page: nextPage,
+            limit: _pageSize,
+            search: searchQuery,
+            merchantId: merchantId,
+          );
+
+          result.fold(
+            (failure) => emit(currentState.copyWith(isLoadingMore: false)),
+            (newOrders) {
+              final updatedOrders = [
+                ...currentState.orders,
+                ...newOrders,
+              ];
+              emit(ListOrderLoaded(
+                orders: updatedOrders,
+                hasMore: newOrders.length >= _pageSize,
+                currentPage: nextPage,
+                search: searchQuery,
+                merchantId: merchantId,
+                isLoadingMore: false,
+              ));
+            },
+          );
         } else {
           // Initial load or refresh
           emit(const ListOrderLoading());
@@ -65,10 +61,11 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
             (failure) => emit(ListOrderError(message: failure.message)),
             (orders) => emit(ListOrderLoaded(
               orders: orders,
-              hasMore: orders.length == _pageSize,
+              hasMore: orders.length >= _pageSize,
               currentPage: 1,
               search: event.search,
               merchantId: event.merchantId,
+              isLoadingMore: false,
             )),
           );
         }

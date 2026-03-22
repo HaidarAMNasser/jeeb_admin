@@ -13,6 +13,11 @@ class OfferListItem extends StatelessWidget {
   final OfferEntity offer;
 
   const OfferListItem({super.key, required this.offer});
+  String _formatDateRange(DateTime? start, DateTime? end) {
+    final s = start != null ? '${start.day}/${start.month}/${start.year}' : '—';
+    final e = end != null ? '${end.day}/${end.month}/${end.year}' : '—';
+    return '$s - $e';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,7 @@ class OfferListItem extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(AppPadding.p16),
           child: Column(
+            spacing: AppHeight.s8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -73,34 +79,26 @@ class OfferListItem extends StatelessWidget {
                   ),
                 ],
               ),
+
+              CustomText(
+                text:
+                    "${AppTranslation.offerProductsCount}: ${offer.products.map((product) => product.name).join(', ')}",
+                textStyle: getMediumStyle(),
+              ),
+
               if (offer.longDescription != null) ...[
-                SizedBox(height: AppHeight.s8),
                 CustomText(
                   text: offer.longDescription!,
-                  textStyle: getRegularStyle(
-                    fontSize: AppFontSize.s12,
-                    color: ColorManager.descriptionColor,
-                  ),
+                  textStyle: getRegularStyle(),
                   maxLines: 2,
                   textOverflow: TextOverflow.ellipsis,
                 ),
               ],
-              SizedBox(height: AppHeight.s8),
-              CustomText(
-                text: '${AppTranslation.offerProductsCount}: ${offer.products.length}',
-                textStyle: getRegularStyle(
-                  fontSize: AppFontSize.s12,
-                  color: ColorManager.descriptionColor,
-                ),
-              ),
+
               if (offer.startDate != null || offer.endDate != null) ...[
-                SizedBox(height: AppHeight.s4),
                 CustomText(
                   text: _formatDateRange(offer.startDate, offer.endDate),
-                  textStyle: getRegularStyle(
-                    fontSize: AppFontSize.s11,
-                    color: ColorManager.descriptionColor,
-                  ),
+                  textStyle: getRegularStyle(color: ColorManager.primary),
                 ),
               ],
             ],
@@ -108,11 +106,5 @@ class OfferListItem extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDateRange(DateTime? start, DateTime? end) {
-    final s = start != null ? '${start.day}/${start.month}/${start.year}' : '—';
-    final e = end != null ? '${end.day}/${end.month}/${end.year}' : '—';
-    return '$s - $e';
   }
 }

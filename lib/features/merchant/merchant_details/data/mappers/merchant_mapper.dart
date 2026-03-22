@@ -6,11 +6,18 @@ extension MerchantMapper on MerchantModel {
     return MerchantEntity(
       id: id,
       name: name, // firstName + lastName
+      restaurantName: restaurantName,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
+      countryId: countryId,
+      cityId: cityId,
+      address: address,
       cityName: cityName, // from city.nameEn or city.nameAr
       countryName: countryName, // from country.nameEn or country.nameAr
       location: address,
       phoneNumber: phoneNumber, // from phone
+      hidePhoneNumber: hidePhoneNumber,
       image: imageUrl, // from image.url
     );
   }

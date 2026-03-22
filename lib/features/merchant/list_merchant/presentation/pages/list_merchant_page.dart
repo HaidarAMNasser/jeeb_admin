@@ -24,7 +24,6 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Load initial merchants
     context.read<ListMerchantBloc>().add(const GetMerchantsEvent());
   }
 
@@ -35,19 +34,22 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
     super.dispose();
   }
 
-  void _onScroll() {
-    final state = context.read<ListMerchantBloc>().state;
-    // Prevent loading more if already loading
-    if (state is ListMerchantLoadingMore) return;
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
 
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.8) {
-      if (state is ListMerchantLoaded && state.hasMore) {
-        // Use the search query from state when loading more
-        context.read<ListMerchantBloc>().add(
-          GetMerchantsEvent(loadMore: true, search: state.search),
-        );
-      }
+  void _onScroll() {
+    if (!_isBottom) return;
+    final state = context.read<ListMerchantBloc>().state;
+    if (state is ListMerchantLoaded &&
+        state.hasMore &&
+        !state.isLoadingMore) {
+      context.read<ListMerchantBloc>().add(
+            GetMerchantsEvent(loadMore: true, search: state.search),
+          );
     }
   }
 
@@ -58,11 +60,8 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
       appBar: CustomAppBar(title: AppTranslation.merchants),
       body: BlocBuilder<ListMerchantBloc, ListMerchantState>(
         builder: (context, state) {
-          // Get current search query from state for refresh
           String? currentSearch;
           if (state is ListMerchantLoaded) {
-            currentSearch = state.search;
-          } else if (state is ListMerchantLoadingMore) {
             currentSearch = state.search;
           }
 
@@ -71,11 +70,11 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
             isLoading: (state) => state is ListMerchantLoading,
             isError: (state) => state is ListMerchantError,
             getErrorMessage: (state) => (state as ListMerchantError).message,
-            isSuccess: (state) =>
-                state is ListMerchantLoaded || state is ListMerchantLoadingMore,
+            isSuccess: (state) => state is ListMerchantLoaded,
             isEmpty: (state) {
-              if (state is ListMerchantLoaded) return state.merchants.isEmpty;
-              if (state is ListMerchantLoadingMore) return state.merchants.isEmpty;
+              if (state is ListMerchantLoaded) {
+                return state.merchants.isEmpty && !state.isLoadingMore;
+              }
               return false;
             },
             emptyMessage: AppTranslation.noMerchantsFound,
@@ -86,12 +85,9 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
               context.read<ListMerchantBloc>().add(const GetMerchantsEvent());
             },
             successBuilder: (context, merchantState) {
-              final merchants = merchantState is ListMerchantLoaded
-                  ? merchantState.merchants
-                  : (merchantState as ListMerchantLoadingMore).merchants;
-              final hasMore = merchantState is ListMerchantLoaded
-                  ? merchantState.hasMore
-                  : false;
+              final s = merchantState as ListMerchantLoaded;
+              final merchants = s.merchants;
+              final isLoadingMore = s.isLoadingMore;
 
               return Column(
                 children: [
@@ -100,13 +96,18 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
                     child: RefreshIndicator(
                       onRefresh: () async {
                         context.read<ListMerchantBloc>().add(
-                          GetMerchantsEvent(search: currentSearch),
-                        );
+                              GetMerchantsEvent(search: currentSearch),
+                            );
                       },
                       child: ListView.builder(
                         controller: _scrollController,
-                        padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                        itemCount: merchants.length + (hasMore ? 1 : 0),
+                        padding: EdgeInsets.only(
+                          left: AppPadding.p16,
+                          right: AppPadding.p16,
+                          bottom: 24,
+                        ),
+                        itemCount:
+                            merchants.length + (isLoadingMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == merchants.length) {
                             return Padding(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:jeeb_admin/core/common/classes/user_roles.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
     as di;
@@ -15,7 +16,6 @@ import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_input_dialog.dart';
 
 import 'package:jeeb_admin/features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
 import 'package:jeeb_admin/features/product/delete_product/presentation/bloc/delete_product_bloc.dart';
@@ -55,37 +55,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     setState(() => _isAdmin = role == UserRoles.admin.name);
   }
 
-  Future<void> _showConfirmDialog(
-    BuildContext context,
-    ProductDetailsLoaded state,
-  ) async {
-    final product = state.product;
-    final currentPrice = (product.price / 100).toStringAsFixed(2);
-    final result = await CustomInputDialog.show(
-      context: context,
-      title: AppTranslation.confirmProduct,
-      label: AppTranslation.newPrice,
-      hintText: AppTranslation.enterNewPrice,
-      initialValue: currentPrice,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty)
-          return AppTranslation.pleaseEnterProductPrice;
-        final parsed = double.tryParse(value.replaceAll(',', ''));
-        if (parsed == null || parsed <= 0)
-          return AppTranslation.invalidProductPrice;
-        return null;
-      },
-    );
-    if (result == null || result.isEmpty) return;
-    context.read<ConfirmProductBloc>().add(
-      ConfirmProductSubmitted(
-        productId: product.id,
-        newPrice: double.parse(result.replaceAll(',', '')),
-      ),
-    );
-  }
-
   void _showDeleteDialog(BuildContext context, ProductDetailsLoaded state) {
     ConfirmationDialog.show(
       context: context,
@@ -118,6 +87,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<ConfirmProductBloc, ConfirmProductState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is ConfirmProductSuccess || s is ConfirmProductError,
+          ),
           listener: (context, state) {
             if (state is ConfirmProductSuccess) {
               customToast(msg: AppTranslation.productConfirmedSuccessfully);
@@ -130,6 +104,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           },
         ),
         BlocListener<DeleteProductBloc, DeleteProductState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is DeleteProductSuccess || s is DeleteProductError,
+          ),
           listener: (context, state) {
             if (state is DeleteProductSuccess) {
               customToast(msg: AppTranslation.productDeletedSuccessfully);
@@ -143,46 +122,58 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           },
         ),
       ],
-      child: BlocBuilder<ConfirmProductBloc, ConfirmProductState>(
-        builder: (context, confirmState) {
-          return ModalProgressHUD(
-            progressIndicator: const CustomCircleIndicator(),
-            inAsyncCall: confirmState is ConfirmProductLoading,
-            child: PopScope(
-              canPop: false,
-              onPopInvokedWithResult: (didPop, result) {
-                if (didPop) return;
-                _goToMainWithTab(context);
-              },
-              child: Scaffold(
-                backgroundColor: ColorManager.background,
-                appBar: CustomAppBar(
-                  onBackPressed: () => _goToMainWithTab(context),
-                  title: AppTranslation.productDetails,
-                  actions: [_buildOptionsButton(context)],
-                ),
-                body: BlocStateHandler<ProductDetailsBloc, ProductDetailsState>(
-                  bloc: context.read<ProductDetailsBloc>(),
-                  isLoading: (state) => state is ProductDetailsLoading,
-                  isError: (state) => state is ProductDetailsError,
-                  getErrorMessage: (state) =>
-                      (state as ProductDetailsError).message,
-                  isSuccess: (state) => state is ProductDetailsLoaded,
-                  getRetryCallback: (state) =>
-                      () => context.read<ProductDetailsBloc>().add(
-                        GetProductDetailsEvent(id: widget.productId),
-                      ),
-                  successBuilder: (context, productState) {
-                    final loadedState = productState as ProductDetailsLoaded;
-                    return ProductDetailsContent(
-                      product: loadedState.product,
-                      isAdmin: _isAdmin,
-                      onEdit: () => _onEditProduct(context, loadedState),
-                    );
+      child: BlocBuilder<DeleteProductBloc, DeleteProductState>(
+        builder: (context, deleteState) {
+          return BlocBuilder<ConfirmProductBloc, ConfirmProductState>(
+            builder: (context, confirmState) {
+              return ModalProgressHUD(
+                progressIndicator: const CustomCircleIndicator(),
+                inAsyncCall:
+                    confirmState is ConfirmProductLoading ||
+                    deleteState is DeleteProductLoading,
+                child: PopScope(
+                  canPop: false,
+                  onPopInvokedWithResult: (didPop, result) {
+                    if (didPop) return;
+                    _goToMainWithTab(context);
                   },
+                  child: Scaffold(
+                    backgroundColor: ColorManager.background,
+                    appBar: CustomAppBar(
+                      onBackPressed: () => _goToMainWithTab(context),
+                      title: AppTranslation.productDetails,
+                      actions: [_buildOptionsButton(context)],
+                    ),
+                    body:
+                        BlocStateHandler<
+                          ProductDetailsBloc,
+                          ProductDetailsState
+                        >(
+                          bloc: context.read<ProductDetailsBloc>(),
+                          isLoading: (state) => state is ProductDetailsLoading,
+                          isError: (state) => state is ProductDetailsError,
+                          getErrorMessage: (state) =>
+                              (state as ProductDetailsError).message,
+                          isSuccess: (state) => state is ProductDetailsLoaded,
+                          getRetryCallback: (state) =>
+                              () => context.read<ProductDetailsBloc>().add(
+                                GetProductDetailsEvent(id: widget.productId),
+                              ),
+                          successBuilder: (context, productState) {
+                            final loadedState =
+                                productState as ProductDetailsLoaded;
+                            return ProductDetailsContent(
+                              product: loadedState.product,
+                              isAdmin: _isAdmin,
+                              onEdit: () =>
+                                  _onEditProduct(context, loadedState),
+                            );
+                          },
+                        ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
@@ -199,7 +190,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             context: context,
             isAdmin: _isAdmin,
             onEdit: () => _onEditProduct(context, state),
-            onConfirm: () => _showConfirmDialog(context, state),
+            onConfirm: () => () {},
             onDelete: () => _showDeleteDialog(context, state),
           ),
         );
@@ -207,3 +198,33 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 }
+  // Future<void> _showConfirmDialog(
+  //   BuildContext context,
+  //   ProductDetailsLoaded state,
+  // ) async {
+  //   final product = state.product;
+  //   final currentPrice = (product.price / 100).toStringAsFixed(2);
+  //   final result = await CustomInputDialog.show(
+  //     context: context,
+  //     title: AppTranslation.confirmProduct,
+  //     label: AppTranslation.newPrice,
+  //     hintText: AppTranslation.enterNewPrice,
+  //     initialValue: currentPrice,
+  //     keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  //     validator: (value) {
+  //       if (value == null || value.trim().isEmpty)
+  //         return AppTranslation.pleaseEnterProductPrice;
+  //       final parsed = double.tryParse(value.replaceAll(',', ''));
+  //       if (parsed == null || parsed <= 0)
+  //         return AppTranslation.invalidProductPrice;
+  //       return null;
+  //     },
+  //   );
+  //   if (result == null || result.isEmpty) return;
+  //   context.read<ConfirmProductBloc>().add(
+  //     ConfirmProductSubmitted(
+  //       productId: product.id,
+  //       newPrice: double.parse(result.replaceAll(',', '')),
+  //     ),
+  //   );
+  // }

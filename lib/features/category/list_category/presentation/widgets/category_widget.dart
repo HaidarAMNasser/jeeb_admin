@@ -38,9 +38,12 @@ class _CategoryWidgetState extends State<CategoryWidget> {
       builder: (context, state) {
         List<CategoryEntity> categories = [];
         bool isLoading = false;
+        bool isLoadingMore = false;
+        bool hasMoreData = true;
         bool isError = false;
         String? errorMessage;
 
+        bool isRefreshing = false;
         if (state is ListCategoryLoading) {
           isLoading = true;
         } else if (state is ListCategoryError) {
@@ -48,13 +51,16 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           errorMessage = state.message;
         } else if (state is ListCategoryLoaded) {
           categories = state.categories;
+          isLoadingMore = state.isLoadingMore;
+          isRefreshing = state.isRefreshing;
+          hasMoreData = state.hasMore;
         }
 
         CategoryEntity? selectedItem;
         if (widget.selectedCategoryId != null && categories.isNotEmpty) {
           try {
             selectedItem = categories.firstWhere(
-              (c) => c.id == widget.selectedCategoryId,
+              (c) => c.id.toString() == widget.selectedCategoryId,
             );
           } catch (_) {
             selectedItem = null;
@@ -68,14 +74,31 @@ class _CategoryWidgetState extends State<CategoryWidget> {
           selectedItem: selectedItem,
           displayText: (category) => category.name,
           onChanged: widget.onSelectCategory,
-          onLoadMore: null,
+          onLoadMore: () {
+            if (!isLoadingMore && hasMoreData && !isRefreshing) {
+              context.read<ListCategoryBloc>().add(
+                    const GetCategoriesEvent(loadMore: true),
+                  );
+            }
+          },
           isLoading: isLoading,
-          isLoadingMore: false,
-          hasMoreData: false,
+          isLoadingMore: isLoadingMore,
+          isBorderLoading: isLoadingMore || isRefreshing,
+          hasMoreData: hasMoreData,
           isError: isError,
           errorMessage: errorMessage,
           isRequired: widget.isRequired,
           isReadOnly: widget.isReadOnly,
+          enableSearch: true,
+          searchHintText: AppTranslation.searchCategoriesHint,
+          emptyMessage: AppTranslation.noCategoriesFound,
+          onSearchChanged: (query) {
+            context.read<ListCategoryBloc>().add(
+                  GetCategoriesEvent(
+                    search: query.isEmpty ? null : query,
+                  ),
+                );
+          },
         );
       },
     );

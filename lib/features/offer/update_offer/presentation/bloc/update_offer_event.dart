@@ -10,9 +10,9 @@ abstract class UpdateOfferEvent extends Equatable {
 class UpdateOfferSubmitted extends UpdateOfferEvent {
   final String id;
   final String name;
-  final String shortDescription;
-  final String longDescription;
-  final List<String> productIds;
+  final String description;
+  final List<OfferProductLine> offerProducts;
+  final List<String> initialOfferProductIds;
   final DateTime? startDate;
   final DateTime? endDate;
   final String discountType;
@@ -21,9 +21,9 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
   const UpdateOfferSubmitted({
     required this.id,
     required this.name,
-    required this.shortDescription,
-    required this.longDescription,
-    required this.productIds,
+    required this.description,
+    required this.offerProducts,
+    required this.initialOfferProductIds,
     this.startDate,
     this.endDate,
     required this.discountType,
@@ -34,9 +34,9 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
   List<Object?> get props => [
         id,
         name,
-        shortDescription,
-        longDescription,
-        productIds,
+        description,
+        offerProducts,
+        initialOfferProductIds,
         startDate,
         endDate,
         discountType,

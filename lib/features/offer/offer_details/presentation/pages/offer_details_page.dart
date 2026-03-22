@@ -69,26 +69,6 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                   ),
                   SizedBox(height: AppHeight.s8),
                 ],
-                if (offer.shortDescription != null) ...[
-                  CustomText(
-                    text: offer.shortDescription!,
-                    textStyle: getBoldStyle(
-                      fontSize: AppFontSize.s18,
-                      color: ColorManager.defaultWhite,
-                    ),
-                  ),
-                  SizedBox(height: AppHeight.s8),
-                ],
-                if (offer.longDescription != null) ...[
-                  CustomText(
-                    text: offer.longDescription!,
-                    textStyle: getRegularStyle(
-                      fontSize: AppFontSize.s14,
-                      color: ColorManager.textSecondary,
-                    ),
-                  ),
-                  SizedBox(height: AppHeight.s16),
-                ],
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: AppPadding.p12,
@@ -137,8 +117,29 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                   ),
                 ),
                 SizedBox(height: AppHeight.s8),
-                ...offer.products.map((p) => ProductListItem(product: p)),
+                ...offer.products.map((p) => ProductListItem(product: p, enableSmallDesign :true )),
                 SizedBox(height: AppHeight.s24),
+                if ((offer.shortDescription ?? offer.longDescription ?? '').trim().isNotEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(AppPadding.p16),
+                    decoration: BoxDecoration(
+                      color: ColorManager.defaultWhite.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(AppRadius.r12),
+                      border: Border.all(
+                        color: ColorManager.borderColor.withOpacity(0.5),
+                      ),
+                    ),
+                    child: CustomText(
+                      text: (offer.shortDescription ?? offer.longDescription ?? '').trim(),
+                      textStyle: getRegularStyle(
+                        fontSize: AppFontSize.s14,
+                        color: ColorManager.defaultWhite,
+                      ),
+                    ),
+                  ),
+                if ((offer.shortDescription ?? offer.longDescription ?? '').trim().isNotEmpty)
+                  SizedBox(height: AppHeight.s24),
                 // Edit button: merchant only; hidden for admin
                 FutureBuilder<String?>(
                   future: di.sl<StorageService>().getUserRole(),

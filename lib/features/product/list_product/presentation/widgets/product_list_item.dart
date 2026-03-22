@@ -5,17 +5,18 @@ import 'package:jeeb_admin/features/product/list_product/domain/entities/product
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_item_image_carousel.dart';
-import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_item_badges.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_item_info.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/widgets/product_item_actions.dart';
 
 class ProductListItem extends StatelessWidget {
   final ProductEntity product;
+  final bool enableSmallDesign;
   final bool showConfirmProduct;
 
   const ProductListItem({
     super.key,
     required this.product,
+    this.enableSmallDesign = false,
     this.showConfirmProduct = false,
   });
 
@@ -29,38 +30,37 @@ class ProductListItem extends StatelessWidget {
           arguments: {'productId': product.id, 'tabIndexOnBack': 0},
         );
       },
-      child: Card(
-        color: ColorManager.defaultWhite,
-        margin: EdgeInsets.only(bottom: AppMargin.m16),
-        elevation: 2,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.r16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProductItemImageCarousel(
-              key: ValueKey('${product.id}_${product.images.length}'),
-              images: product.images,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ProductItemImageCarousel( 
+            key: ValueKey('${product.id}_${product.images.length}'),
+            images: product.images,
+            enableSmallDesign: enableSmallDesign,
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: AppMargin.m16),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: ColorManager.defaultWhite,
+
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(AppRadius.r16),
+                bottomRight: Radius.circular(AppRadius.r16),
+              ),
             ),
-            Padding(
+            child: Padding(
               padding: EdgeInsets.all(AppPadding.p16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProductItemBadges(
-                    categoryName: product.categoryName,
-                    rating: product.rating,
-                  ),
-                  SizedBox(height: AppHeight.s8),
                   ProductItemInfo(
-                    name: product.name,
-                    description: product.description,
+                    enableSmallDesign: enableSmallDesign,
+                    product: product,
                   ),
-                  SizedBox(height: AppHeight.s12),
                   ProductItemActions(
+                    enableSmallDesign: enableSmallDesign,
                     productId: product.id,
                     price: product.price,
                     showConfirmProduct: showConfirmProduct,
@@ -70,8 +70,8 @@ class ProductListItem extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

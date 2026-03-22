@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
@@ -40,6 +41,11 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<DeleteDeliveryBloc, DeleteDeliveryState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is DeleteDeliverySuccess || s is DeleteDeliveryError,
+          ),
           listener: (context, state) {
             if (state is DeleteDeliverySuccess) {
               customToast(msg: AppTranslation.deliveryManDeletedSuccessfully);
@@ -51,6 +57,11 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
           },
         ),
         BlocListener<ConfirmDeliveryBloc, ConfirmDeliveryState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is ConfirmDeliverySuccess || s is ConfirmDeliveryError,
+          ),
           listener: (context, state) {
             if (state is ConfirmDeliverySuccess) {
               customToast(msg: AppTranslation.deliveryManConfirmedSuccessfully);
@@ -115,9 +126,9 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
 
         return IconButton(
           icon: Icon(Icons.more_vert, color: ColorManager.titlesColor),
-          onPressed: () => DeliveryDetailsOptionsDialog.show(
+            onPressed: () => DeliveryDetailsOptionsDialog.show(
             context: context,
-            showConfirm: !state.deliveryMan.confirmed,
+            showConfirm: state.deliveryMan.isActive != true,
             onEdit: () {
               AppRouter.navigateTo(
                 context,

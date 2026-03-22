@@ -89,47 +89,53 @@ class _AdminNavigationState extends State<AdminNavigation> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          backgroundColor: ColorManager.primaryDark,
-          selectedItemColor: ColorManager.primary,
-          unselectedItemColor: ColorManager.textSecondary,
-          type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: getSemiBoldStyle(
-            fontSize: AppFontSize.s12,
-            color: ColorManager.primary,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              backgroundColor: ColorManager.primaryDark,
+              selectedItemColor: ColorManager.primary,
+              unselectedItemColor: ColorManager.textSecondary,
+              type: BottomNavigationBarType.fixed,
+              selectedLabelStyle: getSemiBoldStyle(
+                fontSize: AppFontSize.s12,
+                color: ColorManager.primary,
+              ),
+              unselectedLabelStyle: getRegularStyle(
+                fontSize: AppFontSize.s12,
+                color: ColorManager.textSecondary,
+              ),
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.store_outlined),
+                  activeIcon: Icon(Icons.store),
+                  label: AppTranslation.merchants,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_bag_outlined),
+                  activeIcon: Icon(Icons.shopping_bag),
+                  label: AppTranslation.orders,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.delivery_dining_outlined),
+                  activeIcon: Icon(Icons.delivery_dining),
+                  label: AppTranslation.deliveryMen,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline),
+                  activeIcon: Icon(Icons.person),
+                  label: AppTranslation.profile,
+                ),
+              ],
+            ),
           ),
-          unselectedLabelStyle: getRegularStyle(
-            fontSize: AppFontSize.s12,
-            color: ColorManager.textSecondary,
-          ),
-          items:  [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.store_outlined),
-              activeIcon: Icon(Icons.store),
-              label: AppTranslation.merchants,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag_outlined),
-              activeIcon: Icon(Icons.shopping_bag),
-              label: AppTranslation.orders,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.delivery_dining_outlined),
-              activeIcon: Icon(Icons.delivery_dining),
-              label: AppTranslation.deliveryMen,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: AppTranslation.profile,
-            ),
-          ],
         ),
       ),
     );

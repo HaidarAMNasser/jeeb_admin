@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -57,27 +58,36 @@ class RegisterPage extends StatelessWidget {
     final bloc = context.read<RegisterBloc>();
 
     bloc.add(const RegisterLocationLoadingChanged(true));
-    final position = await LocationPermissionHelper.requestAndGetPosition();
-    if (!context.mounted) return;
+    try {
+      final position = await LocationPermissionHelper.requestAndGetPosition();
+      if (!context.mounted) return;
 
-    bloc.add(const RegisterLocationLoadingChanged(false));
+      if (position != null) {
+        bloc.add(
+          RegisterLocationUpdated(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
+        return;
+      }
 
-    if (position != null) {
-      bloc.add(
-        RegisterLocationUpdated(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ),
-      );
-      return;
+      customToast(msg: AppTranslation.locationPermissionDenied);
+    } finally {
+      // Always clear loading so the row stays tappable after deny, error, or
+      // if the widget unmounted during await (bloc still needs a consistent state).
+      bloc.add(const RegisterLocationLoadingChanged(false));
     }
-
-    customToast(msg: AppTranslation.locationPermissionDenied);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterBloc, RegisterState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is RegisterSuccess || s is RegisterError,
+      ),
       listener: (context, state) {
         if (state is RegisterSuccess) {
           context.pushNamed(

@@ -53,6 +53,10 @@ class AppTranslation {
   static String get categoryName => 'category_name'.tr();
   static String get pleaseEnterCategoryName => 'please_enter_category_name'.tr();
   static String get categoryAddedSuccessfully => 'category_added_successfully'.tr();
+  static String get editCategory => 'edit_category'.tr();
+  static String get categoryUpdatedSuccessfully => 'category_updated_successfully'.tr();
+  static String get categoryDeletedSuccessfully => 'category_deleted_successfully'.tr();
+  static String get areYouSureDeleteCategory => 'are_you_sure_delete_category'.tr();
 
   // Product
   static String get products => 'products'.tr();
@@ -62,6 +66,8 @@ class AppTranslation {
   static String get productDescription => 'product_description'.tr();
   static String get productPrice => 'product_price'.tr();
   static String get productQuantity => 'product_quantity'.tr();
+  static String get productServesCount => 'product_serves_count'.tr();
+  static String get productServesCountHint => 'product_serves_count_hint'.tr();
   static String get selectCategory => 'select_category'.tr();
   static String get productImages => 'product_images'.tr();
   static String get addImage => 'add_image'.tr();
@@ -89,13 +95,17 @@ class AppTranslation {
   static String get delete => 'delete'.tr();
   static String get edit => 'edit'.tr();
   static String get merchantDeletedSuccessfully => 'merchant_deleted_successfully'.tr();
+  static String get merchantUpdatedSuccessfully => 'merchant_updated_successfully'.tr();
   static String get areYouSureDeleteMerchant => 'are_you_sure_delete_merchant'.tr();
+  static String get editMerchant => 'edit_merchant'.tr();
   static String get save => 'save'.tr();
   static String get cancel => 'cancel'.tr();
   static String get confirm => 'confirm'.tr();
   static String get rating => 'rating'.tr();
   static String get noProductsFound => 'no_products_found'.tr();
+  static String get searchProductsHint => 'search_products_hint'.tr();
   static String get noCategoriesFound => 'no_categories_found'.tr();
+  static String get searchCategoriesHint => 'search_categories_hint'.tr();
   static String get loading => 'loading'.tr();
   static String get errorOccurred => 'error_occurred'.tr();
   static String get retry => 'retry'.tr();
@@ -165,6 +175,11 @@ class AppTranslation {
   static String get noMerchantsFound => 'no_merchants_found'.tr();
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
+  static String get copiedToClipboard => 'copied_to_clipboard'.tr();
+  static String get copyRestaurantName => 'copy_restaurant_name'.tr();
+  static String get owner => 'owner'.tr();
+  static String get hidePhoneNumberOption => 'hide_phone_number_option'.tr();
+  static String get showPhoneNumber => 'show_phone_number'.tr();
   static String get location => 'location'.tr();
   static String get useMyLocation => 'use_my_location'.tr();
   static String get pleaseSelectLocation => 'please_select_location'.tr();
@@ -223,6 +238,8 @@ class AppTranslation {
   static String get orderCompletedSuccessfully => 'order_completed_successfully'.tr();
   static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
   static String get order => 'order'.tr();
+  static String get customer => 'customer'.tr();
+  static String get orderSummary => 'order_summary'.tr();
   static String get productsCount => 'products_count'.tr();
   static String get people => 'people'.tr();
   static String get latitude => 'latitude'.tr();
@@ -242,6 +259,9 @@ class AppTranslation {
   static String get editOffer => 'edit_offer'.tr();
   static String get offerDetails => 'offer_details'.tr();
   static String get noOffersFound => 'no_offers_found'.tr();
+  static String get searchOffersHint => 'search_offers_hint'.tr();
+  static String get offerDescription => 'offer_description'.tr();
+  static String get pleaseEnterOfferDescription => 'please_enter_offer_description'.tr();
   static String get offerShortDescription => 'offer_short_description'.tr();
   static String get offerLongDescription => 'offer_long_description'.tr();
   static String get selectProducts => 'select_products'.tr();
@@ -253,8 +273,13 @@ class AppTranslation {
   static String get offerDiscountValueType => 'offer_discount_value_type'.tr();
   static String get offerProductsCount => 'offer_products_count'.tr();
   static String get offerDiscount => 'offer_discount'.tr();
+  static String get offerTotalBeforeDiscount => 'offer_total_before_discount'.tr();
+  static String get offerTotalAfterDiscount => 'offer_total_after_discount'.tr();
   static String get pleaseEnterOfferShortDescription => 'please_enter_offer_short_description'.tr();
   static String get pleaseSelectAtLeastOneProduct => 'please_select_at_least_one_product'.tr();
+  static String get offerQuantityHint => 'offer_quantity_hint'.tr();
+  static String get pleaseEnterValidOfferProductQuantity =>
+      'please_enter_valid_offer_product_quantity'.tr();
   static String get pleaseSelectDiscountType => 'please_select_discount_type'.tr();
   static String get pleaseEnterOfferDiscountValue => 'please_enter_offer_discount_value'.tr();
   static String get invalidOfferDiscountValue => 'invalid_offer_discount_value'.tr();
@@ -265,5 +290,15 @@ class AppTranslation {
   static String get selectDate => 'select_date'.tr();
   static String get showAll => 'show_all'.tr();
   static String get backToLogin => 'back_to_login'.tr();
+
+  // Settings (admin)
+  static String get supportPhone => 'support_phone'.tr();
+  static String get enterSupportPhone => 'enter_support_phone'.tr();
+  static String get whatsappNumber => 'whatsapp_number'.tr();
+  static String get enterWhatsappNumber => 'enter_whatsapp_number'.tr();
+  static String get defaultCommissionRate => 'default_commission_rate'.tr();
+  static String get enterCommissionRate => 'enter_commission_rate'.tr();
+  static String get pleaseEnterValidCommissionRate => 'please_enter_valid_commission_rate'.tr();
+  static String get settingsUpdatedSuccessfully => 'settings_updated_successfully'.tr();
 }
 

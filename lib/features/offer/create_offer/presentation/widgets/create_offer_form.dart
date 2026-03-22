@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/features/offer/create_offer/domain/entities/offer_product_line.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/bloc/create_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/list_offer/domain/entities/offer_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 import 'package:jeeb_admin/features/offer/update_offer/presentation/bloc/update_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_description_fields.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_products_section.dart';
+import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_totals_section.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_date_select.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_discount_section.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/offer_form_submit_button.dart';
@@ -36,8 +38,7 @@ class CreateOfferForm extends StatefulWidget {
 class _CreateOfferFormState extends State<CreateOfferForm> {
   late List<ProductEntity> _selectedProducts;
   late TextEditingController _nameController;
-  late TextEditingController _shortDescController;
-  late TextEditingController _longDescController;
+  late TextEditingController _descController;
   late TextEditingController _discountValueController;
 
   @override
@@ -47,11 +48,8 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     _nameController = TextEditingController(
       text: widget.state.name,
     );
-    _shortDescController = TextEditingController(
-      text: widget.state.shortDescription,
-    );
-    _longDescController = TextEditingController(
-      text: widget.state.longDescription,
+    _descController = TextEditingController(
+      text: widget.state.description,
     );
     _discountValueController = TextEditingController(
       text: widget.state.discountValue,
@@ -64,27 +62,35 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     if (widget.state.name != _nameController.text) {
       _nameController.text = widget.state.name;
     }
-    if (widget.state.shortDescription != _shortDescController.text) {
-      _shortDescController.text = widget.state.shortDescription;
-    }
-    if (widget.state.longDescription != _longDescController.text) {
-      _longDescController.text = widget.state.longDescription;
+    if (widget.state.description != _descController.text) {
+      _descController.text = widget.state.description;
     }
     if (widget.state.discountValue != _discountValueController.text) {
       _discountValueController.text = widget.state.discountValue;
     }
     if (widget.offer != null &&
         _selectedProducts.isEmpty &&
-        widget.state.productIds.isNotEmpty) {
-      _selectedProducts = widget.offer!.products;
+        widget.state.offerProducts.isNotEmpty) {
+      _selectedProducts = List.from(widget.offer!.products);
     }
+  }
+
+  void _syncOfferProductsToBloc() {
+    final lines = _selectedProducts
+        .map(
+          (p) => OfferProductLine(
+            productId: p.id,
+            quantity: p.offerQuantity ?? 1,
+          ),
+        )
+        .toList();
+    widget.bloc.add(UpdateOfferProducts(lines));
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _shortDescController.dispose();
-    _longDescController.dispose();
+    _descController.dispose();
     _discountValueController.dispose();
     super.dispose();
   }
@@ -93,11 +99,12 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     if (product == null) return;
     if (_selectedProducts.any((p) => p.id == product.id)) return;
     setState(() {
-      _selectedProducts = [..._selectedProducts, product];
+      _selectedProducts = [
+        ..._selectedProducts,
+        product.withOfferQuantity(1),
+      ];
     });
-    widget.bloc.add(
-      UpdateOfferProductIds(_selectedProducts.map((e) => e.id).toList()),
-    );
+    _syncOfferProductsToBloc();
   }
 
   void _removeProduct(ProductEntity product) {
@@ -106,16 +113,24 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
           .where((p) => p.id != product.id)
           .toList();
     });
-    widget.bloc.add(
-      UpdateOfferProductIds(_selectedProducts.map((e) => e.id).toList()),
-    );
+    _syncOfferProductsToBloc();
+  }
+
+  void _onProductQuantityChanged(ProductEntity product, int quantity) {
+    final q = quantity < 1 ? 1 : quantity;
+    setState(() {
+      _selectedProducts = _selectedProducts
+          .map((p) => p.id == product.id ? p.withOfferQuantity(q) : p)
+          .toList();
+    });
+    _syncOfferProductsToBloc();
   }
 
   void _onSubmit() {
     offerValidationToast(
       name: widget.state.name,
-      shortDescription: widget.state.shortDescription,
-      productIds: widget.state.productIds,
+      description: widget.state.description,
+      offerProducts: widget.state.offerProducts,
       discountType: widget.state.discountType,
       discountValue: widget.state.discountValue,
     );
@@ -125,9 +140,9 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
         UpdateOfferSubmitted(
           id: widget.state.offerId!,
           name: widget.state.name,
-          shortDescription: widget.state.shortDescription,
-          longDescription: widget.state.longDescription,
-          productIds: widget.state.productIds,
+          description: widget.state.description,
+          offerProducts: widget.state.offerProducts,
+          initialOfferProductIds: widget.state.initialOfferProductIds,
           startDate: widget.state.startDate,
           endDate: widget.state.endDate,
           discountType: widget.state.discountType,
@@ -159,6 +174,11 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
             selectedProducts: _selectedProducts,
             onSelectProduct: _addProduct,
             onRemoveProduct: _removeProduct,
+            onQuantityChanged: _onProductQuantityChanged,
+          ),
+          OfferTotalsSection(
+            selectedProducts: _selectedProducts,
+            state: state,
           ),
           OfferDiscountSection(
             state: state,
@@ -184,6 +204,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
                 child: CustomDateSelect(
                   title: AppTranslation.offerEndDate,
                   initialValue: state.endDate,
+                  firstDate: state.startDate,
                   onDateSelected: (date) {
                     if (date != null) widget.bloc.add(UpdateOfferEndDate(date));
                   },
@@ -193,12 +214,9 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
           ),
 
           OfferDescriptionFields(
-            shortDescController: _shortDescController,
-            longDescController: _longDescController,
-            onShortDescChanged: (v) =>
-                widget.bloc.add(UpdateOfferShortDescription(v)),
-            onLongDescChanged: (v) =>
-                widget.bloc.add(UpdateOfferLongDescription(v)),
+            descriptionController: _descController,
+            onDescriptionChanged: (v) =>
+                widget.bloc.add(UpdateOfferDescription(v)),
           ),
           OfferFormSubmitButton(
             state: state,

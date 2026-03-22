@@ -18,27 +18,34 @@ class ProfileForm extends StatelessWidget {
   final TextEditingController lastNameController;
   final TextEditingController phoneController;
   final TextEditingController addressController;
+  final TextEditingController restaurantNameController;
   final VoidCallback onUpdate;
   final bool isLoading;
   final VoidCallback onChangeLanguage;
-  final bool isMerchant;
   final VoidCallback onUpdateLocation;
   final ValueChanged<bool> onAccountStatusChanged;
+  final VoidCallback? onSettingsTap;
+  final VoidCallback? onCategoriesTap;
+  /// Merchant-only fields/actions — from SharedPreferences `user_role` at login.
+  final bool isMerchantFromStorage;
 
   const ProfileForm({
     super.key,
+    required this.isMerchantFromStorage,
     required this.formKey,
     required this.user,
     required this.firstNameController,
     required this.lastNameController,
     required this.phoneController,
     required this.addressController,
+    required this.restaurantNameController,
     required this.onUpdate,
     required this.isLoading,
     required this.onChangeLanguage,
-    required this.isMerchant,
     required this.onUpdateLocation,
     required this.onAccountStatusChanged,
+    this.onSettingsTap,
+    this.onCategoriesTap,
   });
 
   @override
@@ -49,7 +56,7 @@ class ProfileForm extends StatelessWidget {
         spacing: AppSize.s24.h,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (isMerchant)
+          if (isMerchantFromStorage)
             CustomCheckbox(
               value: user.isActive ?? true,
               onChanged: (value) {
@@ -69,6 +76,12 @@ class ProfileForm extends StatelessWidget {
             hintText: AppTranslation.lastName,
             controller: lastNameController,
           ),
+          if (isMerchantFromStorage)
+            CustomTextField(
+              title: AppTranslation.restaurantName,
+              hintText: AppTranslation.restaurantName,
+              controller: restaurantNameController,
+            ),
           CustomTextField(
             title: AppTranslation.phone,
             hintText: AppTranslation.enterPhone,
@@ -101,7 +114,51 @@ class ProfileForm extends StatelessWidget {
               ),
             ),
           ),
-          if (isMerchant) ...[
+          if (onSettingsTap != null)
+            InkWell(
+              onTap: onSettingsTap,
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppPadding.p8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.settings, size: 20, color: ColorManager.primary),
+                    SizedBox(width: AppWidth.s8),
+                    CustomText(
+                      text: AppTranslation.settings,
+                      textStyle: getMediumStyle(
+                        color: ColorManager.primary,
+                        fontSize: AppFontSize.s15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (onCategoriesTap != null)
+            InkWell(
+              onTap: onCategoriesTap,
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppPadding.p8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.category, size: 20, color: ColorManager.primary),
+                    SizedBox(width: AppWidth.s8),
+                    CustomText(
+                      text: AppTranslation.categories,
+                      textStyle: getMediumStyle(
+                        color: ColorManager.primary,
+                        fontSize: AppFontSize.s15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (isMerchantFromStorage) ...[
             InkWell(
               onTap: onUpdateLocation,
               borderRadius: BorderRadius.circular(4),

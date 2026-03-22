@@ -74,6 +74,7 @@ abstract class AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
+    String? restaurantName,
     MultipartFile? image,
   });
 
@@ -81,11 +82,22 @@ abstract class AppApiServiceClient {
   Future<Response> logout();
 
   // Category endpoints
-  @GET("apiAdmin/Category/all")
-  Future<Response> getCategories();
+  @GET("categories")
+  Future<Response> getCategories(
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+  );
 
-  @POST("apiAdmin/Category/create")
-  Future<Response> addCategory(@Field('name') String name);
+
+  @POST("categories")
+  Future<Response> addCategory(FormData formData);
+
+  @PATCH("categories/{id}")
+  Future<Response> updateCategory(@Path('id') String id, FormData formData);
+
+  @DELETE("categories/{id}")
+  Future<Response> deleteCategory(@Path('id') String id);
 
   // Product endpoints
   @GET("products")
@@ -221,13 +233,20 @@ abstract class AppApiServiceClient {
   Future<Response> getOfferDetails(@Path('id') String id);
 
   @POST("offers")
-  Future<Response> createOffer(FormData formData);
+  Future<Response> createOffer(Map<String, dynamic> body);
 
   @POST("offers/{id}")
-  Future<Response> updateOffer(@Path('id') String id, FormData formData);
+  Future<Response> updateOffer(@Path('id') String id, Map<String, dynamic> body);
 
   @POST("offers/{id}/delete")
   Future<Response> deleteOffer(@Path('id') String id);
+
+  // Settings endpoints (admin only for PATCH)
+  @GET("settings")
+  Future<Response> getSettings();
+
+  @PATCH("settings")
+  Future<Response> patchSettings(List<Map<String, dynamic>> body);
 }
 
 // Annotations for API methods (simplified versions)

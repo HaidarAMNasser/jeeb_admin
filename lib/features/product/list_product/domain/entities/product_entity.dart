@@ -14,6 +14,7 @@ class ProductEntity extends Equatable {
   final String? discountType; // 'PERCENTAGE' or 'FIXED'
   final bool? hasStock;
   final int? stockQuantity;
+  final int? servesCount;
   final bool? isAvailable;
   final bool? isExternal;
   final String? externalProvider;
@@ -23,6 +24,8 @@ class ProductEntity extends Equatable {
   final double? rating;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  /// Quantity when this product is attached to an offer (from `offerProducts` API).
+  final int? offerQuantity;
 
   const ProductEntity({
     required this.id,
@@ -38,6 +41,7 @@ class ProductEntity extends Equatable {
     this.discountType,
     this.hasStock,
     this.stockQuantity,
+    this.servesCount,
     this.isAvailable,
     this.isExternal,
     this.externalProvider,
@@ -47,6 +51,7 @@ class ProductEntity extends Equatable {
     this.rating,
     this.createdAt,
     this.updatedAt,
+    this.offerQuantity,
   });
 
   @override
@@ -64,6 +69,7 @@ class ProductEntity extends Equatable {
         discountType,
         hasStock,
         stockQuantity,
+        servesCount,
         isAvailable,
         isExternal,
         externalProvider,
@@ -71,8 +77,39 @@ class ProductEntity extends Equatable {
         merchantId,
         images,
         rating,
-        createdAt,
-        updatedAt,
-      ];
+    createdAt,
+    updatedAt,
+    offerQuantity,
+  ];
+
+  /// Same product with a different per-offer quantity (UI / payload).
+  ProductEntity withOfferQuantity(int quantity) {
+    return ProductEntity(
+      id: id,
+      name: name,
+      description: description,
+      shortDescription: shortDescription,
+      price: price,
+      priceAfterDiscount: priceAfterDiscount,
+      restaurantId: restaurantId,
+      categoryId: categoryId,
+      categoryName: categoryName,
+      discount: discount,
+      discountType: discountType,
+      hasStock: hasStock,
+      stockQuantity: stockQuantity,
+      servesCount: servesCount,
+      isAvailable: isAvailable,
+      isExternal: isExternal,
+      externalProvider: externalProvider,
+      externalId: externalId,
+      merchantId: merchantId,
+      images: images,
+      rating: rating,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      offerQuantity: quantity,
+    );
+  }
 }
 

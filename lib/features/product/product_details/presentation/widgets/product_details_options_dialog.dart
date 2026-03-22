@@ -73,16 +73,16 @@ class ProductDetailsOptionsDialog extends StatelessWidget {
                 onEdit();
               },
             ),
-            if (isAdmin) ...[
-              SizedBox(height: AppHeight.s16),
-              _OptionTile(
-                label: AppTranslation.confirmProduct,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  onConfirm();
-                },
-              ),
-            ],
+            // if (isAdmin) ...[
+            //   SizedBox(height: AppHeight.s16),
+            //   _OptionTile(
+            //     label: AppTranslation.confirmProduct,
+            //     onTap: () {
+            //       Navigator.of(context).pop();
+            //       onConfirm();
+            //     },
+            //   ),
+            // ],
             SizedBox(height: AppHeight.s16),
             _OptionTile(
               label: AppTranslation.deleteProduct,

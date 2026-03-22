@@ -19,10 +19,11 @@ class AddCategoryRepository {
 
   Future<Either<Failure, CategoryEntity>> addCategory({
     required String name,
+    String? imagePath,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.addCategory(name: name);
+        final response = await _remoteDataSource.addCategory(name: name, imagePath: imagePath);
 
         BaseResponseModel<dynamic> baseResponseModel =
             BaseResponseModel<dynamic>.fromJson(
@@ -31,23 +32,32 @@ class AddCategoryRepository {
         );
 
         if (baseResponseModel.status == 200 ||
+            baseResponseModel.status == 201 ||
             baseResponseModel.success == true ||
-            baseResponseModel.statusCode == 200) {
-          // Construct entity directly from response data
+            baseResponseModel.statusCode == 200 ||
+            baseResponseModel.statusCode == 201) {
           dynamic data = baseResponseModel.data;
           if (data is String) {
             data = jsonDecode(data);
           }
-          
           if (data is Map<String, dynamic>) {
+            String? imageUrl;
+            final images = data['images'];
+            if (images is List && images.isNotEmpty) {
+              final first = images.first;
+              if (first is Map && first['url'] != null) {
+                imageUrl = first['url']?.toString();
+              }
+            }
             final categoryEntity = CategoryEntity(
-              id: data['id']?.toString() ?? '',
+              id: (data['id'] as num?)?.toInt() ?? 0,
               name: data['name']?.toString() ?? name,
+              imageUrl: imageUrl,
             );
             return Right(categoryEntity);
           } else {
-            // If no data returned, create entity with just the name
-            return Right(CategoryEntity(id: '', name: name));
+
+            return Right(CategoryEntity(id: 0, name: name, imageUrl: null));
           }
         } else {
           return Left(ErrorHandler.handle(DioException(

@@ -4,6 +4,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -57,6 +58,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) =>
+            s is LoginSuccess ||
+            s is LoginNeedsVerification ||
+            s is LoginError,
+      ),
       listener: (context, state) {
         if (state is LoginSuccess) {
           customToast(msg: AppTranslation.loginSuccess);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
@@ -9,10 +10,7 @@ import 'package:jeeb_admin/features/category/list_category/presentation/widgets/
 class ProductFormFields extends StatelessWidget {
   final CreateProductBloc bloc;
 
-  const ProductFormFields({
-    super.key,
-    required this.bloc,
-  });
+  const ProductFormFields({super.key, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,10 @@ class ProductFormFields extends StatelessWidget {
     );
   }
 
-  Widget _buildFields({required CreateProductBloc bloc, required CreateProductState state}) {
+  Widget _buildFields({
+    required CreateProductBloc bloc,
+    required CreateProductState state,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -49,11 +50,12 @@ class ProductFormFields extends StatelessWidget {
         ),
         SizedBox(height: AppHeight.s16),
 
-        // Product Price
+        // Product Price (numbers only, optional decimal)
         CustomTextField(
           title: AppTranslation.productPrice,
           hintText: AppTranslation.productPrice,
           controller: bloc.priceController,
+          keyboardType: TextInputType.number,
           onChanged: (value) {
             bloc.add(UpdateProductPrice(price: value));
           },
@@ -62,6 +64,7 @@ class ProductFormFields extends StatelessWidget {
 
         // Product Quantity
         CustomTextField(
+          keyboardType: TextInputType.number,
           title: AppTranslation.productQuantity,
           hintText: AppTranslation.productQuantity,
           controller: bloc.quantityController,
@@ -71,11 +74,23 @@ class ProductFormFields extends StatelessWidget {
         ),
         SizedBox(height: AppHeight.s16),
 
+        // Number of people this dish covers (optional)
+        CustomTextField(
+          title: AppTranslation.productServesCount,
+          hintText: AppTranslation.productServesCountHint,
+          controller: bloc.servesCountController,
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            bloc.add(UpdateProductServesCount(servesCount: value));
+          },
+        ),
+        SizedBox(height: AppHeight.s16),
+
         // Category (real API)
         CategoryWidget(
           selectedCategoryId: state.selectedCategoryId,
           onSelectCategory: (category) {
-            bloc.add(UpdateSelectedCategory(categoryId: category?.id));
+            bloc.add(UpdateSelectedCategory(categoryId: category?.id.toString()));
           },
           isRequired: true,
         ),
@@ -83,4 +98,3 @@ class ProductFormFields extends StatelessWidget {
     );
   }
 }
-

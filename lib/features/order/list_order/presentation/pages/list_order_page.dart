@@ -30,24 +30,25 @@ class _ListOrderPageState extends State<ListOrderPage> {
     super.dispose();
   }
 
-  void _onScroll() {
-    final state = context.read<ListOrderBloc>().state;
-    // Prevent loading more if already loading
-    if (state is ListOrderLoadingMore) return;
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
 
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.8) {
-      if (state is ListOrderLoaded && state.hasMore) {
-        // Use the search query and merchantId from state when loading more
-        context.read<ListOrderBloc>().add(
+  void _onScroll() {
+    if (!_isBottom) return;
+    final state = context.read<ListOrderBloc>().state;
+    if (state is! ListOrderLoaded) return;
+    if (!state.hasMore || state.isLoadingMore) return;
+    context.read<ListOrderBloc>().add(
           GetOrdersEvent(
             loadMore: true,
             search: state.search,
             merchantId: state.merchantId,
           ),
         );
-      }
-    }
   }
 
   @override
@@ -58,11 +59,8 @@ class _ListOrderPageState extends State<ListOrderPage> {
 
       body: BlocBuilder<ListOrderBloc, ListOrderState>(
         builder: (context, state) {
-          // Get current search query from state for refresh
           String? currentSearch;
           if (state is ListOrderLoaded) {
-            currentSearch = state.search;
-          } else if (state is ListOrderLoadingMore) {
             currentSearch = state.search;
           }
 
@@ -71,55 +69,45 @@ class _ListOrderPageState extends State<ListOrderPage> {
             isLoading: (state) => state is ListOrderLoading,
             isError: (state) => state is ListOrderError,
             getErrorMessage: (state) => (state as ListOrderError).message,
-            isSuccess: (state) =>
-                state is ListOrderLoaded || state is ListOrderLoadingMore,
+            isSuccess: (state) => state is ListOrderLoaded,
             isEmpty: (state) {
-              if (state is ListOrderLoaded) return state.orders.isEmpty;
-              if (state is ListOrderLoadingMore) return state.orders.isEmpty;
+              if (state is ListOrderLoaded) {
+                return state.orders.isEmpty && !state.isLoadingMore;
+              }
               return false;
             },
             emptyMessage: AppTranslation.noOrdersFound,
             getRetryCallback: (state) => () {
-              final merchantId = state is ListOrderLoaded
-                  ? state.merchantId
-                  : (state is ListOrderLoadingMore ? state.merchantId : null);
+              final merchantId =
+                  state is ListOrderLoaded ? state.merchantId : null;
               context.read<ListOrderBloc>().add(
                     GetOrdersEvent(search: currentSearch, merchantId: merchantId),
                   );
             },
             getEmptyRetryCallback: (state) => () {
-              final merchantId = state is ListOrderLoaded
-                  ? state.merchantId
-                  : (state is ListOrderLoadingMore ? state.merchantId : null);
+              final merchantId =
+                  state is ListOrderLoaded ? state.merchantId : null;
               context.read<ListOrderBloc>().add(
-                    GetOrdersEvent(search: currentSearch, merchantId: merchantId),
+                    GetOrdersEvent(merchantId: merchantId),
                   );
             },
             successBuilder: (context, orderState) {
-              final orders = orderState is ListOrderLoaded
-                  ? orderState.orders
-                  : (orderState as ListOrderLoadingMore).orders;
-              final hasMore = orderState is ListOrderLoaded
-                  ? orderState.hasMore
-                  : false;
-              final merchantId = orderState is ListOrderLoaded
-                  ? orderState.merchantId
-                  : (orderState as ListOrderLoadingMore).merchantId;
+              final s = orderState as ListOrderLoaded;
 
               return ListOrderContent(
-                orders: orders,
-                hasMore: hasMore,
+                orders: s.orders,
+                isLoadingMore: s.isLoadingMore,
                 scrollController: _scrollController,
                 onRefresh: () {
                   context.read<ListOrderBloc>().add(
                         GetOrdersEvent(
                           search: currentSearch,
-                          merchantId: merchantId,
+                          merchantId: s.merchantId,
                         ),
                       );
                 },
                 currentSearch: currentSearch,
-                merchantId: merchantId,
+                merchantId: s.merchantId,
               );
             },
           );

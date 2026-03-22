@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/features/product/create_product/presentation/bloc/create_product_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -114,67 +115,76 @@ class _ImageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: AppMargin.m12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.r12),
-        border: Border.all(color: ColorManager.borderColor),
-        color: ColorManager.defaultWhite,
-      ),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.r12),
-            child: imagePath.startsWith('http')
-                ? Image.network(
-                    imagePath,
-                    fit: BoxFit.fill,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
+    final thumb = AppHeight.s100;
+    return SizedBox(
+      width: thumb,
+      height: thumb,
+      child: Container(
+        margin: EdgeInsets.only(right: AppMargin.m12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.r12),
+          border: Border.all(color: ColorManager.borderColor),
+          color: ColorManager.defaultWhite,
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.r12),
+              child: imagePath.startsWith('http')
+                  ? CustomCachedNetworkImage(
+                      imageUrl: imagePath,
+                      fit: BoxFit.cover,
+                      width: thumb,
+                      height: thumb,
+                      borderRadius: BorderRadius.circular(AppRadius.r12),
+                      errorWidget: Container(
                         color: ColorManager.background,
                         child: Icon(
                           Icons.image,
                           color: ColorManager.defaultWhite.withOpacity(0.3),
                           size: AppSize.s40,
                         ),
-                      );
-                    },
-                  )
-                : Image.file(
-                    File(imagePath),
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: ColorManager.background,
-                        child: Icon(
-                          Icons.image,
-                          color: ColorManager.defaultWhite.withOpacity(0.3),
-                          size: AppSize.s40,
-                        ),
-                      );
-                    },
+                      ),
+                    )
+                  : Image.file(
+                      File(imagePath),
+                      fit: BoxFit.cover,
+                      width: thumb,
+                      height: thumb,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: ColorManager.background,
+                          child: Icon(
+                            Icons.image,
+                            color: ColorManager.defaultWhite.withOpacity(0.3),
+                            size: AppSize.s40,
+                          ),
+                        );
+                      },
+                    ),
+            ),
+            Positioned(
+              top: AppSize.s5,
+              right: AppSize.s5,
+              child: GestureDetector(
+                onTap: onRemove,
+                child: Container(
+                  padding: EdgeInsets.all(AppSize.s5),
+                  decoration: BoxDecoration(
+                    color: ColorManager.defaultYellow,
+                    shape: BoxShape.circle,
                   ),
-          ),
-          Positioned(
-            top: AppSize.s5,
-            right: AppSize.s5,
-            child: GestureDetector(
-              onTap: onRemove,
-              child: Container(
-                padding: EdgeInsets.all(AppSize.s5),
-                decoration: BoxDecoration(
-                  color: ColorManager.defaultYellow,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.close,
-                  size: AppSize.s16,
-                  color: ColorManager.defaultWhite,
+                  child: Icon(
+                    Icons.close,
+                    size: AppSize.s16,
+                    color: ColorManager.defaultWhite,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

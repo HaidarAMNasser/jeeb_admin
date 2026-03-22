@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_header.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_form.dart';
@@ -11,7 +13,10 @@ class ProfilePageContent extends StatelessWidget {
   final TextEditingController lastNameController;
   final TextEditingController phoneController;
   final TextEditingController addressController;
-  final bool isMerchant;
+  final TextEditingController restaurantNameController;
+  final bool isAdminFromStorage;
+  /// From [StorageService] `user_role` (login), not API profile `role`.
+  final bool isMerchantFromStorage;
   final VoidCallback onUpdate;
   final VoidCallback onChangeLanguage;
   final VoidCallback onUpdateLocation;
@@ -27,7 +32,9 @@ class ProfilePageContent extends StatelessWidget {
     required this.lastNameController,
     required this.phoneController,
     required this.addressController,
-    required this.isMerchant,
+    required this.restaurantNameController,
+    required this.isAdminFromStorage,
+    required this.isMerchantFromStorage,
     required this.onUpdate,
     required this.onChangeLanguage,
     required this.onUpdateLocation,
@@ -46,7 +53,7 @@ class ProfilePageContent extends StatelessWidget {
           ProfileHeader(user: user, onPickImage: onPickImage),
           SizedBox(height: AppHeight.s32),
           ProfileForm(
-            isMerchant: isMerchant,
+            isMerchantFromStorage: isMerchantFromStorage,
             onUpdateLocation: onUpdateLocation,
             onAccountStatusChanged: onAccountStatusChanged,
             onChangeLanguage: onChangeLanguage,
@@ -56,8 +63,15 @@ class ProfilePageContent extends StatelessWidget {
             lastNameController: lastNameController,
             phoneController: phoneController,
             addressController: addressController,
+            restaurantNameController: restaurantNameController,
             onUpdate: onUpdate,
             isLoading: isUpdateLoading,
+            onSettingsTap: isAdminFromStorage
+                ? () => NavigationService().pushNamed(Routes.settings)
+                : null,
+            onCategoriesTap: isAdminFromStorage
+                ? () => NavigationService().pushNamed(Routes.categories)
+                : null,
           ),
           SizedBox(height: AppHeight.s24),
         ],

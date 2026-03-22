@@ -77,6 +77,11 @@ class CreateProductForm extends StatelessWidget {
                               : int.tryParse(
                                   bloc.quantityController.text.trim(),
                                 ),
+                          servesCount: bloc.servesCountController.text.trim().isEmpty
+                              ? null
+                              : int.tryParse(
+                                  bloc.servesCountController.text.trim(),
+                                ),
                           images: state.images,
                         ),
                       );
@@ -98,4 +103,3 @@ class CreateProductForm extends StatelessWidget {
     );
   }
 }
-

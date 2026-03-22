@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/bloc/create_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/widgets/create_offer_form.dart';
@@ -43,6 +44,11 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
     final isEdit = widget.offer != null;
 
     return BlocConsumer<DeleteOfferBloc, DeleteOfferState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is DeleteOfferSuccess || s is DeleteOfferError,
+      ),
       listener: (context, deleteState) {
         if (deleteState is DeleteOfferSuccess) {
           customToast(msg: AppTranslation.offerDeletedSuccessfully);
@@ -53,6 +59,11 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
       },
       builder: (context, deleteState) {
         return BlocConsumer<UpdateOfferBloc, UpdateOfferState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is UpdateOfferSuccess || s is UpdateOfferError,
+          ),
           listener: (context, updateState) {
             if (updateState is UpdateOfferSuccess) {
               customToast(msg: AppTranslation.offerUpdatedSuccessfully);
@@ -63,6 +74,11 @@ class _CreateOfferPageState extends State<CreateOfferPage> {
           },
           builder: (context, updateState) {
             return BlocConsumer<CreateOfferBloc, CreateOfferState>(
+              listenWhen: (previous, current) => listenWhenEnteringTerminal(
+                previous,
+                current,
+                (s) => s is CreateOfferSuccess || s is CreateOfferError,
+              ),
               listener: (context, createState) {
                 if (createState is CreateOfferSuccess) {
                   customToast(msg: AppTranslation.offerCreatedSuccessfully);

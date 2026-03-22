@@ -7,7 +7,7 @@ import 'package:jeeb_admin/features/order/order_details/domain/entities/order_en
 
 class ListOrderContent extends StatelessWidget {
   final List<OrderEntity> orders;
-  final bool hasMore;
+  final bool isLoadingMore;
   final ScrollController scrollController;
   final VoidCallback onRefresh;
   final String? currentSearch;
@@ -16,7 +16,7 @@ class ListOrderContent extends StatelessWidget {
   const ListOrderContent({
     super.key,
     required this.orders,
-    required this.hasMore,
+    required this.isLoadingMore,
     required this.scrollController,
     required this.onRefresh,
     this.currentSearch,
@@ -27,7 +27,6 @@ class ListOrderContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Search field
         const SearchOrderWidget(),
         Expanded(
           child: RefreshIndicator(
@@ -37,7 +36,7 @@ class ListOrderContent extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: AppPadding.p16,
               ),
-              itemCount: orders.length + (hasMore ? 1 : 0),
+              itemCount: orders.length + (isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == orders.length) {
                   return Padding(
@@ -55,4 +54,3 @@ class ListOrderContent extends StatelessWidget {
     );
   }
 }
-

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class UpdateOfferRemoteDataSource {
-  Future<Response> updateOffer(String id, FormData formData);
+  Future<Response> updateOffer(String id, Map<String, dynamic> body);
 }
 
 class UpdateOfferRemoteDataSourceImpl implements UpdateOfferRemoteDataSource {
@@ -11,7 +11,7 @@ class UpdateOfferRemoteDataSourceImpl implements UpdateOfferRemoteDataSource {
   UpdateOfferRemoteDataSourceImpl(this._client);
 
   @override
-  Future<Response> updateOffer(String id, FormData formData) {
-    return _client.updateOffer(id, formData);
+  Future<Response> updateOffer(String id, Map<String, dynamic> body) {
+    return _client.updateOffer(id, body);
   }
 }

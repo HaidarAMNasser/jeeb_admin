@@ -70,11 +70,8 @@ class MerchantProductsSection extends StatelessWidget {
           );
         }
 
-        final productList = state is ListProductLoaded
-            ? state.products
-            : (state is ListProductLoadingMore)
-            ? state.products
-            : <ProductEntity>[];
+        final productList =
+            state is ListProductLoaded ? state.products : <ProductEntity>[];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +135,7 @@ class MerchantProductsSection extends StatelessWidget {
             else
               ...productList
                   .take(_kMerchantProductsPreviewLimit)
-                  .map((p) => ProductListItem(product: p)),
+                  .map((p) => ProductListItem(product: p, enableSmallDesign: true)),
           ],
         );
       },

@@ -61,7 +61,8 @@ class OrderListItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: '${AppTranslation.order} #${order.id}',
+                            text:
+                                '${order.customer?.firstName} ${order.customer?.lastName}',
                             textStyle: getBoldStyle(
                               fontSize: AppFontSize.s18,
                               color: ColorManager.productNameColor,
@@ -69,38 +70,46 @@ class OrderListItem extends StatelessWidget {
                             maxLines: 2,
                             textOverflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(height: AppHeight.s4),
-                          if (order.status != null) ...[
-                            Builder(
-                              builder: (context) {
-                                final status = order.statusEnum;
-                                return Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: AppPadding.p8,
-                                    vertical: AppPadding.p4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: status.color.withOpacity(0.1),
-                                    borderRadius:
-                                        BorderRadius.circular(AppRadius.r8),
-                                  ),
-                                  child: CustomText(
-                                    text: status.displayLabel,
-                                    textStyle: getSemiBoldStyle(
-                                      fontSize: AppFontSize.s10,
-                                      color: status.color,
-                                    ),
-                                  ),
-                                );
-                              },
+                          CustomText(
+                            text: '${AppTranslation.order} #${order.id}',
+                            textStyle: getRegularStyle(
+                              fontSize: AppFontSize.s12,
+                              color: ColorManager.productNameColor,
                             ),
-                          ],
+                            maxLines: 2,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ],
                   ),
+                  if (order.status != null) ...[
+                    Builder(
+                      builder: (context) {
+                        final status = order.statusEnum;
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppPadding.p8,
+                            vertical: AppPadding.p4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: status.color.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(AppRadius.r8),
+                          ),
+                          child: CustomText(
+                            text: status.displayLabel,
+                            textStyle: getSemiBoldStyle(
+                              fontSize: AppFontSize.s10,
+                              color: status.color,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
+
               if (order.date != null) ...[
                 SizedBox(height: AppHeight.s12),
                 Row(
@@ -112,8 +121,9 @@ class OrderListItem extends StatelessWidget {
                     ),
                     SizedBox(width: AppWidth.s4),
                     CustomText(
-                      text: DateFormat('MMM dd, yyyy - HH:mm')
-                          .format(order.date!),
+                      text: DateFormat(
+                        'MMM dd, yyyy - HH:mm',
+                      ).format(order.date!),
                       textStyle: getRegularStyle(
                         fontSize: AppFontSize.s12,
                         color: ColorManager.descriptionColor,
@@ -125,12 +135,22 @@ class OrderListItem extends StatelessWidget {
               if (order.products.isNotEmpty) ...[
                 SizedBox(height: AppHeight.s8),
                 CustomText(
-                  text: '${order.products.length} ${AppTranslation.productsCount}',
-                  textStyle: getRegularStyle(
+                  text: order.products
+                      .map((product) => product.name)
+                      .join(', '),
+                  textStyle: getMediumStyle(
                     fontSize: AppFontSize.s12,
                     color: ColorManager.descriptionColor,
                   ),
                 ),
+                // CustomText(
+                //   text:
+                //       '${order.products.length} ${AppTranslation.productsCount}',
+                //   textStyle: getRegularStyle(
+                //     fontSize: AppFontSize.s12,
+                //     color: ColorManager.descriptionColor,
+                //   ),
+                // ),
               ],
               if (order.numberOfPeople != null) ...[
                 SizedBox(height: AppHeight.s8),
@@ -158,6 +178,4 @@ class OrderListItem extends StatelessWidget {
       ),
     );
   }
-
 }
-

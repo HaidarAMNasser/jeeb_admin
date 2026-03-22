@@ -51,6 +51,7 @@ class UserModel {
   final String createdAt;
   final String updatedAt;
   final UserImageModel? image;
+  final String? restaurantName;
 
   UserModel({
     required this.id,
@@ -74,6 +75,7 @@ class UserModel {
     required this.createdAt,
     required this.updatedAt,
     this.image,
+    this.restaurantName,
   });
 
   static bool _parseIsVerified(Map<String, dynamic> json) {
@@ -120,6 +122,7 @@ class UserModel {
       image: json['image'] is Map<String, dynamic>
           ? UserImageModel.fromJson(json['image'] as Map<String, dynamic>)
           : null,
+      restaurantName: json['restaurantName'] as String?,
     );
   }
 
@@ -210,6 +213,7 @@ class UserModel {
       createdAt: DateTime.tryParse(createdAt) ?? DateTime.now(),
       updatedAt: DateTime.tryParse(updatedAt) ?? DateTime.now(),
       profileImageUrl: profileImageUrl,
+      restaurantName: restaurantName,
     );
   }
 }

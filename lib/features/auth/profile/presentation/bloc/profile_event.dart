@@ -21,6 +21,7 @@ class UpdateProfile extends ProfileEvent {
   final double? latitude;
   final double? longitude;
   final bool? isActive;
+  final String? restaurantName;
   final dynamic imageFile;
 
   const UpdateProfile({
@@ -33,6 +34,7 @@ class UpdateProfile extends ProfileEvent {
     this.latitude,
     this.longitude,
     this.isActive,
+    this.restaurantName,
     this.imageFile,
   });
 
@@ -47,6 +49,7 @@ class UpdateProfile extends ProfileEvent {
         latitude,
         longitude,
         isActive,
+        restaurantName,
         imageFile,
       ];
 }
@@ -64,16 +67,19 @@ class SaveProfile extends ProfileEvent {
   final String lastName;
   final String phone;
   final String? address;
+  /// Sent on PATCH only when non-null (merchant saves).
+  final String? restaurantName;
 
   const SaveProfile({
     required this.firstName,
     required this.lastName,
     required this.phone,
     this.address,
+    this.restaurantName,
   });
 
   @override
-  List<Object?> get props => [firstName, lastName, phone, address];
+  List<Object?> get props => [firstName, lastName, phone, address, restaurantName];
 }
 
 class ChangeLanguage extends ProfileEvent {

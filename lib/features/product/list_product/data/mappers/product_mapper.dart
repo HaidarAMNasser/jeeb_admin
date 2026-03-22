@@ -38,6 +38,7 @@ extension ProductMapper on ProductModel {
       discountType: discountType,
       hasStock: hasStock,
       stockQuantity: stockQuantity,
+      servesCount: servesCount,
       isAvailable: isAvailable,
       isExternal: isExternal,
       externalProvider: externalProvider,
@@ -47,6 +48,7 @@ extension ProductMapper on ProductModel {
       rating: rating,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      offerQuantity: offerQuantity,
     );
   }
 }

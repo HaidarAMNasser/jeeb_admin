@@ -9,9 +9,11 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import '../bloc/forgot_password_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -49,6 +51,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is ForgotPasswordSuccess || s is ForgotPasswordError,
+      ),
       listener: (context, state) {
         if (state is ForgotPasswordSuccess) {
           customToast(msg: AppTranslation.otpSentSuccess);
@@ -77,18 +84,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(height: AppHeight.s50),
-                      Text(
-                        AppTranslation.forgotPassword,
-                        style: getBoldStyle(
+                      CustomText(
+                        text: AppTranslation.forgotPassword,
+                        textStyle: getBoldStyle(
                           fontSize: AppFontSize.s24,
                           color: ColorManager.titlesColor,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: AppHeight.s8),
-                      Text(
-                        AppTranslation.forgotPasswordDescription,
-                        style: getRegularStyle(
+                      CustomText(
+                        text: AppTranslation.forgotPasswordDescription,
+                        textStyle: getRegularStyle(
                           fontSize: AppFontSize.s14,
                           color: ColorManager.textColor,
                         ),

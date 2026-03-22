@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'routes.dart';
 import 'navigation_service.dart';
-// import '../dependency_injection/dependency_injection.dart' as di;
 import '../../../features/splash/presentation/pages/splash_page.dart';
 import '../../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../../features/onboarding/presentation/bloc/onboarding_bloc.dart';
@@ -52,6 +51,9 @@ import '../../../features/merchant/merchant_details/presentation/bloc/merchant_d
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 import '../../../features/merchant/delete_merchant/presentation/bloc/delete_merchant_bloc.dart';
 import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
+import '../../../features/merchant/update_merchant/presentation/pages/edit_merchant_page.dart';
+import '../../../features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
+import '../../../features/merchant/update_merchant/data/repositories/update_merchant_repository.dart';
 import '../../../features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
 import '../../../features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import '../../../features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
@@ -82,6 +84,13 @@ import '../../../features/offer/update_offer/data/repositories/update_offer_repo
 import '../../../features/offer/delete_offer/presentation/bloc/delete_offer_bloc.dart';
 import '../../../features/offer/delete_offer/data/repositories/delete_offer_repository.dart';
 import '../../../features/offer/list_offer/domain/entities/offer_entity.dart';
+import '../../../features/settings/presentation/pages/settings_page.dart';
+import '../../../features/settings/get_settings/presentation/bloc/get_settings_bloc.dart';
+import '../../../features/settings/edit_settings/presentation/bloc/edit_settings_bloc.dart';
+import '../../../features/category/presentation/pages/categories_page.dart';
+import '../../../features/category/add_category/presentation/bloc/add_category_bloc.dart';
+import '../../../features/category/update_category/presentation/bloc/update_category_bloc.dart';
+import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -170,6 +179,40 @@ class AppRouter {
             ),
             BlocProvider<LogoutBloc>(
               create: (_) => di.sl<LogoutBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.settings:
+        return _buildRouteWithBlocs(
+          const SettingsPage(),
+          settings,
+          providers: [
+            BlocProvider<GetSettingsBloc>(
+              create: (_) => di.sl<GetSettingsBloc>(),
+            ),
+            BlocProvider<EditSettingsBloc>(
+              create: (_) => di.sl<EditSettingsBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.categories:
+        return _buildRouteWithBlocs(
+          const CategoriesPage(),
+          settings,
+          providers: [
+            BlocProvider<ListCategoryBloc>(
+              create: (_) => di.sl<ListCategoryBloc>(),
+            ),
+            BlocProvider<AddCategoryBloc>(
+              create: (_) => di.sl<AddCategoryBloc>(),
+            ),
+            BlocProvider<UpdateCategoryBloc>(
+              create: (_) => di.sl<UpdateCategoryBloc>(),
+            ),
+            BlocProvider<DeleteCategoryBloc>(
+              create: (_) => di.sl<DeleteCategoryBloc>(),
             ),
           ],
         );
@@ -302,6 +345,42 @@ class AppRouter {
             BlocProvider<DeleteMerchantBloc>(
               create: (_) =>
                   DeleteMerchantBloc(di.sl<DeleteMerchantRepository>()),
+            ),
+            BlocProvider<UpdateMerchantBloc>(
+              create: (_) => UpdateMerchantBloc(di.sl<UpdateMerchantRepository>()),
+            ),
+          ],
+        );
+
+      case Routes.editMerchant:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final merchantId = args?['merchantId'] as String? ?? '';
+        if (merchantId.isEmpty) {
+          return _buildRoute(
+            Scaffold(
+              body: Center(
+                child: Text('Merchant ID not provided'),
+              ),
+            ),
+            settings,
+          );
+        }
+        return _buildRouteWithBlocs(
+          EditMerchantPage(merchantId: merchantId),
+          settings,
+          providers: [
+            BlocProvider<MerchantDetailsBloc>(
+              create: (_) =>
+                  MerchantDetailsBloc(di.sl<MerchantDetailsRepository>()),
+            ),
+            BlocProvider<UpdateMerchantBloc>(
+              create: (_) => UpdateMerchantBloc(di.sl<UpdateMerchantRepository>()),
+            ),
+            BlocProvider<CountryBloc>(
+              create: (_) => di.sl<CountryBloc>(),
+            ),
+            BlocProvider<CityBloc>(
+              create: (_) => di.sl<CityBloc>(),
             ),
           ],
         );

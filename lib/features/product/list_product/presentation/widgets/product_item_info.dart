@@ -4,40 +4,62 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
+import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 
 class ProductItemInfo extends StatelessWidget {
-  final String name;
-  final String? description;
-
+  final ProductEntity product;
+  final bool enableSmallDesign;
   const ProductItemInfo({
     super.key,
-    required this.name,
-    this.description,
+    required this.product,
+    this.enableSmallDesign = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomText(
-          text: name,
-          textStyle: getBoldStyle(
-            fontSize: AppFontSize.s18,
-            color: ColorManager.productNameColor,
-          ),
-          maxLines: 2,
-          textOverflow: TextOverflow.ellipsis,
-        ),
-        if (description != null) ...[
+        enableSmallDesign
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: CustomText(
+                      text: product.name,
+                      textStyle: getBoldStyle(
+                        fontSize: AppFontSize.s18,
+                        color: ColorManager.productNameColor,
+                      ),
+                      maxLines: 2,
+                      textOverflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(width: AppMargin.m8),
+                  CustomText(
+                    text: '\$${(product.price / 100).toStringAsFixed(2)}',
+                    textStyle: getBoldStyle(
+                      fontSize: AppFontSize.s20,
+                      color: ColorManager.primary,
+                    ),
+                  ),
+                ],
+              )
+            : CustomText(
+                text: product.name,
+                textStyle: getBoldStyle(
+                  fontSize: AppFontSize.s18,
+                  color: ColorManager.productNameColor,
+                ),
+                maxLines: 2,
+                textOverflow: TextOverflow.ellipsis,
+              ),
+        if (product.description != null) ...[
           SizedBox(height: AppHeight.s4),
           CustomText(
-            text: description!,
-            textStyle: getRegularStyle(
-              fontSize: AppFontSize.s12,
-              color: ColorManager.descriptionColor,
-            ),
+            text: product.description!,
+            textStyle: getRegularStyle(),
             maxLines: 2,
             textOverflow: TextOverflow.ellipsis,
           ),

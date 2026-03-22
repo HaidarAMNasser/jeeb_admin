@@ -14,6 +14,7 @@ class ProductModel {
   final String? discountType; // 'PERCENTAGE' or 'FIXED'
   final bool? hasStock;
   final int? stockQuantity;
+  final int? servesCount;
   final bool? isAvailable;
   final bool? isExternal;
   final String? externalProvider;
@@ -23,6 +24,7 @@ class ProductModel {
   final double? rating;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final int? offerQuantity;
 
   ProductModel({
     required this.id,
@@ -38,6 +40,7 @@ class ProductModel {
     this.discountType,
     this.hasStock,
     this.stockQuantity,
+    this.servesCount,
     this.isAvailable,
     this.isExternal,
     this.externalProvider,
@@ -47,6 +50,7 @@ class ProductModel {
     this.rating,
     this.createdAt,
     this.updatedAt,
+    this.offerQuantity,
   });
 
   static List<ProductImageModel> _parseImages(dynamic imagesJson, dynamic singleImageUrl) {
@@ -77,7 +81,10 @@ class ProductModel {
     return [];
   }
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromJson(
+    Map<String, dynamic> json, {
+    int? quantityInOffer,
+  }) {
     return ProductModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
@@ -92,6 +99,7 @@ class ProductModel {
       discountType: json['discountType']?.toString(),
       hasStock: json['hasStock'] as bool?,
       stockQuantity: json['stockQuantity'] as int?,
+      servesCount: json['personCount'] as int? ?? json['servesCount'] as int?,
       isAvailable: json['isAvailable'] as bool?,
       isExternal: json['isExternal'] as bool?,
       externalProvider: json['externalProvider']?.toString(),
@@ -105,6 +113,10 @@ class ProductModel {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'] as String)
           : null,
+      offerQuantity: quantityInOffer ??
+          (json['offerQuantity'] is int
+              ? json['offerQuantity'] as int
+              : (json['offerQuantity'] as num?)?.toInt()),
     );
   }
 
@@ -123,6 +135,7 @@ class ProductModel {
       'discountType': discountType,
       'hasStock': hasStock,
       'stockQuantity': stockQuantity,
+      'servesCount': servesCount,
       'isAvailable': isAvailable,
       'isExternal': isExternal,
       'externalProvider': externalProvider,

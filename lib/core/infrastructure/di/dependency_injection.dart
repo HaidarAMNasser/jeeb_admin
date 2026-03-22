@@ -21,6 +21,15 @@ import '../../../features/product/product_details/data/repositories/product_deta
 import '../../../features/category/list_category/data/data_sources/list_category_data_source.dart';
 import '../../../features/category/list_category/data/repositories/list_category_repository.dart';
 import '../../../features/category/list_category/presentation/bloc/list_category_bloc.dart';
+import '../../../features/category/add_category/data/data_sources/add_category_data_source.dart';
+import '../../../features/category/add_category/data/repositories/add_category_repository.dart';
+import '../../../features/category/add_category/presentation/bloc/add_category_bloc.dart';
+import '../../../features/category/update_category/data/data_sources/update_category_data_source.dart';
+import '../../../features/category/update_category/data/repositories/update_category_repository.dart';
+import '../../../features/category/update_category/presentation/bloc/update_category_bloc.dart';
+import '../../../features/category/delete_category/data/data_sources/delete_category_data_source.dart';
+import '../../../features/category/delete_category/data/repositories/delete_category_repository.dart';
+import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
 import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
 import '../../../features/auth/login/data/repositories/login_repository.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
@@ -54,6 +63,8 @@ import '../../../features/merchant/merchant_details/data/data_sources/merchant_d
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 import '../../../features/merchant/delete_merchant/data/data_sources/delete_merchant_data_source.dart';
 import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
+import '../../../features/merchant/update_merchant/data/data_sources/update_merchant_data_source.dart';
+import '../../../features/merchant/update_merchant/data/repositories/update_merchant_repository.dart';
 import '../../../features/delivery/list_delivery/data/data_sources/list_delivery_data_source.dart';
 import '../../../features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
 import '../../../features/delivery/delivery_details/data/data_sources/delivery_details_data_source.dart';
@@ -92,6 +103,12 @@ import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc
 import '../../../features/product/confirm_product/data/data_sources/confirm_product_data_source.dart';
 import '../../../features/product/confirm_product/data/repositories/confirm_product_repository.dart';
 import '../../../features/product/confirm_product/presentation/bloc/confirm_product_bloc.dart';
+import '../../../features/settings/get_settings/data/data_sources/get_settings_data_source.dart';
+import '../../../features/settings/get_settings/data/repositories/get_settings_repository.dart';
+import '../../../features/settings/get_settings/presentation/bloc/get_settings_bloc.dart';
+import '../../../features/settings/edit_settings/data/data_sources/edit_settings_data_source.dart';
+import '../../../features/settings/edit_settings/data/repositories/edit_settings_repository.dart';
+import '../../../features/settings/edit_settings/presentation/bloc/edit_settings_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -131,6 +148,27 @@ Future<void> init() async {
   sl.registerFactory(() => ListCategoryRepository(sl(), sl()));
   sl.registerFactory(() => ListCategoryBloc(sl()));
 
+  //! Category Add Dependencies
+  sl.registerFactory<AddCategoryRemoteDataSource>(
+    () => AddCategoryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => AddCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => AddCategoryBloc(sl()));
+
+  //! Category Update Dependencies
+  sl.registerFactory<UpdateCategoryRemoteDataSource>(
+    () => UpdateCategoryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => UpdateCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => UpdateCategoryBloc(sl()));
+
+  //! Category Delete Dependencies
+  sl.registerFactory<DeleteCategoryRemoteDataSource>(
+    () => DeleteCategoryRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => DeleteCategoryRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteCategoryBloc(sl()));
+
   //! Product List Dependencies
   sl.registerFactory<ListProductRemoteDataSource>(
     () => ListProductRemoteDataSourceImpl(sl()),
@@ -143,6 +181,20 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ConfirmProductRepository(sl(), sl()));
   sl.registerFactory(() => ConfirmProductBloc(sl()));
+
+  //! Settings - Get Settings
+  sl.registerFactory<GetSettingsRemoteDataSource>(
+    () => GetSettingsRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => GetSettingsRepository(sl(), sl()));
+  sl.registerFactory(() => GetSettingsBloc(sl()));
+
+  //! Settings - Edit Settings
+  sl.registerFactory<EditSettingsRemoteDataSource>(
+    () => EditSettingsRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => EditSettingsRepository(sl(), sl()));
+  sl.registerFactory(() => EditSettingsBloc(sl()));
 
   //! Product Details Dependencies
   sl.registerFactory<ProductDetailsRemoteDataSource>(
@@ -245,6 +297,11 @@ Future<void> init() async {
     () => DeleteMerchantRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => DeleteMerchantRepository(sl(), sl()));
+  //! Merchant Update Dependencies
+  sl.registerFactory<UpdateMerchantRemoteDataSource>(
+    () => UpdateMerchantRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => UpdateMerchantRepository(sl(), sl()));
   //! Delivery List Dependencies
   sl.registerFactory<ListDeliveryRemoteDataSource>(
     () => ListDeliveryRemoteDataSourceImpl(sl()),

@@ -42,8 +42,8 @@ class DioFactory {
     dio.options = BaseOptions(
       baseUrl: AppConfig.baseUrl,
       headers: headers,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 60),
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 90),
       sendTimeout: const Duration(seconds: 60),
       persistentConnection: true,
       followRedirects: true,
@@ -57,8 +57,8 @@ class DioFactory {
 
     (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
       final client = HttpClient();
-      client.connectionTimeout = const Duration(seconds: 20);
-      client.idleTimeout = const Duration(seconds: 90);
+      client.connectionTimeout = const Duration(seconds: 30);
+      client.idleTimeout = const Duration(seconds: 120);
       client.maxConnectionsPerHost = 6;
       return client;
     };

@@ -132,7 +132,7 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
             actions: _isEditMode
                 ? [
                     IconButton(
-                      icon: Icon(Icons.delete, color: ColorManager.error),
+                      icon: Icon(Icons.delete, color: ColorManager.primary),
                       onPressed: () => _showDeleteConfirmation(context),
                     ),
                   ]

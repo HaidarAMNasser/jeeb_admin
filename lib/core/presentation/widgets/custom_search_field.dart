@@ -43,7 +43,12 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppPadding.p16, vertical: AppPadding.p8),
+      padding: EdgeInsets.fromLTRB(
+        AppPadding.p16,
+        AppPadding.p8,
+        AppPadding.p16,
+        AppPadding.p12,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
