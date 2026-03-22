@@ -7,6 +7,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/bloc/order_details_bloc.dart';
@@ -30,6 +31,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is OrderCompleteSuccess || s is OrderCompleteError,
+      ),
       listener: (context, completeState) {
         if (completeState is OrderCompleteSuccess) {
           customToast(msg: AppTranslation.orderCompletedSuccessfully);
@@ -39,6 +45,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       },
       builder: (context, completeState) {
         return BlocConsumer<OrderCancelBloc, OrderCancelState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is OrderCancelSuccess || s is OrderCancelError,
+          ),
           listener: (context, cancelState) {
             if (cancelState is OrderCancelSuccess) {
               customToast(msg: AppTranslation.orderCancelledSuccessfully);

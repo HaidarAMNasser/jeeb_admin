@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/features/settings/get_settings/domain/entities/settings_entity.dart';
 import 'package:jeeb_admin/features/settings/get_settings/presentation/bloc/get_settings_bloc.dart';
@@ -55,6 +56,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<EditSettingsBloc, EditSettingsState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is EditSettingsSuccess || s is EditSettingsError,
+      ),
       listener: (context, editState) {
         if (editState is EditSettingsSuccess) {
           customToast(msg: AppTranslation.settingsUpdatedSuccessfully);

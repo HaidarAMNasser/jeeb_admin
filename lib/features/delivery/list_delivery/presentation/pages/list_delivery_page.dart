@@ -21,7 +21,6 @@ class ListDeliveryPage extends StatefulWidget {
 
 class _ListDeliveryPageState extends State<ListDeliveryPage> {
   final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -37,18 +36,21 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
     super.dispose();
   }
 
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
   void _onScroll() {
-    if (_isLoadingMore) return;
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.8) {
-      final state = context.read<ListDeliveryBloc>().state;
-      if (state is ListDeliveryLoaded && state.hasMore) {
-        setState(() => _isLoadingMore = true);
-        context.read<ListDeliveryBloc>().add(
+    if (!_isBottom) return;
+    final state = context.read<ListDeliveryBloc>().state;
+    if (state is! ListDeliveryLoaded) return;
+    if (!state.hasMore || state.isLoadingMore) return;
+    context.read<ListDeliveryBloc>().add(
           GetDeliveryMenEvent(loadMore: true, search: state.search),
         );
-      }
-    }
   }
 
   @override
@@ -61,23 +63,18 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
         children: [
           const SearchDeliveryWidget(),
           Expanded(
-            child: BlocConsumer<ListDeliveryBloc, ListDeliveryState>(
-              listener: (context, state) {
-                if (state is ListDeliveryLoaded || state is ListDeliveryError) {
-                  setState(() => _isLoadingMore = false);
-                }
-              },
+            child: BlocBuilder<ListDeliveryBloc, ListDeliveryState>(
               builder: (context, state) {
                 return BlocStateHandler<ListDeliveryBloc, ListDeliveryState>(
                   bloc: context.read<ListDeliveryBloc>(),
                   isLoading: (s) => s is ListDeliveryLoading,
                   isError: (s) => s is ListDeliveryError,
                   getErrorMessage: (s) => (s as ListDeliveryError).message,
-                  isSuccess: (s) =>
-                      s is ListDeliveryLoaded || s is ListDeliveryLoadingMore,
+                  isSuccess: (s) => s is ListDeliveryLoaded,
                   isEmpty: (s) {
-                    if (s is ListDeliveryLoaded) return s.deliveryMen.isEmpty;
-                    if (s is ListDeliveryLoadingMore) return s.deliveryMen.isEmpty;
+                    if (s is ListDeliveryLoaded) {
+                      return s.deliveryMen.isEmpty && !s.isLoadingMore;
+                    }
                     return false;
                   },
                   emptyMessage: AppTranslation.noDeliveryMenFound,
@@ -88,26 +85,21 @@ class _ListDeliveryPageState extends State<ListDeliveryPage> {
                       .read<ListDeliveryBloc>()
                       .add(const GetDeliveryMenEvent()),
                   successBuilder: (context, deliveryState) {
-                    final deliveryMen = deliveryState is ListDeliveryLoaded
-                        ? deliveryState.deliveryMen
-                        : (deliveryState as ListDeliveryLoadingMore).deliveryMen;
-                    final hasMore = deliveryState is ListDeliveryLoaded
-                        ? deliveryState.hasMore
-                        : false;
-                    final search = deliveryState is ListDeliveryLoaded
-                        ? deliveryState.search
-                        : (deliveryState as ListDeliveryLoadingMore).search;
+                    final s = deliveryState as ListDeliveryLoaded;
+                    final deliveryMen = s.deliveryMen;
+                    final isLoadingMore = s.isLoadingMore;
 
                     return RefreshIndicator(
                       onRefresh: () async {
                         context.read<ListDeliveryBloc>().add(
-                              GetDeliveryMenEvent(search: search),
+                              GetDeliveryMenEvent(search: s.search),
                             );
                       },
                       child: ListView.builder(
                         controller: _scrollController,
                         padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                        itemCount: deliveryMen.length + (hasMore ? 1 : 0),
+                        itemCount:
+                            deliveryMen.length + (isLoadingMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == deliveryMen.length) {
                             return Padding(

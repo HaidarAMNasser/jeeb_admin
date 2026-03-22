@@ -162,4 +162,3 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
     return super.close();
   }
 }
-

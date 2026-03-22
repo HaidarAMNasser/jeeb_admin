@@ -20,16 +20,35 @@ class ListMerchantLoaded extends ListMerchantState {
   final bool hasMore;
   final int currentPage;
   final String? search;
+  final bool isLoadingMore;
 
   const ListMerchantLoaded({
     required this.merchants,
     this.hasMore = true,
     this.currentPage = 1,
     this.search,
+    this.isLoadingMore = false,
   });
 
+  ListMerchantLoaded copyWith({
+    List<MerchantEntity>? merchants,
+    bool? hasMore,
+    int? currentPage,
+    String? search,
+    bool? isLoadingMore,
+  }) {
+    return ListMerchantLoaded(
+      merchants: merchants ?? this.merchants,
+      hasMore: hasMore ?? this.hasMore,
+      currentPage: currentPage ?? this.currentPage,
+      search: search ?? this.search,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    );
+  }
+
   @override
-  List<Object?> get props => [merchants, hasMore, currentPage, search];
+  List<Object?> get props =>
+      [merchants, hasMore, currentPage, search, isLoadingMore];
 }
 
 class ListMerchantError extends ListMerchantState {
@@ -41,18 +60,4 @@ class ListMerchantError extends ListMerchantState {
   List<Object?> get props => [message];
 }
 
-class ListMerchantLoadingMore extends ListMerchantState {
-  final List<MerchantEntity> merchants;
-  final int currentPage;
-  final String? search;
-
-  const ListMerchantLoadingMore({
-    required this.merchants,
-    required this.currentPage,
-    this.search,
-  });
-
-  @override
-  List<Object?> get props => [merchants, currentPage, search];
-}
 

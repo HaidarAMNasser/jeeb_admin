@@ -14,39 +14,36 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
     on<ListMerchantEvent>((event, emit) async {
       if (event is GetMerchantsEvent) {
         if (event.loadMore) {
-          // Load more merchants
           final currentState = state;
-          if (currentState is ListMerchantLoaded) {
-            emit(ListMerchantLoadingMore(
-              merchants: currentState.merchants,
-              currentPage: currentState.currentPage,
-              search: currentState.search,
-            ));
+          if (currentState is! ListMerchantLoaded) return;
+          if (!currentState.hasMore || currentState.isLoadingMore) return;
 
-            final nextPage = currentState.currentPage + 1;
-            final searchQuery = event.search ?? currentState.search;
-            final result = await _repository.getMerchants(
-              page: nextPage,
-              limit: _pageSize,
-              search: searchQuery,
-            );
+          final searchQuery = event.search ?? currentState.search;
+          emit(currentState.copyWith(isLoadingMore: true));
 
-            result.fold(
-              (failure) => emit(ListMerchantError(message: failure.message)),
-              (newMerchants) {
-                final updatedMerchants = [
-                  ...currentState.merchants,
-                  ...newMerchants,
-                ];
-                emit(ListMerchantLoaded(
-                  merchants: updatedMerchants,
-                  hasMore: newMerchants.length == _pageSize,
-                  currentPage: nextPage,
-                  search: searchQuery,
-                ));
-              },
-            );
-          }
+          final nextPage = currentState.currentPage + 1;
+          final result = await _repository.getMerchants(
+            page: nextPage,
+            limit: _pageSize,
+            search: searchQuery,
+          );
+
+          result.fold(
+            (failure) => emit(currentState.copyWith(isLoadingMore: false)),
+            (newMerchants) {
+              final updatedMerchants = [
+                ...currentState.merchants,
+                ...newMerchants,
+              ];
+              emit(ListMerchantLoaded(
+                merchants: updatedMerchants,
+                hasMore: newMerchants.length >= _pageSize,
+                currentPage: nextPage,
+                search: searchQuery,
+                isLoadingMore: false,
+              ));
+            },
+          );
         } else {
           // Initial load or refresh
           emit(const ListMerchantLoading());
@@ -60,9 +57,10 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
             (failure) => emit(ListMerchantError(message: failure.message)),
             (merchants) => emit(ListMerchantLoaded(
               merchants: merchants,
-              hasMore: merchants.length == _pageSize,
+              hasMore: merchants.length >= _pageSize,
               currentPage: 1,
               search: event.search,
+              isLoadingMore: false,
             )),
           );
         }

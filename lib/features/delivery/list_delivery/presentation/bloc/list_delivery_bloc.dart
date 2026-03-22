@@ -15,37 +15,35 @@ class ListDeliveryBloc extends Bloc<ListDeliveryEvent, ListDeliveryState> {
         if (event is GetDeliveryMenEvent) {
         if (event.loadMore) {
           final currentState = state;
-          if (currentState is ListDeliveryLoaded) {
-            final searchQuery = event.search ?? currentState.search;
-            emit(ListDeliveryLoadingMore(
-              deliveryMen: currentState.deliveryMen,
-              currentPage: currentState.currentPage,
-              search: searchQuery,
-            ));
+          if (currentState is! ListDeliveryLoaded) return;
+          if (!currentState.hasMore || currentState.isLoadingMore) return;
 
-            final nextPage = currentState.currentPage + 1;
-            final result = await _repository.getDeliveryMen(
-              page: nextPage,
-              limit: _pageSize,
-              search: searchQuery,
-            );
+          final searchQuery = event.search ?? currentState.search;
+          emit(currentState.copyWith(isLoadingMore: true));
 
-            result.fold(
-              (failure) => emit(ListDeliveryError(message: failure.message)),
-              (newDeliveryMen) {
-                final updated = [
-                  ...currentState.deliveryMen,
-                  ...newDeliveryMen,
-                ];
-                emit(ListDeliveryLoaded(
-                  deliveryMen: updated,
-                  hasMore: newDeliveryMen.length == _pageSize,
-                  currentPage: nextPage,
-                  search: searchQuery,
-                ));
-              },
-            );
-          }
+          final nextPage = currentState.currentPage + 1;
+          final result = await _repository.getDeliveryMen(
+            page: nextPage,
+            limit: _pageSize,
+            search: searchQuery,
+          );
+
+          result.fold(
+            (failure) => emit(currentState.copyWith(isLoadingMore: false)),
+            (newDeliveryMen) {
+              final updated = [
+                ...currentState.deliveryMen,
+                ...newDeliveryMen,
+              ];
+              emit(ListDeliveryLoaded(
+                deliveryMen: updated,
+                hasMore: newDeliveryMen.length >= _pageSize,
+                currentPage: nextPage,
+                search: searchQuery,
+                isLoadingMore: false,
+              ));
+            },
+          );
         } else {
           emit(const ListDeliveryLoading());
           final result = await _repository.getDeliveryMen(
@@ -58,9 +56,10 @@ class ListDeliveryBloc extends Bloc<ListDeliveryEvent, ListDeliveryState> {
             (failure) => emit(ListDeliveryError(message: failure.message)),
             (deliveryMen) => emit(ListDeliveryLoaded(
               deliveryMen: deliveryMen,
-              hasMore: deliveryMen.length == _pageSize,
+              hasMore: deliveryMen.length >= _pageSize,
               currentPage: 1,
               search: event.search,
+              isLoadingMore: false,
             )),
           );
         }

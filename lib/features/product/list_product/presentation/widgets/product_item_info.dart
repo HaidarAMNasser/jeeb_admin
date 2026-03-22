@@ -23,17 +23,20 @@ class ProductItemInfo extends StatelessWidget {
       children: [
         enableSmallDesign
             ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomText(
-                    text: product.name,
-                    textStyle: getBoldStyle(
-                      fontSize: AppFontSize.s18,
-                      color: ColorManager.productNameColor,
+                  Expanded(
+                    child: CustomText(
+                      text: product.name,
+                      textStyle: getBoldStyle(
+                        fontSize: AppFontSize.s18,
+                        color: ColorManager.productNameColor,
+                      ),
+                      maxLines: 2,
+                      textOverflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    textOverflow: TextOverflow.ellipsis,
                   ),
+                  SizedBox(width: AppMargin.m8),
                   CustomText(
                     text: '\$${(product.price / 100).toStringAsFixed(2)}',
                     textStyle: getBoldStyle(

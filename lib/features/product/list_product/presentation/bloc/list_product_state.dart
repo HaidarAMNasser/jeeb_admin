@@ -54,23 +54,6 @@ class ListProductLoaded extends ListProductState {
   List<Object?> get props => [products, hasMore, currentPage, isLoadingMore, merchantId, search];
 }
 
-class ListProductLoadingMore extends ListProductState {
-  final List<ProductEntity> products;
-  final int currentPage;
-  final String? merchantId;
-  final String? search;
-
-  const ListProductLoadingMore({
-    required this.products,
-    required this.currentPage,
-    this.merchantId,
-    this.search,
-  });
-
-  @override
-  List<Object?> get props => [products, currentPage, merchantId, search];
-}
-
 class ListProductError extends ListProductState {
   final String message;
 

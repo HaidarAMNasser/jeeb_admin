@@ -40,6 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           latitude: event.latitude,
           longitude: event.longitude,
           isActive: event.isActive,
+          restaurantName: event.restaurantName,
           imageFile: event.imageFile,
         );
 
@@ -85,6 +86,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           lastName: lastName,
           phone: event.phone.trim(),
           address: event.address?.trim().isEmpty ?? true ? null : event.address?.trim(),
+          restaurantName: event.restaurantName,
         ));
       } else if (event is ChangeLanguage) {
         await _storageService.setAppLanguage(event.languageCode);

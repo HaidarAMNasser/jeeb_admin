@@ -281,6 +281,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
+    String? restaurantName,
     MultipartFile? image,
   }) async {
     const extra = <String, dynamic>{};
@@ -296,6 +297,9 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (latitude != null) formData.fields.add(MapEntry('latitude', latitude.toString()));
     if (longitude != null) formData.fields.add(MapEntry('longitude', longitude.toString()));
     if (isActive != null) formData.fields.add(MapEntry('isActive', isActive.toString()));
+    if (restaurantName != null) {
+      formData.fields.add(MapEntry('restaurantName', restaurantName));
+    }
     if (image != null) {
       formData.files.add(MapEntry('image', image));
     }

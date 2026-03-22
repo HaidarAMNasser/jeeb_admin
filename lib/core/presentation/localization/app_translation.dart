@@ -95,7 +95,9 @@ class AppTranslation {
   static String get delete => 'delete'.tr();
   static String get edit => 'edit'.tr();
   static String get merchantDeletedSuccessfully => 'merchant_deleted_successfully'.tr();
+  static String get merchantUpdatedSuccessfully => 'merchant_updated_successfully'.tr();
   static String get areYouSureDeleteMerchant => 'are_you_sure_delete_merchant'.tr();
+  static String get editMerchant => 'edit_merchant'.tr();
   static String get save => 'save'.tr();
   static String get cancel => 'cancel'.tr();
   static String get confirm => 'confirm'.tr();
@@ -172,6 +174,9 @@ class AppTranslation {
   static String get noMerchantsFound => 'no_merchants_found'.tr();
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
+  static String get owner => 'owner'.tr();
+  static String get hidePhoneNumberOption => 'hide_phone_number_option'.tr();
+  static String get showPhoneNumber => 'show_phone_number'.tr();
   static String get location => 'location'.tr();
   static String get useMyLocation => 'use_my_location'.tr();
   static String get pleaseSelectLocation => 'please_select_location'.tr();

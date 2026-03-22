@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:jeeb_admin/core/common/classes/user_roles.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
     as di;
@@ -86,6 +87,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<ConfirmProductBloc, ConfirmProductState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is ConfirmProductSuccess || s is ConfirmProductError,
+          ),
           listener: (context, state) {
             if (state is ConfirmProductSuccess) {
               customToast(msg: AppTranslation.productConfirmedSuccessfully);
@@ -98,6 +104,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           },
         ),
         BlocListener<DeleteProductBloc, DeleteProductState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is DeleteProductSuccess || s is DeleteProductError,
+          ),
           listener: (context, state) {
             if (state is DeleteProductSuccess) {
               customToast(msg: AppTranslation.productDeletedSuccessfully);

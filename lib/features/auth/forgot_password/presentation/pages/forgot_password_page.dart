@@ -9,6 +9,7 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -50,6 +51,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is ForgotPasswordSuccess || s is ForgotPasswordError,
+      ),
       listener: (context, state) {
         if (state is ForgotPasswordSuccess) {
           customToast(msg: AppTranslation.otpSentSuccess);

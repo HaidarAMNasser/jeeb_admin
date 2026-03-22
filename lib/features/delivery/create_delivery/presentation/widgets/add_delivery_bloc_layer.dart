@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
@@ -28,6 +29,11 @@ class AddDeliveryBlocLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CreateDeliveryBloc, CreateDeliveryState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is CreateDeliverySuccess || s is CreateDeliveryError,
+      ),
       listener: (context, state) {
         if (state is CreateDeliverySuccess) {
           customToast(msg: AppTranslation.deliveryManCreatedSuccessfully);
@@ -37,6 +43,11 @@ class AddDeliveryBlocLayer extends StatelessWidget {
         }
       },
       child: BlocListener<UpdateDeliveryBloc, UpdateDeliveryState>(
+        listenWhen: (previous, current) => listenWhenEnteringTerminal(
+          previous,
+          current,
+          (s) => s is UpdateDeliverySuccess || s is UpdateDeliveryError,
+        ),
         listener: (context, state) {
           if (state is UpdateDeliverySuccess) {
             customToast(msg: AppTranslation.deliveryManUpdatedSuccessfully);
@@ -46,6 +57,11 @@ class AddDeliveryBlocLayer extends StatelessWidget {
           }
         },
         child: BlocListener<DeleteDeliveryBloc, DeleteDeliveryState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is DeleteDeliverySuccess || s is DeleteDeliveryError,
+          ),
           listener: (context, state) {
             if (state is DeleteDeliverySuccess) {
               customToast(msg: AppTranslation.deliveryManDeletedSuccessfully);

@@ -13,6 +13,7 @@ import 'package:jeeb_admin/features/product/create_product/presentation/widgets/
 import 'package:jeeb_admin/features/product/update_product/presentation/bloc/update_product_bloc.dart';
 import 'package:jeeb_admin/features/product/delete_product/presentation/bloc/delete_product_bloc.dart';
 import 'package:jeeb_admin/features/product/product_details/presentation/bloc/product_details_bloc.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -46,6 +47,11 @@ class _CreateProductPageState extends State<CreateProductPage> {
     final isEdit = widget.product != null;
 
     return BlocConsumer<DeleteProductBloc, DeleteProductState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is DeleteProductSuccess || s is DeleteProductError,
+      ),
       listener: (context, deleteState) {
         if (deleteState is DeleteProductSuccess) {
           customToast(msg: AppTranslation.productDeletedSuccessfully);
@@ -56,6 +62,11 @@ class _CreateProductPageState extends State<CreateProductPage> {
       },
       builder: (context, deleteState) {
         return BlocConsumer<UpdateProductBloc, UpdateProductState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is UpdateProductSuccess || s is UpdateProductError,
+          ),
           listener: (context, updateState) {
             if (updateState is UpdateProductSuccess) {
               customToast(msg: AppTranslation.productUpdatedSuccessfully);
@@ -66,6 +77,11 @@ class _CreateProductPageState extends State<CreateProductPage> {
           },
           builder: (context, updateState) {
             return BlocConsumer<CreateProductBloc, CreateProductState>(
+              listenWhen: (previous, current) => listenWhenEnteringTerminal(
+                previous,
+                current,
+                (s) => s is CreateProductSuccess || s is CreateProductError,
+              ),
               listener: (context, createState) {
                 if (createState is CreateProductSuccess) {
                   customToast(msg: AppTranslation.productCreatedSuccessfully);

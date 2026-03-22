@@ -63,6 +63,8 @@ import '../../../features/merchant/merchant_details/data/data_sources/merchant_d
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 import '../../../features/merchant/delete_merchant/data/data_sources/delete_merchant_data_source.dart';
 import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
+import '../../../features/merchant/update_merchant/data/data_sources/update_merchant_data_source.dart';
+import '../../../features/merchant/update_merchant/data/repositories/update_merchant_repository.dart';
 import '../../../features/delivery/list_delivery/data/data_sources/list_delivery_data_source.dart';
 import '../../../features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
 import '../../../features/delivery/delivery_details/data/data_sources/delivery_details_data_source.dart';
@@ -295,6 +297,11 @@ Future<void> init() async {
     () => DeleteMerchantRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => DeleteMerchantRepository(sl(), sl()));
+  //! Merchant Update Dependencies
+  sl.registerFactory<UpdateMerchantRemoteDataSource>(
+    () => UpdateMerchantRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => UpdateMerchantRepository(sl(), sl()));
   //! Delivery List Dependencies
   sl.registerFactory<ListDeliveryRemoteDataSource>(
     () => ListDeliveryRemoteDataSourceImpl(sl()),

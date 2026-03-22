@@ -97,6 +97,7 @@ class ProfileRepository {
       isVerified: true,
       currentLat: latitude,
       currentLng: longitude,
+      restaurantName: null,
     );
   }
 
@@ -110,6 +111,7 @@ class ProfileRepository {
     double? latitude,
     double? longitude,
     bool? isActive,
+    String? restaurantName,
     dynamic imageFile,
   }) async {
     if (!await _networkInfo.isConnected) {
@@ -139,6 +141,7 @@ class ProfileRepository {
         latitude: latitude,
         longitude: longitude,
         isActive: isActive,
+        restaurantName: restaurantName,
         imageFile: file,
       );
 

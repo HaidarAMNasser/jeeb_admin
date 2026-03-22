@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/features/category/list_category/presentation/bloc/list_category_bloc.dart';
@@ -12,6 +13,11 @@ class CategoriesPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ListCategoryBloc, ListCategoryState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is ListCategoryError,
+      ),
       listener: (context, listState) {
         if (listState is ListCategoryError) {
           customToast(msg: listState.message);

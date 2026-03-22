@@ -11,11 +11,14 @@ import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/language_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/widgets/logout_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
+import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/location_map_picker_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_page_content.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -36,7 +39,9 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
+  late TextEditingController _restaurantNameController;
   bool _isAdminFromStorage = false;
+  bool _isMerchantFromStorage = false;
 
   @override
   void initState() {
@@ -45,11 +50,18 @@ class _ProfilePageState extends State<ProfilePage> {
     _lastNameController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
+    _restaurantNameController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       context.read<ProfileBloc>().add(const GetProfile());
       final role = await di.sl<StorageService>().getUserRole();
-      if (mounted) setState(() => _isAdminFromStorage = (role?.toLowerCase() == 'admin'));
+      final r = role?.toLowerCase();
+      if (mounted) {
+        setState(() {
+          _isAdminFromStorage = r == UserRole.admin.name;
+          _isMerchantFromStorage = r == UserRole.merchant.name;
+        });
+      }
     });
   }
 
@@ -59,12 +71,18 @@ class _ProfilePageState extends State<ProfilePage> {
     _lastNameController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
+    _restaurantNameController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LogoutBloc, LogoutState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is LogoutSuccess || s is LogoutError,
+      ),
       listener: (context, logoutState) {
         if (logoutState is LogoutSuccess) {
           customToast(msg: AppTranslation.logoutSuccess);
@@ -77,6 +95,10 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       builder: (context, logoutState) {
         return BlocConsumer<ProfileBloc, ProfileState>(
+          listenWhen: (previous, current) {
+            if (current is ProfileError) return previous is! ProfileError;
+            return true;
+          },
           listener: (context, state) {
             if (state is ProfileLoaded) {
               if (!state.formValuesInitialized) {
@@ -84,6 +106,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 _lastNameController.text = state.user.lastName;
                 _phoneController.text = state.user.phone;
                 _addressController.text = state.user.address ?? '';
+                _restaurantNameController.text =
+                    state.user.restaurantName ?? '';
                 context.read<ProfileBloc>().add(const FormValuesInitialized());
               } else if (state.updateSuccess) {
                 customToast(msg: AppTranslation.profileUpdatedSuccess);
@@ -118,7 +142,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         onPressed: () async {
                           final ok = await showLogoutDialog(context);
                           if (ok == true && mounted) {
-                            context.read<LogoutBloc>().add(const LogoutSubmitted());
+                            context.read<LogoutBloc>().add(
+                              const LogoutSubmitted(),
+                            );
                           }
                         },
                       ),
@@ -142,24 +168,32 @@ class _ProfilePageState extends State<ProfilePage> {
                       lastNameController: _lastNameController,
                       phoneController: _phoneController,
                       addressController: _addressController,
-                      isMerchant: loadedState.isMerchant,
+                      restaurantNameController: _restaurantNameController,
                       isAdminFromStorage: _isAdminFromStorage,
+                      isMerchantFromStorage: _isMerchantFromStorage,
                       onUpdate: () {
                         if (_formKey.currentState!.validate()) {
-                          context.read<ProfileBloc>().add(SaveProfile(
-                                firstName: _firstNameController.text.trim(),
-                                lastName: _lastNameController.text.trim(),
-                                phone: _phoneController.text.trim(),
-                                address: _addressController.text.trim().isEmpty
-                                    ? null
-                                    : _addressController.text.trim(),
-                              ));
+                          context.read<ProfileBloc>().add(
+                            SaveProfile(
+                              firstName: _firstNameController.text.trim(),
+                              lastName: _lastNameController.text.trim(),
+                              phone: _phoneController.text.trim(),
+                              address: _addressController.text.trim().isEmpty
+                                  ? null
+                                  : _addressController.text.trim(),
+                              restaurantName: _isMerchantFromStorage
+                                  ? _restaurantNameController.text.trim()
+                                  : null,
+                            ),
+                          );
                         }
                       },
                       onChangeLanguage: () => _showLanguageDialog(context),
-                      onUpdateLocation: () => _openMapPicker(context, loadedState),
-                      onAccountStatusChanged: (v) =>
-                          context.read<ProfileBloc>().add(UpdateAccountActive(v)),
+                      onUpdateLocation: () =>
+                          _openMapPicker(context, loadedState),
+                      onAccountStatusChanged: (v) => context
+                          .read<ProfileBloc>()
+                          .add(UpdateAccountActive(v)),
                       isUpdateLoading: isUpdateLoading,
                       onPickImage: () => _pickAndUpdateImage(context),
                     );
@@ -194,7 +228,10 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<void> _openMapPicker(BuildContext context, ProfileLoaded loaded) async {
+  Future<void> _openMapPicker(
+    BuildContext context,
+    ProfileLoaded loaded,
+  ) async {
     final result = await Navigator.of(context).push<LocationMapPickerResult>(
       MaterialPageRoute(
         builder: (ctx) => LocationMapPickerPage(
@@ -204,10 +241,9 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
     if (result != null && context.mounted) {
-      context.read<ProfileBloc>().add(UpdateLocation(
-            latitude: result.latitude,
-            longitude: result.longitude,
-          ));
+      context.read<ProfileBloc>().add(
+        UpdateLocation(latitude: result.latitude, longitude: result.longitude),
+      );
     }
   }
 }

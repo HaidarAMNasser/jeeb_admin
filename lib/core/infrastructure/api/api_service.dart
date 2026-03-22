@@ -74,6 +74,7 @@ abstract class AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
+    String? restaurantName,
     MultipartFile? image,
   });
 

@@ -49,10 +49,6 @@ class _ProductDropdownWidgetState extends State<ProductDropdownWidget> {
           products = state.products;
           isLoadingMore = state.isLoadingMore;
           hasMoreData = state.hasMore;
-        } else if (state is ListProductLoadingMore) {
-          products = state.products;
-          isLoadingMore = false;
-          hasMoreData = true;
         }
 
         return CustomPaginatedDropdown<ProductEntity>(

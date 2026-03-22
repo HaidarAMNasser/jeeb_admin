@@ -1,21 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
-import 'package:jeeb_admin/core/presentation/widgets/custom_cached_network_image.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/icon_value_row.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/domain/entities/merchant_entity.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_header.dart';
+import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_owner_row.dart';
 
 class MerchantListItem extends StatelessWidget {
   final MerchantEntity merchant;
 
   const MerchantListItem({super.key, required this.merchant});
 
+  static String _cityCountryLine(String? cityName, String? countryName) {
+    if (cityName != null && countryName != null) {
+      return '$cityName • $countryName';
+    }
+    if (cityName != null) return cityName;
+    return countryName!;
+  }
+
+  /// Space so the restaurant line does not run under the phone chip.
+  static double _phoneReserveEndPadding(bool hasPhone) =>
+      hasPhone ? 104.w : 0;
+
   @override
   Widget build(BuildContext context) {
+    final hasPhone =
+        merchant.phoneNumber != null && merchant.phoneNumber!.isNotEmpty;
+
     return InkWell(
       onTap: () {
         AppRouter.navigateTo(
@@ -36,149 +54,75 @@ class MerchantListItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (merchant.image != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(AppRadius.r100),
-                            ),
-                            child: SizedBox(
-                              width: AppWidth.s50,
-                              height: AppHeight.s50,
-                              child: CustomCachedNetworkImage(
-                                imageUrl: merchant.image!,
-                                fit: BoxFit.cover,
-                                width: AppWidth.s50,
-                                height: AppHeight.s50,
-                                borderRadius: BorderRadius.circular(AppRadius.r100),
-                                errorWidget: Container(
-                                  color: ColorManager.background,
-                                  child: Icon(
-                                    Icons.store,
-                                    color: ColorManager.primary,
-                                    size: AppSize.s28,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        else
-                          Container(
-                            width: AppWidth.s50,
-                            height: AppHeight.s50,
-                            decoration: BoxDecoration(
-                              color: ColorManager.background,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.store,
-                              color: ColorManager.primary,
-                              size: AppSize.s28,
-                            ),
-                          ),
-                        SizedBox(width: AppWidth.s12),
-                        Expanded(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(minWidth: 0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: merchant.name,
-                                textStyle: getBoldStyle(
-                                  fontSize: AppFontSize.s18,
-                                  color: ColorManager.productNameColor,
-                                ),
-                                maxLines: 2,
-                                textOverflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(height: AppHeight.s4),
-                              CustomText(
-                                text: merchant.email,
-                                textStyle: getRegularStyle(
-                                  fontSize: AppFontSize.s12,
-                                  color: ColorManager.descriptionColor,
-                                ),
-                                maxLines: 1,
-                                textOverflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        ),
-                      ],
+                  SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        end: _phoneReserveEndPadding(hasPhone),
+                      ),
+                      child: MerchantListItemHeader(merchant: merchant),
                     ),
                   ),
+                  if (hasPhone)
+                    PositionedDirectional(
+                      top: 0,
+                      end: 0,
+                      child: SizedBox(
+                        width: 96.w,
+                        child: IconValueRow(
+                          icon: Icons.phone,
+                          value: merchant.phoneNumber!,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          maxLines: 2,
+                          textOverflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
                 ],
               ),
-              if (merchant.cityName != null || merchant.countryName != null) ...[
-                SizedBox(height: AppHeight.s12),
-                Row(
+              SizedBox(height: AppHeight.s12),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 3.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (merchant.cityName != null) ...[
-                      Icon(
-                        Icons.location_city,
-                        size: AppSize.s16,
-                        color: ColorManager.descriptionColor,
-                      ),
-                      SizedBox(width: AppWidth.s4),
-                      CustomText(
-                        text: merchant.cityName!,
-                        textStyle: getRegularStyle(
-                          fontSize: AppFontSize.s12,
-                          color: ColorManager.descriptionColor,
-                        ),
-                      ),
-                    ],
-                    if (merchant.countryName != null) ...[
-                      if (merchant.cityName != null) ...[
-                        SizedBox(width: AppWidth.s8),
-                        CustomText(
-                          text: '•',
-                          textStyle: getRegularStyle(
-                            fontSize: AppFontSize.s12,
-                            color: ColorManager.descriptionColor,
-                          ),
-                        ),
-                        SizedBox(width: AppWidth.s8),
-                      ],
-                      CustomText(
-                        text: merchant.countryName!,
-                        textStyle: getRegularStyle(
-                          fontSize: AppFontSize.s12,
-                          color: ColorManager.descriptionColor,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-              if (merchant.phoneNumber != null) ...[
-                SizedBox(height: AppHeight.s8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.phone,
-                      size: AppSize.s16,
-                      color: ColorManager.descriptionColor,
-                    ),
-                    SizedBox(width: AppWidth.s4),
+                    MerchantListItemOwnerRow(ownerName: merchant.name),
+                    SizedBox(height: AppHeight.s8),
                     CustomText(
-                      text: merchant.phoneNumber!,
+                      text: merchant.email,
                       textStyle: getRegularStyle(
                         fontSize: AppFontSize.s12,
                         color: ColorManager.descriptionColor,
                       ),
+                      maxLines: 2,
+                      textOverflow: TextOverflow.ellipsis,
                     ),
                   ],
+                ),
+              ),
+              if (merchant.address != null &&
+                  merchant.address!.trim().isNotEmpty) ...[
+                SizedBox(height: AppHeight.s8),
+                IconValueRow(
+                  icon: Icons.location_on_outlined,
+                  value: merchant.address!.trim(),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  maxLines: 3,
+                  textOverflow: TextOverflow.ellipsis,
+                ),
+              ],
+              if (merchant.cityName != null ||
+                  merchant.countryName != null) ...[
+                SizedBox(height: AppHeight.s12),
+                IconValueRow(
+                  icon: Icons.location_city,
+                  value: _cityCountryLine(
+                    merchant.cityName,
+                    merchant.countryName,
+                  ),
                 ),
               ],
             ],
@@ -188,4 +132,3 @@ class MerchantListItem extends StatelessWidget {
     );
   }
 }
-

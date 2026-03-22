@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/features/category/list_category/presentation/bloc/list_category_bloc.dart';
 import 'package:jeeb_admin/features/category/add_category/presentation/bloc/add_category_bloc.dart';
@@ -47,6 +48,11 @@ class _CategoriesPageState extends State<CategoriesPage> {
           },
         ),
         BlocListener<UpdateCategoryBloc, UpdateCategoryState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is UpdateCategorySuccess || s is UpdateCategoryError,
+          ),
           listener: (context, updateState) {
             if (updateState is UpdateCategorySuccess) {
               customToast(msg: AppTranslation.categoryUpdatedSuccessfully);
@@ -57,6 +63,11 @@ class _CategoriesPageState extends State<CategoriesPage> {
           },
         ),
         BlocListener<DeleteCategoryBloc, DeleteCategoryState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) => s is DeleteCategorySuccess || s is DeleteCategoryError,
+          ),
           listener: (context, deleteState) {
             if (deleteState is DeleteCategorySuccess) {
               customToast(msg: AppTranslation.categoryDeletedSuccessfully);

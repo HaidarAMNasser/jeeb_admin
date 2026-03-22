@@ -13,6 +13,11 @@ class OfferListItem extends StatelessWidget {
   final OfferEntity offer;
 
   const OfferListItem({super.key, required this.offer});
+  String _formatDateRange(DateTime? start, DateTime? end) {
+    final s = start != null ? '${start.day}/${start.month}/${start.year}' : '—';
+    final e = end != null ? '${end.day}/${end.month}/${end.year}' : '—';
+    return '$s - $e';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +83,7 @@ class OfferListItem extends StatelessWidget {
               CustomText(
                 text:
                     "${AppTranslation.offerProductsCount}: ${offer.products.map((product) => product.name).join(', ')}",
-                textStyle: getMediumStyle(
-                
-                ),
+                textStyle: getMediumStyle(),
               ),
 
               if (offer.longDescription != null) ...[
@@ -95,7 +98,7 @@ class OfferListItem extends StatelessWidget {
               if (offer.startDate != null || offer.endDate != null) ...[
                 CustomText(
                   text: _formatDateRange(offer.startDate, offer.endDate),
-                  textStyle: getRegularStyle( color: ColorManager.primary),
+                  textStyle: getRegularStyle(color: ColorManager.primary),
                 ),
               ],
             ],
@@ -103,11 +106,5 @@ class OfferListItem extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDateRange(DateTime? start, DateTime? end) {
-    final s = start != null ? '${start.day}/${start.month}/${start.year}' : '—';
-    final e = end != null ? '${end.day}/${end.month}/${end.year}' : '—';
-    return '$s - $e';
   }
 }

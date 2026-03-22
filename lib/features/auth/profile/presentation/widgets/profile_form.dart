@@ -18,27 +18,30 @@ class ProfileForm extends StatelessWidget {
   final TextEditingController lastNameController;
   final TextEditingController phoneController;
   final TextEditingController addressController;
+  final TextEditingController restaurantNameController;
   final VoidCallback onUpdate;
   final bool isLoading;
   final VoidCallback onChangeLanguage;
-  final bool isMerchant;
   final VoidCallback onUpdateLocation;
   final ValueChanged<bool> onAccountStatusChanged;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onCategoriesTap;
+  /// Merchant-only fields/actions — from SharedPreferences `user_role` at login.
+  final bool isMerchantFromStorage;
 
   const ProfileForm({
     super.key,
+    required this.isMerchantFromStorage,
     required this.formKey,
     required this.user,
     required this.firstNameController,
     required this.lastNameController,
     required this.phoneController,
     required this.addressController,
+    required this.restaurantNameController,
     required this.onUpdate,
     required this.isLoading,
     required this.onChangeLanguage,
-    required this.isMerchant,
     required this.onUpdateLocation,
     required this.onAccountStatusChanged,
     this.onSettingsTap,
@@ -53,7 +56,7 @@ class ProfileForm extends StatelessWidget {
         spacing: AppSize.s24.h,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (isMerchant)
+          if (isMerchantFromStorage)
             CustomCheckbox(
               value: user.isActive ?? true,
               onChanged: (value) {
@@ -73,6 +76,12 @@ class ProfileForm extends StatelessWidget {
             hintText: AppTranslation.lastName,
             controller: lastNameController,
           ),
+          if (isMerchantFromStorage)
+            CustomTextField(
+              title: AppTranslation.restaurantName,
+              hintText: AppTranslation.restaurantName,
+              controller: restaurantNameController,
+            ),
           CustomTextField(
             title: AppTranslation.phone,
             hintText: AppTranslation.enterPhone,
@@ -149,7 +158,7 @@ class ProfileForm extends StatelessWidget {
                 ),
               ),
             ),
-          if (isMerchant) ...[
+          if (isMerchantFromStorage) ...[
             InkWell(
               onTap: onUpdateLocation,
               borderRadius: BorderRadius.circular(4),

@@ -14,41 +14,37 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
     on<ListProductEvent>((event, emit) async {
       if (event is GetProductsEvent) {
         if (event.loadMore) {
-          // Load more products
           final currentState = state;
-          if (currentState is ListProductLoaded) {
-            emit(ListProductLoadingMore(
-              products: currentState.products,
-              currentPage: currentState.currentPage,
-              merchantId: currentState.merchantId,
-              search: currentState.search,
-            ));
+          if (currentState is! ListProductLoaded) return;
+          if (!currentState.hasMore || currentState.isLoadingMore) return;
 
-            final nextPage = currentState.currentPage + 1;
-            final result = await _repository.getProducts(
-              page: nextPage,
-              limit: _pageSize,
-              restaurantId: currentState.merchantId,
-              search: currentState.search,
-            );
+          emit(currentState.copyWith(isLoadingMore: true));
 
-            result.fold(
-              (failure) => emit(ListProductError(message: failure.message)),
-              (products) {
-                final updatedProducts = [
-                  ...currentState.products,
-                  ...products,
-                ];
-                emit(ListProductLoaded(
-                  products: updatedProducts,
-                  hasMore: products.length == _pageSize,
-                  currentPage: nextPage,
-                  merchantId: currentState.merchantId,
-                  search: currentState.search,
-                ));
-              },
-            );
-          }
+          final nextPage = currentState.currentPage + 1;
+          final result = await _repository.getProducts(
+            page: nextPage,
+            limit: _pageSize,
+            restaurantId: currentState.merchantId,
+            search: currentState.search,
+          );
+
+          result.fold(
+            (failure) => emit(currentState.copyWith(isLoadingMore: false)),
+            (products) {
+              final updatedProducts = [
+                ...currentState.products,
+                ...products,
+              ];
+              emit(ListProductLoaded(
+                products: updatedProducts,
+                hasMore: products.length >= _pageSize,
+                currentPage: nextPage,
+                merchantId: currentState.merchantId,
+                search: currentState.search,
+                isLoadingMore: false,
+              ));
+            },
+          );
         } else {
           // Initial load or refresh
           emit(const ListProductLoading());
@@ -64,10 +60,11 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
             (failure) => emit(ListProductError(message: failure.message)),
             (products) => emit(ListProductLoaded(
               products: products,
-              hasMore: products.length == _pageSize,
+              hasMore: products.length >= _pageSize,
               currentPage: 1,
               merchantId: event.merchantId,
               search: event.search,
+              isLoadingMore: false,
             )),
           );
         }

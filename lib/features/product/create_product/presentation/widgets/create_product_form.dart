@@ -103,4 +103,3 @@ class CreateProductForm extends StatelessWidget {
     );
   }
 }
-

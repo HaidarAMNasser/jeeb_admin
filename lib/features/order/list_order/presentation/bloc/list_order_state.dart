@@ -21,6 +21,7 @@ class ListOrderLoaded extends ListOrderState {
   final int currentPage;
   final String? search;
   final String? merchantId;
+  final bool isLoadingMore;
 
   const ListOrderLoaded({
     required this.orders,
@@ -28,10 +29,30 @@ class ListOrderLoaded extends ListOrderState {
     this.currentPage = 1,
     this.search,
     this.merchantId,
+    this.isLoadingMore = false,
   });
 
+  ListOrderLoaded copyWith({
+    List<OrderEntity>? orders,
+    bool? hasMore,
+    int? currentPage,
+    String? search,
+    String? merchantId,
+    bool? isLoadingMore,
+  }) {
+    return ListOrderLoaded(
+      orders: orders ?? this.orders,
+      hasMore: hasMore ?? this.hasMore,
+      currentPage: currentPage ?? this.currentPage,
+      search: search ?? this.search,
+      merchantId: merchantId ?? this.merchantId,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    );
+  }
+
   @override
-  List<Object?> get props => [orders, hasMore, currentPage, search, merchantId];
+  List<Object?> get props =>
+      [orders, hasMore, currentPage, search, merchantId, isLoadingMore];
 }
 
 class ListOrderError extends ListOrderState {
@@ -43,20 +64,4 @@ class ListOrderError extends ListOrderState {
   List<Object?> get props => [message];
 }
 
-class ListOrderLoadingMore extends ListOrderState {
-  final List<OrderEntity> orders;
-  final int currentPage;
-  final String? search;
-  final String? merchantId;
-
-  const ListOrderLoadingMore({
-    required this.orders,
-    required this.currentPage,
-    this.search,
-    this.merchantId,
-  });
-
-  @override
-  List<Object?> get props => [orders, currentPage, search, merchantId];
-}
 

@@ -75,12 +75,27 @@ class _ShimmerPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (width != null && height != null) {
+      return _shimmerBox(width!, height!);
+    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = width ??
+            (constraints.maxWidth.isFinite ? constraints.maxWidth : AppSize.s100);
+        final h = height ??
+            (constraints.maxHeight.isFinite ? constraints.maxHeight : AppSize.s100);
+        return _shimmerBox(w, h);
+      },
+    );
+  }
+
+  Widget _shimmerBox(double w, double h) {
     return Shimmer.fromColors(
       baseColor: ColorManager.defaultWhite.withOpacity(0.12),
       highlightColor: ColorManager.defaultWhite.withOpacity(0.25),
       child: Container(
-        width: width ?? double.infinity,
-        height: height ?? double.infinity,
+        width: w,
+        height: h,
         decoration: BoxDecoration(
           color: ColorManager.defaultWhite.withOpacity(0.2),
           borderRadius: borderRadius ?? BorderRadius.zero,

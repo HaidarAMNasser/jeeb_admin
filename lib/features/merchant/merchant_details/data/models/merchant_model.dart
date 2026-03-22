@@ -42,6 +42,7 @@ class MerchantModel {
   final String firstName;
   final String lastName;
   final String email;
+  final String restaurantName;
   final String phone;
   final String? role;
   final String? notificationChannel;
@@ -53,6 +54,7 @@ class MerchantModel {
   final String? verifiedAt;
   final String? createdAt;
   final String? updatedAt;
+  final bool? hidePhoneNumber;
   final MerchantImageModel? image;
   final CountryModel? country;
   final CityModel? city;
@@ -62,6 +64,7 @@ class MerchantModel {
     required this.firstName,
     required this.lastName,
     required this.email,
+    required this.restaurantName,
     required this.phone,
     this.role,
     this.notificationChannel,
@@ -73,6 +76,7 @@ class MerchantModel {
     this.verifiedAt,
     this.createdAt,
     this.updatedAt,
+    this.hidePhoneNumber,
     this.image,
     this.country,
     this.city,
@@ -84,6 +88,7 @@ class MerchantModel {
       firstName: json['firstName']?.toString() ?? '',
       lastName: json['lastName']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
+      restaurantName: json['restaurantName']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
       role: json['role']?.toString(),
       notificationChannel: json['notificationChannel']?.toString(),
@@ -95,6 +100,7 @@ class MerchantModel {
       verifiedAt: json['verifiedAt']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
+      hidePhoneNumber: json['hidePhoneNumber'] as bool?,
       image: json['image'] != null
           ? MerchantImageModel.fromJson(json['image'] as Map<String, dynamic>)
           : null,
@@ -124,6 +130,7 @@ class MerchantModel {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'restaurantName': restaurantName,
       'phone': phone,
       'role': role,
       'notificationChannel': notificationChannel,
@@ -135,6 +142,7 @@ class MerchantModel {
       'verifiedAt': verifiedAt,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'hidePhoneNumber': hidePhoneNumber,
       'image': image?.toJson(),
       'country': country?.toJson(),
       'city': city?.toJson(),

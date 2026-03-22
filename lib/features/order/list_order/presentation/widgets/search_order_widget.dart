@@ -22,9 +22,7 @@ class _SearchOrderWidgetState extends State<SearchOrderWidget> {
 
   void _refetch() {
     final state = context.read<ListOrderBloc>().state;
-    final merchantId = state is ListOrderLoaded
-        ? state.merchantId
-        : (state is ListOrderLoadingMore ? state.merchantId : null);
+    final merchantId = state is ListOrderLoaded ? state.merchantId : null;
     context.read<ListOrderBloc>().add(
           GetOrdersEvent(search: null, merchantId: merchantId),
         );
@@ -37,9 +35,7 @@ class _SearchOrderWidgetState extends State<SearchOrderWidget> {
       controller: _searchController,
       onSubmitted: (query) {
         final state = context.read<ListOrderBloc>().state;
-        final merchantId = state is ListOrderLoaded
-            ? state.merchantId
-            : (state is ListOrderLoadingMore ? state.merchantId : null);
+        final merchantId = state is ListOrderLoaded ? state.merchantId : null;
         context.read<ListOrderBloc>().add(
               GetOrdersEvent(search: query.isEmpty ? null : query, merchantId: merchantId),
             );
