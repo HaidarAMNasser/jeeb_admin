@@ -1154,7 +1154,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'DELETE', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'offers/$id/delete',
+              'offers/$id',
               queryParameters: queryParameters,
             )
             .copyWith(baseUrl: baseUrlApi),
