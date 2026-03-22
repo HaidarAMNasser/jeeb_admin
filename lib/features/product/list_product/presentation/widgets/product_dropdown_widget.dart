@@ -10,11 +10,13 @@ import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_
 class ProductDropdownWidget extends StatefulWidget {
   final void Function(ProductEntity?) onSelectProduct;
   final ProductEntity? selectedProduct;
+  final String? merchantId;
 
   const ProductDropdownWidget({
     super.key,
     required this.onSelectProduct,
     this.selectedProduct,
+    this.merchantId,
   });
 
   @override
@@ -25,7 +27,9 @@ class _ProductDropdownWidgetState extends State<ProductDropdownWidget> {
   @override
   void initState() {
     super.initState();
-    context.read<ListProductBloc>().add(const GetProductsEvent());
+    context.read<ListProductBloc>().add(
+          GetProductsEvent(merchantId: widget.merchantId),
+        );
   }
 
   @override
@@ -40,6 +44,7 @@ class _ProductDropdownWidgetState extends State<ProductDropdownWidget> {
         bool isError = false;
         String? errorMessage;
 
+        bool isRefreshing = false;
         if (state is ListProductLoading) {
           isLoading = true;
         } else if (state is ListProductError) {
@@ -48,6 +53,7 @@ class _ProductDropdownWidgetState extends State<ProductDropdownWidget> {
         } else if (state is ListProductLoaded) {
           products = state.products;
           isLoadingMore = state.isLoadingMore;
+          isRefreshing = state.isRefreshing;
           hasMoreData = state.hasMore;
         }
 
@@ -59,15 +65,27 @@ class _ProductDropdownWidgetState extends State<ProductDropdownWidget> {
           displayText: (product) => product.name,
           onChanged: widget.onSelectProduct,
           onLoadMore: () {
-            if (!isLoadingMore && hasMoreData) {
+            if (!isLoadingMore && hasMoreData && !isRefreshing) {
               context.read<ListProductBloc>().add(const GetProductsEvent(loadMore: true));
             }
           },
           isLoading: isLoading,
           isLoadingMore: isLoadingMore,
+          isBorderLoading: isLoadingMore || isRefreshing,
           hasMoreData: hasMoreData,
           isError: isError,
           errorMessage: errorMessage,
+          enableSearch: true,
+          searchHintText: AppTranslation.searchProductsHint,
+          emptyMessage: AppTranslation.noProductsFound,
+          onSearchChanged: (query) {
+            context.read<ListProductBloc>().add(
+                  GetProductsEvent(
+                    merchantId: widget.merchantId,
+                    search: query.isEmpty ? null : query,
+                  ),
+                );
+          },
         );
       },
     );

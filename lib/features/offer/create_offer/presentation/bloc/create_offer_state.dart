@@ -3,7 +3,9 @@ part of 'create_offer_bloc.dart';
 abstract class CreateOfferState extends Equatable {
   final String name;
   final String description;
-  final List<String> productIds;
+  final List<OfferProductLine> offerProducts;
+  /// Snapshot of product ids when editing started; used for `removeProductIds` on update.
+  final List<String> initialOfferProductIds;
   final DateTime? startDate;
   final DateTime? endDate;
   final String discountType;
@@ -14,7 +16,8 @@ abstract class CreateOfferState extends Equatable {
   const CreateOfferState({
     this.name = '',
     this.description = '',
-    this.productIds = const [],
+    this.offerProducts = const [],
+    this.initialOfferProductIds = const [],
     this.startDate,
     this.endDate,
     this.discountType = 'PERCENTAGE',
@@ -26,7 +29,8 @@ abstract class CreateOfferState extends Equatable {
   CreateOfferState copyWith({
     String? name,
     String? description,
-    List<String>? productIds,
+    List<OfferProductLine>? offerProducts,
+    List<String>? initialOfferProductIds,
     DateTime? startDate,
     DateTime? endDate,
     String? discountType,
@@ -39,7 +43,8 @@ abstract class CreateOfferState extends Equatable {
   List<Object?> get props => [
         name,
         description,
-        productIds,
+        offerProducts,
+        initialOfferProductIds,
         startDate,
         endDate,
         discountType,
@@ -53,7 +58,8 @@ class CreateOfferInitial extends CreateOfferState {
   const CreateOfferInitial({
     super.name,
     super.description,
-    super.productIds,
+    super.offerProducts,
+    super.initialOfferProductIds,
     super.startDate,
     super.endDate,
     super.discountType,
@@ -66,7 +72,8 @@ class CreateOfferInitial extends CreateOfferState {
   CreateOfferState copyWith({
     String? name,
     String? description,
-    List<String>? productIds,
+    List<OfferProductLine>? offerProducts,
+    List<String>? initialOfferProductIds,
     DateTime? startDate,
     DateTime? endDate,
     String? discountType,
@@ -77,7 +84,9 @@ class CreateOfferInitial extends CreateOfferState {
     return CreateOfferInitial(
       name: name ?? this.name,
       description: description ?? this.description,
-      productIds: productIds ?? this.productIds,
+      offerProducts: offerProducts ?? this.offerProducts,
+      initialOfferProductIds:
+          initialOfferProductIds ?? this.initialOfferProductIds,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       discountType: discountType ?? this.discountType,
@@ -92,7 +101,8 @@ class CreateOfferLoading extends CreateOfferState {
   const CreateOfferLoading({
     required super.name,
     required super.description,
-    required super.productIds,
+    required super.offerProducts,
+    required super.initialOfferProductIds,
     super.startDate,
     super.endDate,
     required super.discountType,
@@ -105,7 +115,8 @@ class CreateOfferLoading extends CreateOfferState {
   CreateOfferState copyWith({
     String? name,
     String? description,
-    List<String>? productIds,
+    List<OfferProductLine>? offerProducts,
+    List<String>? initialOfferProductIds,
     DateTime? startDate,
     DateTime? endDate,
     String? discountType,
@@ -116,7 +127,9 @@ class CreateOfferLoading extends CreateOfferState {
     return CreateOfferInitial(
       name: name ?? this.name,
       description: description ?? this.description,
-      productIds: productIds ?? this.productIds,
+      offerProducts: offerProducts ?? this.offerProducts,
+      initialOfferProductIds:
+          initialOfferProductIds ?? this.initialOfferProductIds,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       discountType: discountType ?? this.discountType,
@@ -134,7 +147,8 @@ class CreateOfferSuccess extends CreateOfferState {
   CreateOfferState copyWith({
     String? name,
     String? description,
-    List<String>? productIds,
+    List<OfferProductLine>? offerProducts,
+    List<String>? initialOfferProductIds,
     DateTime? startDate,
     DateTime? endDate,
     String? discountType,
@@ -153,7 +167,8 @@ class CreateOfferError extends CreateOfferState {
     required this.message,
     required super.name,
     required super.description,
-    required super.productIds,
+    required super.offerProducts,
+    required super.initialOfferProductIds,
     super.startDate,
     super.endDate,
     required super.discountType,
@@ -166,7 +181,8 @@ class CreateOfferError extends CreateOfferState {
   CreateOfferState copyWith({
     String? name,
     String? description,
-    List<String>? productIds,
+    List<OfferProductLine>? offerProducts,
+    List<String>? initialOfferProductIds,
     DateTime? startDate,
     DateTime? endDate,
     String? discountType,
@@ -178,7 +194,9 @@ class CreateOfferError extends CreateOfferState {
       message: message,
       name: name ?? this.name,
       description: description ?? this.description,
-      productIds: productIds ?? this.productIds,
+      offerProducts: offerProducts ?? this.offerProducts,
+      initialOfferProductIds:
+          initialOfferProductIds ?? this.initialOfferProductIds,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       discountType: discountType ?? this.discountType,

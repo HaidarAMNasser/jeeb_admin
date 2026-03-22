@@ -11,7 +11,8 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
   final String id;
   final String name;
   final String description;
-  final List<String> productIds;
+  final List<OfferProductLine> offerProducts;
+  final List<String> initialOfferProductIds;
   final DateTime? startDate;
   final DateTime? endDate;
   final String discountType;
@@ -21,7 +22,8 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
     required this.id,
     required this.name,
     required this.description,
-    required this.productIds,
+    required this.offerProducts,
+    required this.initialOfferProductIds,
     this.startDate,
     this.endDate,
     required this.discountType,
@@ -33,7 +35,8 @@ class UpdateOfferSubmitted extends UpdateOfferEvent {
         id,
         name,
         description,
-        productIds,
+        offerProducts,
+        initialOfferProductIds,
         startDate,
         endDate,
         discountType,

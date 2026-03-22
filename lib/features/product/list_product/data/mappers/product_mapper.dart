@@ -48,6 +48,7 @@ extension ProductMapper on ProductModel {
       rating: rating,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      offerQuantity: offerQuantity,
     );
   }
 }

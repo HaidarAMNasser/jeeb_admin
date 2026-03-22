@@ -17,11 +17,48 @@ class ListCategoryLoading extends ListCategoryState {
 
 class ListCategoryLoaded extends ListCategoryState {
   final List<CategoryEntity> categories;
+  final bool hasMore;
+  final int currentPage;
+  final bool isLoadingMore;
+  final bool isRefreshing;
+  final String? search;
 
-  const ListCategoryLoaded({required this.categories});
+  const ListCategoryLoaded({
+    required this.categories,
+    this.hasMore = true,
+    this.currentPage = 1,
+    this.isLoadingMore = false,
+    this.isRefreshing = false,
+    this.search,
+  });
+
+  ListCategoryLoaded copyWith({
+    List<CategoryEntity>? categories,
+    bool? hasMore,
+    int? currentPage,
+    bool? isLoadingMore,
+    bool? isRefreshing,
+    String? search,
+  }) {
+    return ListCategoryLoaded(
+      categories: categories ?? this.categories,
+      hasMore: hasMore ?? this.hasMore,
+      currentPage: currentPage ?? this.currentPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
+      search: search ?? this.search,
+    );
+  }
 
   @override
-  List<Object?> get props => [categories];
+  List<Object?> get props => [
+    categories,
+    hasMore,
+    currentPage,
+    isLoadingMore,
+    isRefreshing,
+    search,
+  ];
 }
 
 class ListCategoryError extends ListCategoryState {
@@ -32,4 +69,3 @@ class ListCategoryError extends ListCategoryState {
   @override
   List<Object?> get props => [message];
 }
-

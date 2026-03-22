@@ -28,7 +28,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<ListCategoryBloc>().add(const GetCategoriesEvent());
+        context.read<ListCategoryBloc>().add(const GetCategoriesEvent(fullList: true));
       }
     });
   }
@@ -41,7 +41,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           listener: (context, addState) {
             if (addState is AddCategorySuccess) {
               customToast(msg: AppTranslation.categoryAddedSuccessfully);
-              context.read<ListCategoryBloc>().add(const GetCategoriesEvent());
+              context.read<ListCategoryBloc>().add(const GetCategoriesEvent(fullList: true));
             } else if (addState is AddCategoryError) {
               customToast(msg: addState.message);
             }
@@ -56,7 +56,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           listener: (context, updateState) {
             if (updateState is UpdateCategorySuccess) {
               customToast(msg: AppTranslation.categoryUpdatedSuccessfully);
-              context.read<ListCategoryBloc>().add(const GetCategoriesEvent());
+              context.read<ListCategoryBloc>().add(const GetCategoriesEvent(fullList: true));
             } else if (updateState is UpdateCategoryError) {
               customToast(msg: updateState.message);
             }
@@ -71,7 +71,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           listener: (context, deleteState) {
             if (deleteState is DeleteCategorySuccess) {
               customToast(msg: AppTranslation.categoryDeletedSuccessfully);
-              context.read<ListCategoryBloc>().add(const GetCategoriesEvent());
+              context.read<ListCategoryBloc>().add(const GetCategoriesEvent(fullList: true));
             } else if (deleteState is DeleteCategoryError) {
               customToast(msg: deleteState.message);
             }

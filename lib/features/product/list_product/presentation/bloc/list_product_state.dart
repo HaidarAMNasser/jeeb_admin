@@ -20,6 +20,7 @@ class ListProductLoaded extends ListProductState {
   final bool hasMore;
   final int currentPage;
   final bool isLoadingMore;
+  final bool isRefreshing;
   final String? merchantId;
   final String? search;
 
@@ -28,6 +29,7 @@ class ListProductLoaded extends ListProductState {
     this.hasMore = true,
     this.currentPage = 1,
     this.isLoadingMore = false,
+    this.isRefreshing = false,
     this.merchantId,
     this.search,
   });
@@ -37,6 +39,7 @@ class ListProductLoaded extends ListProductState {
     bool? hasMore,
     int? currentPage,
     bool? isLoadingMore,
+    bool? isRefreshing,
     String? merchantId,
     String? search,
   }) {
@@ -45,13 +48,22 @@ class ListProductLoaded extends ListProductState {
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
       merchantId: merchantId ?? this.merchantId,
       search: search ?? this.search,
     );
   }
 
   @override
-  List<Object?> get props => [products, hasMore, currentPage, isLoadingMore, merchantId, search];
+  List<Object?> get props => [
+    products,
+    hasMore,
+    currentPage,
+    isLoadingMore,
+    isRefreshing,
+    merchantId,
+    search,
+  ];
 }
 
 class ListProductError extends ListProductState {

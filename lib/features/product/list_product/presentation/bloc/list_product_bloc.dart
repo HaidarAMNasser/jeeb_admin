@@ -16,7 +16,11 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
         if (event.loadMore) {
           final currentState = state;
           if (currentState is! ListProductLoaded) return;
-          if (!currentState.hasMore || currentState.isLoadingMore) return;
+          if (!currentState.hasMore ||
+              currentState.isLoadingMore ||
+              currentState.isRefreshing) {
+            return;
+          }
 
           emit(currentState.copyWith(isLoadingMore: true));
 
@@ -42,12 +46,17 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
                 merchantId: currentState.merchantId,
                 search: currentState.search,
                 isLoadingMore: false,
+                isRefreshing: false,
               ));
             },
           );
         } else {
-          // Initial load or refresh
-          emit(const ListProductLoading());
+          final previous = state;
+          if (previous is ListProductLoaded) {
+            emit(previous.copyWith(isRefreshing: true));
+          } else {
+            emit(const ListProductLoading());
+          }
 
           final result = await _repository.getProducts(
             page: 1,
@@ -57,7 +66,13 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
           );
 
           result.fold(
-            (failure) => emit(ListProductError(message: failure.message)),
+            (failure) {
+              if (previous is ListProductLoaded) {
+                emit(previous.copyWith(isRefreshing: false));
+              } else {
+                emit(ListProductError(message: failure.message));
+              }
+            },
             (products) => emit(ListProductLoaded(
               products: products,
               hasMore: products.length >= _pageSize,
@@ -65,6 +80,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
               merchantId: event.merchantId,
               search: event.search,
               isLoadingMore: false,
+              isRefreshing: false,
             )),
           );
         }

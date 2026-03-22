@@ -22,8 +22,10 @@ class OfferTotalsSection extends StatelessWidget {
   /// Price is stored in smallest unit (e.g. 13900 = 139.00). Factor 100.
   static const int _priceFactor = 100;
 
-  int get _totalBeforeDiscount =>
-      selectedProducts.fold<int>(0, (sum, p) => sum + p.price);
+  int get _totalBeforeDiscount => selectedProducts.fold<int>(0, (sum, p) {
+        final q = p.offerQuantity ?? 1;
+        return sum + p.price * q;
+      });
 
   int get _totalAfterDiscount {
     final before = _totalBeforeDiscount;

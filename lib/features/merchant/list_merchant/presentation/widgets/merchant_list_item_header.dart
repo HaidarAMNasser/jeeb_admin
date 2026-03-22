@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jeeb_admin/core/common/utils/clipboard_util.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
@@ -67,14 +68,25 @@ class MerchantListItemHeader extends StatelessWidget {
             SizedBox(width: AppWidth.s12),
             SizedBox(
               width: nameW,
-              child: CustomText(
-                text: merchant.restaurantName,
-                textStyle: getBoldStyle(
-                  fontSize: AppFontSize.s18,
-                  color: ColorManager.productNameColor,
-                ),
-                maxLines: 2,
-                textOverflow: TextOverflow.ellipsis,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onLongPress: () =>
+                          copyTextToClipboard(merchant.restaurantName),
+                      child: CustomText(
+                        text: merchant.restaurantName,
+                        textStyle: getBoldStyle(
+                          fontSize: AppFontSize.s18,
+                          color: ColorManager.productNameColor,
+                        ),
+                        maxLines: 2,
+                        textOverflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

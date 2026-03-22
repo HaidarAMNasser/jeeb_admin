@@ -1,10 +1,11 @@
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/features/offer/create_offer/domain/entities/offer_product_line.dart';
 
 void offerValidationToast({
   String? name,
   String? description,
-  List<String>? productIds,
+  List<OfferProductLine>? offerProducts,
   String? discountType,
   String? discountValue,
 }) {
@@ -16,9 +17,15 @@ void offerValidationToast({
     customToast(msg: AppTranslation.pleaseEnterOfferDescription);
     return;
   }
-  if (productIds == null || productIds.isEmpty) {
+  if (offerProducts == null || offerProducts.isEmpty) {
     customToast(msg: AppTranslation.pleaseSelectAtLeastOneProduct);
     return;
+  }
+  for (final line in offerProducts) {
+    if (line.quantity < 1) {
+      customToast(msg: AppTranslation.pleaseEnterValidOfferProductQuantity);
+      return;
+    }
   }
   if (discountType == null || discountType.isEmpty) {
     customToast(msg: AppTranslation.pleaseSelectDiscountType);

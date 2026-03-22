@@ -105,6 +105,7 @@ class AppTranslation {
   static String get noProductsFound => 'no_products_found'.tr();
   static String get searchProductsHint => 'search_products_hint'.tr();
   static String get noCategoriesFound => 'no_categories_found'.tr();
+  static String get searchCategoriesHint => 'search_categories_hint'.tr();
   static String get loading => 'loading'.tr();
   static String get errorOccurred => 'error_occurred'.tr();
   static String get retry => 'retry'.tr();
@@ -174,6 +175,8 @@ class AppTranslation {
   static String get noMerchantsFound => 'no_merchants_found'.tr();
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
+  static String get copiedToClipboard => 'copied_to_clipboard'.tr();
+  static String get copyRestaurantName => 'copy_restaurant_name'.tr();
   static String get owner => 'owner'.tr();
   static String get hidePhoneNumberOption => 'hide_phone_number_option'.tr();
   static String get showPhoneNumber => 'show_phone_number'.tr();
@@ -274,6 +277,9 @@ class AppTranslation {
   static String get offerTotalAfterDiscount => 'offer_total_after_discount'.tr();
   static String get pleaseEnterOfferShortDescription => 'please_enter_offer_short_description'.tr();
   static String get pleaseSelectAtLeastOneProduct => 'please_select_at_least_one_product'.tr();
+  static String get offerQuantityHint => 'offer_quantity_hint'.tr();
+  static String get pleaseEnterValidOfferProductQuantity =>
+      'please_enter_valid_offer_product_quantity'.tr();
   static String get pleaseSelectDiscountType => 'please_select_discount_type'.tr();
   static String get pleaseEnterOfferDiscountValue => 'please_enter_offer_discount_value'.tr();
   static String get invalidOfferDiscountValue => 'invalid_offer_discount_value'.tr();

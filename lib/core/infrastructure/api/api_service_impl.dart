@@ -342,9 +342,16 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> getCategories() async {
+  Future<Response> getCategories(
+    int? page,
+    int? limit,
+    String? search,
+  ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    if (search != null && search.isNotEmpty) queryParameters['search'] = search;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(

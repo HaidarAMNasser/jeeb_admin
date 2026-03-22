@@ -83,7 +83,11 @@ abstract class AppApiServiceClient {
 
   // Category endpoints
   @GET("categories")
-  Future<Response> getCategories();
+  Future<Response> getCategories(
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+  );
 
 
   @POST("categories")

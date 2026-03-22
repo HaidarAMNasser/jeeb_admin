@@ -24,6 +24,7 @@ class ProductModel {
   final double? rating;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final int? offerQuantity;
 
   ProductModel({
     required this.id,
@@ -49,6 +50,7 @@ class ProductModel {
     this.rating,
     this.createdAt,
     this.updatedAt,
+    this.offerQuantity,
   });
 
   static List<ProductImageModel> _parseImages(dynamic imagesJson, dynamic singleImageUrl) {
@@ -79,7 +81,10 @@ class ProductModel {
     return [];
   }
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromJson(
+    Map<String, dynamic> json, {
+    int? quantityInOffer,
+  }) {
     return ProductModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
@@ -108,6 +113,10 @@ class ProductModel {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'] as String)
           : null,
+      offerQuantity: quantityInOffer ??
+          (json['offerQuantity'] is int
+              ? json['offerQuantity'] as int
+              : (json['offerQuantity'] as num?)?.toInt()),
     );
   }
 

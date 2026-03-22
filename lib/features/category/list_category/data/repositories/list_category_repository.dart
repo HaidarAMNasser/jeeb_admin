@@ -19,10 +19,18 @@ class ListCategoryRepository {
     this._networkInfo,
   );
 
-  Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
+  Future<Either<Failure, List<CategoryEntity>>> getCategories({
+    int? page,
+    int? limit,
+    String? search,
+  }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.getCategories();
+        final response = await _remoteDataSource.getCategories(
+          page: page,
+          limit: limit,
+          search: search,
+        );
 
         BaseResponseModel<List<CategoryModel>> baseResponseModel =
             BaseResponseModel<List<CategoryModel>>.fromJson(

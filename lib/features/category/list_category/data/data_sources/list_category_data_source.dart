@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class ListCategoryRemoteDataSource {
-  Future<Response> getCategories();
+  Future<Response> getCategories({int? page, int? limit, String? search});
 }
 
 class ListCategoryRemoteDataSourceImpl implements ListCategoryRemoteDataSource {
@@ -11,8 +11,8 @@ class ListCategoryRemoteDataSourceImpl implements ListCategoryRemoteDataSource {
   ListCategoryRemoteDataSourceImpl(this._appApiServiceClient);
 
   @override
-  Future<Response> getCategories() {
-    return _appApiServiceClient.getCategories();
+  Future<Response> getCategories({int? page, int? limit, String? search}) {
+    return _appApiServiceClient.getCategories(page, limit, search);
   }
 }
 

@@ -67,6 +67,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<RegisterLocationCleared>((event, emit) {
       useLocationLat = null;
       useLocationLng = null;
+      isLocationLoading = false;
       emit(_buildInitialState());
     });
 

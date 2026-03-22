@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/features/offer/create_offer/domain/entities/offer_product_line.dart';
 import 'package:jeeb_admin/features/offer/create_offer/presentation/bloc/create_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/list_offer/domain/entities/offer_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
@@ -69,9 +70,21 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     }
     if (widget.offer != null &&
         _selectedProducts.isEmpty &&
-        widget.state.productIds.isNotEmpty) {
-      _selectedProducts = widget.offer!.products;
+        widget.state.offerProducts.isNotEmpty) {
+      _selectedProducts = List.from(widget.offer!.products);
     }
+  }
+
+  void _syncOfferProductsToBloc() {
+    final lines = _selectedProducts
+        .map(
+          (p) => OfferProductLine(
+            productId: p.id,
+            quantity: p.offerQuantity ?? 1,
+          ),
+        )
+        .toList();
+    widget.bloc.add(UpdateOfferProducts(lines));
   }
 
   @override
@@ -86,11 +99,12 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
     if (product == null) return;
     if (_selectedProducts.any((p) => p.id == product.id)) return;
     setState(() {
-      _selectedProducts = [..._selectedProducts, product];
+      _selectedProducts = [
+        ..._selectedProducts,
+        product.withOfferQuantity(1),
+      ];
     });
-    widget.bloc.add(
-      UpdateOfferProductIds(_selectedProducts.map((e) => e.id).toList()),
-    );
+    _syncOfferProductsToBloc();
   }
 
   void _removeProduct(ProductEntity product) {
@@ -99,16 +113,24 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
           .where((p) => p.id != product.id)
           .toList();
     });
-    widget.bloc.add(
-      UpdateOfferProductIds(_selectedProducts.map((e) => e.id).toList()),
-    );
+    _syncOfferProductsToBloc();
+  }
+
+  void _onProductQuantityChanged(ProductEntity product, int quantity) {
+    final q = quantity < 1 ? 1 : quantity;
+    setState(() {
+      _selectedProducts = _selectedProducts
+          .map((p) => p.id == product.id ? p.withOfferQuantity(q) : p)
+          .toList();
+    });
+    _syncOfferProductsToBloc();
   }
 
   void _onSubmit() {
     offerValidationToast(
       name: widget.state.name,
       description: widget.state.description,
-      productIds: widget.state.productIds,
+      offerProducts: widget.state.offerProducts,
       discountType: widget.state.discountType,
       discountValue: widget.state.discountValue,
     );
@@ -119,7 +141,8 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
           id: widget.state.offerId!,
           name: widget.state.name,
           description: widget.state.description,
-          productIds: widget.state.productIds,
+          offerProducts: widget.state.offerProducts,
+          initialOfferProductIds: widget.state.initialOfferProductIds,
           startDate: widget.state.startDate,
           endDate: widget.state.endDate,
           discountType: widget.state.discountType,
@@ -151,6 +174,7 @@ class _CreateOfferFormState extends State<CreateOfferForm> {
             selectedProducts: _selectedProducts,
             onSelectProduct: _addProduct,
             onRemoveProduct: _removeProduct,
+            onQuantityChanged: _onProductQuantityChanged,
           ),
           OfferTotalsSection(
             selectedProducts: _selectedProducts,

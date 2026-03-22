@@ -28,16 +28,29 @@ class OfferModel {
     final apiDescription = json['description']?.toString();
     final short = json['shortDescription']?.toString() ?? apiDescription;
     final long = json['longDescription']?.toString();
+
+    List<ProductModel> products = [];
+    final offerProducts = json['offerProducts'];
+    if (offerProducts is List && offerProducts.isNotEmpty) {
+      products = offerProducts.map((raw) {
+        final m = raw as Map<String, dynamic>;
+        final nested = m['product'];
+        if (nested is! Map<String, dynamic>) return null;
+        final qty = (m['quantity'] as num?)?.toInt() ?? 1;
+        return ProductModel.fromJson(nested, quantityInOffer: qty);
+      }).whereType<ProductModel>().toList();
+    } else if (json['products'] != null) {
+      products = (json['products'] as List)
+          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
     return OfferModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString(),
       shortDescription: short,
       longDescription: long ?? apiDescription,
-      products: json['products'] != null
-          ? (json['products'] as List)
-              .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
-              .toList()
-          : [],
+      products: products,
       startDate: json['startDate'] != null
           ? DateTime.tryParse(json['startDate'] as String)
           : null,

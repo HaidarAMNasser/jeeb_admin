@@ -58,22 +58,26 @@ class RegisterPage extends StatelessWidget {
     final bloc = context.read<RegisterBloc>();
 
     bloc.add(const RegisterLocationLoadingChanged(true));
-    final position = await LocationPermissionHelper.requestAndGetPosition();
-    if (!context.mounted) return;
+    try {
+      final position = await LocationPermissionHelper.requestAndGetPosition();
+      if (!context.mounted) return;
 
-    bloc.add(const RegisterLocationLoadingChanged(false));
+      if (position != null) {
+        bloc.add(
+          RegisterLocationUpdated(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
+        return;
+      }
 
-    if (position != null) {
-      bloc.add(
-        RegisterLocationUpdated(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ),
-      );
-      return;
+      customToast(msg: AppTranslation.locationPermissionDenied);
+    } finally {
+      // Always clear loading so the row stays tappable after deny, error, or
+      // if the widget unmounted during await (bloc still needs a consistent state).
+      bloc.add(const RegisterLocationLoadingChanged(false));
     }
-
-    customToast(msg: AppTranslation.locationPermissionDenied);
   }
 
   @override

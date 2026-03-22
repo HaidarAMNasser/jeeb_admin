@@ -33,7 +33,7 @@ class CategoriesPageBody extends StatelessWidget {
             isSuccess: (s) => s is ListCategoryLoaded,
             getRetryCallback: (_) => () => context
                 .read<ListCategoryBloc>()
-                .add(const GetCategoriesEvent()),
+                .add(const GetCategoriesEvent(fullList: true)),
             successBuilder: (context, state) {
               final loadedState = state as ListCategoryLoaded;
               return CategoriesListBody(

@@ -34,13 +34,13 @@ class UpdateOfferDescription extends CreateOfferEvent {
   List<Object> get props => [value];
 }
 
-class UpdateOfferProductIds extends CreateOfferEvent {
-  final List<String> productIds;
+class UpdateOfferProducts extends CreateOfferEvent {
+  final List<OfferProductLine> offerProducts;
 
-  const UpdateOfferProductIds(this.productIds);
+  const UpdateOfferProducts(this.offerProducts);
 
   @override
-  List<Object> get props => [productIds];
+  List<Object> get props => [offerProducts];
 }
 
 class UpdateOfferStartDate extends CreateOfferEvent {
