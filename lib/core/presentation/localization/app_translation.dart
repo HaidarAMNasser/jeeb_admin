@@ -302,6 +302,7 @@ class AppTranslation {
   static String get order => 'order'.tr();
   static String get orderRestaurantSection => 'order_restaurant_section'.tr();
   static String get orderRestaurantPlaceholder => 'order_restaurant_placeholder'.tr();
+  static String get orderListCustomerMissing => 'order_list_customer_missing'.tr();
   static String get orderTotalLabel => 'order_total_label'.tr();
   static String get orderMerchantIdLabel => 'order_merchant_id_label'.tr();
   static String get customer => 'customer'.tr();

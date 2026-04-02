@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
@@ -6,9 +7,9 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
-import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_item/order_list_item_headers.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_item/order_list_item_title_widgets.dart';
 
-/// Main column inside the tappable area (header, meta, products, total).
+/// Compact order row: status + store (one row), customer, then date + total.
 class OrderListItemTitle extends StatelessWidget {
   const OrderListItemTitle({super.key, required this.order});
 
@@ -16,58 +17,82 @@ class OrderListItemTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalLine = formatOrderMoneyAmount(
+    final restaurant = orderListRestaurantLine(order);
+    final customerLine = order.customer != null
+        ? order.customer!.displayName.trim()
+        : '';
+    final customerDisplay = customerLine.isNotEmpty
+        ? customerLine
+        : AppTranslation.orderListCustomerMissing;
+    final totalLine = orderListFormatMoney(
       order.totalAmount,
       order.currencyCode,
     );
+    final dateStr = order.date != null
+        ? DateFormat('MMM d · HH:mm').format(order.date!)
+        : null;
 
     return Column(
+      spacing: AppHeight.s8,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        OrderListItemHeader(order: order),
-        if (order.date != null)
-          OrderListItemMetaRow(
-            icon: Icons.calendar_today,
-            text: formatOrderDate(order.date!),
-          ),
-        if (order.products.isNotEmpty)
-          Padding(
-            padding: EdgeInsets.only(top: AppHeight.s8),
-            child: CustomText(
-              text: order.products.map((p) => p.name).join(', '),
-              textStyle: getMediumStyle(
-                fontSize: AppFontSize.s12,
-                color: ColorManager.descriptionColor,
-              ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OrderListStatusBadge(
+              status: order.statusEnum,
+              rawStatus: order.status,
             ),
-          ),
-        SizedBox(height: AppHeight.s4),
-        CustomText(
-          text: '${AppTranslation.order} #${order.id}',
-          textStyle: getRegularStyle(
-            fontSize: AppFontSize.s12,
-            color: ColorManager.productNameColor,
-          ),
-          maxLines: 2,
-          textOverflow: TextOverflow.ellipsis,
+            SizedBox(width: AppWidth.s8),
+            OrderListInfoBadge(
+              icon: Icons.storefront_outlined,
+              text: restaurant,
+              backgroundColor: ColorManager.categoryBadgeBackground,
+              foregroundColor: ColorManager.categoryTextColor,
+            ),
+          ],
         ),
-        if (totalLine != null) ...[
-          SizedBox(height: AppHeight.s8),
-          CustomText(
-            text: '${AppTranslation.orderTotalLabel}: $totalLine',
-            textStyle: getSemiBoldStyle(
-              fontSize: AppFontSize.s14,
-              color: ColorManager.primary,
-            ),
-            maxLines: 1,
-            textOverflow: TextOverflow.ellipsis,
+        SizedBox(height: AppHeight.s8),
+        CustomText(
+          text: "${AppTranslation.customer} : $customerDisplay",
+          textStyle: getMediumStyle(
+            fontSize: AppFontSize.s14,
+            color: ColorManager.textDarkColor,
           ),
-          if (order.numberOfPeople != null)
-            OrderListItemMetaRow(
-              icon: Icons.people,
-              text: '${order.numberOfPeople} ${AppTranslation.people}',
-              topPadding: AppHeight.s8,
-            ),
+        ),
+        if (dateStr != null || totalLine != null) ...[
+          SizedBox(height: AppHeight.s8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (dateStr != null)
+                Flexible(
+                  child: CustomText(
+                    text: dateStr,
+                    textStyle: getMediumStyle(
+                      fontSize: AppFontSize.s14,
+                      color: ColorManager.textDarkColor,
+                    ),
+                  ),
+                ),
+              if (dateStr != null && totalLine != null)
+                SizedBox(width: AppWidth.s8),
+              if (totalLine != null)
+                Expanded(
+                  child: OrderListInfoBadge(
+                    icon: Icons.payments_outlined,
+                    text: '${AppTranslation.orderTotalLabel}: $totalLine',
+                    backgroundColor: ColorManager.primary.withValues(
+                      alpha: 0.08,
+                    ),
+                    foregroundColor: ColorManager.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+            ],
+          ),
         ],
       ],
     );

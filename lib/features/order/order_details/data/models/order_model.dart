@@ -125,10 +125,7 @@ class OrderModel {
       deliveryAddress = coords['address']?.toString();
     }
 
-    OrderCustomerModel? customer;
-    if (json['customer'] != null && json['customer'] is Map<String, dynamic>) {
-      customer = OrderCustomerModel.fromJson(json['customer'] as Map<String, dynamic>);
-    }
+    final customer = _parseOrderCustomer(json);
 
     int? _int(dynamic v) {
       if (v == null) return null;
@@ -202,6 +199,20 @@ class OrderModel {
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
     );
+  }
+
+  static OrderCustomerModel? _parseOrderCustomer(Map<String, dynamic> json) {
+    const keys = ['customer', 'user', 'client', 'buyer', 'orderUser'];
+    for (final key in keys) {
+      final v = json[key];
+      if (v is Map<String, dynamic>) {
+        return OrderCustomerModel.fromJson(v);
+      }
+      if (v is Map) {
+        return OrderCustomerModel.fromJson(Map<String, dynamic>.from(v));
+      }
+    }
+    return null;
   }
 
   static int _linePriceInt(Map<String, dynamic> item) {
