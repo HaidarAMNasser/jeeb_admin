@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_header_card.dart';
+import 'package:jeeb_admin/features/order/order_details/presentation/widgets/marhcnet/order_restaurant_card.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_date_card.dart';
-import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_customer_card.dart';
+import 'package:jeeb_admin/features/order/order_details/presentation/widgets/customer/order_customer_card.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_location_card.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_people_card.dart';
-import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_delivery_man_card.dart';
-import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_products_section.dart';
+import 'package:jeeb_admin/features/order/order_details/presentation/widgets/delivery/order_delivery_man_card.dart';
+import 'package:jeeb_admin/features/order/order_details/presentation/widgets/marhcnet/order_products_section.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_items_section.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_summary_card.dart';
 
@@ -25,6 +26,11 @@ class OrderDetailsContent extends StatelessWidget {
         children: [
           OrderHeaderCard(order: order),
           SizedBox(height: AppHeight.s16),
+
+          if (OrderRestaurantCard.shouldShow(order)) ...[
+            OrderRestaurantCard(order: order),
+            SizedBox(height: AppHeight.s16),
+          ],
 
           if (order.date != null) ...[
             OrderDateCard(date: order.date!),

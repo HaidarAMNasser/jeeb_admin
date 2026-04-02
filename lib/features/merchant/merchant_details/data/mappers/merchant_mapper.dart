@@ -19,6 +19,13 @@ extension MerchantMapper on MerchantModel {
       phoneNumber: phoneNumber, // from phone
       hidePhoneNumber: hidePhoneNumber,
       image: imageUrl, // from image.url
+      role: role,
+      notificationChannel: notificationChannel,
+      birthday: birthday,
+      isOnline: isOnline,
+      verifiedAt: verifiedAt,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }

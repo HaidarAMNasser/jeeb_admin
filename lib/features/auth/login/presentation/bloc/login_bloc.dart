@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/common/errors/failure.dart';
+import '../../../../../core/infrastructure/di/dependency_injection.dart' as di;
+import '../../../../../core/infrastructure/services/notification_service.dart';
 import '../../../../../core/infrastructure/services/storage_service.dart';
 import '../../data/repositories/login_repository.dart';
 
@@ -44,6 +46,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await _storageService.setLoggedIn(true);
             await _storageService.setVerified(true);
             await _storageService.setPendingVerifyEmail(null);
+            di.sl<NotificationService>().requestSyncAfterLogin();
             if (emit.isDone) return;
             emit(const LoginSuccess());
           } else {

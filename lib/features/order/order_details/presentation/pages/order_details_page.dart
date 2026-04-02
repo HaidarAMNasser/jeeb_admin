@@ -14,9 +14,12 @@ import 'package:jeeb_admin/features/order/order_details/presentation/bloc/order_
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_details_content.dart';
 import 'package:jeeb_admin/features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import 'package:jeeb_admin/features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
+import 'package:jeeb_admin/core/infrastructure/realtime/order_status_rtdb_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
     as di;
+import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_details_rtdb_listener.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final String orderId;
@@ -28,9 +31,23 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  /// Pops until the orders list route is on top, or stops at the root route.
+  void _popToOrdersListing() {
+    if (!mounted) return;
+    Navigator.of(context).popUntil(
+      (route) =>
+          route.settings.name == Routes.orders || route.isFirst,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (!didPop) _popToOrdersListing();
+      },
+      child: BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
       listenWhen: (previous, current) => listenWhenEnteringTerminal(
         previous,
         current,
@@ -69,7 +86,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 backgroundColor: ColorManager.background,
                 appBar: CustomAppBar(
                   title: AppTranslation.orderDetails,
-
+                  onBackPressed: _popToOrdersListing,
                   actions: [
                     BlocBuilder<OrderDetailsBloc, OrderDetailsState>(
                       builder: (context, detailsState) {
@@ -111,28 +128,43 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ),
                   ],
                 ),
-                body: BlocStateHandler<OrderDetailsBloc, OrderDetailsState>(
-                  bloc: context.read<OrderDetailsBloc>(),
-                  isLoading: (state) => state is OrderDetailsLoading,
-                  isError: (state) => state is OrderDetailsError,
-                  isSuccess: (state) => state is OrderDetailsLoaded,
-                  getErrorMessage: (state) =>
-                      (state as OrderDetailsError).message,
-                  getRetryCallback: (state) => () {
-                    context.read<OrderDetailsBloc>().add(
-                          GetOrderDetailsEvent(widget.orderId),
-                        );
-                  },
-                  successBuilder: (context, detailsState) {
-                    final loadedState = detailsState as OrderDetailsLoaded;
-                    return OrderDetailsContent(order: loadedState.order);
-                  },
+                body: Stack(
+                  children: [
+                    BlocStateHandler<OrderDetailsBloc, OrderDetailsState>(
+                      bloc: context.read<OrderDetailsBloc>(),
+                      isLoading: (state) => state is OrderDetailsLoading,
+                      isError: (state) => state is OrderDetailsError,
+                      isSuccess: (state) => state is OrderDetailsLoaded,
+                      getErrorMessage: (state) =>
+                          (state as OrderDetailsError).message,
+                      getRetryCallback: (state) => () {
+                        context.read<OrderDetailsBloc>().add(
+                              GetOrderDetailsEvent(widget.orderId),
+                            );
+                      },
+                      successBuilder: (context, detailsState) {
+                        final loadedState = detailsState as OrderDetailsLoaded;
+                        return OrderDetailsContent(order: loadedState.order);
+                      },
+                    ),
+                    OrderDetailsRtdbListener(
+                      orderId: widget.orderId,
+                      rtdb: di.sl<OrderStatusRtdbService>(),
+                      onRemoteStatusChange: () {
+                        if (!context.mounted) return;
+                        context.read<OrderDetailsBloc>().add(
+                              GetOrderDetailsEvent(widget.orderId),
+                            );
+                      },
+                    ),
+                  ],
                 ),
               ),
             );
           },
         );
       },
+    ),
     );
   }
 

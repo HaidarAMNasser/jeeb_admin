@@ -25,6 +25,7 @@ class OrderModel {
   final int? ownerRevenue;
   final int? tipAmount;
   final String? couponCode;
+  final String? restaurantName;
   final String? merchantId;
   final String? createdAt;
   final String? updatedAt;
@@ -51,19 +52,42 @@ class OrderModel {
     this.ownerRevenue,
     this.tipAmount,
     this.couponCode,
+    this.restaurantName,
     this.merchantId,
     this.createdAt,
     this.updatedAt,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    final items = json['items'];
+    final productsList = <ProductModel>[];
+    final orderItemsList = <OrderItemModel>[];
+
+    void appendLineItems(dynamic rawList) {
+      if (rawList is! List || rawList.isEmpty) return;
+      for (final e in rawList) {
+        if (e is! Map) continue;
+        final m = Map<String, dynamic>.from(e);
+        productsList.add(_productModelFromOrderItem(m));
+        orderItemsList.add(OrderItemModel.fromJson(m));
+      }
+    }
+
+    appendLineItems(json['items']);
+
+    final offers = json['offers'];
+    if (offers is List) {
+      for (final o in offers) {
+        if (o is! Map) continue;
+        final offerMap = Map<String, dynamic>.from(o);
+        appendLineItems(offerMap['products']);
+      }
+    }
+
     List<ProductModel>? products;
     List<OrderItemModel>? orderItems;
-    if (items != null && items is List && items.isNotEmpty) {
-      final itemMaps = items.map((e) => e as Map<String, dynamic>).toList();
-      products = itemMaps.map(_productModelFromOrderItem).toList();
-      orderItems = itemMaps.map(OrderItemModel.fromJson).toList();
+    if (productsList.isNotEmpty) {
+      products = productsList;
+      orderItems = orderItemsList;
     }
 
     final coords = json['deliveryCoordinates'];
@@ -113,6 +137,30 @@ class OrderModel {
       return int.tryParse(v.toString());
     }
 
+    String? trimmedNonEmpty(dynamic v) {
+      if (v == null) return null;
+      final s = v.toString().trim();
+      return s.isEmpty ? null : s;
+    }
+
+    String? restaurantName = trimmedNonEmpty(json['restaurantName']) ??
+        trimmedNonEmpty(json['storeName']);
+    final merchantJson = json['merchant'];
+    if (restaurantName == null && merchantJson is Map<String, dynamic>) {
+      restaurantName = trimmedNonEmpty(merchantJson['restaurantName']) ??
+          trimmedNonEmpty(merchantJson['name']);
+      if (restaurantName == null) {
+        final fn = merchantJson['firstName']?.toString() ?? '';
+        final ln = merchantJson['lastName']?.toString() ?? '';
+        final combined = '$fn $ln'.trim();
+        if (combined.isNotEmpty) restaurantName = combined;
+      }
+    }
+    if (restaurantName == null && json['owner'] is Map<String, dynamic>) {
+      final o = json['owner'] as Map<String, dynamic>;
+      restaurantName = trimmedNonEmpty(o['restaurantName']);
+    }
+
     return OrderModel(
       id: json['id']?.toString() ?? '',
       products: products,
@@ -120,9 +168,15 @@ class OrderModel {
       customer: customer,
       deliveryMan: json['deliveryMan'] != null
           ? DeliveryManModel.fromJson(json['deliveryMan'] as Map<String, dynamic>)
-          : (json['owner'] != null
-              ? DeliveryManModel.fromJson(json['owner'] as Map<String, dynamic>)
-              : null),
+          : (json['delivery'] != null
+              ? DeliveryManModel.fromJson(
+                  json['delivery'] as Map<String, dynamic>,
+                )
+              : (json['owner'] != null
+                  ? DeliveryManModel.fromJson(
+                      json['owner'] as Map<String, dynamic>,
+                    )
+                  : null)),
       date: dateStr,
       longitude: longitude,
       latitude: latitude,
@@ -143,22 +197,100 @@ class OrderModel {
       ownerRevenue: _int(json['ownerRevenue']),
       tipAmount: _int(json['tipAmount']),
       couponCode: json['couponCode']?.toString(),
+      restaurantName: restaurantName,
       merchantId: json['merchantId']?.toString() ?? json['ownerId']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
     );
   }
 
+  static int _linePriceInt(Map<String, dynamic> item) {
+    final price = item['unitPrice'] ??
+        item['originalUnitPrice'] ??
+        item['totalPrice'] ??
+        0;
+    if (price is int) return price;
+    if (price is num) return price.toInt();
+    return int.tryParse(price.toString()) ?? 0;
+  }
+
+  static int _lineQuantityInt(Map<String, dynamic> item) {
+    final q = item['quantity'];
+    if (q is int) return q;
+    if (q is num) return q.toInt();
+    return int.tryParse(q?.toString() ?? '') ?? 0;
+  }
+
+  /// Line shape: flat `productName` / `productId` or nested `product` (catalog object).
   static ProductModel _productModelFromOrderItem(Map<String, dynamic> item) {
-    final price = item['unitPrice'] ?? item['originalUnitPrice'] ?? 0;
-    final priceInt = price is int
-        ? price
-        : (price is num ? price.toInt() : int.tryParse(price.toString()) ?? 0);
+    final linePrice = _linePriceInt(item);
+    final qty = _lineQuantityInt(item);
+
+    final nested = item['product'];
+    Map<String, dynamic>? productMap;
+    if (nested is Map<String, dynamic>) {
+      productMap = nested;
+    } else if (nested is Map) {
+      productMap = Map<String, dynamic>.from(nested);
+    }
+
+    if (productMap != null) {
+      try {
+        final base = ProductModel.fromJson(productMap);
+        final pid = item['productId']?.toString() ?? '';
+        final id = pid.isNotEmpty
+            ? pid
+            : (base.id.isNotEmpty ? base.id : item['id']?.toString() ?? '');
+        return ProductModel(
+          id: id,
+          name: base.name.isNotEmpty
+              ? base.name
+              : (item['productName']?.toString() ?? ''),
+          description: base.description,
+          shortDescription: base.shortDescription,
+          price: linePrice > 0 ? linePrice : base.price,
+          priceAfterDiscount: base.priceAfterDiscount,
+          restaurantId: base.restaurantId,
+          categoryId: base.categoryId,
+          categoryName: base.categoryName,
+          discount: base.discount,
+          discountType: base.discountType,
+          hasStock: base.hasStock,
+          stockQuantity: base.stockQuantity,
+          servesCount: base.servesCount,
+          isAvailable: base.isAvailable,
+          isExternal: base.isExternal,
+          externalProvider: base.externalProvider,
+          externalId: base.externalId,
+          merchantId: base.merchantId,
+          images: base.images,
+          rating: base.rating,
+          createdAt: base.createdAt,
+          updatedAt: base.updatedAt,
+          offerQuantity: qty > 0 ? qty : base.offerQuantity,
+        );
+      } catch (_) {
+        return ProductModel(
+          id: item['productId']?.toString() ??
+              productMap['id']?.toString() ??
+              item['id']?.toString() ??
+              '',
+          name: productMap['name']?.toString() ??
+              item['productName']?.toString() ??
+              '',
+          price: linePrice,
+          images: const [],
+          offerQuantity: qty > 0 ? qty : null,
+        );
+      }
+    }
+
     return ProductModel(
       id: item['productId']?.toString() ?? item['id']?.toString() ?? '',
       name: item['productName']?.toString() ?? '',
-      price: priceInt,
+      price: linePrice,
       images: const [],
+      offerQuantity: qty > 0 ? qty : null,
     );
   }
 
@@ -184,6 +316,7 @@ class OrderModel {
       'ownerRevenue': ownerRevenue,
       'tipAmount': tipAmount,
       'couponCode': couponCode,
+      'restaurantName': restaurantName,
       'merchantId': merchantId,
       'createdAt': createdAt,
       'updatedAt': updatedAt,

@@ -22,20 +22,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Widget? effectiveLeading = leading ??
+        (onBackPressed != null
+            ? BackButton(
+                onPressed: onBackPressed,
+                color: ColorManager.titlesColor,
+              )
+            : null);
+
     return AppBar(
       backgroundColor: ColorManager.background,
       elevation: 0,
-      automaticallyImplyLeading: automaticallyImplyLeading,
-      // leading: leading ??
-      //     (automaticallyImplyLeading
-      //         ? IconButton(
-      //             icon: Icon(
-      //               Icons.arrow_back,
-      //               color: ColorManager.titlesColor,
-      //             ),
-      //             onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
-      //           )
-      //         : null),
+      automaticallyImplyLeading: automaticallyImplyLeading &&
+          leading == null &&
+          onBackPressed == null,
+      leading: effectiveLeading,
       iconTheme: IconThemeData(
         color: ColorManager.titlesColor,
       ),

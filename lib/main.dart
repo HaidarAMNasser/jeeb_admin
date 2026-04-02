@@ -1,17 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:chucker_flutter/chucker_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/presentation/routes/route_manager.dart';
 import 'core/presentation/routes/routes.dart';
 import 'core/presentation/routes/navigation_service.dart';
 import 'core/infrastructure/di/dependency_injection.dart' as di;
 import 'core/presentation/localization/localization_manager.dart';
 import 'core/infrastructure/services/storage_service.dart';
+import 'core/infrastructure/services/fcm_background_handler.dart';
+import 'core/infrastructure/services/notification_service.dart';
+import 'features/notification/update_device_token/presentation/bloc/update_device_token_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await EasyLocalization.ensureInitialized();
 
   // Set preferred orientations
@@ -28,8 +35,12 @@ void main() async {
     ),
   );
 
+  await Firebase.initializeApp();
+
   // Initialize dependency injection
   await di.init();
+
+  await di.sl<NotificationService>().initialize();
 
   ChuckerFlutter.showOnRelease = true;
   ChuckerFlutter.showNotification = false;
@@ -47,7 +58,10 @@ void main() async {
       path: LocalizationManager.translationsPath,
       fallbackLocale: LocalizationManager.fallbackLocale,
       startLocale: startLocale,
-      child: const MyApp(),
+      child: BlocProvider<UpdateDeviceTokenBloc>.value(
+        value: di.sl<UpdateDeviceTokenBloc>(),
+        child: const MyApp(),
+      ),
     ),
   );
 }

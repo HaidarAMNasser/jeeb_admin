@@ -6,6 +6,7 @@ import 'package:jeeb_admin/core/common/models/base_response_model.dart';
 import 'package:jeeb_admin/core/common/utils/error_handler.dart';
 import 'package:jeeb_admin/core/infrastructure/network/network_info.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 import 'package:jeeb_admin/features/order/list_order/data/data_sources/list_order_data_source.dart';
 import 'package:jeeb_admin/features/order/order_details/data/models/order_model.dart';
 import 'package:jeeb_admin/features/order/order_details/data/mappers/order_mapper.dart';
@@ -24,6 +25,8 @@ class ListOrderRepository {
     int? limit,
     String? search,
     String? merchantId,
+    String? status,
+    bool filterMerchantOthers = false,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -31,6 +34,7 @@ class ListOrderRepository {
           page: page,
           limit: limit,
           search: search,
+          status: status,
           merchantId: merchantId,
         );
 
@@ -68,7 +72,17 @@ class ListOrderRepository {
           }
 
           try {
-            return Right(baseResponseModel.data!.toDomain());
+            var list = baseResponseModel.data!.toDomain();
+            if (filterMerchantOthers) {
+              list = list
+                  .where(
+                    (o) =>
+                        o.statusEnum != OrderStatus.pending &&
+                        o.statusEnum != OrderStatus.confirmed,
+                  )
+                  .toList();
+            }
+            return Right(list);
           } catch (domainError) {
             return Left(ErrorHandler.handle(domainError));
           }
@@ -84,6 +98,80 @@ class ListOrderRepository {
       }
     } else {
       return const Left(NetworkFailure());
+    }
+  }
+
+  Future<Either<Failure, void>> confirmOrder(
+    String orderId, {
+    int? mealPreparationTime,
+    int? deliveryTime,
+  }) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+    try {
+      final body = <String, dynamic>{};
+      if (mealPreparationTime != null) {
+        body['mealPreparationTime'] = mealPreparationTime;
+      }
+      if (deliveryTime != null) {
+        body['deliveryTime'] = deliveryTime;
+      }
+      final response = await _remoteDataSource.confirmOrder(
+        orderId,
+        body.isEmpty ? null : body,
+      );
+      final code = response.statusCode;
+      if (code != null && code >= 200 && code < 300) {
+        return const Right(null);
+      }
+      return Left(ErrorHandler.handle(DioException(
+        type: DioExceptionType.badResponse,
+        response: response,
+        requestOptions: RequestOptions(),
+      )));
+    } catch (error) {
+      return Left(ErrorHandler.handle(error));
+    }
+  }
+
+  Future<Either<Failure, void>> setOrderPreparing(String orderId) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+    try {
+      final response = await _remoteDataSource.setOrderPreparing(orderId);
+      final code = response.statusCode;
+      if (code != null && code >= 200 && code < 300) {
+        return const Right(null);
+      }
+      return Left(ErrorHandler.handle(DioException(
+        type: DioExceptionType.badResponse,
+        response: response,
+        requestOptions: RequestOptions(),
+      )));
+    } catch (error) {
+      return Left(ErrorHandler.handle(error));
+    }
+  }
+
+  Future<Either<Failure, void>> setOrderReadyForPickup(String orderId) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure());
+    }
+    try {
+      final response = await _remoteDataSource.setOrderReadyForPickup(orderId);
+      final code = response.statusCode;
+      if (code != null && code >= 200 && code < 300) {
+        return const Right(null);
+      }
+      return Left(ErrorHandler.handle(DioException(
+        type: DioExceptionType.badResponse,
+        response: response,
+        requestOptions: RequestOptions(),
+      )));
+    } catch (error) {
+      return Left(ErrorHandler.handle(error));
     }
   }
 }

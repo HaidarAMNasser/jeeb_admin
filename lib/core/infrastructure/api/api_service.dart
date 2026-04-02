@@ -81,6 +81,13 @@ abstract class AppApiServiceClient {
   @POST("auth/logout")
   Future<Response> logout();
 
+  /// Registers or updates the device FCM token for the current user.
+  @POST("users/firebase-token")
+  Future<Response> updateDeviceToken({
+    @Field('token') required String token,
+    @Field('platform') required String platform,
+  });
+
   // Category endpoints
   @GET("categories")
   Future<Response> getCategories(
@@ -209,8 +216,17 @@ abstract class AppApiServiceClient {
     @Query('page') int? page,
     @Query('limit') int? limit,
     @Query('search') String? search,
+    @Query('status') String? status,
     @Header('merchantId') String? merchantId,
-  });
+  }); // status: PENDING, CONFIRMED, etc. (see Orders API)
+
+  Future<Response> confirmOrder(String id, Map<String, dynamic>? body);
+
+  /// Merchant: set status to preparing (`POST orders/{id}/preparing`).
+  Future<Response> setOrderPreparing(String id);
+
+  /// Merchant: set status to ready for pickup (`POST orders/{id}/ready-for-pickup`).
+  Future<Response> setOrderReadyForPickup(String id);
 
   @GET("orders/{id}")
   Future<Response> getOrderDetails(@Path('id') String id);

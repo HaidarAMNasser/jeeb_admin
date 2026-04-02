@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../network/network_info.dart';
 import '../../presentation/routes/navigation_service.dart';
 import '../services/storage_service.dart';
+import '../realtime/order_status_rtdb_service.dart';
 import '../services/dio_factory.dart';
 import '../api/api_service.dart';
 import '../../config/app_config.dart';
@@ -109,6 +110,10 @@ import '../../../features/settings/get_settings/presentation/bloc/get_settings_b
 import '../../../features/settings/edit_settings/data/data_sources/edit_settings_data_source.dart';
 import '../../../features/settings/edit_settings/data/repositories/edit_settings_repository.dart';
 import '../../../features/settings/edit_settings/presentation/bloc/edit_settings_bloc.dart';
+import '../../../features/notification/update_device_token/data/data_sources/update_device_token_remote_data_source.dart';
+import '../../../features/notification/update_device_token/data/repositories/update_device_token_repository.dart';
+import '../../../features/notification/update_device_token/presentation/bloc/update_device_token_bloc.dart';
+import '../services/notification_service.dart';
 
 final sl = GetIt.instance;
 
@@ -121,6 +126,7 @@ Future<void> init() async {
 
   //! Core Services
   sl.registerLazySingleton<StorageService>(() => StorageServiceImpl(sl()));
+  await sl<StorageService>().hydrateAppConstantsCache();
   sl.registerLazySingleton(() => NavigationService());
 
   //! Network
@@ -388,4 +394,22 @@ Future<void> init() async {
   sl.registerFactory(() => CreateOfferRepository(sl(), sl()));
   sl.registerFactory(() => UpdateOfferRepository(sl(), sl()));
   sl.registerFactory(() => DeleteOfferRepository(sl(), sl()));
+
+  //! FCM — device token (single endpoint)
+  sl.registerFactory<UpdateDeviceTokenRemoteDataSource>(
+    () => UpdateDeviceTokenRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => UpdateDeviceTokenRepository(sl(), sl()));
+  sl.registerLazySingleton(() => UpdateDeviceTokenBloc(sl(), sl()));
+  sl.registerLazySingleton(
+    () => NotificationService(
+      sl<UpdateDeviceTokenBloc>(),
+      sl<NavigationService>(),
+      sl<StorageService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<OrderStatusRtdbService>(
+    () => OrderStatusRtdbService(),
+  );
 }

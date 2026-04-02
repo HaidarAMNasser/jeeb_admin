@@ -61,6 +61,7 @@ extension OrderMapper on OrderModel {
       ownerRevenue: ownerRevenue,
       tipAmount: tipAmount,
       couponCode: couponCode,
+      restaurantName: restaurantName,
       merchantId: merchantId,
       createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
       updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
