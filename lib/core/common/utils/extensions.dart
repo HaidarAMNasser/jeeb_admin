@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 
 /// String Extensions
 extension StringExtension on String {
@@ -78,7 +79,14 @@ extension ContextExtension on BuildContext {
     SnackBarAction? action,
   }) {
     ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(content: Text(message), duration: duration, action: action),
+      SnackBar(
+        content: CustomText(
+          text: message,
+          textStyle: TextStyle(color: colorScheme.onInverseSurface),
+        ),
+        duration: duration,
+        action: action,
+      ),
     );
   }
 
@@ -86,7 +94,10 @@ extension ContextExtension on BuildContext {
   void showErrorSnackBar(String message) {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: CustomText(
+          text: message,
+          textStyle: const TextStyle(color: Colors.white),
+        ),
         backgroundColor: colorScheme.error,
         duration: const Duration(seconds: 4),
       ),
@@ -97,7 +108,10 @@ extension ContextExtension on BuildContext {
   void showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: CustomText(
+          text: message,
+          textStyle: const TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.green,
         duration: const Duration(seconds: 3),
       ),

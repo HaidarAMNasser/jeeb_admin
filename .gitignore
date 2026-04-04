@@ -33,6 +33,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Local Google Maps key (Android); prefer not to commit real keys.
+# android/local.properties is already ignored under android/.gitignore
+
 # Symbolication related
 app.*.symbols
 

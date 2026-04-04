@@ -18,10 +18,25 @@ class OrderCustomerModel {
   });
 
   factory OrderCustomerModel.fromJson(Map<String, dynamic> json) {
+    var firstName = json['firstName']?.toString();
+    var lastName = json['lastName']?.toString();
+    final name = json['name']?.toString().trim();
+    final fnEmpty = firstName == null || firstName.trim().isEmpty;
+    final lnEmpty = lastName == null || lastName.trim().isEmpty;
+    if (fnEmpty && lnEmpty && name != null && name.isNotEmpty) {
+      final parts = name.split(RegExp(r'\s+'));
+      if (parts.length >= 2) {
+        firstName = parts.first;
+        lastName = parts.sublist(1).join(' ');
+      } else {
+        firstName = name;
+        lastName = null;
+      }
+    }
     return OrderCustomerModel(
       id: json['id']?.toString() ?? '',
-      firstName: json['firstName']?.toString(),
-      lastName: json['lastName']?.toString(),
+      firstName: firstName,
+      lastName: lastName,
       email: json['email']?.toString(),
       phone: json['phone']?.toString(),
       address: json['address']?.toString(),

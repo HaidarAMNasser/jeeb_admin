@@ -30,6 +30,9 @@ class OrderEntity extends Equatable {
 
   /// Resolved status for UI logic; use this instead of comparing raw [status] strings.
   OrderStatus get statusEnum => OrderStatus.fromString(status);
+
+  /// Store / restaurant display name when provided by the API.
+  final String? restaurantName;
   final String? merchantId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -56,6 +59,7 @@ class OrderEntity extends Equatable {
     this.ownerRevenue,
     this.tipAmount,
     this.couponCode,
+    this.restaurantName,
     this.merchantId,
     this.createdAt,
     this.updatedAt,
@@ -84,6 +88,7 @@ class OrderEntity extends Equatable {
         ownerRevenue,
         tipAmount,
         couponCode,
+        restaurantName,
         merchantId,
         createdAt,
         updatedAt,

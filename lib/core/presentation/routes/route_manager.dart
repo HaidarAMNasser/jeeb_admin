@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'routes.dart';
 import 'navigation_service.dart';
 import '../../../features/splash/presentation/pages/splash_page.dart';
@@ -40,6 +44,10 @@ import '../../../features/order/list_order/presentation/pages/list_order_page.da
 import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import '../../../features/order/order_details/presentation/pages/order_details_page.dart';
 import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
+import '../../../features/order/order_status_section/presentation/pages/order_status_page.dart';
+import '../../../features/order/order_status_section/presentation/bloc/order_status_bloc.dart';
+import '../../../features/order/order_details/domain/entities/order_status.dart';
+import '../../infrastructure/realtime/order_status_rtdb_service.dart';
 import '../../../features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
 import '../../../features/main_navigation/presentation/pages/main_navigation_page.dart';
@@ -93,6 +101,12 @@ import '../../../features/category/update_category/presentation/bloc/update_cate
 import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
+
+double? routeArgAsDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString());
+}
 
 /// Application Router
 class AppRouter {
@@ -320,7 +334,14 @@ class AppRouter {
           return _buildRoute(
             Scaffold(
               body: Center(
-                child: Text('Merchant ID not provided'),
+                child: CustomText(
+                  text: 'Merchant ID not provided',
+                  textStyle: getRegularStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             settings,
@@ -359,7 +380,14 @@ class AppRouter {
           return _buildRoute(
             Scaffold(
               body: Center(
-                child: Text('Merchant ID not provided'),
+                child: CustomText(
+                  text: 'Merchant ID not provided',
+                  textStyle: getRegularStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             settings,
@@ -404,7 +432,16 @@ class AppRouter {
         if (deliveryManId.isEmpty) {
           return _buildRoute(
             Scaffold(
-              body: Center(child: Text('Delivery man ID not provided')),
+              body: Center(
+                child: CustomText(
+                  text: 'Delivery man ID not provided',
+                  textStyle: getRegularStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
             settings,
           );
@@ -472,7 +509,16 @@ class AppRouter {
         if (orderId.isEmpty) {
           return _buildRoute(
             Scaffold(
-              body: Center(child: Text('Order ID not provided')),
+              body: Center(
+                child: CustomText(
+                  text: 'Order ID not provided',
+                  textStyle: getRegularStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
             settings,
           );
@@ -494,6 +540,47 @@ class AppRouter {
           ],
         );
 
+      case Routes.orderStatus:
+        final osArgs = settings.arguments as Map<String, dynamic>?;
+        final orderStatusId = osArgs?['orderId'] as String? ?? '';
+        final initialWire = osArgs?['initialStatus'] as String?;
+        final initialStatus = OrderStatus.fromString(initialWire);
+        final deliveryLat = routeArgAsDouble(osArgs?['deliveryLatitude']);
+        final deliveryLng = routeArgAsDouble(osArgs?['deliveryLongitude']);
+        if (orderStatusId.isEmpty) {
+          return _buildRoute(
+            Scaffold(
+              body: Center(
+                child: CustomText(
+                  text: 'Order ID not provided',
+                  textStyle: getRegularStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            settings,
+          );
+        }
+        return _buildRouteWithBlocs(
+          const OrderStatusPage(),
+          settings,
+          providers: [
+            BlocProvider<OrderStatusBloc>(
+              create: (_) => OrderStatusBloc(
+                orderId: orderStatusId,
+                initialStatus: initialStatus,
+                initialStatusWire: initialWire,
+                deliveryLatitude: deliveryLat,
+                deliveryLongitude: deliveryLng,
+                orderStatusRtdb: di.sl<OrderStatusRtdbService>(),
+              ),
+            ),
+          ],
+        );
+
       case Routes.offers:
         final offerArgs = settings.arguments as Map<String, dynamic>?;
         final offerMerchantId = offerArgs?['merchantId'] as String?;
@@ -511,7 +598,16 @@ class AppRouter {
         if (offerId.isEmpty) {
           return _buildRoute(
             Scaffold(
-              body: Center(child: Text('Offer ID not provided')),
+              body: Center(
+                child: CustomText(
+                  text: 'Offer ID not provided',
+                  textStyle: getRegularStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
             settings,
           );
@@ -557,7 +653,16 @@ class AppRouter {
       default:
         return _buildRoute(
           Scaffold(
-            body: Center(child: Text('No route defined for ${settings.name}')),
+            body: Center(
+              child: CustomText(
+                text: 'No route defined for ${settings.name}',
+                textStyle: getRegularStyle(
+                  fontSize: AppFontSize.s16,
+                  color: ColorManager.textColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           settings,
         );

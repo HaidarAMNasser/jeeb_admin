@@ -117,7 +117,8 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
       data['location'] = {'lat': latitude, 'lng': longitude};
     }
     if (address != null) data['address'] = address;
-    if (restaurantName != null && restaurantName.isNotEmpty) data['restaurantName'] = restaurantName;
+    if (restaurantName != null && restaurantName.isNotEmpty)
+      data['restaurantName'] = restaurantName;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -136,17 +137,11 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> verify(
-    String email,
-    String otp,
-  ) async {
+  Future<Response> verify(String email, String otp) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = {
-      'email': email,
-      'otp': otp,
-    };
+    final data = {'email': email, 'otp': otp};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -165,15 +160,11 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> resendOtp(
-    String email,
-  ) async {
+  Future<Response> resendOtp(String email) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = {
-      'email': email,
-    };
+    final data = {'email': email};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -192,15 +183,11 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> forgotPassword(
-    String email,
-  ) async {
+  Future<Response> forgotPassword(String email) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = {
-      'email': email,
-    };
+    final data = {'email': email};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -227,11 +214,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = {
-      'email': email,
-      'otp': otp,
-      'password': password,
-    };
+    final data = {'email': email, 'otp': otp, 'password': password};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -288,15 +271,21 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
     final formData = FormData();
-    if (firstName != null) formData.fields.add(MapEntry('firstName', firstName));
+    if (firstName != null)
+      formData.fields.add(MapEntry('firstName', firstName));
     if (lastName != null) formData.fields.add(MapEntry('lastName', lastName));
     if (phone != null) formData.fields.add(MapEntry('phone', phone));
-    if (countryId != null) formData.fields.add(MapEntry('countryId', countryId.toString()));
-    if (cityId != null) formData.fields.add(MapEntry('cityId', cityId.toString()));
+    if (countryId != null)
+      formData.fields.add(MapEntry('countryId', countryId.toString()));
+    if (cityId != null)
+      formData.fields.add(MapEntry('cityId', cityId.toString()));
     if (address != null) formData.fields.add(MapEntry('address', address));
-    if (latitude != null) formData.fields.add(MapEntry('latitude', latitude.toString()));
-    if (longitude != null) formData.fields.add(MapEntry('longitude', longitude.toString()));
-    if (isActive != null) formData.fields.add(MapEntry('isActive', isActive.toString()));
+    if (latitude != null)
+      formData.fields.add(MapEntry('latitude', latitude.toString()));
+    if (longitude != null)
+      formData.fields.add(MapEntry('longitude', longitude.toString()));
+    if (isActive != null)
+      formData.fields.add(MapEntry('isActive', isActive.toString()));
     if (restaurantName != null) {
       formData.fields.add(MapEntry('restaurantName', restaurantName));
     }
@@ -342,11 +331,33 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> getCategories(
-    int? page,
-    int? limit,
-    String? search,
-  ) async {
+  Future<Response> updateDeviceToken({
+    required String token,
+    required String platform,
+  }) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
+    final data = <String, dynamic>{'token': token, 'platform': platform};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'users/firebase-token',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getCategories(int? page, int? limit, String? search) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     if (page != null) queryParameters['page'] = page;
@@ -373,9 +384,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> addCategory(FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'multipart/form-data',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -397,9 +406,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> updateCategory(String id, FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'multipart/form-data',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -451,18 +458,16 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (page != null) queryParameters['page'] = page;
     if (limit != null) queryParameters['limit'] = limit;
     if (search != null && search.isNotEmpty) queryParameters['search'] = search;
-    if (categoryId != null && categoryId.isNotEmpty) queryParameters['categoryId'] = categoryId;
-    if (restaurantId != null && restaurantId.isNotEmpty && restaurantId != '0') queryParameters['merchantId'] = restaurantId;
+    if (categoryId != null && categoryId.isNotEmpty)
+      queryParameters['categoryId'] = categoryId;
+    if (restaurantId != null && restaurantId.isNotEmpty && restaurantId != '0')
+      queryParameters['merchantId'] = restaurantId;
     final headers = <String, dynamic>{};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'GET', headers: headers, extra: extra)
-            .compose(
-              dio.options,
-              'products',
-              queryParameters: queryParameters,
-            )
+            .compose(dio.options, 'products', queryParameters: queryParameters)
             .copyWith(baseUrl: baseUrlApi),
       ),
     );
@@ -495,9 +500,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> createProduct(FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'multipart/form-data',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -519,9 +522,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> updateProduct(String id, FormData formData) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'multipart/form-data',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -565,9 +566,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final data = <String, dynamic>{
-      'newPrice': newPrice,
-    };
+    final data = <String, dynamic>{'newPrice': newPrice};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -628,10 +627,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> getCountries(
-    int? page,
-    int? limit,
-  ) async {
+  Future<Response> getCountries(int? page, int? limit) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     if (page != null) queryParameters['page'] = page;
@@ -641,11 +637,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'GET', headers: headers, extra: extra)
-            .compose(
-              dio.options,
-              'countries',
-              queryParameters: queryParameters,
-            )
+            .compose(dio.options, 'countries', queryParameters: queryParameters)
             .copyWith(baseUrl: baseUrlApi),
       ),
     );
@@ -654,15 +646,9 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> getCities(
-    int countryId,
-    int? page,
-    int? limit,
-  ) async {
+  Future<Response> getCities(int countryId, int? page, int? limit) async {
     const extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      'countryId': countryId,
-    };
+    final queryParameters = <String, dynamic>{'countryId': countryId};
     if (page != null) queryParameters['page'] = page;
     if (limit != null) queryParameters['limit'] = limit;
     final headers = <String, dynamic>{};
@@ -670,11 +656,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'GET', headers: headers, extra: extra)
-            .compose(
-              dio.options,
-              'cities',
-              queryParameters: queryParameters,
-            )
+            .compose(dio.options, 'cities', queryParameters: queryParameters)
             .copyWith(baseUrl: baseUrlApi),
       ),
     );
@@ -956,6 +938,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     int? page,
     int? limit,
     String? search,
+    String? status,
     String? merchantId,
   }) async {
     const extra = <String, dynamic>{};
@@ -963,17 +946,16 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (page != null) queryParameters['page'] = page;
     if (limit != null) queryParameters['limit'] = limit;
     if (search != null) queryParameters['search'] = search;
+    if (status != null && status.isNotEmpty) {
+      queryParameters['status'] = status;
+    }
     final headers = <String, dynamic>{};
     if (merchantId != null) headers['merchantId'] = merchantId;
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'GET', headers: headers, extra: extra)
-            .compose(
-              dio.options,
-              'orders',
-              queryParameters: queryParameters,
-            )
+            .compose(dio.options, 'orders', queryParameters: queryParameters)
             .copyWith(baseUrl: baseUrlApi),
       ),
     );
@@ -1045,6 +1027,70 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
+  Future<Response> confirmOrder(String id, Map<String, dynamic>? body) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'orders/$id/confirm',
+              queryParameters: queryParameters,
+              data: body,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> setOrderPreparing(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'orders/$id/preparing',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> setOrderReadyForPickup(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'orders/$id/ready-for-pickup',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
   Future<Response> getOffers({
     int? page,
     int? limit,
@@ -1062,11 +1108,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'GET', headers: headers, extra: extra)
-            .compose(
-              dio.options,
-              'offers',
-              queryParameters: queryParameters,
-            )
+            .compose(dio.options, 'offers', queryParameters: queryParameters)
             .copyWith(baseUrl: baseUrlApi),
       ),
     );
@@ -1099,9 +1141,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> createOffer(Map<String, dynamic> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'application/json',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -1123,9 +1163,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> updateOffer(String id, Map<String, dynamic> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'application/json',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -1173,11 +1211,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
         Options(method: 'GET', headers: headers, extra: extra)
-            .compose(
-              dio.options,
-              'settings',
-              queryParameters: queryParameters,
-            )
+            .compose(dio.options, 'settings', queryParameters: queryParameters)
             .copyWith(baseUrl: baseUrlApi),
       ),
     );
@@ -1189,9 +1223,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   Future<Response> patchSettings(List<Map<String, dynamic>> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{
-      'Content-Type': 'application/json',
-    };
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -1209,4 +1241,3 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     return result;
   }
 }
-

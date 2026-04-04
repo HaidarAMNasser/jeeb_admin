@@ -175,6 +175,26 @@ class AppTranslation {
   static String get noMerchantsFound => 'no_merchants_found'.tr();
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
+  static String get merchantUserId => 'merchant_user_id'.tr();
+  static String get merchantRole => 'merchant_role'.tr();
+  static String get merchantBirthday => 'merchant_birthday'.tr();
+  static String get merchantVerifiedAt => 'merchant_verified_at'.tr();
+  static String get merchantCreatedAt => 'merchant_created_at'.tr();
+  static String get merchantUpdatedAt => 'merchant_updated_at'.tr();
+  static String get merchantOnlineStatus => 'merchant_online_status'.tr();
+  static String get merchantOnlineYes => 'merchant_online_yes'.tr();
+  static String get merchantOnlineNo => 'merchant_online_no'.tr();
+  static String get merchantPhoneHiddenLabel => 'merchant_phone_hidden_label'.tr();
+  static String get merchantValueYes => 'merchant_value_yes'.tr();
+  static String get merchantValueNo => 'merchant_value_no'.tr();
+  static String get detailsShowMore => 'details_show_more'.tr();
+  static String get detailsShowLess => 'details_show_less'.tr();
+  static String get deliveryUserId => 'delivery_user_id'.tr();
+  static String get deliveryOfficeOwnerId => 'delivery_office_owner_id'.tr();
+  static String get deliveryAccountActive => 'delivery_account_active'.tr();
+  static String get deliveryConfirmedStatus => 'delivery_confirmed_status'.tr();
+  static String get deliveryCountryId => 'delivery_country_id'.tr();
+  static String get deliveryCityId => 'delivery_city_id'.tr();
   static String get copiedToClipboard => 'copied_to_clipboard'.tr();
   static String get copyRestaurantName => 'copy_restaurant_name'.tr();
   static String get owner => 'owner'.tr();
@@ -236,8 +256,55 @@ class AppTranslation {
   static String get searchOrders => 'search_orders'.tr();
   static String get searchOrdersHint => 'search_orders_hint'.tr();
   static String get orderCompletedSuccessfully => 'order_completed_successfully'.tr();
+  static String get orderConfirmedSuccessfully => 'order_confirmed_successfully'.tr();
+  static String get orderStatusUpdatedSuccess => 'order_status_updated_success'.tr();
+  static String get merchantPostConfirmEducationTitle =>
+      'merchant_post_confirm_education_title'.tr();
+  static String get merchantPostConfirmEducationBody =>
+      'merchant_post_confirm_education_body'.tr();
+  static String get merchantDontShowEducationAgain =>
+      'merchant_dont_show_education_again'.tr();
+  static String get merchantGotIt => 'merchant_got_it'.tr();
+  static String get merchantPreparingWaitDriverTitle =>
+      'merchant_preparing_wait_driver_title'.tr();
+  static String get merchantPreparingWaitDriverBody =>
+      'merchant_preparing_wait_driver_body'.tr();
+  static String get merchantSetPreparing => 'merchant_set_preparing'.tr();
+  static String get merchantSetReadyPickup => 'merchant_set_ready_pickup'.tr();
+  static String get merchantOrdersTabPending => 'merchant_orders_tab_pending'.tr();
+  static String get merchantOrdersTabConfirmed => 'merchant_orders_tab_confirmed'.tr();
+  static String get merchantOrdersTabOthers => 'merchant_orders_tab_others'.tr();
+  static String get ordersFilterTitle => 'orders_filter_title'.tr();
+  static String get ordersFilterFollowTab => 'orders_filter_follow_tab'.tr();
+  static String get ordersFilterNoStatusOverride =>
+      'orders_filter_no_status_override'.tr();
+  static String get ordersFilterApply => 'orders_filter_apply'.tr();
+  static String get ordersFilterTooltip => 'orders_filter_tooltip'.tr();
+  static String get ordersResetFilters => 'orders_reset_filters'.tr();
+  static String get orderStatusPreparing => 'order_status_preparing'.tr();
+  static String get orderStatusReadyForPickup =>
+      'order_status_ready_for_pickup'.tr();
+  static String get orderStatusAssigned => 'order_status_assigned'.tr();
+  static String get orderStatusPickedUp => 'order_status_picked_up'.tr();
+  static String get orderStatusCancelled => 'order_status_cancelled'.tr();
+  static String get orderStatusRejected => 'order_status_rejected'.tr();
+  static String get mealPreparationMinutes => 'meal_preparation_minutes'.tr();
+  static String get deliveryTimeMinutes => 'delivery_time_minutes'.tr();
+  static String get confirmOrderAction => 'confirm_order_action'.tr();
+  static String get merchantConfirmOrderIntro => 'merchant_confirm_order_intro'.tr();
+  static String get merchantConfirmMealPrepHint =>
+      'merchant_confirm_meal_prep_hint'.tr();
+  static String get merchantConfirmMealPrepRequired =>
+      'merchant_confirm_meal_prep_required'.tr();
+  static String get merchantSearchingSheetTagline =>
+      'merchant_searching_sheet_tagline'.tr();
   static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
   static String get order => 'order'.tr();
+  static String get orderRestaurantSection => 'order_restaurant_section'.tr();
+  static String get orderRestaurantPlaceholder => 'order_restaurant_placeholder'.tr();
+  static String get orderListCustomerMissing => 'order_list_customer_missing'.tr();
+  static String get orderTotalLabel => 'order_total_label'.tr();
+  static String get orderMerchantIdLabel => 'order_merchant_id_label'.tr();
   static String get customer => 'customer'.tr();
   static String get orderSummary => 'order_summary'.tr();
   static String get productsCount => 'products_count'.tr();
@@ -250,6 +317,20 @@ class AppTranslation {
   static String get areYouSureCancelOrder => 'are_you_sure_cancel_order'.tr();
   static String get completeOrder => 'complete_order'.tr();
   static String get cancelOrder => 'cancel_order'.tr();
+
+  // Order live tracking (Firebase RTDB + map)
+  static String get trackOrderLive => 'track_order_live'.tr();
+  static String get orderStepPlaced => 'order_step_placed'.tr();
+  static String get orderStepConfirmed => 'order_step_confirmed'.tr();
+  static String get orderStepSearching => 'order_step_searching'.tr();
+  static String get orderStepReady => 'order_step_ready'.tr();
+  static String get orderStepWithDriver => 'order_step_with_driver'.tr();
+  static String get orderStepOnTheWay => 'order_step_on_the_way'.tr();
+  static String get orderStepDelivered => 'order_step_delivered'.tr();
+  static String get orderDeliveryMapBadge => 'order_delivery_map_badge'.tr();
+  static String get orderStatusLabelOnTheWay => 'order_status_label_on_the_way'.tr();
+  static String get orderStatusViewDetails => 'order_status_view_details'.tr();
+  static String get orderStatusProblemBanner => 'order_status_problem_banner'.tr();
 
   // Offer
   static String get offers => 'offers'.tr();

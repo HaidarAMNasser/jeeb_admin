@@ -1,0 +1,50 @@
+part of 'order_status_bloc.dart';
+
+sealed class OrderStatusEvent extends Equatable {
+  const OrderStatusEvent();
+}
+
+class OrderStatusToggleDemo extends OrderStatusEvent {
+  const OrderStatusToggleDemo();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class OrderStatusDemoTick extends OrderStatusEvent {
+  const OrderStatusDemoTick();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class OrderStatusRealtimeSnapshot extends OrderStatusEvent {
+  const OrderStatusRealtimeSnapshot(this.statusWire);
+
+  final String? statusWire;
+
+  @override
+  List<Object?> get props => [statusWire];
+}
+
+class OrderStatusDriverLocationUpdated extends OrderStatusEvent {
+  const OrderStatusDriverLocationUpdated({
+    required this.latitude,
+    required this.longitude,
+    required this.isOnline,
+  });
+
+  final double latitude;
+  final double longitude;
+  final bool isOnline;
+
+  @override
+  List<Object?> get props => [latitude, longitude, isOnline];
+}
+
+class OrderStatusDriverLocationCleared extends OrderStatusEvent {
+  const OrderStatusDriverLocationCleared();
+
+  @override
+  List<Object?> get props => [];
+}

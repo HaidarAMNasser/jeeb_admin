@@ -4,18 +4,51 @@ class AppConstants {
   // Private constructor to prevent instantiation
   AppConstants._();
 
+  // --- SharedPreferences key names (use for raw prefs access) ---
+  static const String prefAccessToken = 'access_token';
+  static const String prefLanguageCode = 'language_code';
+  static const String prefUserRole = 'user_role';
+  static const String prefUserId = 'user_id';
+  static const String prefFirstLaunchDone = 'first_launch_done';
+  static const String prefIsLoggedIn = 'is_logged_in';
+  static const String prefIsVerified = 'is_verified';
+  static const String prefPendingVerifyEmail = 'pending_verify_email';
+  static const String prefFcmDeviceToken = 'fcm_device_token';
+  static const String prefFcmLastSyncedToken = 'fcm_last_synced_token';
+
+  /// Merchant: hide the post-confirm status pipeline education dialog.
+  static const String prefMerchantHidePostConfirmEducation =
+      'merchant_hide_post_confirm_education';
+
+  /// Legacy aliases (same string values as [pref*]).
+  static const String accessTokenKey = prefAccessToken;
+  static const String languageKey = prefLanguageCode;
+
+  // --- In-memory mirrors of stored prefs (sync) — use e.g. `print(AppConstants.fcmToken)` ---
+  /// Updated when [StorageService] reads/writes prefs and after [StorageService.hydrateAppConstantsCache].
+  static String accessToken = '';
+  static String languageCode = '';
+  /// Current FCM registration token from the device (saved when Firebase provides it).
+  static String? fcmToken;
+  /// Last FCM token successfully sent to your backend (null until sync succeeds while logged in).
+  static String? fcmLastSyncedToken;
+  static String? userRole;
+  static int? userId;
+  static bool isLoggedIn = false;
+  static bool isVerified = false;
+  static String? pendingVerifyEmail;
+  static bool firstLaunchDone = false;
+
   // API Configuration
   static const String baseUrl = 'https://api.example.com';
   static const String apiVersion = 'v1';
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
 
-  // Storage Keys
-  static const String accessTokenKey = 'access_token';
+  // Storage Keys (unused legacy / future prefs)
   static const String refreshTokenKey = 'refresh_token';
   static const String userDataKey = 'user_data';
   static const String themeKey = 'theme_mode';
-  static const String languageKey = 'language_code';
   static const String onboardingKey = 'onboarding_completed';
 
   // Pagination

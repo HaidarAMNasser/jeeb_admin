@@ -13,6 +13,7 @@ import 'package:jeeb_admin/features/product/list_product/data/repositories/list_
 import 'package:jeeb_admin/features/offer/list_offer/presentation/pages/list_offer_page.dart';
 import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
 import 'package:jeeb_admin/features/offer/list_offer/data/repositories/list_offer_repository.dart';
+import 'package:jeeb_admin/features/order/list_order/domain/merchant_orders_tab.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -52,8 +53,12 @@ class _MerchantNavigationState extends State<MerchantNavigation> {
       case 2:
         return BlocProvider<ListOrderBloc>(
           create: (_) => di.sl<ListOrderBloc>()
-            ..add(const GetOrdersEvent()),
-          child: const ListOrderPage(),
+            ..add(
+              const GetOrdersEvent(
+                merchantTab: MerchantOrdersTab.pending,
+              ),
+            ),
+          child: const ListOrderPage(isMerchant: true),
         );
       case 3:
         return MultiBlocProvider(

@@ -3,13 +3,19 @@ import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 
-/// Reusable search field with hint text, clear button, and refresh (restart) button.
-/// [onRefetch] is called when the refresh icon is pressed; typically clear search and reload list.
+/// Reusable search field with hint text, clear button, and optional refresh (restart) button.
+/// [onRefetch] is called when the trailing restart is pressed or when clearing via suffix; typically clear search and reload list.
 class CustomSearchField extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
   final void Function(String)? onSubmitted;
   final VoidCallback onRefetch;
+
+  /// When false, hides the orange restart button (e.g. admin uses [trailingAction] instead).
+  final bool showTrailingRefetch;
+
+  /// Placed after the text field (e.g. admin filter/reset slot). If set, shown instead of [showTrailingRefetch].
+  final Widget? trailingAction;
 
   const CustomSearchField({
     super.key,
@@ -17,6 +23,8 @@ class CustomSearchField extends StatefulWidget {
     required this.controller,
     this.onSubmitted,
     required this.onRefetch,
+    this.showTrailingRefetch = true,
+    this.trailingAction,
   });
 
   @override
@@ -67,20 +75,25 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
                   : null,
             ),
           ),
-          SizedBox(width: AppWidth.s8),
-          Container(
-            width: AppWidth.s50,
-            height: AppHeight.s50,
-            decoration: BoxDecoration(
-              color: ColorManager.primary,
-              borderRadius: BorderRadius.circular(AppRadius.r18),
+          if (widget.trailingAction != null) ...[
+            SizedBox(width: AppWidth.s8),
+            widget.trailingAction!,
+          ] else if (widget.showTrailingRefetch) ...[
+            SizedBox(width: AppWidth.s8),
+            Container(
+              width: AppWidth.s50,
+              height: AppHeight.s50,
+              decoration: BoxDecoration(
+                color: ColorManager.primary,
+                borderRadius: BorderRadius.circular(AppRadius.r18),
+              ),
+              child: IconButton(
+                icon: Icon(Icons.restart_alt, color: ColorManager.defaultWhite),
+                onPressed: _onRefetch,
+                tooltip: 'Clear search and refetch',
+              ),
             ),
-            child: IconButton(
-              icon: Icon(Icons.restart_alt, color: ColorManager.defaultWhite),
-              onPressed: _onRefetch,
-              tooltip: 'Clear search and refetch',
-            ),
-          ),
+          ],
         ],
       ),
     );

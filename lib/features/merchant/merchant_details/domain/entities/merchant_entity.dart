@@ -16,6 +16,13 @@ class MerchantEntity extends Equatable {
   final bool? hidePhoneNumber;
   final String restaurantName;
   final String? image; // Might be null
+  final String? role;
+  final String? notificationChannel;
+  final String? birthday;
+  final bool? isOnline;
+  final String? verifiedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   const MerchantEntity({
     required this.id,
@@ -33,6 +40,13 @@ class MerchantEntity extends Equatable {
     this.phoneNumber,
     this.hidePhoneNumber,
     this.image,
+    this.role,
+    this.notificationChannel,
+    this.birthday,
+    this.isOnline,
+    this.verifiedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   @override
@@ -50,7 +64,15 @@ class MerchantEntity extends Equatable {
         location,
         phoneNumber,
         hidePhoneNumber,
+        restaurantName,
         image,
+        role,
+        notificationChannel,
+        birthday,
+        isOnline,
+        verifiedAt,
+        createdAt,
+        updatedAt,
       ];
 }
 

@@ -47,11 +47,8 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       context.read<LoginBloc>().add(
-            LoginSubmitted(
-              email: email,
-              password: password,
-            ),
-          );
+        LoginSubmitted(email: email, password: password),
+      );
     }
   }
 
@@ -62,9 +59,7 @@ class _LoginPageState extends State<LoginPage> {
         previous,
         current,
         (s) =>
-            s is LoginSuccess ||
-            s is LoginNeedsVerification ||
-            s is LoginError,
+            s is LoginSuccess || s is LoginNeedsVerification || s is LoginError,
       ),
       listener: (context, state) {
         if (state is LoginSuccess) {
@@ -98,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const LoginHeader(),
+
                     LoginForm(
                       formKey: _formKey,
                       emailController: _emailController,
@@ -115,4 +111,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

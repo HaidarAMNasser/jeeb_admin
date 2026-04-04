@@ -6,15 +6,26 @@ extension DeliveryManMapper on DeliveryManModel {
     return DeliveryManEntity(
       id: id,
       name: name, // firstName + lastName
+      firstName: firstName,
+      lastName: lastName,
       phone: phone,
       email: email,
       cityName: cityName,
       countryName: countryName,
+      countryId: countryId,
+      cityId: cityId,
+      address: address,
       image: imageUrlFull,
       isOnline: isOnline,
       confirmed: confirmed,
       isActive: isActive,
       officeOwnerId: officeOwnerId,
+      role: role,
+      notificationChannel: notificationChannel,
+      birthday: birthday,
+      verifiedAt: verifiedAt,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }

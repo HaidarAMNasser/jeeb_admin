@@ -20,9 +20,15 @@ class OrderCustomerEntity extends Equatable {
   });
 
   String get displayName {
-    if (firstName != null && lastName != null) return '$firstName $lastName'.trim();
-    if (firstName != null && firstName!.isNotEmpty) return firstName!;
-    if (lastName != null && lastName!.isNotEmpty) return lastName!;
+    final fn = firstName?.trim() ?? '';
+    final ln = lastName?.trim() ?? '';
+    if (fn.isNotEmpty && ln.isNotEmpty) return '$fn $ln';
+    if (fn.isNotEmpty) return fn;
+    if (ln.isNotEmpty) return ln;
+    final e = email?.trim();
+    if (e != null && e.isNotEmpty) return e;
+    final ph = phone?.trim();
+    if (ph != null && ph.isNotEmpty) return ph;
     return id;
   }
 

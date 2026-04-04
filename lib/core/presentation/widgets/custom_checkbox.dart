@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 
 class CustomCheckbox extends StatelessWidget {
   final bool value;
@@ -49,9 +50,9 @@ class CustomCheckbox extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               checkbox,
-              Text(
-                label!,
-                style: TextStyle(
+              CustomText(
+                text: label!,
+                textStyle: TextStyle(
                   color: ColorManager.textColor,
                   fontSize: 15,
                 ),

@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/infrastructure/di/dependency_injection.dart' as di;
+import '../../../../../core/infrastructure/services/notification_service.dart';
 import '../../../../../core/infrastructure/services/storage_service.dart';
 import '../../../login/data/models/token_model.dart';
 import '../../../login/data/repositories/login_repository.dart';
@@ -74,6 +76,7 @@ class VerifyBloc extends Bloc<VerifyEvent, VerifyState> {
                   );
                 }
                 if (!emit.isDone) {
+                  di.sl<NotificationService>().requestSyncAfterLogin();
                   emit(const VerifySuccess(goToMain: true));
                 }
                 return;
@@ -99,6 +102,7 @@ class VerifyBloc extends Bloc<VerifyEvent, VerifyState> {
                 await _storageService.setVerified(verified);
                 await _storageService.setPendingVerifyEmail(null);
                 if (!emit.isDone) {
+                  di.sl<NotificationService>().requestSyncAfterLogin();
                   emit(const VerifySuccess(goToMain: true));
                 }
               },
