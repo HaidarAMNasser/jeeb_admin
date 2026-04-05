@@ -25,9 +25,11 @@ class OrderStatusPage extends StatelessWidget {
               final dLng = state.deliveryLongitude;
               final drvLat = state.driverLatitude;
               final drvLng = state.driverLongitude;
+              final hasTrail = state.routeHistoryPoints.isNotEmpty;
               final showLiveMap = state.routeStatus == OrderStatus.onTheWay &&
                   ((dLat != null && dLng != null) ||
-                      (drvLat != null && drvLng != null));
+                      (drvLat != null && drvLng != null) ||
+                      hasTrail);
 
               return CustomScrollView(
                 slivers: [
@@ -56,7 +58,9 @@ class OrderStatusPage extends StatelessWidget {
                           if (showLiveMap) ...[
                             SizedBox(height: AppHeight.s16),
                             LiveTrackingMapCard(
+                              orderId: state.orderId,
                               title: AppTranslation.orderDeliveryMapBadge,
+                              routeHistory: state.routeHistoryPoints,
                               deliveryLatitude: dLat,
                               deliveryLongitude: dLng,
                               driverLatitude: drvLat,

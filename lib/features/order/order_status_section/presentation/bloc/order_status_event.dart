@@ -48,3 +48,12 @@ class OrderStatusDriverLocationCleared extends OrderStatusEvent {
   @override
   List<Object?> get props => [];
 }
+
+class OrderStatusRouteHistorySnapshot extends OrderStatusEvent {
+  const OrderStatusRouteHistorySnapshot(this.points);
+
+  final List<RouteHistoryPoint> points;
+
+  @override
+  List<Object?> get props => [points];
+}

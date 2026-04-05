@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:jeeb_admin/core/infrastructure/realtime/route_history_point.dart';
 
 /// Backend RTDB URL — must match the database your server writes to.
 const String kOrderRtdbDatabaseUrl =
@@ -15,6 +16,16 @@ class OrderStatusRtdbService {
             );
 
   final FirebaseDatabase _db;
+
+  Stream<List<RouteHistoryPoint>> watchOrderRouteHistory(String orderId) {
+    final id = orderId.trim();
+    if (id.isEmpty) {
+      return const Stream.empty();
+    }
+    return _db.ref('orders/$id/routeHistory').onValue.map((event) {
+      return RouteHistoryPoint.parseList(event.snapshot.value);
+    });
+  }
 
   Stream<String?> watchOrderStatusWire(String orderId) {
     final id = orderId.trim();

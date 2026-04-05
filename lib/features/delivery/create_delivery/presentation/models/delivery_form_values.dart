@@ -10,6 +10,9 @@ class DeliveryFormValues {
   final String? imagePath;
   final int? countryId;
   final int? cityId;
+  /// Set when admin picks driver location on map (create flow).
+  final double? latitude;
+  final double? longitude;
 
   const DeliveryFormValues({
     required this.firstName,
@@ -22,5 +25,7 @@ class DeliveryFormValues {
     this.imagePath,
     this.countryId,
     this.cityId,
+    this.latitude,
+    this.longitude,
   });
 }

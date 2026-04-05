@@ -222,6 +222,10 @@ class AppTranslation {
   static String get deliveryMen => 'delivery_men'.tr();
   static String get deliveryManDetails => 'delivery_man_details'.tr();
   static String get addDeliveryMan => 'add_delivery_man'.tr();
+  static String get deliveryPickLocation => 'delivery_pick_location'.tr();
+  static String get deliveryOpenMap => 'delivery_open_map'.tr();
+  static String get deliveryLocationRequired => 'delivery_location_required'.tr();
+  static String get deliveryLocationSet => 'delivery_location_set'.tr();
   static String get editDeliveryMan => 'edit_delivery_man'.tr();
   static String get confirmDelivery => 'confirm_delivery'.tr();
   static String get noDeliveryMenFound => 'no_delivery_men_found'.tr();

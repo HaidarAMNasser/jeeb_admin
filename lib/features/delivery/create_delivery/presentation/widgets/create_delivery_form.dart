@@ -9,6 +9,7 @@ import 'package:jeeb_admin/features/country/presentation/widgets/country_city_wi
 import 'package:jeeb_admin/features/delivery/create_delivery/helpful_functions/delivery_validation.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_controllers.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_values.dart';
+import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
 
 class CreateDeliveryForm extends StatelessWidget {
   final bool isEdit;
@@ -21,6 +22,11 @@ class CreateDeliveryForm extends StatelessWidget {
   final void Function(CityEntity?) onCityChanged;
   final GlobalKey<FormState> formKey;
   final void Function(DeliveryFormValues values) onSubmit;
+  /// Create flow: required map pick; ignored when [isEdit].
+  final double? mapLatitude;
+  final double? mapLongitude;
+  final VoidCallback onPickMapLocation;
+  final VoidCallback onClearMapLocation;
 
   const CreateDeliveryForm({
     super.key,
@@ -34,6 +40,10 @@ class CreateDeliveryForm extends StatelessWidget {
     required this.onCityChanged,
     required this.formKey,
     required this.onSubmit,
+    this.mapLatitude,
+    this.mapLongitude,
+    required this.onPickMapLocation,
+    required this.onClearMapLocation,
   });
 
   @override
@@ -54,6 +64,23 @@ class CreateDeliveryForm extends StatelessWidget {
               onSelectCity: onCityChanged,
               isRequired: false,
             ),
+            if (!isEdit) ...[
+              SizedBox(height: AppHeight.s16),
+              LocationSourceSelector(
+                title: AppTranslation.deliveryPickLocation,
+                useMyLocationHint: AppTranslation.deliveryOpenMap,
+                locationSetHint: AppTranslation.locationSetFormat,
+                latitude: mapLatitude,
+                longitude: mapLongitude,
+                isRequired: true,
+                onUseMyLocation: onPickMapLocation,
+                onClearLocation:
+                    (mapLatitude != null || mapLongitude != null)
+                        ? onClearMapLocation
+                        : null,
+                isLoading: false,
+              ),
+            ],
             SizedBox(height: AppHeight.s24),
             CustomButton(
               text: isEdit
@@ -82,6 +109,8 @@ class CreateDeliveryForm extends StatelessWidget {
       email: email,
       password: password,
       isEditMode: isEdit,
+      latitude: mapLatitude,
+      longitude: mapLongitude,
     );
 
     if (!isDeliveryFormValid(
@@ -91,6 +120,8 @@ class CreateDeliveryForm extends StatelessWidget {
       email: email,
       password: password,
       isEditMode: isEdit,
+      latitude: mapLatitude,
+      longitude: mapLongitude,
     )) {
       return;
     }
@@ -110,6 +141,8 @@ class CreateDeliveryForm extends StatelessWidget {
         imagePath: imagePath,
         countryId: selectedCountry?.id,
         cityId: selectedCity?.id,
+        latitude: isEdit ? null : mapLatitude,
+        longitude: isEdit ? null : mapLongitude,
       ),
     );
   }

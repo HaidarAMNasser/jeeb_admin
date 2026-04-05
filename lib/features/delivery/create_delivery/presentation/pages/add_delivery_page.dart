@@ -18,6 +18,7 @@ import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/widgets/add_delivery_bloc_layer.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/widgets/create_delivery_form.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/widgets/delivery_image_section.dart';
+import 'package:jeeb_admin/core/presentation/maps/google_map_location_picker_page.dart';
 
 class AddDeliveryPage extends StatefulWidget {
   final DeliveryManEntity? deliveryMan;
@@ -34,6 +35,8 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
   String? _imagePath;
   CountryEntity? _selectedCountry;
   CityEntity? _selectedCity;
+  double? _mapLatitude;
+  double? _mapLongitude;
 
   bool get _isEditMode => widget.deliveryMan != null;
 
@@ -42,6 +45,23 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
       _imagePath ?? (widget.deliveryMan?.image?.isNotEmpty == true
           ? widget.deliveryMan!.image
           : null);
+
+  Future<void> _openMapPicker() async {
+    final result = await Navigator.of(context).push<GoogleMapLocationPickResult>(
+      MaterialPageRoute(
+        builder: (_) => GoogleMapLocationPickerPage(
+          initialLatitude: _mapLatitude,
+          initialLongitude: _mapLongitude,
+        ),
+      ),
+    );
+    if (result != null && mounted) {
+      setState(() {
+        _mapLatitude = result.latitude;
+        _mapLongitude = result.longitude;
+      });
+    }
+  }
 
   Future<void> _pickImage() async {
     final xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -96,6 +116,8 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
               imagePath: values.imagePath,
               countryId: values.countryId,
               cityId: values.cityId,
+              latitude: values.latitude,
+              longitude: values.longitude,
             ),
           );
     }
@@ -157,6 +179,13 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
                   onCityChanged: (c) => setState(() => _selectedCity = c),
                   formKey: _formKey,
                   onSubmit: _handleSubmit,
+                  mapLatitude: _mapLatitude,
+                  mapLongitude: _mapLongitude,
+                  onPickMapLocation: _openMapPicker,
+                  onClearMapLocation: () => setState(() {
+                    _mapLatitude = null;
+                    _mapLongitude = null;
+                  }),
                 ),
               ),
             ],

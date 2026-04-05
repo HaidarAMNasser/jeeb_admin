@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
@@ -15,6 +17,8 @@ abstract class CreateDeliveryRemoteDataSource {
     String? notificationChannel,
     int? officeOwnerId,
     String? imagePath,
+    double? latitude,
+    double? longitude,
   });
 }
 
@@ -38,6 +42,8 @@ class CreateDeliveryRemoteDataSourceImpl
     String? notificationChannel,
     int? officeOwnerId,
     String? imagePath,
+    double? latitude,
+    double? longitude,
   }) async {
     // Create FormData for multipart/form-data request
     final formDataMap = <String, dynamic>{
@@ -53,6 +59,8 @@ class CreateDeliveryRemoteDataSourceImpl
       if (notificationChannel != null && notificationChannel.isNotEmpty)
         'notificationChannel': notificationChannel,
       if (officeOwnerId != null) 'officeOwnerId': officeOwnerId,
+      if (latitude != null && longitude != null)
+        'location': jsonEncode({'lat': latitude, 'lng': longitude}),
     };
 
     if (imagePath != null && imagePath.isNotEmpty) {
