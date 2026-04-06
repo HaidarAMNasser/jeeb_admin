@@ -25,6 +25,7 @@ class UpdateMerchantRepository {
     int? cityId,
     String? address,
     bool? hidePhoneNumber,
+    bool? isActive,
     String? imagePath,
   }) async {
     if (await _networkInfo.isConnected) {
@@ -39,6 +40,7 @@ class UpdateMerchantRepository {
           cityId: cityId,
           address: address,
           hidePhoneNumber: hidePhoneNumber,
+          isActive: isActive,
           imagePath: imagePath,
         );
 

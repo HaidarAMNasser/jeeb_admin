@@ -53,7 +53,7 @@ class CountryModel {
 
   factory CountryModel.fromJson(Map<String, dynamic> json) {
     return CountryModel(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       name: CountryNameModel.fromJson(
         json['name'] as Map<String, dynamic>? ?? {},
       ),

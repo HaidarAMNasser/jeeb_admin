@@ -9,32 +9,40 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 
 class MerchantDetailsOptionsDialog extends StatelessWidget {
   final bool hidePhoneNumber;
+  final bool? merchantIsActive;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onTogglePhoneVisibility;
+  final VoidCallback onToggleMerchantActive;
 
   const MerchantDetailsOptionsDialog({
     super.key,
     required this.hidePhoneNumber,
+    this.merchantIsActive,
     required this.onEdit,
     required this.onDelete,
     required this.onTogglePhoneVisibility,
+    required this.onToggleMerchantActive,
   });
 
   static Future<void> show({
     required BuildContext context,
     required bool hidePhoneNumber,
+    bool? merchantIsActive,
     required VoidCallback onEdit,
     required VoidCallback onDelete,
     required VoidCallback onTogglePhoneVisibility,
+    required VoidCallback onToggleMerchantActive,
   }) {
     return showDialog(
       context: context,
       builder: (context) => MerchantDetailsOptionsDialog(
         hidePhoneNumber: hidePhoneNumber,
+        merchantIsActive: merchantIsActive,
         onEdit: onEdit,
         onDelete: onDelete,
         onTogglePhoneVisibility: onTogglePhoneVisibility,
+        onToggleMerchantActive: onToggleMerchantActive,
       ),
     );
   }
@@ -72,6 +80,17 @@ class MerchantDetailsOptionsDialog extends StatelessWidget {
               },
             ),
             SizedBox(height: AppHeight.s16),
+            if (merchantIsActive != null)
+              _OptionTile(
+                label: merchantIsActive!
+                    ? AppTranslation.merchantDeactivateAction
+                    : AppTranslation.merchantActivateAction,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onToggleMerchantActive();
+                },
+              ),
+            if (merchantIsActive != null) SizedBox(height: AppHeight.s16),
             _OptionTile(
               label: hidePhoneNumber
                   ? AppTranslation.showPhoneNumber

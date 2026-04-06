@@ -29,6 +29,11 @@ class OrderModel {
   final String? merchantId;
   final String? createdAt;
   final String? updatedAt;
+  final String? deliveryLandmark;
+  final String? deliverySpecialInstructions;
+  final String? ownerFirstName;
+  final String? ownerLastName;
+  final String? ownerPhone;
 
   OrderModel({
     required this.id,
@@ -56,6 +61,11 @@ class OrderModel {
     this.merchantId,
     this.createdAt,
     this.updatedAt,
+    this.deliveryLandmark,
+    this.deliverySpecialInstructions,
+    this.ownerFirstName,
+    this.ownerLastName,
+    this.ownerPhone,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -121,8 +131,29 @@ class OrderModel {
         json['createdAt']?.toString();
 
     String? deliveryAddress;
-    if (coords is Map<String, dynamic> && coords['address'] != null) {
-      deliveryAddress = coords['address']?.toString();
+    String? deliveryLandmark;
+    String? deliverySpecialInstructions;
+    if (coords is Map<String, dynamic>) {
+      if (coords['address'] != null) {
+        deliveryAddress = coords['address']?.toString();
+      }
+      if (coords['landmark'] != null) {
+        deliveryLandmark = coords['landmark']?.toString();
+      }
+      if (coords['specialInstructions'] != null) {
+        deliverySpecialInstructions =
+            coords['specialInstructions']?.toString();
+      }
+    }
+
+    String? ownerFirstName;
+    String? ownerLastName;
+    String? ownerPhone;
+    final ownerJson = json['owner'];
+    if (ownerJson is Map<String, dynamic>) {
+      ownerFirstName = ownerJson['firstName']?.toString();
+      ownerLastName = ownerJson['lastName']?.toString();
+      ownerPhone = ownerJson['phone']?.toString();
     }
 
     final customer = _parseOrderCustomer(json);
@@ -169,11 +200,7 @@ class OrderModel {
               ? DeliveryManModel.fromJson(
                   json['delivery'] as Map<String, dynamic>,
                 )
-              : (json['owner'] != null
-                  ? DeliveryManModel.fromJson(
-                      json['owner'] as Map<String, dynamic>,
-                    )
-                  : null)),
+              : null),
       date: dateStr,
       longitude: longitude,
       latitude: latitude,
@@ -198,6 +225,11 @@ class OrderModel {
       merchantId: json['merchantId']?.toString() ?? json['ownerId']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
+      deliveryLandmark: deliveryLandmark,
+      deliverySpecialInstructions: deliverySpecialInstructions,
+      ownerFirstName: ownerFirstName,
+      ownerLastName: ownerLastName,
+      ownerPhone: ownerPhone,
     );
   }
 

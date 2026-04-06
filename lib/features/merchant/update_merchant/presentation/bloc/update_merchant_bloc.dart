@@ -22,6 +22,7 @@ class UpdateMerchantBloc extends Bloc<UpdateMerchantEvent, UpdateMerchantState> 
           cityId: event.cityId,
           address: event.address,
           hidePhoneNumber: event.hidePhoneNumber,
+          isActive: event.isActive,
         );
         result.fold(
           (failure) => emit(UpdateMerchantError(message: failure.message)),

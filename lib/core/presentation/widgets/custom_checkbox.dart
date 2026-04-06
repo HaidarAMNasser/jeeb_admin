@@ -47,14 +47,16 @@ class CustomCheckbox extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: AppPadding.p8),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               checkbox,
-              CustomText(
-                text: label!,
-                textStyle: TextStyle(
-                  color: ColorManager.textColor,
-                  fontSize: 15,
+              Expanded(
+                child: CustomText(
+                  text: label!,
+                  textStyle: TextStyle(
+                    color: ColorManager.textColor,
+                    fontSize: 15,
+                  ),
                 ),
               ),
             ],

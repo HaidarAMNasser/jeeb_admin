@@ -23,6 +23,7 @@ extension MerchantMapper on MerchantModel {
       notificationChannel: notificationChannel,
       birthday: birthday,
       isOnline: isOnline,
+      isActive: isActive,
       verifiedAt: verifiedAt,
       createdAt: createdAt,
       updatedAt: updatedAt,

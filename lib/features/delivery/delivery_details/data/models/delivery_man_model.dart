@@ -60,6 +60,8 @@ class DeliveryManModel {
   final CountryModel? country;
   final CityModel? city;
   final int? officeOwnerId;
+  final double? currentLat;
+  final double? currentLng;
 
   DeliveryManModel({
     required this.id,
@@ -83,9 +85,18 @@ class DeliveryManModel {
     this.country,
     this.city,
     this.officeOwnerId,
+    this.currentLat,
+    this.currentLng,
   });
 
   factory DeliveryManModel.fromJson(Map<String, dynamic> json) {
+    double? lat = (json['currentLat'] as num?)?.toDouble();
+    double? lng = (json['currentLng'] as num?)?.toDouble();
+    final loc = json['location'];
+    if (lat == null && loc is Map<String, dynamic>) {
+      lat = (loc['lat'] as num?)?.toDouble() ?? (loc['latitude'] as num?)?.toDouble();
+      lng = (loc['lng'] as num?)?.toDouble() ?? (loc['longitude'] as num?)?.toDouble();
+    }
     return DeliveryManModel(
       id: json['id']?.toString() ?? '',
       firstName: json['firstName']?.toString() ?? '',
@@ -96,8 +107,12 @@ class DeliveryManModel {
       isActive: json['isActive'] as bool?,
       role: json['role']?.toString(),
       notificationChannel: json['notificationChannel']?.toString(),
-      countryId: json['countryId'] as int?,
-      cityId: json['cityId'] as int?,
+      countryId: json['countryId'] == null
+          ? null
+          : (json['countryId'] as num).toInt(),
+      cityId: json['cityId'] == null
+          ? null
+          : (json['cityId'] as num).toInt(),
       address: json['address']?.toString(),
       birthday: json['birthday']?.toString(),
       isOnline: json['isOnline'] as bool?,
@@ -114,6 +129,8 @@ class DeliveryManModel {
           ? CityModel.fromJson(json['city'] as Map<String, dynamic>)
           : null,
       officeOwnerId: json['officeOwnerId'] as int?,
+      currentLat: lat,
+      currentLng: lng,
     );
   }
 

@@ -72,11 +72,23 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
   void initState() {
     super.initState();
     if (_isEditMode && widget.deliveryMan != null) {
+      final dm = widget.deliveryMan!;
       _controllers.fillFrom(
-        name: widget.deliveryMan!.name,
-        phone: widget.deliveryMan!.phone,
-        email: widget.deliveryMan!.email,
+        name: dm.name,
+        phone: dm.phone,
+        email: dm.email,
+        firstNameStr: dm.firstName,
+        lastNameStr: dm.lastName,
       );
+      _controllers.address.text = dm.address ?? '';
+      final b = dm.birthday;
+      if (b != null && b.isNotEmpty) {
+        _controllers.birthday.text = b.replaceAll(RegExp(r'\D'), '');
+      }
+      _mapLatitude = dm.currentLat;
+      _mapLongitude = dm.currentLng;
+      _selectedCountry = dm.country;
+      _selectedCity = dm.city;
     }
   }
 
@@ -100,6 +112,8 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
               imagePath: values.imagePath,
               countryId: values.countryId,
               cityId: values.cityId,
+              latitude: values.latitude,
+              longitude: values.longitude,
             ),
           );
     } else {

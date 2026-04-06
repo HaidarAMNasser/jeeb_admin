@@ -24,17 +24,20 @@ class GetSettingsMapper {
         supportPhone: '',
         whatsappNumber: '',
         defaultProductCommissionRate: 0,
+        deliveryTipPerKilometer: 0,
       );
     }
 
     final supportPhoneObj = data['supportPhone'] as Map<String, dynamic>?;
     final whatsappObj = data['whatsappNumber'] as Map<String, dynamic>?;
     final commissionObj = data['defaultProductCommissionRate'] as Map<String, dynamic>?;
+    final tipKmObj = data['deliveryTipPerKilometer'] as Map<String, dynamic>?;
 
     return SettingsEntity(
       supportPhone: _valueToString(supportPhoneObj?['value']),
       whatsappNumber: _valueToString(whatsappObj?['value']),
       defaultProductCommissionRate: _valueToNum(commissionObj?['value']),
+      deliveryTipPerKilometer: _valueToNum(tipKmObj?['value']),
     );
   }
 }

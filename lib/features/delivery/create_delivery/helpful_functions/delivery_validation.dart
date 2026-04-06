@@ -41,11 +41,10 @@ void deliveryValidationToast({
       customToast(msg: AppTranslation.passwordMustBeAtLeast6Characters);
       return;
     }
+  }
 
-    if (latitude == null || longitude == null) {
-      customToast(msg: AppTranslation.deliveryLocationRequired);
-      return;
-    }
+  if (latitude == null || longitude == null) {
+    customToast(msg: AppTranslation.deliveryLocationRequired);
   }
 }
 
@@ -67,8 +66,8 @@ bool isDeliveryFormValid({
   if (!isEditMode) {
     if (password == null || password.trim().isEmpty) return false;
     if (password.trim().length < 6) return false;
-    if (latitude == null || longitude == null) return false;
   }
+  if (latitude == null || longitude == null) return false;
 
   return true;
 }

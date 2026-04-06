@@ -264,6 +264,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
     MultipartFile? image,
   }) async {
@@ -286,6 +287,8 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
       formData.fields.add(MapEntry('longitude', longitude.toString()));
     if (isActive != null)
       formData.fields.add(MapEntry('isActive', isActive.toString()));
+    if (isOpen != null)
+      formData.fields.add(MapEntry('isOpen', isOpen.toString()));
     if (restaurantName != null) {
       formData.fields.add(MapEntry('restaurantName', restaurantName));
     }
@@ -345,7 +348,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         Options(method: 'POST', headers: headers, extra: extra)
             .compose(
               dio.options,
-              'users/firebase-token',
+              'auth/firebase-token',
               queryParameters: queryParameters,
               data: data,
             )

@@ -74,6 +74,7 @@ abstract class AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
     MultipartFile? image,
   });
@@ -82,7 +83,7 @@ abstract class AppApiServiceClient {
   Future<Response> logout();
 
   /// Registers or updates the device FCM token for the current user.
-  @POST("users/firebase-token")
+  @POST("auth/firebase-token")
   Future<Response> updateDeviceToken({
     @Field('token') required String token,
     @Field('platform') required String platform,

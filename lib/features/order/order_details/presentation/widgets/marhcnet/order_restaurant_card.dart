@@ -22,7 +22,12 @@ class OrderRestaurantCard extends StatelessWidget {
     final n = order.restaurantName?.trim();
     if (n != null && n.isNotEmpty) return true;
     final m = order.merchantId?.trim();
-    return m != null && m.isNotEmpty;
+    if (m != null && m.isNotEmpty) return true;
+    final on = '${order.ownerFirstName ?? ''} ${order.ownerLastName ?? ''}'
+        .trim();
+    if (on.isNotEmpty) return true;
+    final op = order.ownerPhone?.trim();
+    return op != null && op.isNotEmpty;
   }
 
   @override
@@ -31,7 +36,14 @@ class OrderRestaurantCard extends StatelessWidget {
     final hasName = name != null && name.isNotEmpty;
     final hasMerchantId =
         order.merchantId != null && order.merchantId!.trim().isNotEmpty;
-    if (!hasName && !hasMerchantId) return const SizedBox.shrink();
+    final ownerName =
+        '${order.ownerFirstName ?? ''} ${order.ownerLastName ?? ''}'.trim();
+    final hasOwnerName = ownerName.isNotEmpty;
+    final ownerPhone = order.ownerPhone?.trim();
+    final hasOwnerPhone = ownerPhone != null && ownerPhone.isNotEmpty;
+    if (!hasName && !hasMerchantId && !hasOwnerName && !hasOwnerPhone) {
+      return const SizedBox.shrink();
+    }
 
     final merchantId = order.merchantId?.trim() ?? '';
 
@@ -74,8 +86,17 @@ class OrderRestaurantCard extends StatelessWidget {
               ),
               SizedBox(height: AppHeight.s12),
               if (hasName) _row(AppTranslation.restaurantName, name),
-              if (hasMerchantId) ...[
+              if (hasOwnerName) ...[
                 if (hasName) SizedBox(height: AppHeight.s8),
+                _row(AppTranslation.owner, ownerName),
+              ],
+              if (hasOwnerPhone) ...[
+                if (hasName || hasOwnerName) SizedBox(height: AppHeight.s8),
+                _row(AppTranslation.phone, ownerPhone),
+              ],
+              if (hasMerchantId) ...[
+                if (hasName || hasOwnerName || hasOwnerPhone)
+                  SizedBox(height: AppHeight.s8),
                 _row(
                   AppTranslation.orderMerchantIdLabel,
                   merchantId,

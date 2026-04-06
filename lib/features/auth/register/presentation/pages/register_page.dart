@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
+import 'package:jeeb_admin/core/presentation/maps/google_map_location_picker_page.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
@@ -56,26 +56,26 @@ class RegisterPage extends StatelessWidget {
 
   Future<void> _onUseMyLocation(BuildContext context) async {
     final bloc = context.read<RegisterBloc>();
-
     bloc.add(const RegisterLocationLoadingChanged(true));
     try {
-      final position = await LocationPermissionHelper.requestAndGetPosition();
+      final result = await Navigator.of(context).push<GoogleMapLocationPickResult>(
+        MaterialPageRoute(
+          builder: (_) => GoogleMapLocationPickerPage(
+            initialLatitude: bloc.useLocationLat,
+            initialLongitude: bloc.useLocationLng,
+          ),
+        ),
+      );
       if (!context.mounted) return;
-
-      if (position != null) {
+      if (result != null) {
         bloc.add(
           RegisterLocationUpdated(
-            latitude: position.latitude,
-            longitude: position.longitude,
+            latitude: result.latitude,
+            longitude: result.longitude,
           ),
         );
-        return;
       }
-
-      customToast(msg: AppTranslation.locationPermissionDenied);
     } finally {
-      // Always clear loading so the row stays tappable after deny, error, or
-      // if the widget unmounted during await (bloc still needs a consistent state).
       bloc.add(const RegisterLocationLoadingChanged(false));
     }
   }

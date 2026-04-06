@@ -25,6 +25,8 @@ class UserEntity extends Equatable {
   final String? address;
   final bool? isOnline;
   final bool? isActive;
+  /// Merchant: restaurant open for orders (`isOpen` from API).
+  final bool? isOpen;
   final DateTime? verifiedAt;
   final bool isVerified;
   final double? currentLat;
@@ -51,6 +53,7 @@ class UserEntity extends Equatable {
     this.address,
     this.isOnline,
     this.isActive,
+    this.isOpen,
     this.verifiedAt,
     this.isVerified = false,
     this.currentLat,
@@ -79,6 +82,7 @@ class UserEntity extends Equatable {
         address,
         isOnline,
         isActive,
+        isOpen,
         verifiedAt,
         isVerified,
         currentLat,

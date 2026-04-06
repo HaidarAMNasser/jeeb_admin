@@ -51,6 +51,7 @@ class MerchantModel {
   final String? address;
   final String? birthday;
   final bool? isOnline;
+  final bool? isActive;
   final String? verifiedAt;
   final String? createdAt;
   final String? updatedAt;
@@ -73,6 +74,7 @@ class MerchantModel {
     this.address,
     this.birthday,
     this.isOnline,
+    this.isActive,
     this.verifiedAt,
     this.createdAt,
     this.updatedAt,
@@ -97,6 +99,7 @@ class MerchantModel {
       address: json['address']?.toString(),
       birthday: json['birthday']?.toString(),
       isOnline: json['isOnline'] as bool?,
+      isActive: json['isActive'] as bool?,
       verifiedAt: json['verifiedAt']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
@@ -139,6 +142,7 @@ class MerchantModel {
       'address': address,
       'birthday': birthday,
       'isOnline': isOnline,
+      'isActive': isActive,
       'verifiedAt': verifiedAt,
       'createdAt': createdAt,
       'updatedAt': updatedAt,

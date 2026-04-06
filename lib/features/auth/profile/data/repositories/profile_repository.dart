@@ -78,6 +78,7 @@ class ProfileRepository {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
   }) {
     final now = DateTime.now();
     return UserEntity(
@@ -94,6 +95,7 @@ class ProfileRepository {
       updatedAt: now,
       address: null,
       isActive: isActive ?? true,
+      isOpen: isOpen ?? true,
       isVerified: true,
       currentLat: latitude,
       currentLng: longitude,
@@ -111,6 +113,7 @@ class ProfileRepository {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
     dynamic imageFile,
   }) async {
@@ -119,6 +122,7 @@ class ProfileRepository {
         latitude: latitude,
         longitude: longitude,
         isActive: isActive,
+        isOpen: isOpen,
       ));
     }
     try {
@@ -141,6 +145,7 @@ class ProfileRepository {
         latitude: latitude,
         longitude: longitude,
         isActive: isActive,
+        isOpen: isOpen,
         restaurantName: restaurantName,
         imageFile: file,
       );
@@ -171,6 +176,7 @@ class ProfileRepository {
         latitude: latitude,
         longitude: longitude,
         isActive: isActive,
+        isOpen: isOpen,
       ));
     }
   }

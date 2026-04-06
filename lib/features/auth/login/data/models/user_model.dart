@@ -40,6 +40,7 @@ class UserModel {
   final String? address;
   final bool? isOnline;
   final bool? isActive;
+  final bool? isOpen;
   final String? verifiedAt;
   final bool isVerified;
   final double? currentLat;
@@ -64,6 +65,7 @@ class UserModel {
     this.address,
     this.isOnline,
     this.isActive,
+    this.isOpen,
     this.verifiedAt,
     this.isVerified = false,
     this.currentLat,
@@ -101,6 +103,7 @@ class UserModel {
       address: json['address'] as String?,
       isOnline: json['isOnline'] as bool?,
       isActive: json['isActive'] as bool?,
+      isOpen: json['isOpen'] as bool?,
       verifiedAt: json['verifiedAt'] as String?,
       isVerified: _parseIsVerified(json),
       currentLat: json['currentLat'] != null
@@ -202,6 +205,7 @@ class UserModel {
       address: address,
       isOnline: isOnline,
       isActive: isActive,
+      isOpen: isOpen,
       verifiedAt: verifiedAt != null ? DateTime.tryParse(verifiedAt!) : null,
       isVerified: isVerified,
       currentLat: currentLat,

@@ -25,6 +25,8 @@ class UpdateDeliveryBloc extends Bloc<UpdateDeliveryEvent, UpdateDeliveryState> 
           birthday: event.birthday,
           notificationChannel: event.notificationChannel,
           imagePath: event.imagePath,
+          latitude: event.latitude,
+          longitude: event.longitude,
         );
         result.fold(
           (failure) => emit(UpdateDeliveryError(message: failure.message)),

@@ -16,6 +16,7 @@ abstract class ProfileRemoteDataSource {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
     File? imageFile,
   });
@@ -42,6 +43,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
     File? imageFile,
   }) async {
@@ -61,6 +63,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       latitude: latitude,
       longitude: longitude,
       isActive: isActive,
+      isOpen: isOpen,
       restaurantName: restaurantName,
       image: image,
     );

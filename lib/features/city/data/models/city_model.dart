@@ -41,11 +41,11 @@ class CityModel {
 
   factory CityModel.fromJson(Map<String, dynamic> json) {
     return CityModel(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       name: CityNameModel.fromJson(
         json['name'] as Map<String, dynamic>? ?? {},
       ),
-      countryId: json['countryId'] as int? ?? 0,
+      countryId: (json['countryId'] as num?)?.toInt() ?? 0,
     );
   }
 

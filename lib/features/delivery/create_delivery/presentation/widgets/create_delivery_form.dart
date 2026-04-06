@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
@@ -7,9 +8,11 @@ import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart'
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/helpful_functions/delivery_validation.dart';
+import 'package:jeeb_admin/features/delivery/create_delivery/helpful_functions/birthday_format.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_controllers.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_values.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
+import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 
 class CreateDeliveryForm extends StatelessWidget {
   final bool isEdit;
@@ -22,7 +25,7 @@ class CreateDeliveryForm extends StatelessWidget {
   final void Function(CityEntity?) onCityChanged;
   final GlobalKey<FormState> formKey;
   final void Function(DeliveryFormValues values) onSubmit;
-  /// Create flow: required map pick; ignored when [isEdit].
+  /// Picked driver coordinates (create and edit).
   final double? mapLatitude;
   final double? mapLongitude;
   final VoidCallback onPickMapLocation;
@@ -64,23 +67,21 @@ class CreateDeliveryForm extends StatelessWidget {
               onSelectCity: onCityChanged,
               isRequired: false,
             ),
-            if (!isEdit) ...[
-              SizedBox(height: AppHeight.s16),
-              LocationSourceSelector(
-                title: AppTranslation.deliveryPickLocation,
-                useMyLocationHint: AppTranslation.deliveryOpenMap,
-                locationSetHint: AppTranslation.locationSetFormat,
-                latitude: mapLatitude,
-                longitude: mapLongitude,
-                isRequired: true,
-                onUseMyLocation: onPickMapLocation,
-                onClearLocation:
-                    (mapLatitude != null || mapLongitude != null)
-                        ? onClearMapLocation
-                        : null,
-                isLoading: false,
-              ),
-            ],
+            SizedBox(height: AppHeight.s16),
+            LocationSourceSelector(
+              title: AppTranslation.deliveryPickLocation,
+              useMyLocationHint: AppTranslation.deliveryOpenMap,
+              locationSetHint: AppTranslation.locationSetFormat,
+              latitude: mapLatitude,
+              longitude: mapLongitude,
+              isRequired: true,
+              onUseMyLocation: onPickMapLocation,
+              onClearLocation:
+                  (mapLatitude != null || mapLongitude != null)
+                      ? onClearMapLocation
+                      : null,
+              isLoading: false,
+            ),
             SizedBox(height: AppHeight.s24),
             CustomButton(
               text: isEdit
@@ -127,7 +128,18 @@ class CreateDeliveryForm extends StatelessWidget {
     }
 
     final address = controllers.address.text.trim();
-    final birthday = controllers.birthday.text.trim();
+    final rawBirthday = controllers.birthday.text.trim();
+    final String? birthday;
+    if (rawBirthday.isEmpty) {
+      birthday = null;
+    } else {
+      final normalized = normalizeBirthdayForPayload(rawBirthday);
+      if (normalized == null) {
+        customToast(msg: AppTranslation.deliveryBirthdayInvalid);
+        return;
+      }
+      birthday = normalized;
+    }
 
     onSubmit(
       DeliveryFormValues(
@@ -137,12 +149,12 @@ class CreateDeliveryForm extends StatelessWidget {
         email: email,
         password: password,
         address: address.isEmpty ? null : address,
-        birthday: birthday.isEmpty ? null : birthday,
+        birthday: birthday,
         imagePath: imagePath,
         countryId: selectedCountry?.id,
         cityId: selectedCity?.id,
-        latitude: isEdit ? null : mapLatitude,
-        longitude: isEdit ? null : mapLongitude,
+        latitude: mapLatitude,
+        longitude: mapLongitude,
       ),
     );
   }
@@ -201,8 +213,13 @@ class _DeliveryFormFields extends StatelessWidget {
         SizedBox(height: AppHeight.s16),
         CustomTextField(
           controller: controllers.birthday,
-          title: 'Birthday',
-          hintText: 'YYYY-MM-DD',
+          title: AppTranslation.deliveryBirthday,
+          hintText: AppTranslation.deliveryBirthdayHint,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(8),
+          ],
         ),
       ],
     );

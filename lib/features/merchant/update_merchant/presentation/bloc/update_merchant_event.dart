@@ -17,6 +17,7 @@ class UpdateMerchantSubmitted extends UpdateMerchantEvent {
   final int? cityId;
   final String? address;
   final bool? hidePhoneNumber;
+  final bool? isActive;
 
   const UpdateMerchantSubmitted({
     required this.id,
@@ -28,6 +29,7 @@ class UpdateMerchantSubmitted extends UpdateMerchantEvent {
     this.cityId,
     this.address,
     this.hidePhoneNumber,
+    this.isActive,
   });
 
   @override
@@ -41,5 +43,6 @@ class UpdateMerchantSubmitted extends UpdateMerchantEvent {
         cityId,
         address,
         hidePhoneNumber,
+        isActive,
       ];
 }

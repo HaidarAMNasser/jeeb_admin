@@ -58,13 +58,13 @@ class ProfileForm extends StatelessWidget {
         children: [
           if (isMerchantFromStorage)
             CustomCheckbox(
-              value: user.isActive ?? true,
+              value: user.isOpen ?? true,
               onChanged: (value) {
                 if (value != null) {
                   onAccountStatusChanged(value);
                 }
               },
-              label: AppTranslation.accountStatus,
+              label: AppTranslation.restaurantOpenNow,
             ),
           CustomTextField(
             title: AppTranslation.firstName,

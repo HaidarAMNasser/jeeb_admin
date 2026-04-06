@@ -34,10 +34,17 @@ class DeliveryFormControllers {
     required String name,
     required String phone,
     required String email,
+    String? firstNameStr,
+    String? lastNameStr,
   }) {
-    final parts = name.split(' ');
-    firstName.text = parts.isNotEmpty ? parts.first : '';
-    lastName.text = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    if (firstNameStr != null || lastNameStr != null) {
+      firstName.text = firstNameStr ?? '';
+      lastName.text = lastNameStr ?? '';
+    } else {
+      final parts = name.split(' ');
+      firstName.text = parts.isNotEmpty ? parts.first : '';
+      lastName.text = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    }
     this.phone.text = phone;
     this.email.text = email;
   }

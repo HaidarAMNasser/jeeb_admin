@@ -20,6 +20,8 @@ class UpdateDeliverySubmitted extends UpdateDeliveryEvent {
   final String? birthday;
   final String? notificationChannel;
   final String? imagePath;
+  final double? latitude;
+  final double? longitude;
 
   const UpdateDeliverySubmitted({
     required this.id,
@@ -34,6 +36,8 @@ class UpdateDeliverySubmitted extends UpdateDeliveryEvent {
     this.birthday,
     this.notificationChannel,
     this.imagePath,
+    this.latitude,
+    this.longitude,
   });
 
   @override
@@ -50,5 +54,7 @@ class UpdateDeliverySubmitted extends UpdateDeliveryEvent {
         birthday ?? '',
         notificationChannel ?? '',
         imagePath ?? '',
+        latitude ?? 0.0,
+        longitude ?? 0.0,
       ];
 }

@@ -40,6 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           latitude: event.latitude,
           longitude: event.longitude,
           isActive: event.isActive,
+          isOpen: event.isOpen,
           restaurantName: event.restaurantName,
           imageFile: event.imageFile,
         );
@@ -107,7 +108,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       } else if (event is UpdateLocation) {
         add(UpdateProfile(latitude: event.latitude, longitude: event.longitude));
       } else if (event is UpdateAccountActive) {
-        add(UpdateProfile(isActive: event.isActive));
+        add(UpdateProfile(isOpen: event.isOpen));
       }
     });
   }

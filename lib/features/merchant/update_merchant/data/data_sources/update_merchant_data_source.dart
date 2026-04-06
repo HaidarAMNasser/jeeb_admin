@@ -12,6 +12,7 @@ abstract class UpdateMerchantRemoteDataSource {
     int? cityId,
     String? address,
     bool? hidePhoneNumber,
+    bool? isActive,
     String? imagePath,
   });
 }
@@ -33,6 +34,7 @@ class UpdateMerchantRemoteDataSourceImpl
     int? cityId,
     String? address,
     bool? hidePhoneNumber,
+    bool? isActive,
     String? imagePath,
   }) async {
     final formData = FormData.fromMap({
@@ -44,6 +46,7 @@ class UpdateMerchantRemoteDataSourceImpl
       if (cityId != null) 'cityId': cityId,
       if (address != null && address.isNotEmpty) 'address': address,
       if (hidePhoneNumber != null) 'hidePhoneNumber': hidePhoneNumber,
+      if (isActive != null) 'isActive': isActive,
       if (imagePath != null && imagePath.isNotEmpty)
         'image': await MultipartFile.fromFile(imagePath),
     });

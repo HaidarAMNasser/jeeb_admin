@@ -21,6 +21,7 @@ class UpdateProfile extends ProfileEvent {
   final double? latitude;
   final double? longitude;
   final bool? isActive;
+  final bool? isOpen;
   final String? restaurantName;
   final dynamic imageFile;
 
@@ -34,6 +35,7 @@ class UpdateProfile extends ProfileEvent {
     this.latitude,
     this.longitude,
     this.isActive,
+    this.isOpen,
     this.restaurantName,
     this.imageFile,
   });
@@ -49,6 +51,7 @@ class UpdateProfile extends ProfileEvent {
         latitude,
         longitude,
         isActive,
+        isOpen,
         restaurantName,
         imageFile,
       ];
@@ -106,11 +109,12 @@ class UpdateLocation extends ProfileEvent {
 }
 
 class UpdateAccountActive extends ProfileEvent {
-  final bool isActive;
+  /// Merchant: restaurant open (`isOpen` in API).
+  final bool isOpen;
 
-  const UpdateAccountActive(this.isActive);
+  const UpdateAccountActive(this.isOpen);
 
   @override
-  List<Object?> get props => [isActive];
+  List<Object?> get props => [isOpen];
 }
 

@@ -36,6 +36,11 @@ class OrderEntity extends Equatable {
   final String? merchantId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? deliveryLandmark;
+  final String? deliverySpecialInstructions;
+  final String? ownerFirstName;
+  final String? ownerLastName;
+  final String? ownerPhone;
 
   const OrderEntity({
     required this.id,
@@ -63,7 +68,20 @@ class OrderEntity extends Equatable {
     this.merchantId,
     this.createdAt,
     this.updatedAt,
+    this.deliveryLandmark,
+    this.deliverySpecialInstructions,
+    this.ownerFirstName,
+    this.ownerLastName,
+    this.ownerPhone,
   });
+
+  /// Delivery location section: coordinates and/or address fields from API.
+  bool get hasDeliveryLocationInfo =>
+      (latitude != null && longitude != null) ||
+      (deliveryAddress != null && deliveryAddress!.trim().isNotEmpty) ||
+      (deliveryLandmark != null && deliveryLandmark!.trim().isNotEmpty) ||
+      (deliverySpecialInstructions != null &&
+          deliverySpecialInstructions!.trim().isNotEmpty);
 
   @override
   List<Object?> get props => [
@@ -92,6 +110,11 @@ class OrderEntity extends Equatable {
         merchantId,
         createdAt,
         updatedAt,
+        deliveryLandmark,
+        deliverySpecialInstructions,
+        ownerFirstName,
+        ownerLastName,
+        ownerPhone,
       ];
 }
 

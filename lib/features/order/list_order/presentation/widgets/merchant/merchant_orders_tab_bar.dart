@@ -9,7 +9,7 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/features/order/list_order/domain/merchant_orders_tab.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 
-/// Merchant only: segmented tabs (pending / confirmed / in progress).
+/// Merchant only: segmented tabs (pending / in progress).
 class MerchantOrdersTabBar extends StatelessWidget {
   const MerchantOrdersTabBar({super.key, required this.controller});
 
@@ -19,10 +19,6 @@ class MerchantOrdersTabBar extends StatelessWidget {
         (
           label: AppTranslation.merchantOrdersTabPending,
           icon: Icons.schedule_rounded,
-        ),
-        (
-          label: AppTranslation.merchantOrdersTabConfirmed,
-          icon: Icons.verified_rounded,
         ),
         (
           label: AppTranslation.merchantOrdersTabOthers,
@@ -71,7 +67,7 @@ class MerchantOrdersTabBar extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(AppPadding.p4),
               child: Row(
-                children: List.generate(3, (index) {
+                children: List.generate(2, (index) {
                   final isSelected = selected == index;
                   final tab = tabs[index];
                   return Expanded(

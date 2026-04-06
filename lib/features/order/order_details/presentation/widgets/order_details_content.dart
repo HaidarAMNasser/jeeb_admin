@@ -64,10 +64,13 @@ class OrderDetailsContent extends StatelessWidget {
             SizedBox(height: AppHeight.s16),
           ],
 
-          if (order.latitude != null && order.longitude != null) ...[
+          if (order.hasDeliveryLocationInfo) ...[
             OrderLocationCard(
-              latitude: order.latitude!,
-              longitude: order.longitude!,
+              address: order.deliveryAddress,
+              landmark: order.deliveryLandmark,
+              specialInstructions: order.deliverySpecialInstructions,
+              latitude: order.latitude,
+              longitude: order.longitude,
             ),
           ],
         ],

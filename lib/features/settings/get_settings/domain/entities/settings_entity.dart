@@ -5,13 +5,20 @@ class SettingsEntity extends Equatable {
   final String supportPhone;
   final String whatsappNumber;
   final num defaultProductCommissionRate;
+  final num deliveryTipPerKilometer;
 
   const SettingsEntity({
     required this.supportPhone,
     required this.whatsappNumber,
     required this.defaultProductCommissionRate,
+    this.deliveryTipPerKilometer = 0,
   });
 
   @override
-  List<Object?> get props => [supportPhone, whatsappNumber, defaultProductCommissionRate];
+  List<Object?> get props => [
+        supportPhone,
+        whatsappNumber,
+        defaultProductCommissionRate,
+        deliveryTipPerKilometer,
+      ];
 }

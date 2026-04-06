@@ -19,7 +19,7 @@ import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
     as di;
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
-import 'package:jeeb_admin/features/auth/profile/presentation/widgets/location_map_picker_page.dart';
+import 'package:jeeb_admin/core/presentation/maps/google_map_location_picker_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_page_content.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -232,9 +232,9 @@ class _ProfilePageState extends State<ProfilePage> {
     BuildContext context,
     ProfileLoaded loaded,
   ) async {
-    final result = await Navigator.of(context).push<LocationMapPickerResult>(
+    final result = await Navigator.of(context).push<GoogleMapLocationPickResult>(
       MaterialPageRoute(
-        builder: (ctx) => LocationMapPickerPage(
+        builder: (ctx) => GoogleMapLocationPickerPage(
           initialLatitude: loaded.user.currentLat,
           initialLongitude: loaded.user.currentLng,
         ),
