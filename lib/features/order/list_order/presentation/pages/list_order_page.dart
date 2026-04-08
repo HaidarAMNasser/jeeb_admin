@@ -36,7 +36,7 @@ class _ListOrderPageState extends State<ListOrderPage>
   void initState() {
     super.initState();
     if (widget.isMerchant) {
-      _tabController = TabController(length: 2, vsync: this);
+      _tabController = TabController(length: 3, vsync: this);
     }
     _scrollController.addListener(_onScroll);
   }

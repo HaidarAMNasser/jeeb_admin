@@ -237,6 +237,7 @@
   "merchant_set_preparing": "قيد التحضير",
   "merchant_set_ready_pickup": "جاهز للاستلام",
   "merchant_orders_tab_pending": "قيد الانتظار",
+  "merchant_orders_tab_preparing": "قيد التحضير",
   "merchant_orders_tab_confirmed": "مؤكد",
   "merchant_orders_tab_delivered": "تم التسليم",
   "merchant_orders_tab_others": "قيد التنفيذ",

@@ -75,7 +75,11 @@ class ListOrderRepository {
             var list = baseResponseModel.data!.toDomain();
             if (filterMerchantOthers) {
               list = list
-                  .where((o) => o.statusEnum != OrderStatus.pending)
+                  .where(
+                    (o) =>
+                        o.statusEnum != OrderStatus.pending &&
+                        o.statusEnum != OrderStatus.preparing,
+                  )
                   .toList();
             }
             return Right(list);

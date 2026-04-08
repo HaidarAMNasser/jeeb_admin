@@ -237,6 +237,7 @@
   "merchant_set_preparing": "Preparing",
   "merchant_set_ready_pickup": "Ready for pickup",
   "merchant_orders_tab_pending": "Pending",
+  "merchant_orders_tab_preparing": "Preparing",
   "merchant_orders_tab_delivered": "Delivered",
   "merchant_orders_tab_confirmed": "Confirmed",
   "merchant_orders_tab_others": "In progress",

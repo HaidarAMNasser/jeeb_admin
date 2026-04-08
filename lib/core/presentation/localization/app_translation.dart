@@ -283,6 +283,8 @@ class AppTranslation {
   static String get merchantSetPreparing => 'merchant_set_preparing'.tr();
   static String get merchantSetReadyPickup => 'merchant_set_ready_pickup'.tr();
   static String get merchantOrdersTabPending => 'merchant_orders_tab_pending'.tr();
+  static String get merchantOrdersTabPreparing =>
+      'merchant_orders_tab_preparing'.tr();
   static String get merchantOrdersTabConfirmed => 'merchant_orders_tab_confirmed'.tr();
   static String get merchantOrdersTabOthers => 'merchant_orders_tab_others'.tr();
   static String get ordersFilterTitle => 'orders_filter_title'.tr();
