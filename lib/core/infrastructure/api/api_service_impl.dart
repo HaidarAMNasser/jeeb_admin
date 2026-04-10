@@ -1007,6 +1007,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     return result;
   }
+  
 
   @override
   Future<Response> cancelOrder(String id) async {
