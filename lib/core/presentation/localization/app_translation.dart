@@ -232,6 +232,10 @@ class AppTranslation {
   static String get searchOrders => 'search_orders'.tr();
   static String get searchOrdersHint => 'search_orders_hint'.tr();
   static String get orderCompletedSuccessfully => 'order_completed_successfully'.tr();
+  static String get paymentReceipts => 'payment_receipts'.tr();
+  static String get confirmOrderPaidComplete => 'confirm_order_paid_complete'.tr();
+  static String get areYouSureConfirmPaidComplete =>
+      'are_you_sure_confirm_paid_complete'.tr();
   static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
   static String get order => 'order'.tr();
   static String get customer => 'customer'.tr();

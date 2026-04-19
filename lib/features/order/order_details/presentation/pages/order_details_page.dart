@@ -33,6 +33,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       listener: (context, completeState) {
         if (completeState is OrderCompleteSuccess) {
           customToast(msg: AppTranslation.orderCompletedSuccessfully);
+          context.read<OrderDetailsBloc>().add(
+                GetOrderDetailsEvent(widget.orderId),
+              );
         } else if (completeState is OrderCompleteError) {
           customToast(msg: completeState.message);
         }

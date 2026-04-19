@@ -209,7 +209,7 @@ abstract class AppApiServiceClient {
   @GET("orders/{id}")
   Future<Response> getOrderDetails(@Path('id') String id);
 
-  @POST("orders/{id}/complete")
+  @PATCH("orders/{id}/complete")
   Future<Response> completeOrder(@Path('id') String id);
 
   @POST("orders/{id}/cancel")

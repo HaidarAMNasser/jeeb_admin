@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 /// Order status values. Use this instead of raw strings.
-/// Matches API: PENDING, CONFIRMED, PREPARING, READY_FOR_PICKUP, ASSIGNED,
-/// PICKED_UP, ON_THE_WAY, DELIVERED, CANCELLED, REJECTED.
+/// Matches API: PENDING, CONFIRMED, …, DELIVERED, PAID, COMPLETE, CANCELLED, REJECTED.
 enum OrderStatus {
   pending,
   confirmed,
@@ -12,6 +12,8 @@ enum OrderStatus {
   pickedUp,
   onTheWay,
   delivered,
+  paid,
+  complete,
   cancelled,
   rejected,
   unknown;
@@ -36,8 +38,12 @@ enum OrderStatus {
       case 'on_the_way':
         return OrderStatus.onTheWay;
       case 'delivered':
-      case 'completed':
         return OrderStatus.delivered;
+      case 'paid':
+        return OrderStatus.paid;
+      case 'complete':
+      case 'completed':
+        return OrderStatus.complete;
       case 'cancelled':
       case 'canceled':
         return OrderStatus.cancelled;
@@ -67,6 +73,10 @@ enum OrderStatus {
         return 'On the way';
       case OrderStatus.delivered:
         return 'Delivered';
+      case OrderStatus.paid:
+        return 'order_status_paid'.tr();
+      case OrderStatus.complete:
+        return 'order_status_complete'.tr();
       case OrderStatus.cancelled:
         return 'Cancelled';
       case OrderStatus.rejected:
@@ -80,7 +90,10 @@ enum OrderStatus {
   Color get color {
     switch (this) {
       case OrderStatus.delivered:
+      case OrderStatus.complete:
         return Colors.green;
+      case OrderStatus.paid:
+        return Colors.deepPurple;
       case OrderStatus.cancelled:
       case OrderStatus.rejected:
         return Colors.red;
@@ -99,6 +112,9 @@ enum OrderStatus {
     }
   }
 
-  /// True if complete/cancel actions are allowed (e.g. only for pending).
+  /// Merchant: complete/cancel from pending (legacy flow).
   bool get canCompleteOrCancel => this == OrderStatus.pending;
+
+  /// Admin: confirm payment receipts and mark PAID → COMPLETE.
+  bool get canAdminConfirmPaidComplete => this == OrderStatus.paid;
 }

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_customer_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_item_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_payment_receipt_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 
@@ -27,6 +28,7 @@ class OrderEntity extends Equatable {
   final int? ownerRevenue;
   final int? tipAmount;
   final String? couponCode;
+  final List<OrderPaymentReceiptEntity> receipts;
 
   /// Resolved status for UI logic; use this instead of comparing raw [status] strings.
   OrderStatus get statusEnum => OrderStatus.fromString(status);
@@ -59,6 +61,7 @@ class OrderEntity extends Equatable {
     this.merchantId,
     this.createdAt,
     this.updatedAt,
+    this.receipts = const [],
   });
 
   @override
@@ -87,6 +90,7 @@ class OrderEntity extends Equatable {
         merchantId,
         createdAt,
         updatedAt,
+        receipts,
       ];
 }
 

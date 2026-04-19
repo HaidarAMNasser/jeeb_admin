@@ -971,7 +971,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
-        Options(method: 'POST', headers: headers, extra: extra)
+        Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
               'orders/$id/complete',
