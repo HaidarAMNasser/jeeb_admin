@@ -262,5 +262,8 @@
   "default_commission_rate": "Default Commission Rate (%)",
   "enter_commission_rate": "Enter commission rate (e.g. 10)",
   "please_enter_valid_commission_rate": "Please enter a valid commission rate",
+  "max_incomplete_orders_for_driver": "Max active orders per driver",
+  "enter_max_incomplete_orders_for_driver": "e.g. 3 — drivers with this many incomplete orders get no new assignments",
+  "please_enter_valid_max_incomplete_orders": "Please enter a whole number of at least 1",
   "settings_updated_successfully": "Settings updated successfully"
 }

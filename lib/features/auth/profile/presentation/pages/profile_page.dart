@@ -158,8 +158,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                       onChangeLanguage: () => _showLanguageDialog(context),
                       onUpdateLocation: () => _openMapPicker(context, loadedState),
-                      onAccountStatusChanged: (v) =>
-                          context.read<ProfileBloc>().add(UpdateAccountActive(v)),
+                      onAccountStatusChanged: (_) {
+                        final currentOpen = loadedState.user.isOpen ?? true;
+                        context.read<ProfileBloc>().add(UpdateAccountActive(!currentOpen));
+                      },
                       isUpdateLoading: isUpdateLoading,
                       onPickImage: () => _pickAndUpdateImage(context),
                     );

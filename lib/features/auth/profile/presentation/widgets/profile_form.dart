@@ -55,7 +55,7 @@ class ProfileForm extends StatelessWidget {
         children: [
           if (isMerchant)
             CustomCheckbox(
-              value: user.isActive ?? true,
+              value: user.isOpen ?? true,
               onChanged: (value) {
                 if (value != null) {
                   onAccountStatusChanged(value);

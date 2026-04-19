@@ -12,7 +12,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileRepository _profileRepository;
   final StorageService _storageService;
 
-  ProfileBloc(this._profileRepository, this._storageService) : super(const ProfileInitial()) {
+  ProfileBloc(this._profileRepository, this._storageService)
+    : super(const ProfileInitial()) {
     on<ProfileEvent>((event, emit) async {
       if (event is GetProfile) {
         emit(const ProfileLoading());
@@ -25,8 +26,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       } else if (event is UpdateProfile) {
         final current = state;
         final hadUser = current is ProfileLoaded;
-        if (hadUser) {
-          if (!emit.isDone) emit((current).copyWith(isUpdating: true));
+        if (current is ProfileLoaded) {
+          // Optimistic update: reflect isOpen toggle immediately
+          if (event.isOpen != null && !emit.isDone) {
+            final updatedUser = current.user.copyWith(isOpen: event.isOpen);
+            emit(current.copyWith(user: updatedUser, isUpdating: true));
+          } else if (!emit.isDone) {
+            emit(current.copyWith(isUpdating: true));
+          }
         } else {
           emit(const ProfileLoading());
         }
@@ -39,7 +46,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           address: event.address,
           latitude: event.latitude,
           longitude: event.longitude,
-          isActive: event.isActive,
+          isOpen: event.isOpen,
           imageFile: event.imageFile,
         );
 
@@ -52,14 +59,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           },
           (user) async {
             if (!emit.isDone) {
-              emit(ProfileLoaded(
-                user: user,
-                formValuesInitialized: hadUser
-                    ? (current).formValuesInitialized
-                    : false,
-                updateSuccess: true,
-                isUpdating: false,
-              ));
+              // Prefer server isOpen; if missing, keep the value we sent
+              final mergedUser = event.isOpen != null
+                  ? user.copyWith(isOpen: user.isOpen ?? event.isOpen)
+                  : user;
+              emit(
+                ProfileLoaded(
+                  user: mergedUser,
+                  formValuesInitialized: hadUser
+                      ? (current).formValuesInitialized
+                      : false,
+                  updateSuccess: true,
+                  isUpdating: false,
+                ),
+              );
             }
           },
         );
@@ -77,15 +90,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         final firstName = event.firstName.trim();
         final lastName = event.lastName.trim();
         if (firstName.isEmpty || lastName.isEmpty) {
-          if (!emit.isDone) emit(const ProfileError(message: 'First and last name are required'));
+          if (!emit.isDone)
+            emit(
+              const ProfileError(message: 'First and last name are required'),
+            );
           return;
         }
-        add(UpdateProfile(
-          firstName: firstName,
-          lastName: lastName,
-          phone: event.phone.trim(),
-          address: event.address?.trim().isEmpty ?? true ? null : event.address?.trim(),
-        ));
+        add(
+          UpdateProfile(
+            firstName: firstName,
+            lastName: lastName,
+            phone: event.phone.trim(),
+            address: event.address?.trim().isEmpty ?? true
+                ? null
+                : event.address?.trim(),
+          ),
+        );
       } else if (event is ChangeLanguage) {
         await _storageService.setAppLanguage(event.languageCode);
         final current = state;
@@ -94,20 +114,25 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       } else if (event is ClearLocaleToApply) {
         final current = state;
-        if (current is ProfileLoaded && current.localeToApply != null && !emit.isDone) {
-          emit(ProfileLoaded(
-            user: current.user,
-            formValuesInitialized: current.formValuesInitialized,
-            updateSuccess: current.updateSuccess,
-            isUpdating: current.isUpdating,
-          ));
+        if (current is ProfileLoaded &&
+            current.localeToApply != null &&
+            !emit.isDone) {
+          emit(
+            ProfileLoaded(
+              user: current.user,
+              formValuesInitialized: current.formValuesInitialized,
+              updateSuccess: current.updateSuccess,
+              isUpdating: current.isUpdating,
+            ),
+          );
         }
       } else if (event is UpdateLocation) {
-        add(UpdateProfile(latitude: event.latitude, longitude: event.longitude));
+        add(
+          UpdateProfile(latitude: event.latitude, longitude: event.longitude),
+        );
       } else if (event is UpdateAccountActive) {
-        add(UpdateProfile(isActive: event.isActive));
+        add(UpdateProfile(isOpen: event.isOpen ?? true));
       }
     });
   }
 }
-

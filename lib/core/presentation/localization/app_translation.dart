@@ -288,6 +288,12 @@ class AppTranslation {
   static String get defaultCommissionRate => 'default_commission_rate'.tr();
   static String get enterCommissionRate => 'enter_commission_rate'.tr();
   static String get pleaseEnterValidCommissionRate => 'please_enter_valid_commission_rate'.tr();
+  static String get maxIncompleteOrdersForDriver =>
+      'max_incomplete_orders_for_driver'.tr();
+  static String get enterMaxIncompleteOrdersForDriver =>
+      'enter_max_incomplete_orders_for_driver'.tr();
+  static String get pleaseEnterValidMaxIncompleteOrders =>
+      'please_enter_valid_max_incomplete_orders'.tr();
   static String get settingsUpdatedSuccessfully => 'settings_updated_successfully'.tr();
 }
 

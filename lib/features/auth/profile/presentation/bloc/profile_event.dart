@@ -20,7 +20,7 @@ class UpdateProfile extends ProfileEvent {
   final String? address;
   final double? latitude;
   final double? longitude;
-  final bool? isActive;
+  final bool? isOpen;
   final dynamic imageFile;
 
   const UpdateProfile({
@@ -32,23 +32,23 @@ class UpdateProfile extends ProfileEvent {
     this.address,
     this.latitude,
     this.longitude,
-    this.isActive,
+    this.isOpen,
     this.imageFile,
   });
 
   @override
   List<Object?> get props => [
-        firstName,
-        lastName,
-        phone,
-        countryId,
-        cityId,
-        address,
-        latitude,
-        longitude,
-        isActive,
-        imageFile,
-      ];
+    firstName,
+    lastName,
+    phone,
+    countryId,
+    cityId,
+    address,
+    latitude,
+    longitude,
+    isOpen,
+    imageFile,
+  ];
 }
 
 class FormValuesInitialized extends ProfileEvent {
@@ -100,11 +100,10 @@ class UpdateLocation extends ProfileEvent {
 }
 
 class UpdateAccountActive extends ProfileEvent {
-  final bool isActive;
+  final bool? isOpen;
 
-  const UpdateAccountActive(this.isActive);
+  const UpdateAccountActive(this.isOpen);
 
   @override
-  List<Object?> get props => [isActive];
+  List<Object?> get props => [isOpen];
 }
-

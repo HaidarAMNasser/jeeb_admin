@@ -13,6 +13,7 @@ class SettingsForm extends StatelessWidget {
     required this.supportPhoneController,
     required this.whatsappNumberController,
     required this.commissionRateController,
+    required this.maxIncompleteOrdersController,
     required this.onSave,
   });
 
@@ -20,6 +21,7 @@ class SettingsForm extends StatelessWidget {
   final TextEditingController supportPhoneController;
   final TextEditingController whatsappNumberController;
   final TextEditingController commissionRateController;
+  final TextEditingController maxIncompleteOrdersController;
   final VoidCallback onSave;
 
   @override
@@ -49,6 +51,13 @@ class SettingsForm extends StatelessWidget {
               title: AppTranslation.defaultCommissionRate,
               hintText: AppTranslation.enterCommissionRate,
               controller: commissionRateController,
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: AppHeight.s24),
+            CustomTextField(
+              title: AppTranslation.maxIncompleteOrdersForDriver,
+              hintText: AppTranslation.enterMaxIncompleteOrdersForDriver,
+              controller: maxIncompleteOrdersController,
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: AppHeight.s32),

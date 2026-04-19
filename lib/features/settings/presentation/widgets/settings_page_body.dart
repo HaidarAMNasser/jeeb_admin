@@ -13,6 +13,7 @@ class SettingsPageBody extends StatelessWidget {
     required this.supportPhoneController,
     required this.whatsappNumberController,
     required this.commissionRateController,
+    required this.maxIncompleteOrdersController,
     required this.onSyncFormFromSettings,
     required this.onSave,
   });
@@ -21,6 +22,7 @@ class SettingsPageBody extends StatelessWidget {
   final TextEditingController supportPhoneController;
   final TextEditingController whatsappNumberController;
   final TextEditingController commissionRateController;
+  final TextEditingController maxIncompleteOrdersController;
   final void Function(SettingsEntity) onSyncFormFromSettings;
   final VoidCallback onSave;
 
@@ -48,6 +50,7 @@ class SettingsPageBody extends StatelessWidget {
               supportPhoneController: supportPhoneController,
               whatsappNumberController: whatsappNumberController,
               commissionRateController: commissionRateController,
+              maxIncompleteOrdersController: maxIncompleteOrdersController,
               onSave: onSave,
             );
           },

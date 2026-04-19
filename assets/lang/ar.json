@@ -262,5 +262,8 @@
   "default_commission_rate": "نسبة العمولة الافتراضية (%)",
   "enter_commission_rate": "أدخل نسبة العمولة (مثلاً 10)",
   "please_enter_valid_commission_rate": "الرجاء إدخال نسبة عمولة صحيحة",
+  "max_incomplete_orders_for_driver": "الحد الأقصى للطلبات النشطة للسائق",
+  "enter_max_incomplete_orders_for_driver": "مثال: 3 — عند وصول السائق لهذا العدد من الطلبات غير المكتملة لا يُعيَّن له طلبات جديدة",
+  "please_enter_valid_max_incomplete_orders": "الرجاء إدخال عدد صحيح لا يقل عن 1",
   "settings_updated_successfully": "تم تحديث الإعدادات بنجاح"
 }

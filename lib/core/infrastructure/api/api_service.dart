@@ -73,7 +73,7 @@ abstract class AppApiServiceClient {
     String? address,
     double? latitude,
     double? longitude,
-    bool? isActive,
+    bool? isOpen,
     MultipartFile? image,
   });
 
@@ -83,7 +83,6 @@ abstract class AppApiServiceClient {
   // Category endpoints
   @GET("categories")
   Future<Response> getCategories();
-
 
   @POST("categories")
   Future<Response> addCategory(FormData formData);
@@ -231,9 +230,12 @@ abstract class AppApiServiceClient {
   Future<Response> createOffer(Map<String, dynamic> body);
 
   @POST("offers/{id}")
-  Future<Response> updateOffer(@Path('id') String id, Map<String, dynamic> body);
+  Future<Response> updateOffer(
+    @Path('id') String id,
+    Map<String, dynamic> body,
+  );
 
-  @POST("offers/{id}/delete")
+  @DELETE("offers/{id}")
   Future<Response> deleteOffer(@Path('id') String id);
 
   // Settings endpoints (admin only for PATCH)

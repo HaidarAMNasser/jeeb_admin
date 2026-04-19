@@ -24,6 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _supportPhoneController;
   late TextEditingController _whatsappNumberController;
   late TextEditingController _commissionRateController;
+  late TextEditingController _maxIncompleteOrdersController;
 
   @override
   void initState() {
@@ -31,9 +32,11 @@ class _SettingsPageState extends State<SettingsPage> {
     _supportPhoneController = TextEditingController();
     _whatsappNumberController = TextEditingController();
     _commissionRateController = TextEditingController();
+    _maxIncompleteOrdersController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted)
+      if (mounted) {
         context.read<GetSettingsBloc>().add(const GetSettingsRequested());
+      }
     });
   }
 
@@ -42,6 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _supportPhoneController.dispose();
     _whatsappNumberController.dispose();
     _commissionRateController.dispose();
+    _maxIncompleteOrdersController.dispose();
     super.dispose();
   }
 
@@ -50,6 +54,8 @@ class _SettingsPageState extends State<SettingsPage> {
     _whatsappNumberController.text = settings.whatsappNumber;
     _commissionRateController.text = settings.defaultProductCommissionRate
         .toString();
+    _maxIncompleteOrdersController.text =
+        settings.maxIncompleteOrdersForDriverSearch.toString();
   }
 
   @override
@@ -76,6 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
               supportPhoneController: _supportPhoneController,
               whatsappNumberController: _whatsappNumberController,
               commissionRateController: _commissionRateController,
+              maxIncompleteOrdersController: _maxIncompleteOrdersController,
               onSyncFormFromSettings: _syncFormFromSettings,
               onSave: () => _onSave(context),
             ),
@@ -92,11 +99,17 @@ class _SettingsPageState extends State<SettingsPage> {
       customToast(msg: AppTranslation.pleaseEnterValidCommissionRate);
       return;
     }
+    final maxIncomplete = int.tryParse(_maxIncompleteOrdersController.text.trim());
+    if (maxIncomplete == null || maxIncomplete < 1) {
+      customToast(msg: AppTranslation.pleaseEnterValidMaxIncompleteOrders);
+      return;
+    }
     context.read<EditSettingsBloc>().add(
       EditSettingsSubmitted(
         supportPhone: _supportPhoneController.text.trim(),
         whatsappNumber: _whatsappNumberController.text.trim(),
         defaultProductCommissionRate: rate,
+        maxIncompleteOrdersForDriverSearch: maxIncomplete,
       ),
     );
   }
