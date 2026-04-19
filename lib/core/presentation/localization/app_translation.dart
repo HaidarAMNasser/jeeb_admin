@@ -114,6 +114,10 @@ class AppTranslation {
   // Auth
   static String get login => 'login'.tr();
   static String get register => 'register'.tr();
+  static String get merchantBusinessType => 'merchant_business_type'.tr();
+  static String get merchantTypeRestaurant => 'merchant_type_restaurant'.tr();
+  static String get merchantTypeMarket => 'merchant_type_market'.tr();
+  static String get merchantCreatedSuccess => 'merchant_created_success'.tr();
   static String get email => 'email'.tr();
   static String get password => 'password'.tr();
   static String get enterEmail => 'enter_email'.tr();

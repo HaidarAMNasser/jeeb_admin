@@ -23,6 +23,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final restaurantNameController = TextEditingController();
 
   String? selectedRole = 'MERCHANT';
+  /// `RESTAURANT` or `STORE` (market); sent only when creating a merchant.
+  String selectedMerchantType = 'RESTAURANT';
   String selectedNotificationChannel = 'EMAIL';
   CountryEntity? selectedCountry;
   CityEntity? selectedCity;
@@ -31,7 +33,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   double? useLocationLng;
 
   RegisterBloc(this._registerRepository, this._storageService)
-      : super(const RegisterInitial()) {
+      : super(const RegisterInitial(merchantBusinessType: 'RESTAURANT')) {
     on<RegisterCountryChanged>((event, emit) {
       selectedCountry = event.country;
       selectedCity = null;
@@ -45,6 +47,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     on<RegisterRoleChanged>((event, emit) {
       selectedRole = event.role;
+      emit(_buildInitialState());
+    });
+
+    on<RegisterMerchantTypeChanged>((event, emit) {
+      if (event.type == 'RESTAURANT' || event.type == 'STORE') {
+        selectedMerchantType = event.type;
+      }
       emit(_buildInitialState());
     });
 
@@ -87,6 +96,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         notificationChannel: selectedNotificationChannel,
         address: addressController.text.trim(),
         restaurantName: restaurantNameController.text.trim(),
+        merchantType: selectedMerchantType,
       );
 
       await result.fold(
@@ -98,6 +108,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             isLocationLoading: isLocationLoading,
             useLocationLat: useLocationLat,
             useLocationLng: useLocationLng,
+            merchantBusinessType: selectedMerchantType,
           ),
         ),
         (tokenEntity) async {
@@ -108,16 +119,20 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             await _storageService.setPendingVerifyEmail(emailController.text.trim());
           }
           if (!emit.isDone) {
+            final role = selectedRole ?? 'MERCHANT';
             emit(
               RegisterSuccess(
                 userId: tokenEntity?.user.id ?? 0,
                 email: emailController.text.trim(),
                 password: passwordController.text.trim(),
+                requiresEmailVerification:
+                    tokenEntity != null || role != 'MERCHANT',
                 selectedCountry: selectedCountry,
                 selectedCity: selectedCity,
                 isLocationLoading: isLocationLoading,
                 useLocationLat: useLocationLat,
                 useLocationLng: useLocationLng,
+                merchantBusinessType: selectedMerchantType,
               ),
             );
           }
@@ -133,6 +148,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       isLocationLoading: isLocationLoading,
       useLocationLat: useLocationLat,
       useLocationLng: useLocationLng,
+      merchantBusinessType: selectedMerchantType,
     );
   }
 
@@ -143,6 +159,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       isLocationLoading: isLocationLoading,
       useLocationLat: useLocationLat,
       useLocationLng: useLocationLng,
+      merchantBusinessType: selectedMerchantType,
     );
   }
 
