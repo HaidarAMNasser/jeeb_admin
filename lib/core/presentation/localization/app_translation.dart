@@ -120,6 +120,10 @@ class AppTranslation {
   // Auth
   static String get login => 'login'.tr();
   static String get register => 'register'.tr();
+  static String get merchantBusinessType => 'merchant_business_type'.tr();
+  static String get merchantTypeRestaurant => 'merchant_type_restaurant'.tr();
+  static String get merchantTypeMarket => 'merchant_type_market'.tr();
+  static String get merchantCreatedSuccess => 'merchant_created_success'.tr();
   static String get email => 'email'.tr();
   static String get password => 'password'.tr();
   static String get enterEmail => 'enter_email'.tr();
@@ -318,6 +322,10 @@ class AppTranslation {
       'merchant_confirm_meal_prep_required'.tr();
   static String get merchantSearchingSheetTagline =>
       'merchant_searching_sheet_tagline'.tr();
+  static String get paymentReceipts => 'payment_receipts'.tr();
+  static String get confirmOrderPaidComplete => 'confirm_order_paid_complete'.tr();
+  static String get areYouSureConfirmPaidComplete =>
+      'are_you_sure_confirm_paid_complete'.tr();
   static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
   static String get order => 'order'.tr();
   static String get orderRestaurantSection => 'order_restaurant_section'.tr();
@@ -405,6 +413,12 @@ class AppTranslation {
       'enter_delivery_tip_per_kilometer'.tr();
   static String get enterCommissionRate => 'enter_commission_rate'.tr();
   static String get pleaseEnterValidCommissionRate => 'please_enter_valid_commission_rate'.tr();
+  static String get maxIncompleteOrdersForDriver =>
+      'max_incomplete_orders_for_driver'.tr();
+  static String get enterMaxIncompleteOrdersForDriver =>
+      'enter_max_incomplete_orders_for_driver'.tr();
+  static String get pleaseEnterValidMaxIncompleteOrders =>
+      'please_enter_valid_max_incomplete_orders'.tr();
   static String get settingsUpdatedSuccessfully => 'settings_updated_successfully'.tr();
 }
 

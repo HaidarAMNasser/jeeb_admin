@@ -126,11 +126,10 @@ enum OrderStatus {
   Color get color {
     switch (this) {
       case OrderStatus.delivered:
+      case OrderStatus.completed:
         return Colors.green;
       case OrderStatus.paid:
         return Colors.deepOrange;
-      case OrderStatus.completed:
-        return Colors.green.shade800;
       case OrderStatus.cancelled:
       case OrderStatus.rejected:
         return Colors.red;
@@ -150,8 +149,11 @@ enum OrderStatus {
     }
   }
 
-  /// True if complete/cancel actions are allowed (e.g. only for pending).
+  /// Merchant: complete/cancel from pending (legacy flow).
   bool get canCompleteOrCancel => this == OrderStatus.pending;
+
+  /// Admin: confirm payment receipts and mark PAID → COMPLETE.
+  bool get canAdminConfirmPaidComplete => this == OrderStatus.paid;
 }
 
 /// Icons for tracking / timeline UI.

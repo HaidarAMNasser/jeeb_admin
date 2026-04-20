@@ -25,7 +25,6 @@ class _SettingsPageState extends State<SettingsPage> {
   late TextEditingController _supportPhoneController;
   late TextEditingController _whatsappNumberController;
   late TextEditingController _commissionRateController;
-  late TextEditingController _deliveryTipPerKmController;
 
   @override
   void initState() {
@@ -33,10 +32,10 @@ class _SettingsPageState extends State<SettingsPage> {
     _supportPhoneController = TextEditingController();
     _whatsappNumberController = TextEditingController();
     _commissionRateController = TextEditingController();
-    _deliveryTipPerKmController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted)
+      if (mounted) {
         context.read<GetSettingsBloc>().add(const GetSettingsRequested());
+      }
     });
   }
 
@@ -45,7 +44,6 @@ class _SettingsPageState extends State<SettingsPage> {
     _supportPhoneController.dispose();
     _whatsappNumberController.dispose();
     _commissionRateController.dispose();
-    _deliveryTipPerKmController.dispose();
     super.dispose();
   }
 
@@ -54,8 +52,6 @@ class _SettingsPageState extends State<SettingsPage> {
     _whatsappNumberController.text = settings.whatsappNumber;
     _commissionRateController.text = settings.defaultProductCommissionRate
         .toString();
-    _deliveryTipPerKmController.text =
-        settings.deliveryTipPerKilometer.toString();
   }
 
   @override
@@ -87,7 +83,6 @@ class _SettingsPageState extends State<SettingsPage> {
               supportPhoneController: _supportPhoneController,
               whatsappNumberController: _whatsappNumberController,
               commissionRateController: _commissionRateController,
-              deliveryTipPerKmController: _deliveryTipPerKmController,
               onSyncFormFromSettings: _syncFormFromSettings,
               onSave: () => _onSave(context),
             ),
@@ -104,17 +99,11 @@ class _SettingsPageState extends State<SettingsPage> {
       customToast(msg: AppTranslation.pleaseEnterValidCommissionRate);
       return;
     }
-    final tipKm = num.tryParse(_deliveryTipPerKmController.text.trim());
-    if (tipKm == null || tipKm < 0) {
-      customToast(msg: AppTranslation.pleaseEnterValidCommissionRate);
-      return;
-    }
     context.read<EditSettingsBloc>().add(
       EditSettingsSubmitted(
         supportPhone: _supportPhoneController.text.trim(),
         whatsappNumber: _whatsappNumberController.text.trim(),
         defaultProductCommissionRate: rate,
-        deliveryTipPerKilometer: tipKm,
       ),
     );
   }

@@ -14,6 +14,7 @@ class SettingsPageBody extends StatelessWidget {
     required this.whatsappNumberController,
     required this.commissionRateController,
     required this.deliveryTipPerKmController,
+    required this.maxIncompleteOrdersController,
     required this.onSyncFormFromSettings,
     required this.onSave,
   });
@@ -23,6 +24,7 @@ class SettingsPageBody extends StatelessWidget {
   final TextEditingController whatsappNumberController;
   final TextEditingController commissionRateController;
   final TextEditingController deliveryTipPerKmController;
+  final TextEditingController maxIncompleteOrdersController;
   final void Function(SettingsEntity) onSyncFormFromSettings;
   final VoidCallback onSave;
 
@@ -51,6 +53,7 @@ class SettingsPageBody extends StatelessWidget {
               whatsappNumberController: whatsappNumberController,
               commissionRateController: commissionRateController,
               deliveryTipPerKmController: deliveryTipPerKmController,
+              maxIncompleteOrdersController: maxIncompleteOrdersController,
               onSave: onSave,
             );
           },

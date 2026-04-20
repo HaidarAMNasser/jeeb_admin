@@ -97,7 +97,6 @@ abstract class AppApiServiceClient {
     @Query('search') String? search,
   );
 
-
   @POST("categories")
   Future<Response> addCategory(FormData formData);
 
@@ -256,7 +255,10 @@ abstract class AppApiServiceClient {
   Future<Response> createOffer(Map<String, dynamic> body);
 
   @POST("offers/{id}")
-  Future<Response> updateOffer(@Path('id') String id, Map<String, dynamic> body);
+  Future<Response> updateOffer(
+    @Path('id') String id,
+    Map<String, dynamic> body,
+  );
 
   @DELETE("offers/{id}")
   Future<Response> deleteOffer(@Path('id') String id);

@@ -90,10 +90,18 @@ class RegisterPage extends StatelessWidget {
       ),
       listener: (context, state) {
         if (state is RegisterSuccess) {
-          context.pushNamed(
-            Routes.verify,
-            arguments: {'email': state.email, 'password': state.password},
-          );
+          if (state.requiresEmailVerification) {
+            context.pushNamed(
+              Routes.verify,
+              arguments: {'email': state.email, 'password': state.password},
+            );
+          } else {
+            customToast(msg: AppTranslation.merchantCreatedSuccess);
+            context.pushNamedAndRemoveUntil(
+              Routes.login,
+              predicate: (_) => false,
+            );
+          }
         } else if (state is RegisterError) {
           customToast(msg: state.message);
         }

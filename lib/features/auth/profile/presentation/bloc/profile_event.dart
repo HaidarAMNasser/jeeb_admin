@@ -117,4 +117,3 @@ class UpdateAccountActive extends ProfileEvent {
   @override
   List<Object?> get props => [isOpen];
 }
-

@@ -2,6 +2,7 @@ import 'package:jeeb_admin/features/order/order_details/data/models/order_model.
 import 'package:jeeb_admin/features/order/order_details/data/models/order_customer_model.dart';
 import 'package:jeeb_admin/features/order/order_details/data/models/order_item_model.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_payment_receipt_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_customer_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_item_entity.dart';
 import 'package:jeeb_admin/features/product/list_product/data/mappers/product_mapper.dart';
@@ -71,6 +72,17 @@ extension OrderMapper on OrderModel {
       ownerLastName: ownerLastName,
       ownerPhone: ownerPhone,
       imagePayFromDelivery: imagePayFromDelivery,
+      receipts: receipts != null && receipts!.isNotEmpty
+          ? receipts!
+              .map(
+                (r) => OrderPaymentReceiptEntity(
+                  id: r.id,
+                  imageId: r.imageId,
+                  relativePath: r.url,
+                ),
+              )
+              .toList()
+          : const [],
     );
   }
 }

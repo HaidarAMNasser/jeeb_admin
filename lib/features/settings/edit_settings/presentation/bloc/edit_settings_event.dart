@@ -12,12 +12,14 @@ class EditSettingsSubmitted extends EditSettingsEvent {
   final String whatsappNumber;
   final num defaultProductCommissionRate;
   final num deliveryTipPerKilometer;
+  final int maxIncompleteOrdersForDriverSearch;
 
   const EditSettingsSubmitted({
     required this.supportPhone,
     required this.whatsappNumber,
     required this.defaultProductCommissionRate,
     required this.deliveryTipPerKilometer,
+    required this.maxIncompleteOrdersForDriverSearch,
   });
 
   @override
@@ -26,5 +28,6 @@ class EditSettingsSubmitted extends EditSettingsEvent {
         whatsappNumber,
         defaultProductCommissionRate,
         deliveryTipPerKilometer,
+        maxIncompleteOrdersForDriverSearch,
       ];
 }

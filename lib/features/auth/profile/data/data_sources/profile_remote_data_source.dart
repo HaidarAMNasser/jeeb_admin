@@ -49,9 +49,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }) async {
     MultipartFile? image;
     if (imageFile != null) {
-      final path = imageFile.path;
-      final name = path.contains(RegExp(r'[/\\]')) ? path.split(RegExp(r'[/\\]')).last : path;
-      image = await MultipartFile.fromFile(path, filename: name);
+
+        final path = imageFile.path;
+        final name = path.contains(RegExp(r'[/\\]'))
+            ? path.split(RegExp(r'[/\\]')).last
+            : path;
+        image = await MultipartFile.fromFile(path, filename: name);
+      
     }
     return _appApiServiceClient.updateProfile(
       firstName: firstName,
@@ -69,4 +73,3 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     );
   }
 }
-

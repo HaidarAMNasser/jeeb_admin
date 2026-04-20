@@ -271,29 +271,45 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
-    final formData = FormData();
-    if (firstName != null)
-      formData.fields.add(MapEntry('firstName', firstName));
-    if (lastName != null) formData.fields.add(MapEntry('lastName', lastName));
-    if (phone != null) formData.fields.add(MapEntry('phone', phone));
-    if (countryId != null)
-      formData.fields.add(MapEntry('countryId', countryId.toString()));
-    if (cityId != null)
-      formData.fields.add(MapEntry('cityId', cityId.toString()));
-    if (address != null) formData.fields.add(MapEntry('address', address));
-    if (latitude != null)
-      formData.fields.add(MapEntry('latitude', latitude.toString()));
-    if (longitude != null)
-      formData.fields.add(MapEntry('longitude', longitude.toString()));
-    if (isActive != null)
-      formData.fields.add(MapEntry('isActive', isActive.toString()));
-    if (isOpen != null)
-      formData.fields.add(MapEntry('isOpen', isOpen.toString()));
-    if (restaurantName != null) {
-      formData.fields.add(MapEntry('restaurantName', restaurantName));
-    }
+    dynamic body;
     if (image != null) {
+      final formData = FormData();
+      if (firstName != null)
+        formData.fields.add(MapEntry('firstName', firstName));
+      if (lastName != null) formData.fields.add(MapEntry('lastName', lastName));
+      if (phone != null) formData.fields.add(MapEntry('phone', phone));
+      if (countryId != null)
+        formData.fields.add(MapEntry('countryId', countryId.toString()));
+      if (cityId != null)
+        formData.fields.add(MapEntry('cityId', cityId.toString()));
+      if (address != null) formData.fields.add(MapEntry('address', address));
+      if (latitude != null)
+        formData.fields.add(MapEntry('latitude', latitude.toString()));
+      if (longitude != null)
+        formData.fields.add(MapEntry('longitude', longitude.toString()));
+      if (isActive != null)
+        formData.fields.add(MapEntry('isActive', isActive.toString()));
+      if (isOpen != null)
+        formData.fields.add(MapEntry('isOpen', isOpen.toString()));
+      if (restaurantName != null)
+        formData.fields.add(MapEntry('restaurantName', restaurantName));
       formData.files.add(MapEntry('image', image));
+      body = formData;
+    } else {
+      // Send JSON so booleans (e.g. isActive) are sent as true/false, not string "true"/"false"
+      final map = <String, dynamic>{};
+      if (firstName != null) map['firstName'] = firstName;
+      if (lastName != null) map['lastName'] = lastName;
+      if (phone != null) map['phone'] = phone;
+      if (countryId != null) map['countryId'] = countryId;
+      if (cityId != null) map['cityId'] = cityId;
+      if (address != null) map['address'] = address;
+      if (latitude != null) map['latitude'] = latitude;
+      if (longitude != null) map['longitude'] = longitude;
+      if (isActive != null) map['isActive'] = isActive;
+      if (isOpen != null) map['isOpen'] = isOpen;
+      if (restaurantName != null) map['restaurantName'] = restaurantName;
+      body = map;
     }
 
     final result = await dio.fetch<Map<String, dynamic>>(
@@ -303,7 +319,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'auth/profile',
               queryParameters: queryParameters,
-              data: formData,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -1001,7 +1017,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
-        Options(method: 'POST', headers: headers, extra: extra)
+        Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
               'orders/$id/complete',

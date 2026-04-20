@@ -25,7 +25,6 @@ class UserEntity extends Equatable {
   final String? address;
   final bool? isOnline;
   final bool? isActive;
-  /// Merchant: restaurant open for orders (`isOpen` from API).
   final bool? isOpen;
   final DateTime? verifiedAt;
   final bool isVerified;
@@ -69,6 +68,56 @@ class UserEntity extends Equatable {
   });
 
   String get fullName => '$firstName $lastName';
+
+  UserEntity copyWith({
+    int? id,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? phone,
+    UserRole? role,
+    NotificationChannel? notificationChannel,
+    String? address,
+    bool? isOnline,
+    bool? isActive,
+    bool? isOpen,
+    DateTime? verifiedAt,
+    bool? isVerified,
+    double? currentLat,
+    double? currentLng,
+    int? countryId,
+    CountryEntity? country,
+    int? cityId,
+    CityEntity? city,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? profileImageUrl,
+  }) {
+    return UserEntity(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      role: role ?? this.role,
+      notificationChannel: notificationChannel ?? this.notificationChannel,
+      address: address ?? this.address,
+      isOnline: isOnline ?? this.isOnline,
+      isActive: isActive ?? this.isActive,
+      isOpen: isOpen ?? this.isOpen,
+      verifiedAt: verifiedAt ?? this.verifiedAt,
+      isVerified: isVerified ?? this.isVerified,
+      currentLat: currentLat ?? this.currentLat,
+      currentLng: currentLng ?? this.currentLng,
+      countryId: countryId ?? this.countryId,
+      country: country ?? this.country,
+      cityId: cityId ?? this.cityId,
+      city: city ?? this.city,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+    );
+  }
 
   @override
   List<Object?> get props => [

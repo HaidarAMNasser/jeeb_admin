@@ -1,5 +1,3 @@
-import 'dart:io' show File;
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/common/errors/failure.dart';
@@ -13,10 +11,7 @@ class ProfileRepository {
   final ProfileRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
 
-  const ProfileRepository(
-    this._remoteDataSource,
-    this._networkInfo,
-  );
+  const ProfileRepository(this._remoteDataSource, this._networkInfo);
 
   Future<Either<Failure, UserEntity>> getProfile() async {
     if (!await _networkInfo.isConnected) {
@@ -26,24 +21,28 @@ class ProfileRepository {
       final response = await _remoteDataSource.getProfile();
       final raw = response.data as Map<String, dynamic>?;
       if (raw == null) {
-        return Left(ErrorHandler.handle(
-          DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: response.requestOptions,
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
           ),
-        ));
+        );
       }
 
       final statusCode = raw['statusCode'] as int? ?? 200;
       if (statusCode < 200 || statusCode >= 300) {
-        return Left(ErrorHandler.handle(
-          DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: response.requestOptions,
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
           ),
-        ));
+        );
       }
 
       final userEntity = _parseUserFromResponseData(raw['data']);
@@ -118,23 +117,17 @@ class ProfileRepository {
     dynamic imageFile,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return Right(_fakeUser(
-        latitude: latitude,
-        longitude: longitude,
-        isActive: isActive,
-        isOpen: isOpen,
-      ));
+      return Right(
+        _fakeUser(
+          latitude: latitude,
+          longitude: longitude,
+          isActive: isActive,
+          isOpen: isOpen,
+        ),
+      );
     }
     try {
-      File? file;
-      if (imageFile != null) {
-        if (imageFile is File) {
-          file = imageFile;
-        } else {
-          final path = (imageFile as dynamic).path as String?;
-          if (path != null && path.isNotEmpty) file = File(path);
-        }
-      }
+      // Pass through File or XFile; data source sends image as multipart file (not string).
       final response = await _remoteDataSource.updateProfile(
         firstName: firstName,
         lastName: lastName,
@@ -147,38 +140,43 @@ class ProfileRepository {
         isActive: isActive,
         isOpen: isOpen,
         restaurantName: restaurantName,
-        imageFile: file,
+        imageFile: imageFile,
       );
 
       final raw = response.data as Map<String, dynamic>?;
       if (raw == null || (raw['statusCode'] as int? ?? 0) >= 300) {
-        return Left(ErrorHandler.handle(
-          DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: response.requestOptions,
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
           ),
-        ));
+        );
       }
       final userEntity = _parseUserFromResponseData(raw['data']);
       if (userEntity != null) {
         return Right(userEntity);
       }
-      return Left(ErrorHandler.handle(
-        DioException(
-          type: DioExceptionType.badResponse,
-          response: response,
-          requestOptions: response.requestOptions,
+      return Left(
+        ErrorHandler.handle(
+          DioException(
+            type: DioExceptionType.badResponse,
+            response: response,
+            requestOptions: response.requestOptions,
+          ),
         ),
-      ));
+      );
     } catch (error) {
-      return Right(_fakeUser(
-        latitude: latitude,
-        longitude: longitude,
-        isActive: isActive,
-        isOpen: isOpen,
-      ));
+      return Right(
+        _fakeUser(
+          latitude: latitude,
+          longitude: longitude,
+          isActive: isActive,
+          isOpen: isOpen,
+        ),
+      );
     }
   }
 }
-

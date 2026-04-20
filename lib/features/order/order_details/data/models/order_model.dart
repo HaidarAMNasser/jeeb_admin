@@ -2,6 +2,7 @@ import 'package:jeeb_admin/features/product/list_product/data/models/product_mod
 import 'package:jeeb_admin/features/delivery/delivery_details/data/models/delivery_man_model.dart';
 import 'package:jeeb_admin/features/order/order_details/data/models/order_customer_model.dart';
 import 'package:jeeb_admin/features/order/order_details/data/models/order_item_model.dart';
+import 'package:jeeb_admin/features/order/order_details/data/models/order_payment_receipt_model.dart';
 
 class OrderModel {
   final String id;
@@ -35,6 +36,7 @@ class OrderModel {
   final String? ownerLastName;
   final String? ownerPhone;
   final String? imagePayFromDelivery;
+  final List<OrderPaymentReceiptModel>? receipts;
 
   OrderModel({
     required this.id,
@@ -68,6 +70,7 @@ class OrderModel {
     this.ownerLastName,
     this.ownerPhone,
     this.imagePayFromDelivery,
+    this.receipts,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -194,8 +197,15 @@ class OrderModel {
     final imagePayFromDelivery = trimmedNonEmpty(json['imagePayFromDelivery']) ??
         trimmedNonEmpty(json['imagepayfromdelivery']);
 
+    List<OrderPaymentReceiptModel>? receipts;
+    if (json['receipts'] is List) {
+      receipts = (json['receipts'] as List)
+          .map((e) => OrderPaymentReceiptModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
     return OrderModel(
-      id: json['id']?.toString() ?? '',
+      id: json['id']?.toString() ?? json['orderId']?.toString() ?? '',
       products: products,
       orderItems: orderItems,
       customer: customer,
@@ -236,6 +246,7 @@ class OrderModel {
       ownerLastName: ownerLastName,
       ownerPhone: ownerPhone,
       imagePayFromDelivery: imagePayFromDelivery,
+      receipts: receipts,
     );
   }
 
@@ -369,6 +380,7 @@ class OrderModel {
       'merchantId': merchantId,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'receipts': receipts?.map((r) => {'id': r.id, 'imageId': r.imageId, 'url': r.url}).toList(),
     };
   }
 }

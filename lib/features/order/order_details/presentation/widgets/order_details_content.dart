@@ -11,6 +11,7 @@ import 'package:jeeb_admin/features/order/order_details/presentation/widgets/del
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/marhcnet/order_products_section.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_items_section.dart';
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_summary_card.dart';
+import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_paid_receipts_admin_section.dart';
 
 class OrderDetailsContent extends StatelessWidget {
   final OrderEntity order;
@@ -58,6 +59,8 @@ class OrderDetailsContent extends StatelessWidget {
 
           OrderSummaryCard(order: order),
           SizedBox(height: AppHeight.s16),
+
+          OrderPaidReceiptsAdminSection(order: order),
 
           if (order.deliveryMan != null) ...[
             OrderDeliveryManCard(deliveryMan: order.deliveryMan!),

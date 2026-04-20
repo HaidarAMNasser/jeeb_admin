@@ -33,6 +33,7 @@ class RegisterRepository {
     required String notificationChannel,
     String? address,
     String? restaurantName,
+    String? merchantType,
   }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure());
@@ -52,6 +53,7 @@ class RegisterRepository {
         notificationChannel: notificationChannel,
         address: address,
         restaurantName: restaurantName,
+        merchantType: merchantType,
       );
 
       final apiResponse = ApiResponseModel<Map<String, dynamic>>.fromJson(
