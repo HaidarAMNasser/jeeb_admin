@@ -39,6 +39,8 @@ abstract class AppApiServiceClient {
     @Field('notificationChannel') String notificationChannel,
     @Field('address') String? address,
     @Field('restaurantName') String? restaurantName,
+    /// `RESTAURANT` or `STORE` when [role] is `MERCHANT`.
+    @Field('type') String? merchantType,
   );
 
   @POST("auth/verify")

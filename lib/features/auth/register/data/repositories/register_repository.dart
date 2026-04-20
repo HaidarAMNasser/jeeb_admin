@@ -8,6 +8,16 @@ import 'package:jeeb_admin/features/auth/login/domain/entities/token_entity.dart
 import 'package:jeeb_admin/features/auth/login/data/models/token_model.dart';
 import '../data_sources/register_remote_data_source.dart';
 
+/// Outcome of [RegisterRepository.register]: optional session token and/or API `userId`.
+class RegisterResult {
+  final TokenEntity? token;
+  final int? userId;
+
+  const RegisterResult({this.token, this.userId});
+
+  int get resolvedUserId => token?.user.id ?? userId ?? 0;
+}
+
 class RegisterRepository {
   final RegisterRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
@@ -17,9 +27,16 @@ class RegisterRepository {
     this._networkInfo,
   );
 
-  /// Returns [TokenEntity] when the register API returns access_token and user (store in SharedPreferences).
-  /// Returns null when success but no token (e.g. old API only returns userId). Verify will rely on stored token.
-  Future<Either<Failure, TokenEntity?>> register({
+  int? _parseUserId(Map<String, dynamic> data) {
+    final v = data['userId'];
+    if (v == null) return null;
+    if (v is int) return v;
+    return int.tryParse(v.toString());
+  }
+
+  /// Returns [RegisterResult] with [TokenEntity] when the API returns access_token and user.
+  /// OTP-only responses (201 + userId) return token null and [RegisterResult.userId] set.
+  Future<Either<Failure, RegisterResult>> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -63,6 +80,7 @@ class RegisterRepository {
 
       if (apiResponse.isSuccess) {
         final data = apiResponse.data ?? {};
+        final parsedUserId = _parseUserId(data);
         final accessToken = data['access_token'];
         final user = data['user'];
         if (accessToken != null &&
@@ -70,14 +88,18 @@ class RegisterRepository {
             user is Map<String, dynamic>) {
           try {
             final tokenModel = TokenModel.fromJson(data);
-            return Right(tokenModel.toDomain());
+            final token = tokenModel.toDomain();
+            return Right(
+              RegisterResult(
+                token: token,
+                userId: parsedUserId ?? token.user.id,
+              ),
+            );
           } catch (_) {
-            // Fallback: success with no token (e.g. userId only)
-            return const Right(null);
+            return Right(RegisterResult(token: null, userId: parsedUserId));
           }
         }
-        // Success but no token in response (e.g. only userId)
-        return const Right(null);
+        return Right(RegisterResult(token: null, userId: parsedUserId));
       }
 
       return Left(ErrorHandler.handle(
@@ -92,4 +114,3 @@ class RegisterRepository {
     }
   }
 }
-

@@ -18,8 +18,8 @@ class EditSettingsBloc extends Bloc<EditSettingsEvent, EditSettingsState> {
           {'key': 'defaultProductCommissionRate', 'value': event.defaultProductCommissionRate},
           {'key': 'deliveryTipPerKilometer', 'value': event.deliveryTipPerKilometer},
           {
-            'key': 'maxIncompleteOrdersForDriverSearch',
-            'value': event.maxIncompleteOrdersForDriverSearch,
+            'key': 'maxOrdersPerDelivery',
+            'value': event.maxOrdersPerDelivery,
           },
         ];
         final result = await _repository.patchSettings(body);

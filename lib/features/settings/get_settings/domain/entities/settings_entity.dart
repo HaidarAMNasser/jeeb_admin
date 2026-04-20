@@ -6,15 +6,15 @@ class SettingsEntity extends Equatable {
   final String whatsappNumber;
   final num defaultProductCommissionRate;
   final num deliveryTipPerKilometer;
-  /// Max active (incomplete) orders a driver may have before new assignments are blocked.
-  final int maxIncompleteOrdersForDriverSearch;
+  /// API key: `maxOrdersPerDelivery` (max orders a driver may handle per day / per delivery scope).
+  final int maxOrdersPerDelivery;
 
   const SettingsEntity({
     required this.supportPhone,
     required this.whatsappNumber,
     required this.defaultProductCommissionRate,
     this.deliveryTipPerKilometer = 0,
-    required this.maxIncompleteOrdersForDriverSearch,
+    required this.maxOrdersPerDelivery,
   });
 
   @override
@@ -23,6 +23,6 @@ class SettingsEntity extends Equatable {
         whatsappNumber,
         defaultProductCommissionRate,
         deliveryTipPerKilometer,
-        maxIncompleteOrdersForDriverSearch,
+        maxOrdersPerDelivery,
       ];
 }

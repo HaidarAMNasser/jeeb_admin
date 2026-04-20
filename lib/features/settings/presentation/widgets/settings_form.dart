@@ -14,7 +14,7 @@ class SettingsForm extends StatelessWidget {
     required this.whatsappNumberController,
     required this.commissionRateController,
     required this.deliveryTipPerKmController,
-    required this.maxIncompleteOrdersController,
+    required this.maxOrdersPerDeliveryController,
     required this.onSave,
   });
 
@@ -23,7 +23,7 @@ class SettingsForm extends StatelessWidget {
   final TextEditingController whatsappNumberController;
   final TextEditingController commissionRateController;
   final TextEditingController deliveryTipPerKmController;
-  final TextEditingController maxIncompleteOrdersController;
+  final TextEditingController maxOrdersPerDeliveryController;
   final VoidCallback onSave;
 
   @override
@@ -59,13 +59,17 @@ class SettingsForm extends StatelessWidget {
             CustomTextField(
               title: AppTranslation.deliveryTipPerKilometer,
               hintText: AppTranslation.enterDeliveryTipPerKilometer,
-              controller: deliveryTipPerKmController,),
-      CustomTextField(
-              title: AppTranslation.maxIncompleteOrdersForDriver,
-              hintText: AppTranslation.enterMaxIncompleteOrdersForDriver,
-              controller: maxIncompleteOrdersController,
-              keyboardType: TextInputType.number,),
+              controller: deliveryTipPerKmController,
             ),
+            SizedBox(height: AppHeight.s24),
+
+            CustomTextField(
+              title: AppTranslation.maxOrdersPerDelivery,
+              hintText: AppTranslation.enterMaxOrdersPerDelivery,
+              controller: maxOrdersPerDeliveryController,
+              keyboardType: TextInputType.number,
+            ),
+
             SizedBox(height: AppHeight.s32),
             CustomButton(
               text: AppTranslation.save,

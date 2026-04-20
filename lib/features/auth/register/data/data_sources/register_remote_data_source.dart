@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
@@ -18,7 +16,7 @@ abstract class RegisterRemoteDataSource {
     required String notificationChannel,
     String? address,
     String? restaurantName,
-    /// `RESTAURANT` or `STORE` — sent only for [role] `MERCHANT` via `POST users/merchants`.
+    /// `RESTAURANT` or `STORE` — sent for [role] `MERCHANT` on `POST auth/register`.
     String? merchantType,
   });
 }
@@ -45,28 +43,11 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
     String? restaurantName,
     String? merchantType,
   }) {
-    if (role == 'MERCHANT') {
-      final type = (merchantType == 'STORE' || merchantType == 'RESTAURANT')
-          ? merchantType!
-          : 'RESTAURANT';
-      final map = <String, dynamic>{
-        'email': email,
-        'password': password,
-        'firstName': firstName,
-        'lastName': lastName,
-        'phone': phone,
-        'type': type,
-        if (latitude != null && longitude != null)
-          'location': jsonEncode({'lat': latitude, 'lng': longitude}),
-      };
-      if (countryId != null) map['countryId'] = countryId;
-      if (cityId != null) map['cityId'] = cityId;
-      if (address != null && address.isNotEmpty) map['address'] = address;
-      if (restaurantName != null && restaurantName.isNotEmpty) {
-        map['restaurantName'] = restaurantName;
-      }
-      return _appApiServiceClient.createMerchant(FormData.fromMap(map));
-    }
+    final String? typeForMerchant = role == 'MERCHANT'
+        ? ((merchantType == 'STORE' || merchantType == 'RESTAURANT')
+            ? merchantType
+            : 'RESTAURANT')
+        : null;
 
     return _appApiServiceClient.register(
       firstName,
@@ -82,7 +63,7 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
       notificationChannel,
       address,
       restaurantName,
+      typeForMerchant,
     );
   }
 }
-

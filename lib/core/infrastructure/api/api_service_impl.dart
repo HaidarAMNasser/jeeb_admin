@@ -98,6 +98,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     String notificationChannel,
     String? address,
     String? restaurantName,
+    String? merchantType,
   ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -119,6 +120,9 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     if (address != null) data['address'] = address;
     if (restaurantName != null && restaurantName.isNotEmpty)
       data['restaurantName'] = restaurantName;
+    if (merchantType != null && merchantType.isNotEmpty) {
+      data['type'] = merchantType;
+    }
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(

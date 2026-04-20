@@ -112,22 +112,29 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             merchantBusinessType: selectedMerchantType,
           ),
         ),
-        (tokenEntity) async {
+        (registerResult) async {
+          final tokenEntity = registerResult.token;
+          final email = emailController.text.trim();
           if (tokenEntity != null) {
             await _storageService.setUserToken(tokenEntity.accessToken);
             await _storageService.setUserId(tokenEntity.user.id);
             await _storageService.setUserRole(tokenEntity.user.role.name);
-            await _storageService.setPendingVerifyEmail(emailController.text.trim());
+            if (email.isNotEmpty) {
+              await _storageService.setPendingVerifyEmail(email);
+            }
+          } else {
+            // 201 + userId + OTP email — no session yet.
+            if (email.isNotEmpty) {
+              await _storageService.setPendingVerifyEmail(email);
+            }
           }
           if (!emit.isDone) {
-            final role = selectedRole ?? 'MERCHANT';
             emit(
               RegisterSuccess(
-                userId: tokenEntity?.user.id ?? 0,
-                email: emailController.text.trim(),
+                userId: registerResult.resolvedUserId,
+                email: email,
                 password: passwordController.text.trim(),
-                requiresEmailVerification:
-                    tokenEntity != null || role != 'MERCHANT',
+                requiresEmailVerification: tokenEntity == null,
                 selectedCountry: selectedCountry,
                 selectedCity: selectedCity,
                 isLocationLoading: isLocationLoading,

@@ -54,7 +54,7 @@ class RegisterSuccess extends RegisterState {
   final int userId;
   final String email;
   final String password;
-  /// When false (e.g. admin `POST users/merchants`), skip email OTP and go to login.
+  /// When false (API returned a session token), skip OTP and go to login/success toast.
   final bool requiresEmailVerification;
 
   const RegisterSuccess({
