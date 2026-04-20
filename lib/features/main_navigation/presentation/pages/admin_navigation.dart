@@ -9,6 +9,7 @@ import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.
 import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import 'package:jeeb_admin/features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import 'package:jeeb_admin/features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
@@ -44,9 +45,16 @@ class _AdminNavigationState extends State<AdminNavigation> {
           child: const ListMerchantPage(),
         );
       case 1:
-        return BlocProvider<ListOrderBloc>(
-          create: (_) => di.sl<ListOrderBloc>()
-            ..add(const GetOrdersEvent()),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<ListOrderBloc>(
+              create: (_) => di.sl<ListOrderBloc>()
+                ..add(const GetOrdersEvent()),
+            ),
+            BlocProvider<ConfirmPaidOrderBloc>(
+              create: (_) => di.sl<ConfirmPaidOrderBloc>(),
+            ),
+          ],
           child: const ListOrderPage(),
         );
       case 2:

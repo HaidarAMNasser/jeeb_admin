@@ -988,10 +988,16 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> completeOrder(String id) async {
+  Future<Response> completeOrder(
+    String id, {
+    Map<String, dynamic>? body,
+  }) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
+    if (body != null && body.isNotEmpty) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -1000,6 +1006,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'orders/$id/complete',
               queryParameters: queryParameters,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

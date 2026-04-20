@@ -262,6 +262,13 @@ class AppTranslation {
 
   // Order
   static String get orders => 'orders'.tr();
+  /// Admin list: delivery-fee payment lifecycle (delivered / paid / completed).
+  static String get adminOrderPaymentDeliveredBadge =>
+      'admin_order_payment_delivered_badge'.tr();
+  static String get adminOrderPaymentPaidBadge =>
+      'admin_order_payment_paid_badge'.tr();
+  static String get adminOrderPaymentCompletedBadge =>
+      'admin_order_payment_completed_badge'.tr();
   static String get orderDetails => 'order_details'.tr();
   static String get noOrdersFound => 'no_orders_found'.tr();
   static String get searchOrders => 'search_orders'.tr();

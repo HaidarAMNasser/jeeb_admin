@@ -28,6 +28,10 @@ String _statusFilterLabel(OrderStatus s) {
       return AppTranslation.orderStepOnTheWay;
     case OrderStatus.delivered:
       return AppTranslation.orderStepDelivered;
+    case OrderStatus.paid:
+      return s.displayLabel;
+    case OrderStatus.completed:
+      return s.displayLabel;
     case OrderStatus.cancelled:
       return AppTranslation.orderStatusCancelled;
     case OrderStatus.rejected:

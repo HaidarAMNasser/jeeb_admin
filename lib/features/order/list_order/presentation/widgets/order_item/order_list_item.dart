@@ -19,6 +19,9 @@ class OrderListItem extends StatelessWidget {
     this.kitchenActionLoadingOrderId,
     this.onMerchantPreparing,
     this.onMerchantReadyForPickup,
+    this.useAdminPaymentLabels = false,
+    this.showAdminPaidMenu = false,
+    this.onAdminOpenPaidDetails,
   });
 
   final OrderEntity order;
@@ -30,6 +33,10 @@ class OrderListItem extends StatelessWidget {
   final String? kitchenActionLoadingOrderId;
   final VoidCallback? onMerchantPreparing;
   final VoidCallback? onMerchantReadyForPickup;
+
+  final bool useAdminPaymentLabels;
+  final bool showAdminPaidMenu;
+  final void Function(OrderEntity order)? onAdminOpenPaidDetails;
 
   bool get _showConfirmBar =>
       showMerchantConfirm &&
@@ -75,7 +82,15 @@ class OrderListItem extends StatelessWidget {
             ),
             child: Padding(
               padding: EdgeInsets.all(AppPadding.p16),
-              child: OrderListItemTitle(order: order),
+              child: OrderListItemTitle(
+                order: order,
+                useAdminPaymentLabels: useAdminPaymentLabels,
+                showAdminPaidMenu:
+                    showAdminPaidMenu && order.statusEnum == OrderStatus.paid,
+                onAdminOpenPaidDetails: onAdminOpenPaidDetails != null
+                    ? () => onAdminOpenPaidDetails!(order)
+                    : null,
+              ),
             ),
           ),
           if (_showConfirmBar)
@@ -103,23 +118,9 @@ class OrderListItem extends StatelessWidget {
 }
 
 void _openOrderListItem(BuildContext context, OrderEntity order) {
-  // final status = OrderStatus.fromString(order.status);
-  // if (orderStatusIsTerminal(status)) {
     AppRouter.navigateTo(
       context,
       Routes.orderDetails,
       arguments: {'orderId': order.id},
     );
-  // } else {
-  //   AppRouter.navigateTo(
-  //     context,
-  //     Routes.orderStatus,
-  //     arguments: {
-  //       'orderId': order.id,
-  //       'initialStatus': order.status,
-  //       if (order.latitude != null) 'deliveryLatitude': order.latitude,
-  //       if (order.longitude != null) 'deliveryLongitude': order.longitude,
-  //     },
-  //   );
-  // }
 }

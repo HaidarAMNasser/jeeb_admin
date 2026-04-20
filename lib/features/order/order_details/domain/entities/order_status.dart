@@ -11,6 +11,10 @@ enum OrderStatus {
   pickedUp,
   onTheWay,
   delivered,
+  /// Delivery paid admin fee; awaiting admin confirmation (wire: PAID).
+  paid,
+  /// Admin confirmed payment receipt (wire: COMPLETED).
+  completed,
   cancelled,
   rejected,
   unknown;
@@ -36,6 +40,10 @@ enum OrderStatus {
         return 'ON_THE_WAY';
       case OrderStatus.delivered:
         return 'DELIVERED';
+      case OrderStatus.paid:
+        return 'PAID';
+      case OrderStatus.completed:
+        return 'COMPLETED';
       case OrderStatus.cancelled:
         return 'CANCELLED';
       case OrderStatus.rejected:
@@ -67,8 +75,11 @@ enum OrderStatus {
       case 'on_the_way':
         return OrderStatus.onTheWay;
       case 'delivered':
-      case 'completed':
         return OrderStatus.delivered;
+      case 'paid':
+        return OrderStatus.paid;
+      case 'completed':
+        return OrderStatus.completed;
       case 'cancelled':
       case 'canceled':
         return OrderStatus.cancelled;
@@ -99,6 +110,10 @@ enum OrderStatus {
         return 'On the way';
       case OrderStatus.delivered:
         return 'Delivered';
+      case OrderStatus.paid:
+        return 'Paid';
+      case OrderStatus.completed:
+        return 'Completed';
       case OrderStatus.cancelled:
         return 'Cancelled';
       case OrderStatus.rejected:
@@ -112,6 +127,10 @@ enum OrderStatus {
     switch (this) {
       case OrderStatus.delivered:
         return Colors.green;
+      case OrderStatus.paid:
+        return Colors.deepOrange;
+      case OrderStatus.completed:
+        return Colors.green.shade800;
       case OrderStatus.cancelled:
       case OrderStatus.rejected:
         return Colors.red;
@@ -157,6 +176,10 @@ extension OrderStatusPresentation on OrderStatus {
         return Icons.delivery_dining_rounded;
       case OrderStatus.delivered:
         return Icons.home_outlined;
+      case OrderStatus.paid:
+        return Icons.payments_outlined;
+      case OrderStatus.completed:
+        return Icons.verified_outlined;
       case OrderStatus.cancelled:
         return Icons.cancel_outlined;
       case OrderStatus.rejected:

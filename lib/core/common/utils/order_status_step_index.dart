@@ -5,6 +5,8 @@ import 'package:jeeb_admin/features/order/order_details/domain/entities/order_st
 bool orderStatusIsTerminal(OrderStatus status) {
   switch (status) {
     case OrderStatus.delivered:
+    case OrderStatus.paid:
+    case OrderStatus.completed:
     case OrderStatus.cancelled:
     case OrderStatus.rejected:
       return true;
@@ -31,6 +33,8 @@ int orderStatusToTimelineIndex(OrderStatus status) {
     case OrderStatus.onTheWay:
       return 5;
     case OrderStatus.delivered:
+    case OrderStatus.paid:
+    case OrderStatus.completed:
       return 6;
     case OrderStatus.cancelled:
     case OrderStatus.rejected:

@@ -42,6 +42,9 @@ class OrderEntity extends Equatable {
   final String? ownerLastName;
   final String? ownerPhone;
 
+  /// Screenshot URL from delivery payment flow (API key may change later).
+  final String? imagePayFromDelivery;
+
   const OrderEntity({
     required this.id,
     required this.products,
@@ -73,6 +76,7 @@ class OrderEntity extends Equatable {
     this.ownerFirstName,
     this.ownerLastName,
     this.ownerPhone,
+    this.imagePayFromDelivery,
   });
 
   /// Delivery location section: coordinates and/or address fields from API.
@@ -115,6 +119,7 @@ class OrderEntity extends Equatable {
         ownerFirstName,
         ownerLastName,
         ownerPhone,
+        imagePayFromDelivery,
       ];
 }
 

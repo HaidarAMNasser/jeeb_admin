@@ -34,6 +34,7 @@ class OrderModel {
   final String? ownerFirstName;
   final String? ownerLastName;
   final String? ownerPhone;
+  final String? imagePayFromDelivery;
 
   OrderModel({
     required this.id,
@@ -66,6 +67,7 @@ class OrderModel {
     this.ownerFirstName,
     this.ownerLastName,
     this.ownerPhone,
+    this.imagePayFromDelivery,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -189,6 +191,9 @@ class OrderModel {
       restaurantName = trimmedNonEmpty(o['restaurantName']);
     }
 
+    final imagePayFromDelivery = trimmedNonEmpty(json['imagePayFromDelivery']) ??
+        trimmedNonEmpty(json['imagepayfromdelivery']);
+
     return OrderModel(
       id: json['id']?.toString() ?? '',
       products: products,
@@ -230,6 +235,7 @@ class OrderModel {
       ownerFirstName: ownerFirstName,
       ownerLastName: ownerLastName,
       ownerPhone: ownerPhone,
+      imagePayFromDelivery: imagePayFromDelivery,
     );
   }
 

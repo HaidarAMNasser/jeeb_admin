@@ -70,6 +70,7 @@ extension OrderMapper on OrderModel {
       ownerFirstName: ownerFirstName,
       ownerLastName: ownerLastName,
       ownerPhone: ownerPhone,
+      imagePayFromDelivery: imagePayFromDelivery,
     );
   }
 }

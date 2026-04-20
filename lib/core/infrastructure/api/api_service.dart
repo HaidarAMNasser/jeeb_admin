@@ -233,7 +233,10 @@ abstract class AppApiServiceClient {
   Future<Response> getOrderDetails(@Path('id') String id);
 
   @POST("orders/{id}/complete")
-  Future<Response> completeOrder(@Path('id') String id);
+  Future<Response> completeOrder(
+    @Path('id') String id, {
+    Map<String, dynamic>? body,
+  });
 
   @POST("orders/{id}/cancel")
   Future<Response> cancelOrder(@Path('id') String id);

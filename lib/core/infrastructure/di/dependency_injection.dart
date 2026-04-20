@@ -88,6 +88,9 @@ import '../../../features/order/order_complete/data/repositories/order_complete_
 import '../../../features/order/order_cancel/data/data_sources/order_cancel_data_source.dart';
 import '../../../features/order/order_cancel/data/repositories/order_cancel_repository.dart';
 import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import '../../../features/order/confirm_paid_order/data/data_sources/confirm_paid_order_remote_data_source.dart';
+import '../../../features/order/confirm_paid_order/data/repositories/confirm_paid_order_repository.dart';
+import '../../../features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
 import '../../../features/offer/list_offer/data/data_sources/list_offer_data_source.dart';
 import '../../../features/offer/list_offer/data/repositories/list_offer_repository.dart';
 import '../../../features/offer/offer_details/data/data_sources/offer_details_data_source.dart';
@@ -347,6 +350,13 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ListOrderRepository(sl(), sl()));
   sl.registerFactory(() => ListOrderBloc(sl()));
+
+  //! Order — admin confirm delivery payment (POST complete + payload)
+  sl.registerFactory<ConfirmPaidOrderRemoteDataSource>(
+    () => ConfirmPaidOrderRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => ConfirmPaidOrderRepository(sl(), sl()));
+  sl.registerFactory(() => ConfirmPaidOrderBloc(sl()));
 
   //! Order Details Dependencies
   sl.registerFactory<OrderDetailsRemoteDataSource>(

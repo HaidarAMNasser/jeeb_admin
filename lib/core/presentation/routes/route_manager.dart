@@ -42,6 +42,7 @@ import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
 import '../../../features/order/list_order/presentation/pages/list_order_page.dart';
 import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import '../../../features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
 import '../../../features/order/order_details/presentation/pages/order_details_page.dart';
 import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
 import '../../../features/order/order_status_section/presentation/pages/order_status_page.dart';
@@ -499,6 +500,9 @@ class AppRouter {
           providers: [
             BlocProvider<ListOrderBloc>(
               create: (_) => di.sl<ListOrderBloc>(),
+            ),
+            BlocProvider<ConfirmPaidOrderBloc>(
+              create: (_) => di.sl<ConfirmPaidOrderBloc>(),
             ),
           ],
         );

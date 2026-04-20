@@ -11,9 +11,18 @@ import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_
 
 /// Compact order row: status + store (one row), customer, then date + total.
 class OrderListItemTitle extends StatelessWidget {
-  const OrderListItemTitle({super.key, required this.order});
+  const OrderListItemTitle({
+    super.key,
+    required this.order,
+    this.useAdminPaymentLabels = false,
+    this.showAdminPaidMenu = false,
+    this.onAdminOpenPaidDetails,
+  });
 
   final OrderEntity order;
+  final bool useAdminPaymentLabels;
+  final bool showAdminPaidMenu;
+  final VoidCallback? onAdminOpenPaidDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +49,42 @@ class OrderListItemTitle extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            OrderListStatusBadge(
-              status: order.statusEnum,
-              rawStatus: order.status,
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: OrderListStatusBadge(
+                      status: order.statusEnum,
+                      rawStatus: order.status,
+                      useAdminPaymentLabels: useAdminPaymentLabels,
+                    ),
+                  ),
+                  if (showAdminPaidMenu && onAdminOpenPaidDetails != null) ...[
+                    SizedBox(width: AppWidth.s4),
+                    PopupMenuButton<String>(
+                      icon: Icon(
+                        Icons.more_vert,
+                        size: AppSize.s16,
+                        color: ColorManager.textDarkColor,
+                      ),
+                      onSelected: (_) => onAdminOpenPaidDetails!(),
+                      itemBuilder: (context) => [
+                        PopupMenuItem<String>(
+                          value: 'details',
+                          child: CustomText(
+                            text: 'عرض التفاصيل والتأكيد',
+                            textStyle: getMediumStyle(
+                              fontSize: AppFontSize.s14,
+                              color: ColorManager.textDarkColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
             ),
             SizedBox(width: AppWidth.s8),
             OrderListInfoBadge(

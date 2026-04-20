@@ -58,6 +58,8 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
   static bool _isTerminalStatus(OrderStatus s) {
     switch (s) {
       case OrderStatus.delivered:
+      case OrderStatus.paid:
+      case OrderStatus.completed:
       case OrderStatus.cancelled:
       case OrderStatus.rejected:
         return true;
