@@ -48,7 +48,8 @@ import '../../../features/auth/reset_password/data/repositories/reset_password_r
 import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
 import '../../../features/auth/profile/data/data_sources/profile_remote_data_source.dart';
 import '../../../features/auth/profile/data/repositories/profile_repository.dart';
-import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
+import '../../../features/auth/profile/presentation/bloc/change_password/change_password_bloc.dart';
 import '../../../features/auth/logout/data/data_sources/logout_remote_data_source.dart';
 import '../../../features/auth/logout/data/repositories/logout_repository.dart';
 import '../../../features/auth/logout/presentation/bloc/logout_bloc.dart';
@@ -267,6 +268,7 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ProfileRepository(sl(), sl()));
   sl.registerFactory(() => ProfileBloc(sl<ProfileRepository>(), sl<StorageService>()));
+  sl.registerFactory(() => ChangePasswordBloc(sl<ProfileRepository>()));
 
   //! Auth Dependencies - Logout
   sl.registerFactory<LogoutRemoteDataSource>(

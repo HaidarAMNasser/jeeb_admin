@@ -40,6 +40,8 @@ class UserEntity extends Equatable {
   final String? profileImageUrl;
   /// Merchant restaurant name from backend (`restaurantName`).
   final String? restaurantName;
+  /// Merchant business kind from backend (`type`): `RESTAURANT` or `STORE`.
+  final String? merchantType;
 
   const UserEntity({
     required this.id,
@@ -65,6 +67,7 @@ class UserEntity extends Equatable {
     required this.updatedAt,
     this.profileImageUrl,
     this.restaurantName,
+    this.merchantType,
   });
 
   String get fullName => '$firstName $lastName';
@@ -92,6 +95,8 @@ class UserEntity extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? profileImageUrl,
+    String? restaurantName,
+    String? merchantType,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -116,6 +121,8 @@ class UserEntity extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      restaurantName: restaurantName ?? this.restaurantName,
+      merchantType: merchantType ?? this.merchantType,
     );
   }
 
@@ -144,6 +151,7 @@ class UserEntity extends Equatable {
         updatedAt,
         profileImageUrl,
         restaurantName,
+        merchantType,
       ];
 }
 

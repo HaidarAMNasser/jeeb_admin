@@ -78,6 +78,11 @@ abstract class AppApiServiceClient {
     bool? isActive,
     bool? isOpen,
     String? restaurantName,
+    /// Merchant: `RESTAURANT` or `STORE` (API field `type`).
+    String? type,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     MultipartFile? image,
   });
 

@@ -10,6 +10,7 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_checkbox.dart';
+import 'package:jeeb_admin/features/auth/register/presentation/widgets/merchant_business_type_dropdown.dart';
 
 class ProfileForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -22,16 +23,22 @@ class ProfileForm extends StatelessWidget {
   final VoidCallback onUpdate;
   final bool isLoading;
   final VoidCallback onChangeLanguage;
+  final VoidCallback onChangePassword;
   final VoidCallback onUpdateLocation;
   final ValueChanged<bool> onAccountStatusChanged;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onCategoriesTap;
   /// Merchant-only fields/actions — from SharedPreferences `user_role` at login.
   final bool isMerchantFromStorage;
+  /// `RESTAURANT` or `STORE`; only used when [isMerchantFromStorage].
+  final String merchantBusinessType;
+  final ValueChanged<String> onMerchantBusinessTypeChanged;
 
   const ProfileForm({
     super.key,
     required this.isMerchantFromStorage,
+    required this.merchantBusinessType,
+    required this.onMerchantBusinessTypeChanged,
     required this.formKey,
     required this.user,
     required this.firstNameController,
@@ -42,6 +49,7 @@ class ProfileForm extends StatelessWidget {
     required this.onUpdate,
     required this.isLoading,
     required this.onChangeLanguage,
+    required this.onChangePassword,
     required this.onUpdateLocation,
     required this.onAccountStatusChanged,
     this.onSettingsTap,
@@ -82,6 +90,12 @@ class ProfileForm extends StatelessWidget {
               hintText: AppTranslation.restaurantName,
               controller: restaurantNameController,
             ),
+          if (isMerchantFromStorage) ...[
+            MerchantBusinessTypeDropdown(
+              value: merchantBusinessType,
+              onChanged: onMerchantBusinessTypeChanged,
+            ),
+          ],
           CustomTextField(
             title: AppTranslation.phone,
             hintText: AppTranslation.enterPhone,
@@ -110,6 +124,27 @@ class ProfileForm extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: AppWidth.s8),
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: onChangePassword,
+            borderRadius: BorderRadius.circular(4),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: AppPadding.p8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.lock_outline, size: 20, color: ColorManager.primary),
+                  SizedBox(width: AppWidth.s8),
+                  CustomText(
+                    text: AppTranslation.changePasswordAction,
+                    textStyle: getMediumStyle(
+                      color: ColorManager.primary,
+                      fontSize: AppFontSize.s15,
+                    ),
+                  ),
                 ],
               ),
             ),

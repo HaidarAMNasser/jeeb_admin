@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' show Locale;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
-import '../../../login/domain/entities/user_entity.dart';
-import '../../data/repositories/profile_repository.dart';
+import '../../../../login/domain/entities/user_entity.dart';
+import '../../../data/repositories/profile_repository.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -49,6 +49,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           isActive: event.isActive,
           isOpen: event.isOpen,
           restaurantName: event.restaurantName,
+          merchantType: event.merchantType,
           imageFile: event.imageFile,
         );
 
@@ -104,6 +105,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           phone: event.phone.trim(),
           address: event.address?.trim().isEmpty ?? true ? null : event.address?.trim(),
           restaurantName: event.restaurantName,
+          merchantType: event.merchantType,
         ));
       } else if (event is ChangeLanguage) {
         await _storageService.setAppLanguage(event.languageCode);

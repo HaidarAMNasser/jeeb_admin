@@ -17,8 +17,11 @@ class ProfilePageContent extends StatelessWidget {
   final bool isAdminFromStorage;
   /// From [StorageService] `user_role` (login), not API profile `role`.
   final bool isMerchantFromStorage;
+  final String merchantBusinessType;
+  final ValueChanged<String> onMerchantBusinessTypeChanged;
   final VoidCallback onUpdate;
   final VoidCallback onChangeLanguage;
+  final VoidCallback onChangePassword;
   final VoidCallback onUpdateLocation;
   final ValueChanged<bool> onAccountStatusChanged;
   final bool isUpdateLoading;
@@ -35,8 +38,11 @@ class ProfilePageContent extends StatelessWidget {
     required this.restaurantNameController,
     required this.isAdminFromStorage,
     required this.isMerchantFromStorage,
+    required this.merchantBusinessType,
+    required this.onMerchantBusinessTypeChanged,
     required this.onUpdate,
     required this.onChangeLanguage,
+    required this.onChangePassword,
     required this.onUpdateLocation,
     required this.onAccountStatusChanged,
     required this.isUpdateLoading,
@@ -54,9 +60,12 @@ class ProfilePageContent extends StatelessWidget {
           SizedBox(height: AppHeight.s32),
           ProfileForm(
             isMerchantFromStorage: isMerchantFromStorage,
+            merchantBusinessType: merchantBusinessType,
+            onMerchantBusinessTypeChanged: onMerchantBusinessTypeChanged,
             onUpdateLocation: onUpdateLocation,
             onAccountStatusChanged: onAccountStatusChanged,
             onChangeLanguage: onChangeLanguage,
+            onChangePassword: onChangePassword,
             formKey: formKey,
             user: user,
             firstNameController: firstNameController,

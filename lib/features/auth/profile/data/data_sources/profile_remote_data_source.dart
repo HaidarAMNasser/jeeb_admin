@@ -18,6 +18,10 @@ abstract class ProfileRemoteDataSource {
     bool? isActive,
     bool? isOpen,
     String? restaurantName,
+    String? merchantType,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     File? imageFile,
   });
 }
@@ -45,6 +49,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     bool? isActive,
     bool? isOpen,
     String? restaurantName,
+    String? merchantType,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     File? imageFile,
   }) async {
     MultipartFile? image;
@@ -69,6 +77,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       isActive: isActive,
       isOpen: isOpen,
       restaurantName: restaurantName,
+      type: merchantType,
+      password: password,
+      newPassword: newPassword,
+      confirmedPassword: confirmedPassword,
       image: image,
     );
   }

@@ -14,6 +14,7 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
+import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
@@ -23,7 +24,7 @@ import 'package:jeeb_admin/core/presentation/maps/google_map_location_picker_pag
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_page_content.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../bloc/profile_bloc.dart';
+import '../bloc/profiel/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -42,6 +43,14 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _restaurantNameController;
   bool _isAdminFromStorage = false;
   bool _isMerchantFromStorage = false;
+  /// Synced from profile API `type` when role is merchant (RESTAURANT / STORE).
+  String _merchantBusinessType = 'RESTAURANT';
+
+  static String _normalizeMerchantType(String? raw) {
+    final u = raw?.toUpperCase().trim();
+    if (u == 'STORE' || u == 'RESTAURANT') return u!;
+    return 'RESTAURANT';
+  }
 
   @override
   void initState() {
@@ -102,15 +111,25 @@ class _ProfilePageState extends State<ProfilePage> {
           listener: (context, state) {
             if (state is ProfileLoaded) {
               if (!state.formValuesInitialized) {
-                _firstNameController.text = state.user.firstName;
-                _lastNameController.text = state.user.lastName;
-                _phoneController.text = state.user.phone;
-                _addressController.text = state.user.address ?? '';
-                _restaurantNameController.text =
-                    state.user.restaurantName ?? '';
+                setState(() {
+                  _firstNameController.text = state.user.firstName;
+                  _lastNameController.text = state.user.lastName;
+                  _phoneController.text = state.user.phone;
+                  _addressController.text = state.user.address ?? '';
+                  _restaurantNameController.text =
+                      state.user.restaurantName ?? '';
+                  _merchantBusinessType =
+                      _normalizeMerchantType(state.user.merchantType);
+                });
                 context.read<ProfileBloc>().add(const FormValuesInitialized());
               } else if (state.updateSuccess) {
                 customToast(msg: AppTranslation.profileUpdatedSuccess);
+                if (mounted) {
+                  setState(() {
+                    _merchantBusinessType =
+                        _normalizeMerchantType(state.user.merchantType);
+                  });
+                }
                 context.read<ProfileBloc>().add(const ClearUpdateSuccess());
               }
               if (state.localeToApply != null) {
@@ -171,6 +190,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       restaurantNameController: _restaurantNameController,
                       isAdminFromStorage: _isAdminFromStorage,
                       isMerchantFromStorage: _isMerchantFromStorage,
+                      merchantBusinessType: _merchantBusinessType,
+                      onMerchantBusinessTypeChanged: (v) {
+                        setState(() => _merchantBusinessType = v);
+                      },
                       onUpdate: () {
                         if (_formKey.currentState!.validate()) {
                           context.read<ProfileBloc>().add(
@@ -184,11 +207,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               restaurantName: _isMerchantFromStorage
                                   ? _restaurantNameController.text.trim()
                                   : null,
+                              merchantType: _isMerchantFromStorage
+                                  ? _merchantBusinessType
+                                  : null,
                             ),
                           );
                         }
                       },
                       onChangeLanguage: () => _showLanguageDialog(context),
+                      onChangePassword: () =>
+                          context.pushNamed(Routes.changePassword),
                       onUpdateLocation: () =>
                           _openMapPicker(context, loadedState),
                       onAccountStatusChanged: (v) => context

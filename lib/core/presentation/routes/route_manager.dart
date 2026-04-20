@@ -36,7 +36,9 @@ import '../../../features/auth/forgot_password/presentation/bloc/forgot_password
 import '../../../features/auth/reset_password/presentation/pages/reset_password_page.dart';
 import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
 import '../../../features/auth/profile/presentation/pages/profile_page.dart';
-import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/auth/profile/presentation/pages/change_password_page.dart';
+import '../../../features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
+import '../../../features/auth/profile/presentation/bloc/change_password/change_password_bloc.dart';
 import '../../../features/auth/logout/presentation/bloc/logout_bloc.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
@@ -196,6 +198,13 @@ class AppRouter {
               create: (_) => di.sl<LogoutBloc>(),
             ),
           ],
+        );
+
+      case Routes.changePassword:
+        return _buildRouteWithBloc(
+          const ChangePasswordPage(),
+          settings,
+          bloc: () => di.sl<ChangePasswordBloc>(),
         );
 
       case Routes.settings:

@@ -130,6 +130,10 @@ class AppTranslation {
   static String get enterPassword => 'enter_password'.tr();
   static String get loginSuccess => 'login_success'.tr();
   static String get forgotPassword => 'forgot_password'.tr();
+  static String get changePasswordTitle => 'change_password_title'.tr();
+  static String get changePasswordAction => 'change_password_action'.tr();
+  static String get oldPassword => 'old_password'.tr();
+  static String get changePasswordSuccess => 'change_password_success'.tr();
   static String get dontHaveAccount => 'dont_have_account'.tr();
   static String get alreadyHaveAccount => 'already_have_account'.tr();
   static String get firstName => 'first_name'.tr();

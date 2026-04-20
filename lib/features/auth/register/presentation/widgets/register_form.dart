@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_password_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -58,8 +59,7 @@ class RegisterForm extends StatelessWidget {
                 hintText: AppTranslation.enterPhone,
                 controller: bloc.phoneController,
               ),
-              CustomTextField(
-                obscureText: true,
+              CustomPasswordField(
                 title: AppTranslation.password,
                 hintText: AppTranslation.enterPassword,
                 controller: bloc.passwordController,

@@ -23,6 +23,8 @@ class UpdateProfile extends ProfileEvent {
   final bool? isActive;
   final bool? isOpen;
   final String? restaurantName;
+  /// Merchant: `RESTAURANT` or `STORE` (PATCH `type`).
+  final String? merchantType;
   final dynamic imageFile;
 
   const UpdateProfile({
@@ -37,6 +39,7 @@ class UpdateProfile extends ProfileEvent {
     this.isActive,
     this.isOpen,
     this.restaurantName,
+    this.merchantType,
     this.imageFile,
   });
 
@@ -53,6 +56,7 @@ class UpdateProfile extends ProfileEvent {
         isActive,
         isOpen,
         restaurantName,
+        merchantType,
         imageFile,
       ];
 }
@@ -72,6 +76,7 @@ class SaveProfile extends ProfileEvent {
   final String? address;
   /// Sent on PATCH only when non-null (merchant saves).
   final String? restaurantName;
+  final String? merchantType;
 
   const SaveProfile({
     required this.firstName,
@@ -79,10 +84,12 @@ class SaveProfile extends ProfileEvent {
     required this.phone,
     this.address,
     this.restaurantName,
+    this.merchantType,
   });
 
   @override
-  List<Object?> get props => [firstName, lastName, phone, address, restaurantName];
+  List<Object?> get props =>
+      [firstName, lastName, phone, address, restaurantName, merchantType];
 }
 
 class ChangeLanguage extends ProfileEvent {

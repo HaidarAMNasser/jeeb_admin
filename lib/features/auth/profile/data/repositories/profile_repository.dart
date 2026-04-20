@@ -99,6 +99,7 @@ class ProfileRepository {
       currentLat: latitude,
       currentLng: longitude,
       restaurantName: null,
+      merchantType: null,
     );
   }
 
@@ -114,6 +115,10 @@ class ProfileRepository {
     bool? isActive,
     bool? isOpen,
     String? restaurantName,
+    String? merchantType,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     dynamic imageFile,
   }) async {
     if (!await _networkInfo.isConnected) {
@@ -140,6 +145,10 @@ class ProfileRepository {
         isActive: isActive,
         isOpen: isOpen,
         restaurantName: restaurantName,
+        merchantType: merchantType,
+        password: password,
+        newPassword: newPassword,
+        confirmedPassword: confirmedPassword,
         imageFile: imageFile,
       );
 
@@ -158,6 +167,10 @@ class ProfileRepository {
       final userEntity = _parseUserFromResponseData(raw['data']);
       if (userEntity != null) {
         return Right(userEntity);
+      }
+      final code = raw['statusCode'] as int? ?? 0;
+      if (code >= 200 && code < 300) {
+        return getProfile();
       }
       return Left(
         ErrorHandler.handle(

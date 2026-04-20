@@ -53,6 +53,8 @@ class UserModel {
   final String updatedAt;
   final UserImageModel? image;
   final String? restaurantName;
+  /// `RESTAURANT` or `STORE` (merchant profile `type`).
+  final String? merchantType;
 
   UserModel({
     required this.id,
@@ -78,6 +80,7 @@ class UserModel {
     required this.updatedAt,
     this.image,
     this.restaurantName,
+    this.merchantType,
   });
 
   static bool _parseIsVerified(Map<String, dynamic> json) {
@@ -126,6 +129,7 @@ class UserModel {
           ? UserImageModel.fromJson(json['image'] as Map<String, dynamic>)
           : null,
       restaurantName: json['restaurantName'] as String?,
+      merchantType: json['type'] as String?,
     );
   }
 
@@ -218,6 +222,7 @@ class UserModel {
       updatedAt: DateTime.tryParse(updatedAt) ?? DateTime.now(),
       profileImageUrl: profileImageUrl,
       restaurantName: restaurantName,
+      merchantType: merchantType,
     );
   }
 }

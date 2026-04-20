@@ -5,7 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
-import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profile_bloc.dart';
+import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
 import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';

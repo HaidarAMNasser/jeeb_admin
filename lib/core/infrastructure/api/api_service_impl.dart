@@ -270,6 +270,10 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
     bool? isActive,
     bool? isOpen,
     String? restaurantName,
+    String? type,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     MultipartFile? image,
   }) async {
     const extra = <String, dynamic>{};
@@ -297,6 +301,14 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
         formData.fields.add(MapEntry('isOpen', isOpen.toString()));
       if (restaurantName != null)
         formData.fields.add(MapEntry('restaurantName', restaurantName));
+      if (type != null) formData.fields.add(MapEntry('type', type));
+      if (password != null) formData.fields.add(MapEntry('password', password));
+      if (newPassword != null) {
+        formData.fields.add(MapEntry('new_password', newPassword));
+      }
+      if (confirmedPassword != null) {
+        formData.fields.add(MapEntry('confirmed_password', confirmedPassword));
+      }
       formData.files.add(MapEntry('image', image));
       body = formData;
     } else {
@@ -313,6 +325,12 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
       if (isActive != null) map['isActive'] = isActive;
       if (isOpen != null) map['isOpen'] = isOpen;
       if (restaurantName != null) map['restaurantName'] = restaurantName;
+      if (type != null) map['type'] = type;
+      if (password != null) map['password'] = password;
+      if (newPassword != null) map['new_password'] = newPassword;
+      if (confirmedPassword != null) {
+        map['confirmed_password'] = confirmedPassword;
+      }
       body = map;
     }
 
