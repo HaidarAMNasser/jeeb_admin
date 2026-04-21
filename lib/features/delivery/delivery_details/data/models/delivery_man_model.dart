@@ -2,6 +2,29 @@ import '../../../../../core/config/app_config.dart';
 import '../../../../country/data/models/country_model.dart';
 import '../../../../city/data/models/city_model.dart';
 
+/// Single `image` object or `images[]` (main first, else first entry).
+DeliveryImageModel? _deliveryManImageFromJson(Map<String, dynamic> json) {
+  final single = json['image'];
+  if (single is Map<String, dynamic>) {
+    return DeliveryImageModel.fromJson(single);
+  }
+  final raw = json['images'];
+  if (raw is! List || raw.isEmpty) return null;
+  Map<String, dynamic>? chosen;
+  for (final e in raw) {
+    if (e is! Map<String, dynamic>) continue;
+    if (e['isMain'] == true) {
+      chosen = e;
+      break;
+    }
+  }
+  chosen ??= raw.first is Map<String, dynamic>
+      ? raw.first as Map<String, dynamic>
+      : null;
+  if (chosen == null) return null;
+  return DeliveryImageModel.fromJson(chosen);
+}
+
 class DeliveryImageModel {
   final int id;
   final String url;
@@ -119,9 +142,7 @@ class DeliveryManModel {
       verifiedAt: json['verifiedAt']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
-      image: json['image'] != null
-          ? DeliveryImageModel.fromJson(json['image'] as Map<String, dynamic>)
-          : null,
+      image: _deliveryManImageFromJson(json),
       country: json['country'] != null
           ? CountryModel.fromJson(json['country'] as Map<String, dynamic>)
           : null,
