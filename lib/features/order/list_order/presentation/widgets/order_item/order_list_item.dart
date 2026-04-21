@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
-import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_item/order_list_item_title.dart';
 
 class OrderListItem extends StatelessWidget {
@@ -118,9 +119,15 @@ class OrderListItem extends StatelessWidget {
 }
 
 void _openOrderListItem(BuildContext context, OrderEntity order) {
-    AppRouter.navigateTo(
-      context,
-      Routes.orderDetails,
-      arguments: {'orderId': order.id},
-    );
+  Navigator.of(context)
+      .pushNamed(
+        Routes.orderDetails,
+        arguments: {'orderId': order.id},
+      )
+      .then((result) {
+        if (!context.mounted) return;
+        if (result == true) {
+          context.read<ListOrderBloc>().add(const GetOrdersEvent());
+        }
+      });
 }

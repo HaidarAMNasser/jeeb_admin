@@ -19,6 +19,8 @@ class ConfirmPaidOrderBloc
     Emitter<ConfirmPaidOrderState> emit,
   ) async {
     emit(const ConfirmPaidOrderLoading());
+    // Let the next frame paint ModalProgressHUD before awaiting the network call.
+    await Future<void>.delayed(Duration.zero);
     final result = await _repository.confirmPaidOrder(
       event.orderId,
       imagePayFromDelivery: event.imagePayFromDelivery,

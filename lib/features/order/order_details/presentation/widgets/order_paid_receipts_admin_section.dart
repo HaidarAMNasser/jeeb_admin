@@ -78,7 +78,6 @@ class OrderPaidReceiptsAdminSection extends StatelessWidget {
       builder: (ctx) => ConfirmationDialog(
         title: AppTranslation.areYouSureConfirmPaidComplete,
         onConfirm: () {
-          Navigator.of(ctx).pop();
           context.read<ConfirmPaidOrderBloc>().add(
             ConfirmPaidOrderSubmitted(
               orderId: order.id,

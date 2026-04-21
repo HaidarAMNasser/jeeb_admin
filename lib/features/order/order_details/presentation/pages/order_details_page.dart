@@ -47,7 +47,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (!didPop) _popToOrdersListing();
       },
-      child: BlocConsumer<ConfirmPaidOrderBloc, ConfirmPaidOrderState>(
+      child: BlocListener<ConfirmPaidOrderBloc, ConfirmPaidOrderState>(
         listenWhen: (previous, current) => listenWhenEnteringTerminal(
           previous,
           current,
@@ -56,13 +56,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         listener: (context, state) {
           if (state is ConfirmPaidOrderSuccess) {
             customToast(msg: AppTranslation.orderStatusUpdatedSuccess);
-            _popToOrdersListing();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!context.mounted) return;
+              final nav = Navigator.of(context);
+              if (nav.canPop()) {
+                nav.pop(true);
+              } else {
+                _popToOrdersListing();
+              }
+            });
           } else if (state is ConfirmPaidOrderError) {
             customToast(msg: state.message);
           }
         },
-        builder: (context, confirmPaidState) {
-          return BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
+        child: BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
             listenWhen: (previous, current) => listenWhenEnteringTerminal(
               previous,
               current,
@@ -93,12 +100,18 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   }
                 },
                 builder: (context, cancelState) {
-                  final isLoading =
-                      completeState is OrderCompleteLoading ||
-                      cancelState is OrderCancelLoading ||
-                      confirmPaidState is ConfirmPaidOrderLoading;
+                  return BlocBuilder<ConfirmPaidOrderBloc, ConfirmPaidOrderState>(
+                    // buildWhen: (prev, curr) =>
+                    //     prev is ConfirmPaidOrderLoading !=
+                    //         curr is ConfirmPaidOrderLoading ||
+                    //     prev.runtimeType != curr.runtimeType,
+                    builder: (context, confirmPaidState) {
+                      final isLoading =
+                          completeState is OrderCompleteLoading ||
+                          cancelState is OrderCancelLoading ||
+                          confirmPaidState is ConfirmPaidOrderLoading;
 
-                  return ModalProgressHUD(
+                      return ModalProgressHUD(
                     progressIndicator: const CustomCircleIndicator(),
                     inAsyncCall: isLoading,
                     child: Scaffold(
@@ -187,12 +200,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                     ),
                   );
+                    },
+                  );
                 },
               );
             },
-          );
-        },
-      ),
+          ),
+        ),
     );
   }
 
