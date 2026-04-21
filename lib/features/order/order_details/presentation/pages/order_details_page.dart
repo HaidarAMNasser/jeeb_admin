@@ -14,6 +14,7 @@ import 'package:jeeb_admin/features/order/order_details/presentation/bloc/order_
 import 'package:jeeb_admin/features/order/order_details/presentation/widgets/order_details_content.dart';
 import 'package:jeeb_admin/features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import 'package:jeeb_admin/features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
+import 'package:jeeb_admin/features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
 import 'package:jeeb_admin/core/infrastructure/realtime/order_status_rtdb_service.dart';
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
@@ -35,8 +36,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void _popToOrdersListing() {
     if (!mounted) return;
     Navigator.of(context).popUntil(
-      (route) =>
-          route.settings.name == Routes.orders || route.isFirst,
+      (route) => route.settings.name == Routes.orders || route.isFirst,
     );
   }
 
@@ -47,127 +47,152 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (!didPop) _popToOrdersListing();
       },
-      child: BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
-      listenWhen: (previous, current) => listenWhenEnteringTerminal(
-        previous,
-        current,
-        (s) => s is OrderCompleteSuccess || s is OrderCompleteError,
-      ),
-      listener: (context, completeState) {
-        if (completeState is OrderCompleteSuccess) {
-          customToast(msg: AppTranslation.orderCompletedSuccessfully);
-          context.read<OrderDetailsBloc>().add(
-                GetOrderDetailsEvent(widget.orderId),
-              );
-        } else if (completeState is OrderCompleteError) {
-          customToast(msg: completeState.message);
-        }
-      },
-      builder: (context, completeState) {
-        return BlocConsumer<OrderCancelBloc, OrderCancelState>(
-          listenWhen: (previous, current) => listenWhenEnteringTerminal(
-            previous,
-            current,
-            (s) => s is OrderCancelSuccess || s is OrderCancelError,
-          ),
-          listener: (context, cancelState) {
-            if (cancelState is OrderCancelSuccess) {
-              customToast(msg: AppTranslation.orderCancelledSuccessfully);
-            } else if (cancelState is OrderCancelError) {
-              customToast(msg: cancelState.message);
-            }
-          },
-          builder: (context, cancelState) {
-            final isLoading =
-                completeState is OrderCompleteLoading ||
-                cancelState is OrderCancelLoading;
+      child: BlocConsumer<ConfirmPaidOrderBloc, ConfirmPaidOrderState>(
+        listenWhen: (previous, current) => listenWhenEnteringTerminal(
+          previous,
+          current,
+          (s) => s is ConfirmPaidOrderSuccess || s is ConfirmPaidOrderError,
+        ),
+        listener: (context, state) {
+          if (state is ConfirmPaidOrderSuccess) {
+            customToast(msg: AppTranslation.orderStatusUpdatedSuccess);
+            _popToOrdersListing();
+          } else if (state is ConfirmPaidOrderError) {
+            customToast(msg: state.message);
+          }
+        },
+        builder: (context, confirmPaidState) {
+          return BlocConsumer<OrderCompleteBloc, OrderCompleteState>(
+            listenWhen: (previous, current) => listenWhenEnteringTerminal(
+              previous,
+              current,
+              (s) => s is OrderCompleteSuccess || s is OrderCompleteError,
+            ),
+            listener: (context, completeState) {
+              if (completeState is OrderCompleteSuccess) {
+                customToast(msg: AppTranslation.orderCompletedSuccessfully);
+                context.read<OrderDetailsBloc>().add(
+                  GetOrderDetailsEvent(widget.orderId),
+                );
+              } else if (completeState is OrderCompleteError) {
+                customToast(msg: completeState.message);
+              }
+            },
+            builder: (context, completeState) {
+              return BlocConsumer<OrderCancelBloc, OrderCancelState>(
+                listenWhen: (previous, current) => listenWhenEnteringTerminal(
+                  previous,
+                  current,
+                  (s) => s is OrderCancelSuccess || s is OrderCancelError,
+                ),
+                listener: (context, cancelState) {
+                  if (cancelState is OrderCancelSuccess) {
+                    customToast(msg: AppTranslation.orderCancelledSuccessfully);
+                  } else if (cancelState is OrderCancelError) {
+                    customToast(msg: cancelState.message);
+                  }
+                },
+                builder: (context, cancelState) {
+                  final isLoading =
+                      completeState is OrderCompleteLoading ||
+                      cancelState is OrderCancelLoading ||
+                      confirmPaidState is ConfirmPaidOrderLoading;
 
-            return ModalProgressHUD(
-              progressIndicator: const CustomCircleIndicator(),
-              inAsyncCall: isLoading,
-              child: Scaffold(
-                backgroundColor: ColorManager.background,
-                appBar: CustomAppBar(
-                  title: AppTranslation.orderDetails,
-                  onBackPressed: _popToOrdersListing,
-                  actions: [
-                    BlocBuilder<OrderDetailsBloc, OrderDetailsState>(
-                      builder: (context, detailsState) {
-                        if (detailsState is! OrderDetailsLoaded) {
-                          return const SizedBox.shrink();
-                        }
-                        final order = detailsState.order;
-                        if (!order.statusEnum.canCompleteOrCancel) {
-                          return const SizedBox.shrink();
-                        }
-                        return FutureBuilder<String?>(
-                          future: di.sl<StorageService>().getUserRole(),
-                          builder: (context, snapshot) {
-                            final userRole = snapshot.data;
-                            if (userRole?.toLowerCase() != UserRole.merchant.name) {
-                              return const SizedBox.shrink();
-                            }
-                            return Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                  ),
-                                  onPressed: () =>
-                                      _showCompleteConfirmation(context),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.cancel, color: Colors.red),
-                                  onPressed: () =>
-                                      _showCancelConfirmation(context),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                  return ModalProgressHUD(
+                    progressIndicator: const CustomCircleIndicator(),
+                    inAsyncCall: isLoading,
+                    child: Scaffold(
+                      backgroundColor: ColorManager.background,
+                      appBar: CustomAppBar(
+                        title: AppTranslation.orderDetails,
+                        onBackPressed: _popToOrdersListing,
+                        actions: [
+                          BlocBuilder<OrderDetailsBloc, OrderDetailsState>(
+                            builder: (context, detailsState) {
+                              if (detailsState is! OrderDetailsLoaded) {
+                                return const SizedBox.shrink();
+                              }
+                              final order = detailsState.order;
+                              if (!order.statusEnum.canCompleteOrCancel) {
+                                return const SizedBox.shrink();
+                              }
+                              return FutureBuilder<String?>(
+                                future: di.sl<StorageService>().getUserRole(),
+                                builder: (context, snapshot) {
+                                  final userRole = snapshot.data;
+                                  if (userRole?.toLowerCase() !=
+                                      UserRole.merchant.name) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.check_circle,
+                                          color: Colors.green,
+                                        ),
+                                        onPressed: () =>
+                                            _showCompleteConfirmation(context),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.cancel,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () =>
+                                            _showCancelConfirmation(context),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      body: Stack(
+                        children: [
+                          BlocStateHandler<OrderDetailsBloc, OrderDetailsState>(
+                            bloc: context.read<OrderDetailsBloc>(),
+                            isLoading: (state) => state is OrderDetailsLoading,
+                            isError: (state) => state is OrderDetailsError,
+                            isSuccess: (state) => state is OrderDetailsLoaded,
+                            getErrorMessage: (state) =>
+                                (state as OrderDetailsError).message,
+                            getRetryCallback: (state) => () {
+                              context.read<OrderDetailsBloc>().add(
+                                GetOrderDetailsEvent(widget.orderId),
+                              );
+                            },
+                            successBuilder: (context, detailsState) {
+                              final loadedState =
+                                  detailsState as OrderDetailsLoaded;
+                              return OrderDetailsContent(
+                                order: loadedState.order,
+                              );
+                            },
+                          ),
+                          OrderDetailsRtdbListener(
+                            orderId: widget.orderId,
+                            rtdb: di.sl<OrderStatusRtdbService>(),
+                            onRemoteStatusChange: () {
+                              if (!context.mounted) return;
+                              context.read<OrderDetailsBloc>().add(
+                                GetOrderDetailsEvent(widget.orderId),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-                body: Stack(
-                  children: [
-                    BlocStateHandler<OrderDetailsBloc, OrderDetailsState>(
-                      bloc: context.read<OrderDetailsBloc>(),
-                      isLoading: (state) => state is OrderDetailsLoading,
-                      isError: (state) => state is OrderDetailsError,
-                      isSuccess: (state) => state is OrderDetailsLoaded,
-                      getErrorMessage: (state) =>
-                          (state as OrderDetailsError).message,
-                      getRetryCallback: (state) => () {
-                        context.read<OrderDetailsBloc>().add(
-                              GetOrderDetailsEvent(widget.orderId),
-                            );
-                      },
-                      successBuilder: (context, detailsState) {
-                        final loadedState = detailsState as OrderDetailsLoaded;
-                        return OrderDetailsContent(order: loadedState.order);
-                      },
-                    ),
-                    OrderDetailsRtdbListener(
-                      orderId: widget.orderId,
-                      rtdb: di.sl<OrderStatusRtdbService>(),
-                      onRemoteStatusChange: () {
-                        if (!context.mounted) return;
-                        context.read<OrderDetailsBloc>().add(
-                              GetOrderDetailsEvent(widget.orderId),
-                            );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

@@ -550,6 +550,9 @@ class AppRouter {
             BlocProvider<OrderCancelBloc>(
               create: (_) => di.sl<OrderCancelBloc>(),
             ),
+            BlocProvider<ConfirmPaidOrderBloc>(
+              create: (_) => di.sl<ConfirmPaidOrderBloc>(),
+            ),
           ],
         );
 

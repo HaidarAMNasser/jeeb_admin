@@ -121,16 +121,8 @@ class _ListOrderPageState extends State<ListOrderPage>
               ),
             );
       },
-      getEmptyRetryCallback: (s) => () {
-        final loaded = s is ListOrderLoaded ? s : null;
-        context.read<ListOrderBloc>().add(
-              GetOrdersEvent(
-                merchantId: loaded?.merchantId,
-                merchantTab: loaded?.merchantTab,
-                statusFilter: loaded?.statusFilter,
-                search: loaded?.search,
-              ),
-            );
+      getEmptyRetryCallback: (_) => () {
+        context.read<ListOrderBloc>().add(const GetOrdersEvent());
       },
       successBuilder: (context, orderState) {
         final s = orderState as ListOrderLoaded;

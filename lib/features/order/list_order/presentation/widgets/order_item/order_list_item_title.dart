@@ -7,6 +7,7 @@ import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_item/order_list_item_title_widgets.dart';
 
 /// Compact order row: status + store (one row), customer, then date + total.
@@ -41,61 +42,52 @@ class OrderListItemTitle extends StatelessWidget {
         ? DateFormat('MMM d · HH:mm').format(order.date!)
         : null;
 
+    final showDeliveryName = _orderListShouldShowDeliveryName(order);
+
     return Column(
       spacing: AppHeight.s8,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: OrderListStatusBadge(
-                      status: order.statusEnum,
-                      rawStatus: order.status,
-                      useAdminPaymentLabels: useAdminPaymentLabels,
-                    ),
-                  ),
-                  if (showAdminPaidMenu && onAdminOpenPaidDetails != null) ...[
-                    SizedBox(width: AppWidth.s4),
-                    PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.more_vert,
-                        size: AppSize.s16,
-                        color: ColorManager.textDarkColor,
-                      ),
-                      onSelected: (_) => onAdminOpenPaidDetails!(),
-                      itemBuilder: (context) => [
-                        PopupMenuItem<String>(
-                          value: 'details',
-                          child: CustomText(
-                            text: 'عرض التفاصيل والتأكيد',
-                            textStyle: getMediumStyle(
-                              fontSize: AppFontSize.s14,
-                              color: ColorManager.textDarkColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
+            OrderListStatusBadge(
+              status: order.statusEnum,
+              rawStatus: order.status,
+              useAdminPaymentLabels: useAdminPaymentLabels,
             ),
             SizedBox(width: AppWidth.s8),
-            OrderListInfoBadge(
-              icon: Icons.storefront_outlined,
-              text: restaurant,
-              backgroundColor: ColorManager.categoryBadgeBackground,
-              foregroundColor: ColorManager.categoryTextColor,
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: OrderListInfoBadge(
+                  icon: Icons.storefront_outlined,
+                  text: restaurant,
+                  backgroundColor: ColorManager.categoryBadgeBackground,
+                  foregroundColor: ColorManager.categoryTextColor,
+                ),
+              ),
             ),
+            // if (showAdminPaidMenu && onAdminOpenPaidDetails != null)
+            //   IconButton(
+            //     padding: EdgeInsets.zero,
+            //     visualDensity: VisualDensity.compact,
+            //     constraints: const BoxConstraints(
+            //       minWidth: 32,
+            //       minHeight: 32,
+            //     ),
+            //     icon: Icon(
+            //       Icons.more_vert,
+            //       size: AppSize.s22,
+            //       color: Colors.black,
+            //     ),
+            //     onPressed: () => AdminPaidOrderListOptionsDialog.show(
+            //       context: context,
+            //       onReviewAndConfirm: onAdminOpenPaidDetails!,
+            //     ),
+            //   ),
           ],
         ),
-        SizedBox(height: AppHeight.s8),
         CustomText(
           text: "${AppTranslation.customer} : $customerDisplay",
           textStyle: getMediumStyle(
@@ -103,8 +95,16 @@ class OrderListItemTitle extends StatelessWidget {
             color: ColorManager.textDarkColor,
           ),
         ),
-        if (dateStr != null || totalLine != null) ...[
-          SizedBox(height: AppHeight.s8),
+        if (showDeliveryName)
+          CustomText(
+            text:
+                '${AppTranslation.deliveryMan} : ${order.deliveryMan!.name.trim()}',
+            textStyle: getMediumStyle(
+              fontSize: AppFontSize.s14,
+              color: ColorManager.textDarkColor,
+            ),
+          ),
+        if (dateStr != null || totalLine != null)
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,10 +135,20 @@ class OrderListItemTitle extends StatelessWidget {
                 ),
             ],
           ),
-        ],
       ],
     );
   }
+}
+
+/// Admin list: show assigned delivery when status is past search/confirm and data exists.
+bool _orderListShouldShowDeliveryName(OrderEntity order) {
+  final s = order.statusEnum;
+  if (s == OrderStatus.confirmed || s == OrderStatus.searching) {
+    return false;
+  }
+  final d = order.deliveryMan;
+  if (d == null) return false;
+  return d.name.trim().isNotEmpty;
 }
 
 /// Outlined row action (confirm / kitchen) at the bottom of the card.

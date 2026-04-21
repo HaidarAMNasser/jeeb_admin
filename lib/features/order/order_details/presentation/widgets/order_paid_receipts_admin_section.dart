@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as di;
+import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
+    as di;
 import 'package:jeeb_admin/core/infrastructure/services/storage_service.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
@@ -13,8 +14,8 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_payment_receipt_entity.dart';
-import 'package:jeeb_admin/features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
 
 /// Payment receipt thumbnails and admin-only action to mark a PAID order as COMPLETE.
 class OrderPaidReceiptsAdminSection extends StatelessWidget {
@@ -32,7 +33,6 @@ class OrderPaidReceiptsAdminSection extends StatelessWidget {
         if (!isAdmin || !order.statusEnum.canAdminConfirmPaidComplete) {
           return const SizedBox.shrink();
         }
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -41,7 +41,7 @@ class OrderPaidReceiptsAdminSection extends StatelessWidget {
                 text: AppTranslation.paymentReceipts,
                 textStyle: getSemiBoldStyle(
                   fontSize: AppFontSize.s16,
-                  color: ColorManager.productNameColor,
+                  color: ColorManager.textColor,
                 ),
               ),
               SizedBox(height: AppHeight.s12),
@@ -79,7 +79,12 @@ class OrderPaidReceiptsAdminSection extends StatelessWidget {
         title: AppTranslation.areYouSureConfirmPaidComplete,
         onConfirm: () {
           Navigator.of(ctx).pop();
-          context.read<OrderCompleteBloc>().add(CompleteOrderEvent(order.id));
+          context.read<ConfirmPaidOrderBloc>().add(
+            ConfirmPaidOrderSubmitted(
+              orderId: order.id,
+              imagePayFromDelivery: order.imagePayFromDelivery,
+            ),
+          );
         },
       ),
     );

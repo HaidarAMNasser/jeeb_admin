@@ -79,6 +79,7 @@ enum OrderStatus {
       case 'paid':
         return OrderStatus.paid;
       case 'completed':
+      case 'complete':
         return OrderStatus.completed;
       case 'cancelled':
       case 'canceled':
@@ -126,8 +127,9 @@ enum OrderStatus {
   Color get color {
     switch (this) {
       case OrderStatus.delivered:
-      case OrderStatus.completed:
         return Colors.green;
+      case OrderStatus.completed:
+        return const Color.fromARGB(255, 2, 185, 97);
       case OrderStatus.paid:
         return Colors.deepOrange;
       case OrderStatus.cancelled:
@@ -181,7 +183,7 @@ extension OrderStatusPresentation on OrderStatus {
       case OrderStatus.paid:
         return Icons.payments_outlined;
       case OrderStatus.completed:
-        return Icons.verified_outlined;
+        return Icons.check_circle_rounded;
       case OrderStatus.cancelled:
         return Icons.cancel_outlined;
       case OrderStatus.rejected:

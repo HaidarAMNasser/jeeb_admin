@@ -27,11 +27,11 @@ String _statusFilterLabel(OrderStatus s) {
     case OrderStatus.onTheWay:
       return AppTranslation.orderStepOnTheWay;
     case OrderStatus.delivered:
-      return AppTranslation.orderStepDelivered;
+      return AppTranslation.ordersFilterLabelDeliveredNotPaid;
     case OrderStatus.paid:
-      return s.displayLabel;
+      return AppTranslation.ordersFilterLabelPaidWaitingConfirmation;
     case OrderStatus.completed:
-      return s.displayLabel;
+      return AppTranslation.ordersFilterLabelCompletedPaidConfirmed;
     case OrderStatus.cancelled:
       return AppTranslation.orderStatusCancelled;
     case OrderStatus.rejected:

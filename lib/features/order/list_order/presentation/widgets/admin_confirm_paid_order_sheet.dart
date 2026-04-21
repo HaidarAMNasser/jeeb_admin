@@ -13,6 +13,7 @@ Future<void> showAdminConfirmPaidOrderSheet(
   BuildContext context,
   OrderEntity order,
 ) {
+  final confirmBloc = context.read<ConfirmPaidOrderBloc>();
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -21,76 +22,85 @@ Future<void> showAdminConfirmPaidOrderSheet(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
     builder: (sheetContext) {
-      return SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: AppPadding.p16,
-            right: AppPadding.p16,
-            top: AppPadding.p12,
-            bottom: MediaQuery.paddingOf(sheetContext).bottom + AppPadding.p16,
-          ),
-          child: BlocListener<ConfirmPaidOrderBloc, ConfirmPaidOrderState>(
-            listenWhen: (prev, curr) => curr is ConfirmPaidOrderSuccess,
-            listener: (context, state) {
-              Navigator.of(sheetContext).pop();
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: EdgeInsets.only(bottom: AppMargin.m12),
-                    decoration: BoxDecoration(
-                      color: ColorManager.textSecondary.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(2),
+      return BlocProvider.value(
+        value: confirmBloc,
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: AppPadding.p16,
+              right: AppPadding.p16,
+              top: AppPadding.p12,
+              bottom:
+                  MediaQuery.paddingOf(sheetContext).bottom + AppPadding.p16,
+            ),
+            child: BlocListener<ConfirmPaidOrderBloc, ConfirmPaidOrderState>(
+              listenWhen: (prev, curr) =>
+                  curr is ConfirmPaidOrderSuccess ||
+                  (curr is ConfirmPaidOrderError &&
+                      prev is ConfirmPaidOrderLoading),
+              listener: (context, state) {
+                if (state is ConfirmPaidOrderSuccess) {
+                  Navigator.of(sheetContext).pop();
+                }
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: EdgeInsets.only(bottom: AppMargin.m12),
+                      decoration: BoxDecoration(
+                        color: ColorManager.textSecondary.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   ),
-                ),
-                CustomText(
-                  text: 'تأكيد استلام دفعة المندوب',
-                  textStyle: getBoldStyle(
-                    fontSize: AppFontSize.s18,
-                    color: ColorManager.titlesColor,
-                  ),
-                ),
-                SizedBox(height: AppHeight.s12),
-                CustomText(
-                  text:
-                      'مراجعة صورة الإيصال أدناه، ثم اضغط تأكيد لإتمام الطلب.',
-                  textStyle: getRegularStyle(
-                    fontSize: AppFontSize.s14,
-                    color: ColorManager.textColor,
-                  ),
-                ),
-                SizedBox(height: AppHeight.s16),
-                _PaymentScreenshotPreview(url: order.imagePayFromDelivery),
-                SizedBox(height: AppHeight.s20),
-                FilledButton(
-                  onPressed: () {
-                    sheetContext.read<ConfirmPaidOrderBloc>().add(
-                          ConfirmPaidOrderSubmitted(
-                            orderId: order.id,
-                            imagePayFromDelivery: order.imagePayFromDelivery,
-                          ),
-                        );
-                  },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: ColorManager.primary,
-                    foregroundColor: ColorManager.surface,
-                    padding: EdgeInsets.symmetric(vertical: AppPadding.p14),
-                  ),
-                  child: CustomText(
-                    text: 'تأكيد',
-                    textStyle: getSemiBoldStyle(
-                      fontSize: AppFontSize.s16,
-                      color: ColorManager.surface,
+                  CustomText(
+                    text: 'تأكيد استلام دفعة المندوب',
+                    textStyle: getBoldStyle(
+                      fontSize: AppFontSize.s18,
+                      color: ColorManager.titlesColor,
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: AppHeight.s12),
+                  CustomText(
+                    text:
+                        'مراجعة صورة الإيصال أدناه، ثم اضغط تأكيد لإتمام الطلب.',
+                    textStyle: getRegularStyle(
+                      fontSize: AppFontSize.s14,
+                      color: ColorManager.textColor,
+                    ),
+                  ),
+                  SizedBox(height: AppHeight.s16),
+                  _PaymentScreenshotPreview(url: order.imagePayFromDelivery),
+                  SizedBox(height: AppHeight.s20),
+                  FilledButton(
+                    onPressed: () {
+                      sheetContext.read<ConfirmPaidOrderBloc>().add(
+                            ConfirmPaidOrderSubmitted(
+                              orderId: order.id,
+                              imagePayFromDelivery: order.imagePayFromDelivery,
+                            ),
+                          );
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: ColorManager.primary,
+                      foregroundColor: ColorManager.surface,
+                      padding: EdgeInsets.symmetric(vertical: AppPadding.p14),
+                    ),
+                    child: CustomText(
+                      text: 'تأكيد',
+                      textStyle: getSemiBoldStyle(
+                        fontSize: AppFontSize.s16,
+                        color: ColorManager.surface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

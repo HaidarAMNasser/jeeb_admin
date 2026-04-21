@@ -308,6 +308,12 @@ class AppTranslation {
       'orders_filter_no_status_override'.tr();
   static String get ordersFilterApply => 'orders_filter_apply'.tr();
   static String get ordersFilterTooltip => 'orders_filter_tooltip'.tr();
+  static String get ordersFilterLabelDeliveredNotPaid =>
+      'orders_filter_label_delivered_not_paid'.tr();
+  static String get ordersFilterLabelCompletedPaidConfirmed =>
+      'orders_filter_label_completed_paid_confirmed'.tr();
+  static String get ordersFilterLabelPaidWaitingConfirmation =>
+      'orders_filter_label_paid_waiting_confirmation'.tr();
   static String get ordersResetFilters => 'orders_reset_filters'.tr();
   static String get orderStatusPreparing => 'order_status_preparing'.tr();
   static String get orderStatusReadyForPickup =>

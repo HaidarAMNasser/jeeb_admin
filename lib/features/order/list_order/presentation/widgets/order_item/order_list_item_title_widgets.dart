@@ -69,34 +69,30 @@ class OrderListStatusBadge extends StatelessWidget {
     final adminLabel =
         useAdminPaymentLabels ? adminOrderListPaymentLabel(status) : null;
     final label = adminLabel ?? orderListStatusLabel(status, rawStatus);
+    final accentColor = status.color;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppPadding.p10,
         vertical: AppPadding.p6,
       ),
       decoration: BoxDecoration(
-        color: status.color.withValues(alpha: 0.12),
+        color: accentColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadius.r8),
-        border: Border.all(color: status.color.withValues(alpha: 0.35)),
+        border: Border.all(color: accentColor.withValues(alpha: 0.35)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(status.iconData, size: AppSize.s16, color: status.color),
+          Icon(status.iconData, size: AppSize.s16, color: accentColor),
           SizedBox(width: AppWidth.s8),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: useAdminPaymentLabels ? 200 : 120,
+          CustomText(
+            text: label,
+            textStyle: getBoldStyle(
+              fontSize: AppFontSize.s11,
+              color: accentColor,
             ),
-            child: CustomText(
-              text: label,
-              textStyle: getBoldStyle(
-                fontSize: AppFontSize.s11,
-                color: status.color,
-              ),
-              maxLines: 2,
-              textOverflow: TextOverflow.ellipsis,
-            ),
+            maxLines: 2,
+            textOverflow: TextOverflow.ellipsis,
           ),
         ],
       ),
