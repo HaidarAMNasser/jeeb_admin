@@ -13,7 +13,7 @@ enum OrderStatus {
   delivered,
   /// Delivery paid admin fee; awaiting admin confirmation (wire: PAID).
   paid,
-  /// Admin confirmed payment receipt (wire: COMPLETED).
+  /// Admin confirmed payment receipt (wire: COMPLETE).
   completed,
   cancelled,
   rejected,
@@ -43,7 +43,7 @@ enum OrderStatus {
       case OrderStatus.paid:
         return 'PAID';
       case OrderStatus.completed:
-        return 'COMPLETED';
+        return 'COMPLETE';
       case OrderStatus.cancelled:
         return 'CANCELLED';
       case OrderStatus.rejected:

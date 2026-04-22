@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jeeb_admin/features/city/presentation/bloc/city_bloc.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
@@ -24,6 +25,8 @@ class _EditMerchantPageState extends State<EditMerchantPage> {
   CountryEntity? _selectedCountry;
   CityEntity? _selectedCity;
   bool _initialized = false;
+  int? _initialCityIdToHydrate;
+  bool _isHydratingCity = false;
 
   @override
   void initState() {
@@ -43,31 +46,82 @@ class _EditMerchantPageState extends State<EditMerchantPage> {
     if (_initialized) return;
     _initialized = true;
     final merchant = state.merchant;
-    _controllers.firstName.text = merchant.firstName ?? '';
-    _controllers.lastName.text = merchant.lastName ?? '';
-    _controllers.email.text = merchant.email;
-    _controllers.phone.text = merchant.phoneNumber ?? '';
-    _controllers.address.text = merchant.address ?? '';
-    if (merchant.countryId != null && merchant.countryName != null) {
-      _selectedCountry = CountryEntity(
-        id: merchant.countryId!,
-        name: CountryName(en: merchant.countryName!, ar: merchant.countryName!),
-        code: '',
-        callingCode: '',
-        currencyCode: '',
-        currencySymbol: '',
-        currencySmallestUnit: '',
-        currencyFactor: 1,
-        isActive: true,
-      );
+    _initialCityIdToHydrate = merchant.cityId;
+    _isHydratingCity = merchant.cityId != null;
+    final prefillCountry = merchant.countryId != null
+        ? CountryEntity(
+            id: merchant.countryId!,
+            name: CountryName(
+              en: (merchant.countryName ?? '').trim().isEmpty
+                  ? '${merchant.countryId}'
+                  : (merchant.countryName ?? '').trim(),
+              ar: (merchant.countryName ?? '').trim().isEmpty
+                  ? '${merchant.countryId}'
+                  : (merchant.countryName ?? '').trim(),
+            ),
+            code: '',
+            callingCode: '',
+            currencyCode: '',
+            currencySymbol: '',
+            currencySmallestUnit: '',
+            currencyFactor: 1,
+            isActive: true,
+          )
+        : null;
+    final prefillCity = merchant.cityId != null
+        ? CityEntity(
+            id: merchant.cityId!,
+            name: CityName(
+              en: (merchant.cityName ?? '').trim().isEmpty
+                  ? '${merchant.cityId}'
+                  : (merchant.cityName ?? '').trim(),
+              ar: (merchant.cityName ?? '').trim().isEmpty
+                  ? '${merchant.cityId}'
+                  : (merchant.cityName ?? '').trim(),
+            ),
+            countryId: merchant.countryId ?? 0,
+          )
+        : null;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        _controllers.firstName.text = merchant.firstName ?? '';
+        _controllers.lastName.text = merchant.lastName ?? '';
+        _controllers.email.text = merchant.email;
+        _controllers.phone.text = merchant.phoneNumber ?? '';
+        _controllers.address.text = merchant.address ?? '';
+        _selectedCountry = prefillCountry;
+        _selectedCity = prefillCity;
+      });
+    });
+  }
+
+  void _onCityChanged(CityEntity? city) {
+    // CountryCityWidget emits null when country changes; ignore this one-time
+    // reset during initial hydration to preserve backend city value.
+    if (_isHydratingCity && city == null) return;
+    setState(() => _selectedCity = city);
+  }
+
+  void _tryHydrateCityFromState(CityState state) {
+    if (!_isHydratingCity || _initialCityIdToHydrate == null) return;
+    if (state is! CityLoaded) return;
+    final cityId = _initialCityIdToHydrate!;
+    CityEntity? matched;
+    for (final city in state.cities) {
+      if (city.id == cityId) {
+        matched = city;
+        break;
+      }
     }
-    if (merchant.cityId != null && merchant.cityName != null) {
-      _selectedCity = CityEntity(
-        id: merchant.cityId!,
-        name: CityName(en: merchant.cityName!, ar: merchant.cityName!),
-        countryId: merchant.countryId ?? 0,
-      );
-    }
+    if (matched == null) return;
+    if (!mounted) return;
+    setState(() {
+      _selectedCity = matched;
+      _isHydratingCity = false;
+      _initialCityIdToHydrate = null;
+    });
   }
 
   void _submit() {
@@ -110,22 +164,23 @@ class _EditMerchantPageState extends State<EditMerchantPage> {
 
   @override
   Widget build(BuildContext context) {
-    return EditMerchantBlocLayer(
-      builder: (context, isLoading) => EditMerchantScaffold(
-        isLoading: isLoading,
-        merchantId: widget.merchantId,
-        onInitialize: _initFormIfNeeded,
-        formContent: EditMerchantForm(
-          controllers: _controllers,
-          selectedCountry: _selectedCountry,
-          selectedCity: _selectedCity,
-          onCountryChanged: (country) {
-            setState(() => _selectedCountry = country);
-          },
-          onCityChanged: (city) {
-            setState(() => _selectedCity = city);
-          },
-          onSave: _submit,
+    return BlocListener<CityBloc, CityState>(
+      listener: (context, state) => _tryHydrateCityFromState(state),
+      child: EditMerchantBlocLayer(
+        builder: (context, isLoading) => EditMerchantScaffold(
+          isLoading: isLoading,
+          merchantId: widget.merchantId,
+          onInitialize: _initFormIfNeeded,
+          formContent: EditMerchantForm(
+            controllers: _controllers,
+            selectedCountry: _selectedCountry,
+            selectedCity: _selectedCity,
+            onCountryChanged: (country) {
+              setState(() => _selectedCountry = country);
+            },
+            onCityChanged: _onCityChanged,
+            onSave: _submit,
+          ),
         ),
       ),
     );
