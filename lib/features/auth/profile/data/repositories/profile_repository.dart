@@ -153,7 +153,8 @@ class ProfileRepository {
       );
 
       final raw = response.data as Map<String, dynamic>?;
-      if (raw == null || (raw['statusCode'] as int? ?? 0) >= 300) {
+      final httpCode = response.statusCode ?? 0;
+      if (raw == null && (httpCode < 200 || httpCode >= 300)) {
         return Left(
           ErrorHandler.handle(
             DioException(
@@ -164,12 +165,25 @@ class ProfileRepository {
           ),
         );
       }
-      final userEntity = _parseUserFromResponseData(raw['data']);
-      if (userEntity != null) {
-        return Right(userEntity);
+      if (raw != null) {
+        final statusCode = raw['statusCode'] as int?;
+        if (statusCode != null && statusCode >= 300) {
+          return Left(
+            ErrorHandler.handle(
+              DioException(
+                type: DioExceptionType.badResponse,
+                response: response,
+                requestOptions: response.requestOptions,
+              ),
+            ),
+          );
+        }
+        final userEntity = _parseUserFromResponseData(raw['data']);
+        if (userEntity != null) {
+          return Right(userEntity);
+        }
       }
-      final code = raw['statusCode'] as int? ?? 0;
-      if (code >= 200 && code < 300) {
+      if (httpCode >= 200 && httpCode < 300) {
         return getProfile();
       }
       return Left(
