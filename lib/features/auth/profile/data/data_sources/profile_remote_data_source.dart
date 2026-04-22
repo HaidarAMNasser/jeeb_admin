@@ -1,6 +1,7 @@
 import 'dart:io' show File;
 
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class ProfileRemoteDataSource {
@@ -22,7 +23,7 @@ abstract class ProfileRemoteDataSource {
     String? password,
     String? newPassword,
     String? confirmedPassword,
-    File? imageFile,
+    Object? imageFile,
   });
 }
 
@@ -53,17 +54,19 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     String? password,
     String? newPassword,
     String? confirmedPassword,
-    File? imageFile,
+    Object? imageFile,
   }) async {
     MultipartFile? image;
     if (imageFile != null) {
-
-        final path = imageFile.path;
+      final path = imageFile is XFile
+          ? imageFile.path
+          : (imageFile is File ? imageFile.path : '');
+      if (path.isNotEmpty) {
         final name = path.contains(RegExp(r'[/\\]'))
             ? path.split(RegExp(r'[/\\]')).last
             : path;
         image = await MultipartFile.fromFile(path, filename: name);
-      
+      }
     }
     return _appApiServiceClient.updateProfile(
       firstName: firstName,

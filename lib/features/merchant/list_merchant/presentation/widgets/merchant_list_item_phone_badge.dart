@@ -33,11 +33,11 @@ class MerchantListItemPhoneBadge extends StatelessWidget {
           width: width,
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: AppPadding.p10,
+              horizontal: AppPadding.p8,
               vertical: AppHeight.s5,
             ),
             decoration: BoxDecoration(
-              color: ColorManager.primary.withOpacity(0.12),
+              color: ColorManager.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(AppRadius.r12),
               border: Border.all(color: ColorManager.primary, width: 1),
             ),
@@ -46,7 +46,7 @@ class MerchantListItemPhoneBadge extends StatelessWidget {
               children: [
                 Icon(
                   Icons.phone,
-                  size: AppSize.s16,
+                  size: AppSize.s14,
                   color: ColorManager.primary,
                 ),
                 SizedBox(width: AppWidth.s5),
@@ -54,10 +54,11 @@ class MerchantListItemPhoneBadge extends StatelessWidget {
                   child: CustomText(
                     text: phoneNumber,
                     textStyle: getRegularStyle(
-                      fontSize: AppFontSize.s11,
+                      fontSize: AppFontSize.s10,
                       color: ColorManager.primary,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
+                    softWrap: false,
                     textOverflow: TextOverflow.ellipsis,
                   ),
                 ),
