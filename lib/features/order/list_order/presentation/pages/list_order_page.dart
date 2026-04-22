@@ -121,8 +121,20 @@ class _ListOrderPageState extends State<ListOrderPage>
               ),
             );
       },
-      getEmptyRetryCallback: (_) => () {
-        context.read<ListOrderBloc>().add(const GetOrdersEvent());
+      getEmptyRetryCallback: (s) => () {
+        if (!widget.isMerchant) {
+          context.read<ListOrderBloc>().add(const GetOrdersEvent());
+          return;
+        }
+        final loaded = s is ListOrderLoaded ? s : null;
+        context.read<ListOrderBloc>().add(
+              GetOrdersEvent(
+                search: currentSearch,
+                merchantId: loaded?.merchantId,
+                merchantTab: loaded?.merchantTab,
+                statusFilter: loaded?.statusFilter,
+              ),
+            );
       },
       successBuilder: (context, orderState) {
         final s = orderState as ListOrderLoaded;

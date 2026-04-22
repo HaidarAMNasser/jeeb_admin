@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
+import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -70,6 +73,10 @@ class CreateDeliveryForm extends StatelessWidget {
             SizedBox(height: AppHeight.s16),
             LocationSourceSelector(
               title: AppTranslation.deliveryPickLocation,
+              titleTextStyle: getMediumStyle(
+                fontSize: AppFontSize.s15,
+                color: ColorManager.defaultWhite,
+              ),
               useMyLocationHint: AppTranslation.deliveryOpenMap,
               locationSetHint: AppTranslation.locationSetFormat,
               latitude: mapLatitude,

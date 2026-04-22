@@ -22,6 +22,7 @@ import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart'
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/core/presentation/maps/google_map_location_picker_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_page_content.dart';
+import 'package:jeeb_admin/main.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../bloc/profiel/profile_bloc.dart';
@@ -108,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
             if (current is ProfileError) return previous is! ProfileError;
             return true;
           },
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is ProfileLoaded) {
               if (!state.formValuesInitialized) {
                 setState(() {
@@ -133,9 +134,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 context.read<ProfileBloc>().add(const ClearUpdateSuccess());
               }
               if (state.localeToApply != null) {
-                context.setLocale(state.localeToApply!);
-                customToast(msg: AppTranslation.languageChangedSuccessfully);
+                await context.setLocale(state.localeToApply!);
                 context.read<ProfileBloc>().add(const ClearLocaleToApply());
+                if (mounted) {
+                  AppRestart.restartApp(context);
+                  customToast(msg: AppTranslation.languageChangedSuccessfully);
+                }
               }
             } else if (state is ProfileError) {
               customToast(msg: state.message);
