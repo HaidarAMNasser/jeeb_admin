@@ -38,7 +38,7 @@ class ProductItemInfo extends StatelessWidget {
                   ),
                   SizedBox(width: AppMargin.m8),
                   CustomText(
-                    text: '\$${(product.price / 100).toStringAsFixed(2)}',
+                    text: 'SYP ${(product.price / 100).toStringAsFixed(2)}',
                     textStyle: getBoldStyle(
                       fontSize: AppFontSize.s20,
                       color: ColorManager.primary,
