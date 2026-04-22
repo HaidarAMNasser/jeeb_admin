@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
@@ -59,7 +57,7 @@ class UpdateDeliveryRemoteDataSourceImpl
       if (notificationChannel != null && notificationChannel.isNotEmpty)
         'notificationChannel': notificationChannel,
       if (latitude != null && longitude != null)
-        'location': jsonEncode({'lat': latitude, 'lng': longitude}),
+        'location': {'lat': latitude, 'lng': longitude},
       if (imagePath != null && imagePath.isNotEmpty)
         'image': await MultipartFile.fromFile(imagePath),
     });
