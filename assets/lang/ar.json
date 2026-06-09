@@ -395,5 +395,13 @@
   "max_orders_per_delivery": "الحد الأقصى للطلبات لكل توصيل (لكل سائق)",
   "enter_max_orders_per_delivery": "مثال: 10 — أقصى عدد طلبات يمكن للسائق استلامه يومياً",
   "please_enter_valid_max_orders_per_delivery": "الرجاء إدخال عدد صحيح لا يقل عن 1",
-  "settings_updated_successfully": "تم تحديث الإعدادات بنجاح"
+  "settings_updated_successfully": "تم تحديث الإعدادات بنجاح",
+  "send_notification": "إرسال إشعار",
+  "send_notification_action": "إرسال",
+  "notification_title": "عنوان الإشعار",
+  "enter_notification_title": "أدخل عنوان الإشعار",
+  "notification_body": "محتوى الإشعار",
+  "enter_notification_body": "أدخل نص الإشعار",
+  "please_enter_notification_title_and_body": "الرجاء إدخال العنوان والمحتوى",
+  "notification_sent_successfully": "تم إرسال الإشعار بنجاح"
 }

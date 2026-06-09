@@ -11,6 +11,7 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_checkbox.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/widgets/merchant_business_type_dropdown.dart';
+import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_send_notification_tile.dart';
 
 class ProfileForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -29,6 +30,7 @@ class ProfileForm extends StatelessWidget {
   final VoidCallback? onSettingsTap;
   final VoidCallback? onCategoriesTap;
   final VoidCallback? onAreasTap;
+  final VoidCallback? onSendNotificationTap;
   /// Merchant-only fields/actions — from SharedPreferences `user_role` at login.
   final bool isMerchantFromStorage;
   /// `RESTAURANT` or `STORE`; only used when [isMerchantFromStorage].
@@ -56,6 +58,7 @@ class ProfileForm extends StatelessWidget {
     this.onSettingsTap,
     this.onCategoriesTap,
     this.onAreasTap,
+    this.onSendNotificationTap,
   });
 
   @override
@@ -217,6 +220,8 @@ class ProfileForm extends StatelessWidget {
                 ),
               ),
             ),
+          if (onSendNotificationTap != null)
+            ProfileSendNotificationTile(onTap: onSendNotificationTap!),
           if (isMerchantFromStorage) ...[
             InkWell(
               onTap: onUpdateLocation,

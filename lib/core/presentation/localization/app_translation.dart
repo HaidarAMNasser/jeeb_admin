@@ -447,5 +447,17 @@ class AppTranslation {
   static String get pleaseEnterValidMaxOrdersPerDelivery =>
       'please_enter_valid_max_orders_per_delivery'.tr();
   static String get settingsUpdatedSuccessfully => 'settings_updated_successfully'.tr();
+
+  // Send notification (admin)
+  static String get sendNotification => 'send_notification'.tr();
+  static String get sendNotificationAction => 'send_notification_action'.tr();
+  static String get notificationTitle => 'notification_title'.tr();
+  static String get enterNotificationTitle => 'enter_notification_title'.tr();
+  static String get notificationBody => 'notification_body'.tr();
+  static String get enterNotificationBody => 'enter_notification_body'.tr();
+  static String get pleaseEnterNotificationTitleAndBody =>
+      'please_enter_notification_title_and_body'.tr();
+  static String get notificationSentSuccessfully =>
+      'notification_sent_successfully'.tr();
 }
 

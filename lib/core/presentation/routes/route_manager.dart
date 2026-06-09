@@ -40,6 +40,7 @@ import '../../../features/auth/profile/presentation/pages/change_password_page.d
 import '../../../features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
 import '../../../features/auth/profile/presentation/bloc/change_password/change_password_bloc.dart';
 import '../../../features/auth/logout/presentation/bloc/logout_bloc.dart';
+import '../../../features/notification/send_to_customers/presentation/bloc/send_to_customers_bloc.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
 import '../../../features/order/list_order/presentation/pages/list_order_page.dart';
@@ -209,6 +210,9 @@ class AppRouter {
             ),
             BlocProvider<LogoutBloc>(
               create: (_) => di.sl<LogoutBloc>(),
+            ),
+            BlocProvider<SendToCustomersBloc>(
+              create: (_) => di.sl<SendToCustomersBloc>(),
             ),
           ],
         );

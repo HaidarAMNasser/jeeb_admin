@@ -27,6 +27,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../bloc/profiel/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
+import 'package:jeeb_admin/features/notification/send_to_customers/presentation/widgets/send_notification_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -228,6 +229,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           .add(UpdateAccountActive(v)),
                       isUpdateLoading: isUpdateLoading,
                       onPickImage: () => _pickAndUpdateImage(context),
+                      onSendNotificationTap: _isAdminFromStorage
+                          ? () => SendNotificationDialog.show(context)
+                          : null,
                     );
                   },
                 ),

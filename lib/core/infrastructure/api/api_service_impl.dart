@@ -1399,4 +1399,28 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
 
     return result;
   }
+
+  @override
+  Future<Response> sendNotificationToCustomers(
+    Map<String, dynamic> body,
+  ) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'notifications/send-to-customers',
+              queryParameters: queryParameters,
+              data: body,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
 }

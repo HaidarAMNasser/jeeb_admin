@@ -26,6 +26,7 @@ class ProfilePageContent extends StatelessWidget {
   final ValueChanged<bool> onAccountStatusChanged;
   final bool isUpdateLoading;
   final VoidCallback? onPickImage;
+  final VoidCallback? onSendNotificationTap;
 
   const ProfilePageContent({
     super.key,
@@ -47,6 +48,7 @@ class ProfilePageContent extends StatelessWidget {
     required this.onAccountStatusChanged,
     required this.isUpdateLoading,
     this.onPickImage,
+    this.onSendNotificationTap,
   });
 
   @override
@@ -83,6 +85,9 @@ class ProfilePageContent extends StatelessWidget {
                 : null,
             onAreasTap: isAdminFromStorage
                 ? () => NavigationService().pushNamed(Routes.areas)
+                : null,
+            onSendNotificationTap: isAdminFromStorage
+                ? onSendNotificationTap
                 : null,
           ),
           SizedBox(height: AppHeight.s24),

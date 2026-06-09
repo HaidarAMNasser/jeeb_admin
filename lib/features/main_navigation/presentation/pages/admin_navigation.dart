@@ -7,6 +7,7 @@ import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as 
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
 import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.dart';
+import 'package:jeeb_admin/features/notification/send_to_customers/presentation/bloc/send_to_customers_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/pages/list_order_page.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
@@ -72,6 +73,9 @@ class _AdminNavigationState extends State<AdminNavigation> {
             ),
             BlocProvider<LogoutBloc>(
               create: (_) => di.sl<LogoutBloc>(),
+            ),
+            BlocProvider<SendToCustomersBloc>(
+              create: (_) => di.sl<SendToCustomersBloc>(),
             ),
           ],
           child: const ProfilePage(),

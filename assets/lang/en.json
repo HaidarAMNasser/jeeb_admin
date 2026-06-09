@@ -395,5 +395,13 @@
   "max_orders_per_delivery": "Max orders per delivery (per driver)",
   "enter_max_orders_per_delivery": "e.g. 10 — maximum orders a driver can receive per day",
   "please_enter_valid_max_orders_per_delivery": "Please enter a whole number of at least 1",
-  "settings_updated_successfully": "Settings updated successfully"
+  "settings_updated_successfully": "Settings updated successfully",
+  "send_notification": "Send Notification",
+  "send_notification_action": "Send",
+  "notification_title": "Notification Title",
+  "enter_notification_title": "Enter notification title",
+  "notification_body": "Notification Body",
+  "enter_notification_body": "Enter notification message",
+  "please_enter_notification_title_and_body": "Please enter both title and body",
+  "notification_sent_successfully": "Notification sent successfully"
 }

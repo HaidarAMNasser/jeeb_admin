@@ -296,6 +296,10 @@ abstract class AppApiServiceClient {
 
   @PATCH("settings")
   Future<Response> patchSettings(List<Map<String, dynamic>> body);
+
+  // Notification endpoints
+  @POST("notifications/send-to-customers")
+  Future<Response> sendNotificationToCustomers(Map<String, dynamic> body);
 }
 
 // Annotations for API methods (simplified versions)

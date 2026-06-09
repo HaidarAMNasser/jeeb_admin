@@ -132,6 +132,9 @@ import '../../../features/settings/edit_settings/presentation/bloc/edit_settings
 import '../../../features/notification/update_device_token/data/data_sources/update_device_token_remote_data_source.dart';
 import '../../../features/notification/update_device_token/data/repositories/update_device_token_repository.dart';
 import '../../../features/notification/update_device_token/presentation/bloc/update_device_token_bloc.dart';
+import '../../../features/notification/send_to_customers/data/data_sources/send_to_customers_data_source.dart';
+import '../../../features/notification/send_to_customers/data/repositories/send_to_customers_repository.dart';
+import '../../../features/notification/send_to_customers/presentation/bloc/send_to_customers_bloc.dart';
 import '../services/notification_service.dart';
 
 final sl = GetIt.instance;
@@ -463,6 +466,13 @@ Future<void> init() async {
   );
   sl.registerFactory(() => UpdateDeviceTokenRepository(sl(), sl()));
   sl.registerLazySingleton(() => UpdateDeviceTokenBloc(sl(), sl()));
+
+  //! Send notification to all customers (admin)
+  sl.registerFactory<SendToCustomersRemoteDataSource>(
+    () => SendToCustomersRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => SendToCustomersRepository(sl(), sl()));
+  sl.registerFactory(() => SendToCustomersBloc(sl()));
   sl.registerLazySingleton(
     () => NotificationService(
       sl<UpdateDeviceTokenBloc>(),
