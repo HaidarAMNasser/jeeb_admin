@@ -17,6 +17,8 @@ class LocationSourceSelector extends StatelessWidget {
   final VoidCallback onUseMyLocation;
   final VoidCallback? onClearLocation;
   final bool isLoading;
+  final TextStyle? titleTextStyle;
+  final double fieldHeight;
 
   const LocationSourceSelector({
     super.key,
@@ -29,6 +31,8 @@ class LocationSourceSelector extends StatelessWidget {
     required this.onUseMyLocation,
     this.onClearLocation,
     this.isLoading = false,
+    this.titleTextStyle,
+    this.fieldHeight = 56.0,
   });
 
   bool get hasLocation =>
@@ -43,10 +47,12 @@ class LocationSourceSelector extends StatelessWidget {
           children: [
             CustomText(
               text: title,
-              textStyle: getSemiBoldStyle(
-                fontSize: AppFontSize.s16,
-                color: ColorManager.defaultWhite,
-              ),
+              textStyle:
+                  titleTextStyle ??
+                  getSemiBoldStyle(
+                    fontSize: AppFontSize.s16,
+                    color: ColorManager.defaultWhite,
+                  ),
             ),
             if (isRequired)
               CustomText(
@@ -63,7 +69,7 @@ class LocationSourceSelector extends StatelessWidget {
           onTap: hasLocation || isLoading ? null : onUseMyLocation,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: AppHeight.s56,
+            height: fieldHeight,
             padding: EdgeInsets.symmetric(horizontal: AppPadding.p16),
             decoration: BoxDecoration(
               color: ColorManager.defaultWhite,

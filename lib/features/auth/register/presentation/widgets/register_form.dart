@@ -5,12 +5,14 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
+import 'package:jeeb_admin/core/presentation/widgets/custom_password_field.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
+import 'package:jeeb_admin/features/auth/register/presentation/widgets/merchant_business_type_dropdown.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/bloc/register_bloc.dart';
 import 'package:jeeb_admin/features/country/presentation/widgets/country_city_widget.dart';
 
@@ -57,8 +59,7 @@ class RegisterForm extends StatelessWidget {
                 hintText: AppTranslation.enterPhone,
                 controller: bloc.phoneController,
               ),
-              CustomTextField(
-                obscureText: true,
+              CustomPasswordField(
                 title: AppTranslation.password,
                 hintText: AppTranslation.enterPassword,
                 controller: bloc.passwordController,
@@ -73,6 +74,14 @@ class RegisterForm extends StatelessWidget {
                 hintText: AppTranslation.enterRestaurantName,
                 controller: bloc.restaurantNameController,
               ),
+              if (bloc.selectedRole == 'MERCHANT') ...[
+                MerchantBusinessTypeDropdown(
+                  value: state.merchantBusinessType,
+                  onChanged: (v) {
+                    bloc.add(RegisterMerchantTypeChanged(v));
+                  },
+                ),
+              ],
               LocationSourceSelector(
                 title: AppTranslation.location,
                 useMyLocationHint: AppTranslation.useMyLocation,

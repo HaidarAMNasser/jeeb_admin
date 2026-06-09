@@ -14,6 +14,8 @@ extension DeliveryManMapper on DeliveryManModel {
       countryName: countryName,
       countryId: countryId,
       cityId: cityId,
+      country: country?.toDomain(),
+      city: city?.toDomain(),
       address: address,
       image: imageUrlFull,
       isOnline: isOnline,
@@ -26,6 +28,8 @@ extension DeliveryManMapper on DeliveryManModel {
       verifiedAt: verifiedAt,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      currentLat: currentLat,
+      currentLng: currentLng,
     );
   }
 }

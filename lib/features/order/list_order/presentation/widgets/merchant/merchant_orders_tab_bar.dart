@@ -9,7 +9,7 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/features/order/list_order/domain/merchant_orders_tab.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 
-/// Merchant only: segmented tabs (pending / confirmed / in progress).
+/// Merchant only: segmented tabs (pending / preparing / in progress).
 class MerchantOrdersTabBar extends StatelessWidget {
   const MerchantOrdersTabBar({super.key, required this.controller});
 
@@ -21,8 +21,8 @@ class MerchantOrdersTabBar extends StatelessWidget {
           icon: Icons.schedule_rounded,
         ),
         (
-          label: AppTranslation.merchantOrdersTabConfirmed,
-          icon: Icons.verified_rounded,
+          label: AppTranslation.merchantOrdersTabPreparing,
+          icon: Icons.restaurant_menu_rounded,
         ),
         (
           label: AppTranslation.merchantOrdersTabOthers,

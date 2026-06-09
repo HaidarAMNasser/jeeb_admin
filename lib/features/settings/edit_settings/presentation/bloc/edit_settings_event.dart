@@ -11,13 +11,23 @@ class EditSettingsSubmitted extends EditSettingsEvent {
   final String supportPhone;
   final String whatsappNumber;
   final num defaultProductCommissionRate;
+  final num deliveryTipPerKilometer;
+  final int maxOrdersPerDelivery;
 
   const EditSettingsSubmitted({
     required this.supportPhone,
     required this.whatsappNumber,
     required this.defaultProductCommissionRate,
+    required this.deliveryTipPerKilometer,
+    required this.maxOrdersPerDelivery,
   });
 
   @override
-  List<Object?> get props => [supportPhone, whatsappNumber, defaultProductCommissionRate];
+  List<Object?> get props => [
+        supportPhone,
+        whatsappNumber,
+        defaultProductCommissionRate,
+        deliveryTipPerKilometer,
+        maxOrdersPerDelivery,
+      ];
 }

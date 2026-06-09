@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/common/utils/order_status_step_index.dart';
 import 'package:jeeb_admin/core/infrastructure/realtime/order_status_rtdb_service.dart';
+import 'package:jeeb_admin/core/infrastructure/realtime/route_history_point.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 
 part 'order_status_event.dart';
@@ -33,6 +34,7 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
     on<OrderStatusRealtimeSnapshot>(_onRealtimeSnapshot);
     on<OrderStatusDriverLocationUpdated>(_onDriverLocationUpdated);
     on<OrderStatusDriverLocationCleared>(_onDriverLocationCleared);
+    on<OrderStatusRouteHistorySnapshot>(_onRouteHistorySnapshot);
     _startRealtimeListener();
   }
 
@@ -44,6 +46,7 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
   StreamSubscription<String?>? _rtdbSub;
   StreamSubscription<int?>? _deliveryIdSub;
   StreamSubscription<DriverLiveLocation?>? _driverLocationSub;
+  StreamSubscription<List<RouteHistoryPoint>>? _routeHistorySub;
   int? _lastDeliveryId;
 
   static String? _normalizeWire(String? w) {
@@ -55,6 +58,8 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
   static bool _isTerminalStatus(OrderStatus s) {
     switch (s) {
       case OrderStatus.delivered:
+      case OrderStatus.paid:
+      case OrderStatus.completed:
       case OrderStatus.cancelled:
       case OrderStatus.rejected:
         return true;
@@ -83,6 +88,16 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
               },
               onError: (_) {},
             );
+
+    _routeHistorySub?.cancel();
+    _routeHistorySub =
+        _orderStatusRtdb.watchOrderRouteHistory(state.orderId).listen(
+              (points) {
+                if (isClosed) return;
+                add(OrderStatusRouteHistorySnapshot(points));
+              },
+              onError: (_) {},
+            );
   }
 
   void _stopRealtimeListener() {
@@ -92,6 +107,8 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
     _deliveryIdSub = null;
     _driverLocationSub?.cancel();
     _driverLocationSub = null;
+    _routeHistorySub?.cancel();
+    _routeHistorySub = null;
     _lastDeliveryId = null;
   }
 
@@ -151,6 +168,7 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
         liveStepIndex: OrderStatusState._staticTimelineIndex(next),
         demoRunning: false,
         clearDriverLocation: next != OrderStatus.onTheWay,
+        clearRouteHistory: next != OrderStatus.onTheWay,
       ),
     );
 
@@ -177,6 +195,14 @@ class OrderStatusBloc extends Bloc<OrderStatusEvent, OrderStatusState> {
     Emitter<OrderStatusState> emit,
   ) {
     emit(state.copyWith(clearDriverLocation: true));
+  }
+
+  void _onRouteHistorySnapshot(
+    OrderStatusRouteHistorySnapshot event,
+    Emitter<OrderStatusState> emit,
+  ) {
+    if (_isTerminalStatus(state.routeStatus)) return;
+    emit(state.copyWith(routeHistoryPoints: event.points));
   }
 
   void _onToggleDemo(

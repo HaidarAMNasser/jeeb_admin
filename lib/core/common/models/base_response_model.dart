@@ -22,7 +22,9 @@ class BaseResponseModel<T> {
       status: json['status'] as int?,
       message: json['message'] as String?,
       statusCode: (json['statusCode'] ?? json['status_code']) as int?,
-      data: json['data'] != null ? fromJsonT(json['data']) : null,
+      data: json['data'] != null
+          ? fromJsonT(json['data'])
+          : (json['orders'] != null ? fromJsonT(json['orders']) : null),
     );
   }
 

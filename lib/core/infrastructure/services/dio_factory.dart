@@ -91,6 +91,23 @@ class AppInterceptors extends Interceptor {
 
   DateTime? requestStartTime;
 
+  /// Public endpoints must not receive a stored session token (wrong/mismatched
+  /// Bearer causes 401). Example: `POST users/merchants` merchant registration.
+  static bool shouldOmitBearerToken(RequestOptions options) {
+    final method = options.method.toUpperCase();
+    final path = options.path;
+
+    if (path.contains('auth/login') || path.contains('Auth_general')) return true;
+    if (path.contains('auth/register')) return true;
+
+    if (method == 'POST' &&
+        (path == 'users/merchants' || path.endsWith('/users/merchants'))) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   void onRequest(
     RequestOptions options,
@@ -107,7 +124,9 @@ class AppInterceptors extends Interceptor {
     options.headers[isMobile] = true;
 
     final tokenForRequest = await _storageService.getUserToken();
-    if (tokenForRequest.isNotEmpty) {
+    if (shouldOmitBearerToken(options)) {
+      options.headers.remove(authorization);
+    } else if (tokenForRequest.isNotEmpty) {
       options.headers[authorization] = "Bearer $tokenForRequest";
     }
     return super.onRequest(options, handler);
@@ -117,12 +136,14 @@ class AppInterceptors extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final status = err.response?.statusCode;
     if (status == 401 || status == 403) {
+      final opts = err.requestOptions;
       final isAuthRequest =
-          err.requestOptions.path.contains('login') ||
-          err.requestOptions.path.contains('Login') ||
-          err.requestOptions.path.contains('Auth_general') ||
-          err.requestOptions.path.contains('auth/login') ||
-          err.requestOptions.path.contains('auth/register');
+          opts.path.contains('login') ||
+          opts.path.contains('Login') ||
+          opts.path.contains('Auth_general') ||
+          opts.path.contains('auth/login') ||
+          opts.path.contains('auth/register') ||
+          shouldOmitBearerToken(opts);
 
       // Only do session-expired redirect for authenticated requests (invalid/expired token).
       // For login/register, let the real error through so the UI can show the backend message.

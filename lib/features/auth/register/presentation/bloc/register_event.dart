@@ -11,6 +11,16 @@ class RegisterSubmitted extends RegisterEvent {
   const RegisterSubmitted();
 }
 
+/// Backend values: `RESTAURANT` or `STORE` (market).
+class RegisterMerchantTypeChanged extends RegisterEvent {
+  final String type;
+
+  const RegisterMerchantTypeChanged(this.type);
+
+  @override
+  List<Object?> get props => [type];
+}
+
 class RegisterCountryChanged extends RegisterEvent {
   final CountryEntity? country;
 

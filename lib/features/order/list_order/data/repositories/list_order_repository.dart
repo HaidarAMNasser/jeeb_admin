@@ -78,7 +78,7 @@ class ListOrderRepository {
                   .where(
                     (o) =>
                         o.statusEnum != OrderStatus.pending &&
-                        o.statusEnum != OrderStatus.confirmed,
+                        o.statusEnum != OrderStatus.preparing,
                   )
                   .toList();
             }

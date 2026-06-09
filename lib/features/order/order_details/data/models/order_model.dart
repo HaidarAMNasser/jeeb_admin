@@ -2,6 +2,7 @@ import 'package:jeeb_admin/features/product/list_product/data/models/product_mod
 import 'package:jeeb_admin/features/delivery/delivery_details/data/models/delivery_man_model.dart';
 import 'package:jeeb_admin/features/order/order_details/data/models/order_customer_model.dart';
 import 'package:jeeb_admin/features/order/order_details/data/models/order_item_model.dart';
+import 'package:jeeb_admin/features/order/order_details/data/models/order_payment_receipt_model.dart';
 
 class OrderModel {
   final String id;
@@ -29,6 +30,13 @@ class OrderModel {
   final String? merchantId;
   final String? createdAt;
   final String? updatedAt;
+  final String? deliveryLandmark;
+  final String? deliverySpecialInstructions;
+  final String? ownerFirstName;
+  final String? ownerLastName;
+  final String? ownerPhone;
+  final String? imagePayFromDelivery;
+  final List<OrderPaymentReceiptModel>? receipts;
 
   OrderModel({
     required this.id,
@@ -56,6 +64,13 @@ class OrderModel {
     this.merchantId,
     this.createdAt,
     this.updatedAt,
+    this.deliveryLandmark,
+    this.deliverySpecialInstructions,
+    this.ownerFirstName,
+    this.ownerLastName,
+    this.ownerPhone,
+    this.imagePayFromDelivery,
+    this.receipts,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -121,8 +136,29 @@ class OrderModel {
         json['createdAt']?.toString();
 
     String? deliveryAddress;
-    if (coords is Map<String, dynamic> && coords['address'] != null) {
-      deliveryAddress = coords['address']?.toString();
+    String? deliveryLandmark;
+    String? deliverySpecialInstructions;
+    if (coords is Map<String, dynamic>) {
+      if (coords['address'] != null) {
+        deliveryAddress = coords['address']?.toString();
+      }
+      if (coords['landmark'] != null) {
+        deliveryLandmark = coords['landmark']?.toString();
+      }
+      if (coords['specialInstructions'] != null) {
+        deliverySpecialInstructions =
+            coords['specialInstructions']?.toString();
+      }
+    }
+
+    String? ownerFirstName;
+    String? ownerLastName;
+    String? ownerPhone;
+    final ownerJson = json['owner'];
+    if (ownerJson is Map<String, dynamic>) {
+      ownerFirstName = ownerJson['firstName']?.toString();
+      ownerLastName = ownerJson['lastName']?.toString();
+      ownerPhone = ownerJson['phone']?.toString();
     }
 
     final customer = _parseOrderCustomer(json);
@@ -158,8 +194,18 @@ class OrderModel {
       restaurantName = trimmedNonEmpty(o['restaurantName']);
     }
 
+    final imagePayFromDelivery = trimmedNonEmpty(json['imagePayFromDelivery']) ??
+        trimmedNonEmpty(json['imagepayfromdelivery']);
+
+    List<OrderPaymentReceiptModel>? receipts;
+    if (json['receipts'] is List) {
+      receipts = (json['receipts'] as List)
+          .map((e) => OrderPaymentReceiptModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
     return OrderModel(
-      id: json['id']?.toString() ?? '',
+      id: json['id']?.toString() ?? json['orderId']?.toString() ?? '',
       products: products,
       orderItems: orderItems,
       customer: customer,
@@ -169,11 +215,7 @@ class OrderModel {
               ? DeliveryManModel.fromJson(
                   json['delivery'] as Map<String, dynamic>,
                 )
-              : (json['owner'] != null
-                  ? DeliveryManModel.fromJson(
-                      json['owner'] as Map<String, dynamic>,
-                    )
-                  : null)),
+              : null),
       date: dateStr,
       longitude: longitude,
       latitude: latitude,
@@ -198,6 +240,13 @@ class OrderModel {
       merchantId: json['merchantId']?.toString() ?? json['ownerId']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
+      deliveryLandmark: deliveryLandmark,
+      deliverySpecialInstructions: deliverySpecialInstructions,
+      ownerFirstName: ownerFirstName,
+      ownerLastName: ownerLastName,
+      ownerPhone: ownerPhone,
+      imagePayFromDelivery: imagePayFromDelivery,
+      receipts: receipts,
     );
   }
 
@@ -331,6 +380,7 @@ class OrderModel {
       'merchantId': merchantId,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'receipts': receipts?.map((r) => {'id': r.id, 'imageId': r.imageId, 'url': r.url}).toList(),
     };
   }
 }

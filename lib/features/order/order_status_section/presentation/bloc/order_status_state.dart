@@ -11,6 +11,7 @@ class OrderStatusState extends Equatable {
     this.driverLatitude,
     this.driverLongitude,
     this.driverOnline = false,
+    this.routeHistoryPoints = const [],
   });
 
   final String orderId;
@@ -22,6 +23,7 @@ class OrderStatusState extends Equatable {
   final double? driverLatitude;
   final double? driverLongitude;
   final bool driverOnline;
+  final List<RouteHistoryPoint> routeHistoryPoints;
 
   static int _staticTimelineIndex(OrderStatus status) {
     var idx = orderStatusToTimelineIndex(status);
@@ -47,6 +49,7 @@ class OrderStatusState extends Equatable {
       liveStepIndex: _staticTimelineIndex(routeStatus),
       deliveryLatitude: deliveryLatitude,
       deliveryLongitude: deliveryLongitude,
+      routeHistoryPoints: const [],
     );
   }
 
@@ -60,7 +63,9 @@ class OrderStatusState extends Equatable {
     double? driverLatitude,
     double? driverLongitude,
     bool? driverOnline,
+    List<RouteHistoryPoint>? routeHistoryPoints,
     bool clearDriverLocation = false,
+    bool clearRouteHistory = false,
   }) {
     return OrderStatusState(
       orderId: orderId ?? this.orderId,
@@ -76,6 +81,9 @@ class OrderStatusState extends Equatable {
           ? null
           : (driverLongitude ?? this.driverLongitude),
       driverOnline: driverOnline ?? this.driverOnline,
+      routeHistoryPoints: clearRouteHistory
+          ? const []
+          : (routeHistoryPoints ?? this.routeHistoryPoints),
     );
   }
 
@@ -90,5 +98,6 @@ class OrderStatusState extends Equatable {
         driverLatitude,
         driverLongitude,
         driverOnline,
+        routeHistoryPoints,
       ];
 }

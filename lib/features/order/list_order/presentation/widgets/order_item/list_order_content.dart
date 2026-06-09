@@ -28,6 +28,11 @@ class ListOrderContent extends StatelessWidget {
   /// Admin: filter/reset container beside search (same row).
   final bool showInlineFilterSlot;
 
+  /// Admin orders list: delivery payment labels + paid-order actions.
+  final bool useAdminPaymentLabels;
+  final bool showAdminPaidMenu;
+  final void Function(OrderEntity order)? onAdminOpenPaidDetails;
+
   const ListOrderContent({
     super.key,
     required this.orders,
@@ -44,6 +49,9 @@ class ListOrderContent extends StatelessWidget {
     this.onMerchantReadyForPickup,
     this.showSearchTrailingRefetch = true,
     this.showInlineFilterSlot = false,
+    this.useAdminPaymentLabels = false,
+    this.showAdminPaidMenu = false,
+    this.onAdminOpenPaidDetails,
     required this.onConfirmOrder,
   });
 
@@ -85,6 +93,9 @@ class ListOrderContent extends StatelessWidget {
                   onMerchantReadyForPickup: onMerchantReadyForPickup != null
                       ? () => onMerchantReadyForPickup!(order)
                       : null,
+                  useAdminPaymentLabels: useAdminPaymentLabels,
+                  showAdminPaidMenu: showAdminPaidMenu,
+                  onAdminOpenPaidDetails: onAdminOpenPaidDetails,
                 );
               },
             ),

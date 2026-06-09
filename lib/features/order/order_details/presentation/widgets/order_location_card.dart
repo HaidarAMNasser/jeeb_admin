@@ -6,14 +6,21 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 
+/// Shows [deliveryCoordinates]-style fields when present, plus lat/lng.
 class OrderLocationCard extends StatelessWidget {
-  final double latitude;
-  final double longitude;
+  final String? address;
+  final String? landmark;
+  final String? specialInstructions;
+  final double? latitude;
+  final double? longitude;
 
   const OrderLocationCard({
     super.key,
-    required this.latitude,
-    required this.longitude,
+    this.address,
+    this.landmark,
+    this.specialInstructions,
+    this.latitude,
+    this.longitude,
   });
 
   @override
@@ -43,25 +50,53 @@ class OrderLocationCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: AppHeight.s8),
-            CustomText(
-              text: '${AppTranslation.latitude}: $latitude',
-              textStyle: getRegularStyle(
-                fontSize: AppFontSize.s14,
-                color: ColorManager.descriptionColor,
+            if (address != null && address!.trim().isNotEmpty) ...[
+              _line(AppTranslation.address, address!.trim()),
+              SizedBox(height: AppHeight.s4),
+            ],
+            if (landmark != null && landmark!.trim().isNotEmpty) ...[
+              _line(AppTranslation.landmark, landmark!.trim()),
+              SizedBox(height: AppHeight.s4),
+            ],
+            if (specialInstructions != null &&
+                specialInstructions!.trim().isNotEmpty) ...[
+              _line(
+                AppTranslation.specialInstructions,
+                specialInstructions!.trim(),
               ),
-            ),
-            SizedBox(height: AppHeight.s4),
-            CustomText(
-              text: '${AppTranslation.longitude}: $longitude',
-              textStyle: getRegularStyle(
-                fontSize: AppFontSize.s14,
-                color: ColorManager.descriptionColor,
+              SizedBox(height: AppHeight.s4),
+            ],
+            if (latitude != null) ...[
+              CustomText(
+                text: '${AppTranslation.latitude}: $latitude',
+                textStyle: getRegularStyle(
+                  fontSize: AppFontSize.s14,
+                  color: ColorManager.descriptionColor,
+                ),
               ),
-            ),
+              SizedBox(height: AppHeight.s4),
+            ],
+            if (longitude != null)
+              CustomText(
+                text: '${AppTranslation.longitude}: $longitude',
+                textStyle: getRegularStyle(
+                  fontSize: AppFontSize.s14,
+                  color: ColorManager.descriptionColor,
+                ),
+              ),
           ],
         ),
       ),
     );
   }
-}
 
+  Widget _line(String label, String value) {
+    return CustomText(
+      text: '$label: $value',
+      textStyle: getRegularStyle(
+        fontSize: AppFontSize.s14,
+        color: ColorManager.descriptionColor,
+      ),
+    );
+  }
+}

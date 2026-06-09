@@ -11,6 +11,10 @@ enum OrderStatus {
   pickedUp,
   onTheWay,
   delivered,
+  /// Delivery paid admin fee; awaiting admin confirmation (wire: PAID).
+  paid,
+  /// Admin confirmed payment receipt (wire: COMPLETED).
+  completed,
   cancelled,
   rejected,
   unknown;
@@ -36,6 +40,10 @@ enum OrderStatus {
         return 'ON_THE_WAY';
       case OrderStatus.delivered:
         return 'DELIVERED';
+      case OrderStatus.paid:
+        return 'PAID';
+      case OrderStatus.completed:
+        return 'COMPLETED';
       case OrderStatus.cancelled:
         return 'CANCELLED';
       case OrderStatus.rejected:
@@ -67,8 +75,12 @@ enum OrderStatus {
       case 'on_the_way':
         return OrderStatus.onTheWay;
       case 'delivered':
-      case 'completed':
         return OrderStatus.delivered;
+      case 'paid':
+        return OrderStatus.paid;
+      case 'completed':
+      case 'complete':
+        return OrderStatus.completed;
       case 'cancelled':
       case 'canceled':
         return OrderStatus.cancelled;
@@ -99,6 +111,10 @@ enum OrderStatus {
         return 'On the way';
       case OrderStatus.delivered:
         return 'Delivered';
+      case OrderStatus.paid:
+        return 'Paid';
+      case OrderStatus.completed:
+        return 'Completed';
       case OrderStatus.cancelled:
         return 'Cancelled';
       case OrderStatus.rejected:
@@ -112,6 +128,10 @@ enum OrderStatus {
     switch (this) {
       case OrderStatus.delivered:
         return Colors.green;
+      case OrderStatus.completed:
+        return const Color.fromARGB(255, 2, 185, 97);
+      case OrderStatus.paid:
+        return Colors.deepOrange;
       case OrderStatus.cancelled:
       case OrderStatus.rejected:
         return Colors.red;
@@ -131,8 +151,11 @@ enum OrderStatus {
     }
   }
 
-  /// True if complete/cancel actions are allowed (e.g. only for pending).
+  /// Merchant: complete/cancel from pending (legacy flow).
   bool get canCompleteOrCancel => this == OrderStatus.pending;
+
+  /// Admin: confirm payment receipts and mark PAID → COMPLETE.
+  bool get canAdminConfirmPaidComplete => this == OrderStatus.paid;
 }
 
 /// Icons for tracking / timeline UI.
@@ -157,6 +180,10 @@ extension OrderStatusPresentation on OrderStatus {
         return Icons.delivery_dining_rounded;
       case OrderStatus.delivered:
         return Icons.home_outlined;
+      case OrderStatus.paid:
+        return Icons.payments_outlined;
+      case OrderStatus.completed:
+        return Icons.check_circle_rounded;
       case OrderStatus.cancelled:
         return Icons.cancel_outlined;
       case OrderStatus.rejected:

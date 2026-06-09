@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
+import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 
 class DeliveryManEntity extends Equatable {
   final String id;
@@ -11,6 +13,9 @@ class DeliveryManEntity extends Equatable {
   final String? countryName;
   final int? countryId;
   final int? cityId;
+  /// From API nested `country` / `city` (for forms / dropdowns).
+  final CountryEntity? country;
+  final CityEntity? city;
   final String? address;
   final String? image;
   final bool? isOnline;
@@ -24,6 +29,8 @@ class DeliveryManEntity extends Equatable {
   final String? verifiedAt;
   final String? createdAt;
   final String? updatedAt;
+  final double? currentLat;
+  final double? currentLng;
 
   const DeliveryManEntity({
     required this.id,
@@ -36,6 +43,8 @@ class DeliveryManEntity extends Equatable {
     this.countryName,
     this.countryId,
     this.cityId,
+    this.country,
+    this.city,
     this.address,
     this.image,
     this.isOnline,
@@ -48,6 +57,8 @@ class DeliveryManEntity extends Equatable {
     this.verifiedAt,
     this.createdAt,
     this.updatedAt,
+    this.currentLat,
+    this.currentLng,
   });
 
   @override
@@ -62,6 +73,8 @@ class DeliveryManEntity extends Equatable {
         countryName,
         countryId,
         cityId,
+        country,
+        city,
         address,
         image,
         isOnline,
@@ -74,5 +87,7 @@ class DeliveryManEntity extends Equatable {
         verifiedAt,
         createdAt,
         updatedAt,
+        currentLat,
+        currentLng,
       ];
 }

@@ -7,7 +7,6 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
-import 'package:jeeb_admin/core/common/utils/order_status_step_index.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 
@@ -65,8 +64,7 @@ class OrderHeaderCard extends StatelessWidget {
                 ],
               ],
             ),
-            if (!orderStatusIsTerminal(status) &&
-                status != OrderStatus.unknown) ...[
+            if (status == OrderStatus.onTheWay) ...[
               SizedBox(height: AppHeight.s12),
               SizedBox(
                 width: double.infinity,

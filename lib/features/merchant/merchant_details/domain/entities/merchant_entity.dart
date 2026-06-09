@@ -20,6 +20,7 @@ class MerchantEntity extends Equatable {
   final String? notificationChannel;
   final String? birthday;
   final bool? isOnline;
+  final bool? isActive;
   final String? verifiedAt;
   final String? createdAt;
   final String? updatedAt;
@@ -44,6 +45,7 @@ class MerchantEntity extends Equatable {
     this.notificationChannel,
     this.birthday,
     this.isOnline,
+    this.isActive,
     this.verifiedAt,
     this.createdAt,
     this.updatedAt,
@@ -70,6 +72,7 @@ class MerchantEntity extends Equatable {
         notificationChannel,
         birthday,
         isOnline,
+        isActive,
         verifiedAt,
         createdAt,
         updatedAt,

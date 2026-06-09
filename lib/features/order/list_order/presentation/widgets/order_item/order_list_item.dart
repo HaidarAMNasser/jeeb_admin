@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
-import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
+import 'package:jeeb_admin/features/order/list_order/presentation/bloc/list_order_bloc.dart';
 import 'package:jeeb_admin/features/order/list_order/presentation/widgets/order_item/order_list_item_title.dart';
 
 class OrderListItem extends StatelessWidget {
@@ -19,6 +20,9 @@ class OrderListItem extends StatelessWidget {
     this.kitchenActionLoadingOrderId,
     this.onMerchantPreparing,
     this.onMerchantReadyForPickup,
+    this.useAdminPaymentLabels = false,
+    this.showAdminPaidMenu = false,
+    this.onAdminOpenPaidDetails,
   });
 
   final OrderEntity order;
@@ -30,6 +34,10 @@ class OrderListItem extends StatelessWidget {
   final String? kitchenActionLoadingOrderId;
   final VoidCallback? onMerchantPreparing;
   final VoidCallback? onMerchantReadyForPickup;
+
+  final bool useAdminPaymentLabels;
+  final bool showAdminPaidMenu;
+  final void Function(OrderEntity order)? onAdminOpenPaidDetails;
 
   bool get _showConfirmBar =>
       showMerchantConfirm &&
@@ -75,7 +83,15 @@ class OrderListItem extends StatelessWidget {
             ),
             child: Padding(
               padding: EdgeInsets.all(AppPadding.p16),
-              child: OrderListItemTitle(order: order),
+              child: OrderListItemTitle(
+                order: order,
+                useAdminPaymentLabels: useAdminPaymentLabels,
+                showAdminPaidMenu:
+                    showAdminPaidMenu && order.statusEnum == OrderStatus.paid,
+                onAdminOpenPaidDetails: onAdminOpenPaidDetails != null
+                    ? () => onAdminOpenPaidDetails!(order)
+                    : null,
+              ),
             ),
           ),
           if (_showConfirmBar)
@@ -103,23 +119,15 @@ class OrderListItem extends StatelessWidget {
 }
 
 void _openOrderListItem(BuildContext context, OrderEntity order) {
-  // final status = OrderStatus.fromString(order.status);
-  // if (orderStatusIsTerminal(status)) {
-    AppRouter.navigateTo(
-      context,
-      Routes.orderDetails,
-      arguments: {'orderId': order.id},
-    );
-  // } else {
-  //   AppRouter.navigateTo(
-  //     context,
-  //     Routes.orderStatus,
-  //     arguments: {
-  //       'orderId': order.id,
-  //       'initialStatus': order.status,
-  //       if (order.latitude != null) 'deliveryLatitude': order.latitude,
-  //       if (order.longitude != null) 'deliveryLongitude': order.longitude,
-  //     },
-  //   );
-  // }
+  Navigator.of(context)
+      .pushNamed(
+        Routes.orderDetails,
+        arguments: {'orderId': order.id},
+      )
+      .then((result) {
+        if (!context.mounted) return;
+        if (result == true) {
+          context.read<ListOrderBloc>().add(const GetOrdersEvent());
+        }
+      });
 }

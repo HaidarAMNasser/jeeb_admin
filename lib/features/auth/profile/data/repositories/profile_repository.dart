@@ -1,5 +1,3 @@
-import 'dart:io' show File;
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/common/errors/failure.dart';
@@ -13,10 +11,7 @@ class ProfileRepository {
   final ProfileRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
 
-  const ProfileRepository(
-    this._remoteDataSource,
-    this._networkInfo,
-  );
+  const ProfileRepository(this._remoteDataSource, this._networkInfo);
 
   Future<Either<Failure, UserEntity>> getProfile() async {
     if (!await _networkInfo.isConnected) {
@@ -26,24 +21,28 @@ class ProfileRepository {
       final response = await _remoteDataSource.getProfile();
       final raw = response.data as Map<String, dynamic>?;
       if (raw == null) {
-        return Left(ErrorHandler.handle(
-          DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: response.requestOptions,
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
           ),
-        ));
+        );
       }
 
       final statusCode = raw['statusCode'] as int? ?? 200;
       if (statusCode < 200 || statusCode >= 300) {
-        return Left(ErrorHandler.handle(
-          DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: response.requestOptions,
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
           ),
-        ));
+        );
       }
 
       final userEntity = _parseUserFromResponseData(raw['data']);
@@ -78,6 +77,7 @@ class ProfileRepository {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
   }) {
     final now = DateTime.now();
     return UserEntity(
@@ -94,10 +94,12 @@ class ProfileRepository {
       updatedAt: now,
       address: null,
       isActive: isActive ?? true,
+      isOpen: isOpen ?? true,
       isVerified: true,
       currentLat: latitude,
       currentLng: longitude,
       restaurantName: null,
+      merchantType: null,
     );
   }
 
@@ -111,26 +113,26 @@ class ProfileRepository {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
+    String? merchantType,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     dynamic imageFile,
   }) async {
     if (!await _networkInfo.isConnected) {
-      return Right(_fakeUser(
-        latitude: latitude,
-        longitude: longitude,
-        isActive: isActive,
-      ));
+      return Right(
+        _fakeUser(
+          latitude: latitude,
+          longitude: longitude,
+          isActive: isActive,
+          isOpen: isOpen,
+        ),
+      );
     }
     try {
-      File? file;
-      if (imageFile != null) {
-        if (imageFile is File) {
-          file = imageFile;
-        } else {
-          final path = (imageFile as dynamic).path as String?;
-          if (path != null && path.isNotEmpty) file = File(path);
-        }
-      }
+      // Pass through File or XFile; data source sends image as multipart file (not string).
       final response = await _remoteDataSource.updateProfile(
         firstName: firstName,
         lastName: lastName,
@@ -141,38 +143,67 @@ class ProfileRepository {
         latitude: latitude,
         longitude: longitude,
         isActive: isActive,
+        isOpen: isOpen,
         restaurantName: restaurantName,
-        imageFile: file,
+        merchantType: merchantType,
+        password: password,
+        newPassword: newPassword,
+        confirmedPassword: confirmedPassword,
+        imageFile: imageFile,
       );
 
       final raw = response.data as Map<String, dynamic>?;
-      if (raw == null || (raw['statusCode'] as int? ?? 0) >= 300) {
-        return Left(ErrorHandler.handle(
+      final httpCode = response.statusCode ?? 0;
+      if (raw == null && (httpCode < 200 || httpCode >= 300)) {
+        return Left(
+          ErrorHandler.handle(
+            DioException(
+              type: DioExceptionType.badResponse,
+              response: response,
+              requestOptions: response.requestOptions,
+            ),
+          ),
+        );
+      }
+      if (raw != null) {
+        final statusCode = raw['statusCode'] as int?;
+        if (statusCode != null && statusCode >= 300) {
+          return Left(
+            ErrorHandler.handle(
+              DioException(
+                type: DioExceptionType.badResponse,
+                response: response,
+                requestOptions: response.requestOptions,
+              ),
+            ),
+          );
+        }
+        final userEntity = _parseUserFromResponseData(raw['data']);
+        if (userEntity != null) {
+          return Right(userEntity);
+        }
+      }
+      if (httpCode >= 200 && httpCode < 300) {
+        return getProfile();
+      }
+      return Left(
+        ErrorHandler.handle(
           DioException(
             type: DioExceptionType.badResponse,
             response: response,
             requestOptions: response.requestOptions,
           ),
-        ));
-      }
-      final userEntity = _parseUserFromResponseData(raw['data']);
-      if (userEntity != null) {
-        return Right(userEntity);
-      }
-      return Left(ErrorHandler.handle(
-        DioException(
-          type: DioExceptionType.badResponse,
-          response: response,
-          requestOptions: response.requestOptions,
         ),
-      ));
+      );
     } catch (error) {
-      return Right(_fakeUser(
-        latitude: latitude,
-        longitude: longitude,
-        isActive: isActive,
-      ));
+      return Right(
+        _fakeUser(
+          latitude: latitude,
+          longitude: longitude,
+          isActive: isActive,
+          isOpen: isOpen,
+        ),
+      );
     }
   }
 }
-

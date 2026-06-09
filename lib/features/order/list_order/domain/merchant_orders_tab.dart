@@ -1,7 +1,7 @@
 /// Merchant orders list filter (matches GET `status` + "others" client filter).
 enum MerchantOrdersTab {
   pending,
-  confirmed,
+  preparing,
   others,
 }
 
@@ -10,8 +10,8 @@ String? merchantTabToApiStatus(MerchantOrdersTab tab) {
   switch (tab) {
     case MerchantOrdersTab.pending:
       return 'PENDING';
-    case MerchantOrdersTab.confirmed:
-      return 'CONFIRMED';
+    case MerchantOrdersTab.preparing:
+      return 'PREPARING';
     case MerchantOrdersTab.others:
       return null;
   }

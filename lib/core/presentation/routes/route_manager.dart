@@ -36,12 +36,15 @@ import '../../../features/auth/forgot_password/presentation/bloc/forgot_password
 import '../../../features/auth/reset_password/presentation/pages/reset_password_page.dart';
 import '../../../features/auth/reset_password/presentation/bloc/reset_password_bloc.dart';
 import '../../../features/auth/profile/presentation/pages/profile_page.dart';
-import '../../../features/auth/profile/presentation/bloc/profile_bloc.dart';
+import '../../../features/auth/profile/presentation/pages/change_password_page.dart';
+import '../../../features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
+import '../../../features/auth/profile/presentation/bloc/change_password/change_password_bloc.dart';
 import '../../../features/auth/logout/presentation/bloc/logout_bloc.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
 import '../../../features/order/list_order/presentation/pages/list_order_page.dart';
 import '../../../features/order/list_order/presentation/bloc/list_order_bloc.dart';
+import '../../../features/order/confirm_paid_order/presentation/bloc/confirm_paid_order_bloc.dart';
 import '../../../features/order/order_details/presentation/pages/order_details_page.dart';
 import '../../../features/order/order_details/presentation/bloc/order_details_bloc.dart';
 import '../../../features/order/order_status_section/presentation/pages/order_status_page.dart';
@@ -195,6 +198,13 @@ class AppRouter {
               create: (_) => di.sl<LogoutBloc>(),
             ),
           ],
+        );
+
+      case Routes.changePassword:
+        return _buildRouteWithBloc(
+          const ChangePasswordPage(),
+          settings,
+          bloc: () => di.sl<ChangePasswordBloc>(),
         );
 
       case Routes.settings:
@@ -500,6 +510,9 @@ class AppRouter {
             BlocProvider<ListOrderBloc>(
               create: (_) => di.sl<ListOrderBloc>(),
             ),
+            BlocProvider<ConfirmPaidOrderBloc>(
+              create: (_) => di.sl<ConfirmPaidOrderBloc>(),
+            ),
           ],
         );
 
@@ -536,6 +549,9 @@ class AppRouter {
             ),
             BlocProvider<OrderCancelBloc>(
               create: (_) => di.sl<OrderCancelBloc>(),
+            ),
+            BlocProvider<ConfirmPaidOrderBloc>(
+              create: (_) => di.sl<ConfirmPaidOrderBloc>(),
             ),
           ],
         );

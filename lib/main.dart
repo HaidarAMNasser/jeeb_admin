@@ -58,12 +58,46 @@ void main() async {
       path: LocalizationManager.translationsPath,
       fallbackLocale: LocalizationManager.fallbackLocale,
       startLocale: startLocale,
-      child: BlocProvider<UpdateDeviceTokenBloc>.value(
-        value: di.sl<UpdateDeviceTokenBloc>(),
-        child: const MyApp(),
+      child: AppRestart(
+        child: BlocProvider<UpdateDeviceTokenBloc>.value(
+          value: di.sl<UpdateDeviceTokenBloc>(),
+          child: const MyApp(),
+        ),
       ),
     ),
   );
+}
+
+class AppRestart extends StatefulWidget {
+  const AppRestart({super.key, required this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    final state = context.findAncestorStateOfType<_AppRestartState>();
+    state?.restartApp();
+  }
+
+  @override
+  State<AppRestart> createState() => _AppRestartState();
+}
+
+class _AppRestartState extends State<AppRestart> {
+  Key _appKey = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      _appKey = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: _appKey,
+      child: widget.child,
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {

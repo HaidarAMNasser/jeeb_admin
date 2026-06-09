@@ -2,6 +2,29 @@ import '../../../../../core/config/app_config.dart';
 import '../../../../country/data/models/country_model.dart';
 import '../../../../city/data/models/city_model.dart';
 
+/// Single `image` object or `images[]` (main first, else first entry).
+DeliveryImageModel? _deliveryManImageFromJson(Map<String, dynamic> json) {
+  final single = json['image'];
+  if (single is Map<String, dynamic>) {
+    return DeliveryImageModel.fromJson(single);
+  }
+  final raw = json['images'];
+  if (raw is! List || raw.isEmpty) return null;
+  Map<String, dynamic>? chosen;
+  for (final e in raw) {
+    if (e is! Map<String, dynamic>) continue;
+    if (e['isMain'] == true) {
+      chosen = e;
+      break;
+    }
+  }
+  chosen ??= raw.first is Map<String, dynamic>
+      ? raw.first as Map<String, dynamic>
+      : null;
+  if (chosen == null) return null;
+  return DeliveryImageModel.fromJson(chosen);
+}
+
 class DeliveryImageModel {
   final int id;
   final String url;
@@ -60,6 +83,8 @@ class DeliveryManModel {
   final CountryModel? country;
   final CityModel? city;
   final int? officeOwnerId;
+  final double? currentLat;
+  final double? currentLng;
 
   DeliveryManModel({
     required this.id,
@@ -83,9 +108,18 @@ class DeliveryManModel {
     this.country,
     this.city,
     this.officeOwnerId,
+    this.currentLat,
+    this.currentLng,
   });
 
   factory DeliveryManModel.fromJson(Map<String, dynamic> json) {
+    double? lat = (json['currentLat'] as num?)?.toDouble();
+    double? lng = (json['currentLng'] as num?)?.toDouble();
+    final loc = json['location'];
+    if (lat == null && loc is Map<String, dynamic>) {
+      lat = (loc['lat'] as num?)?.toDouble() ?? (loc['latitude'] as num?)?.toDouble();
+      lng = (loc['lng'] as num?)?.toDouble() ?? (loc['longitude'] as num?)?.toDouble();
+    }
     return DeliveryManModel(
       id: json['id']?.toString() ?? '',
       firstName: json['firstName']?.toString() ?? '',
@@ -96,17 +130,19 @@ class DeliveryManModel {
       isActive: json['isActive'] as bool?,
       role: json['role']?.toString(),
       notificationChannel: json['notificationChannel']?.toString(),
-      countryId: json['countryId'] as int?,
-      cityId: json['cityId'] as int?,
+      countryId: json['countryId'] == null
+          ? null
+          : (json['countryId'] as num).toInt(),
+      cityId: json['cityId'] == null
+          ? null
+          : (json['cityId'] as num).toInt(),
       address: json['address']?.toString(),
       birthday: json['birthday']?.toString(),
       isOnline: json['isOnline'] as bool?,
       verifiedAt: json['verifiedAt']?.toString(),
       createdAt: json['createdAt']?.toString(),
       updatedAt: json['updatedAt']?.toString(),
-      image: json['image'] != null
-          ? DeliveryImageModel.fromJson(json['image'] as Map<String, dynamic>)
-          : null,
+      image: _deliveryManImageFromJson(json),
       country: json['country'] != null
           ? CountryModel.fromJson(json['country'] as Map<String, dynamic>)
           : null,
@@ -114,6 +150,8 @@ class DeliveryManModel {
           ? CityModel.fromJson(json['city'] as Map<String, dynamic>)
           : null,
       officeOwnerId: json['officeOwnerId'] as int?,
+      currentLat: lat,
+      currentLng: lng,
     );
   }
 

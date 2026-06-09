@@ -25,6 +25,8 @@ class CreateDeliveryBloc extends Bloc<CreateDeliveryEvent, CreateDeliveryState> 
           notificationChannel: event.notificationChannel,
           officeOwnerId: event.officeOwnerId,
           imagePath: event.imagePath,
+          latitude: event.latitude,
+          longitude: event.longitude,
         );
         result.fold(
           (failure) => emit(CreateDeliveryError(message: failure.message)),

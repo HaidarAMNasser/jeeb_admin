@@ -6,8 +6,10 @@ import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_
 
 class SearchProductWidget extends StatefulWidget {
   final String? merchantId;
+  /// Current search from bloc state; keeps the field in sync so text doesn't disappear after search.
+  final String? initialSearch;
 
-  const SearchProductWidget({super.key, this.merchantId});
+  const SearchProductWidget({super.key, this.merchantId, this.initialSearch});
 
   @override
   State<SearchProductWidget> createState() => _SearchProductWidgetState();
@@ -15,6 +17,22 @@ class SearchProductWidget extends StatefulWidget {
 
 class _SearchProductWidgetState extends State<SearchProductWidget> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
+      _searchController.text = widget.initialSearch!;
+    }
+  }
+
+  @override
+  void didUpdateWidget(SearchProductWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialSearch != oldWidget.initialSearch) {
+      _searchController.text = widget.initialSearch ?? '';
+    }
+  }
 
   @override
   void dispose() {

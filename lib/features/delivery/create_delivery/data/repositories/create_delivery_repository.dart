@@ -28,6 +28,8 @@ class CreateDeliveryRepository {
     String? notificationChannel,
     int? officeOwnerId,
     String? imagePath,
+    double? latitude,
+    double? longitude,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -44,6 +46,8 @@ class CreateDeliveryRepository {
           notificationChannel: notificationChannel,
           officeOwnerId: officeOwnerId,
           imagePath: imagePath,
+          latitude: latitude,
+          longitude: longitude,
         );
 
         BaseResponseModel<dynamic> baseResponseModel =

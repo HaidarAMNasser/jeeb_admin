@@ -16,6 +16,11 @@ class EditSettingsBloc extends Bloc<EditSettingsEvent, EditSettingsState> {
           {'key': 'supportPhone', 'value': event.supportPhone},
           {'key': 'whatsappNumber', 'value': event.whatsappNumber},
           {'key': 'defaultProductCommissionRate', 'value': event.defaultProductCommissionRate},
+          {'key': 'deliveryTipPerKilometer', 'value': event.deliveryTipPerKilometer},
+          {
+            'key': 'maxOrdersPerDelivery',
+            'value': event.maxOrdersPerDelivery,
+          },
         ];
         final result = await _repository.patchSettings(body);
         result.fold(

@@ -18,23 +18,60 @@ class GetSettingsMapper {
     return 0;
   }
 
+  static int _valueToInt(dynamic v, {int fallback = 3}) {
+    if (v == null) return fallback;
+    if (v is int) return v;
+    if (v is num) return v.round();
+    if (v is String) return int.tryParse(v) ?? fallback;
+    return fallback;
+  }
+
+  static Map<String, dynamic>? _settingObjByKey(
+    Map<String, dynamic> data,
+    String settingKey,
+  ) {
+    final direct = data[settingKey];
+    if (direct is Map<String, dynamic>) return direct;
+    if (direct is Map) return Map<String, dynamic>.from(direct);
+
+    // Some API responses return indexed objects: {"0": {...}, "1": {...}}
+    for (final entry in data.values) {
+      if (entry is! Map) continue;
+      final map = entry is Map<String, dynamic>
+          ? entry
+          : Map<String, dynamic>.from(entry);
+      if (map['key']?.toString() == settingKey) {
+        return map;
+      }
+    }
+    return null;
+  }
+
   static SettingsEntity fromJson(Map<String, dynamic>? data) {
     if (data == null) {
       return const SettingsEntity(
         supportPhone: '',
         whatsappNumber: '',
         defaultProductCommissionRate: 0,
+        deliveryTipPerKilometer: 0,
+        maxOrdersPerDelivery: 3,
       );
     }
 
-    final supportPhoneObj = data['supportPhone'] as Map<String, dynamic>?;
-    final whatsappObj = data['whatsappNumber'] as Map<String, dynamic>?;
-    final commissionObj = data['defaultProductCommissionRate'] as Map<String, dynamic>?;
+    final supportPhoneObj = _settingObjByKey(data, 'supportPhone');
+    final whatsappObj = _settingObjByKey(data, 'whatsappNumber');
+    final commissionObj = _settingObjByKey(data, 'defaultProductCommissionRate');
+    final tipKmObj = _settingObjByKey(data, 'deliveryTipPerKilometer');
+    final maxOrdersObj = _settingObjByKey(data, 'maxOrdersPerDelivery') ??
+        _settingObjByKey(data, 'maxIncompleteOrdersForDriverSearch');
 
     return SettingsEntity(
       supportPhone: _valueToString(supportPhoneObj?['value']),
       whatsappNumber: _valueToString(whatsappObj?['value']),
       defaultProductCommissionRate: _valueToNum(commissionObj?['value']),
+      deliveryTipPerKilometer: _valueToNum(tipKmObj?['value']),
+      maxOrdersPerDelivery:
+          _valueToInt(maxOrdersObj?['value'], fallback: 3),
     );
   }
 }

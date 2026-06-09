@@ -35,7 +35,7 @@ class ProductItemActions extends StatelessWidget {
             if (!enableSmallDesign)
               Expanded(
                 child: CustomText(
-                  text: '\$${(price / 100).toStringAsFixed(2)}',
+                  text: 'SYP ${(price / 100).toStringAsFixed(2)}',
                   textStyle: getBoldStyle(
                     fontSize: AppFontSize.s20,
                     color: ColorManager.primary,

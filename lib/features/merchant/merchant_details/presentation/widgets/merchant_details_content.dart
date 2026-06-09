@@ -281,6 +281,18 @@ class MerchantDetailsContent extends StatelessWidget {
       );
     }
 
+    if (merchant.isActive != null) {
+      add(
+        _buildInfoRow(
+          Icons.power_settings_new_outlined,
+          AppTranslation.merchantIsActiveLabel,
+          merchant.isActive!
+              ? AppTranslation.merchantOnlineYes
+              : AppTranslation.merchantOnlineNo,
+        ),
+      );
+    }
+
     if (phone == null && merchant.hidePhoneNumber != null) {
       add(
         _buildInfoRow(

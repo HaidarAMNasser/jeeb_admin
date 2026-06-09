@@ -6,6 +6,7 @@ abstract class RegisterState extends Equatable {
   final bool isLocationLoading;
   final double? useLocationLat;
   final double? useLocationLng;
+  final String merchantBusinessType;
 
   const RegisterState({
     this.selectedCountry,
@@ -13,6 +14,7 @@ abstract class RegisterState extends Equatable {
     this.isLocationLoading = false,
     this.useLocationLat,
     this.useLocationLng,
+    this.merchantBusinessType = 'RESTAURANT',
   });
 
   @override
@@ -22,6 +24,7 @@ abstract class RegisterState extends Equatable {
         isLocationLoading,
         useLocationLat,
         useLocationLng,
+        merchantBusinessType,
       ];
 }
 
@@ -32,6 +35,7 @@ class RegisterInitial extends RegisterState {
     super.isLocationLoading,
     super.useLocationLat,
     super.useLocationLng,
+    super.merchantBusinessType,
   });
 }
 
@@ -42,6 +46,7 @@ class RegisterLoading extends RegisterState {
     super.isLocationLoading,
     super.useLocationLat,
     super.useLocationLng,
+    super.merchantBusinessType,
   });
 }
 
@@ -49,20 +54,25 @@ class RegisterSuccess extends RegisterState {
   final int userId;
   final String email;
   final String password;
+  /// When false (API returned a session token), skip OTP and go to login/success toast.
+  final bool requiresEmailVerification;
 
   const RegisterSuccess({
     required this.userId,
     required this.email,
     required this.password,
+    this.requiresEmailVerification = true,
     super.selectedCountry,
     super.selectedCity,
     super.isLocationLoading,
     super.useLocationLat,
     super.useLocationLng,
+    super.merchantBusinessType,
   });
 
   @override
-  List<Object?> get props => [...super.props, userId, email, password];
+  List<Object?> get props =>
+      [...super.props, userId, email, password, requiresEmailVerification];
 }
 
 class RegisterError extends RegisterState {
@@ -75,6 +85,7 @@ class RegisterError extends RegisterState {
     super.isLocationLoading,
     super.useLocationLat,
     super.useLocationLng,
+    super.merchantBusinessType,
   });
 
   @override

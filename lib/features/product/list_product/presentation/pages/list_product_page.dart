@@ -95,7 +95,10 @@ class _ListProductPageState extends State<ListProductPage> {
 
               return Column(
                 children: [
-                  SearchProductWidget(merchantId: widget.merchantId ?? currentMerchantId),
+                  SearchProductWidget(
+                    merchantId: widget.merchantId ?? currentMerchantId,
+                    initialSearch: currentSearch,
+                  ),
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {

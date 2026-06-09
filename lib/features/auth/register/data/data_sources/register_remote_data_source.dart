@@ -16,6 +16,8 @@ abstract class RegisterRemoteDataSource {
     required String notificationChannel,
     String? address,
     String? restaurantName,
+    /// `RESTAURANT` or `STORE` — sent for [role] `MERCHANT` on `POST auth/register`.
+    String? merchantType,
   });
 }
 
@@ -39,7 +41,14 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
     required String notificationChannel,
     String? address,
     String? restaurantName,
+    String? merchantType,
   }) {
+    final String? typeForMerchant = role == 'MERCHANT'
+        ? ((merchantType == 'STORE' || merchantType == 'RESTAURANT')
+            ? merchantType
+            : 'RESTAURANT')
+        : null;
+
     return _appApiServiceClient.register(
       firstName,
       lastName,
@@ -54,7 +63,7 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
       notificationChannel,
       address,
       restaurantName,
+      typeForMerchant,
     );
   }
 }
-

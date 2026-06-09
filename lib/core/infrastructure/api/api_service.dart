@@ -39,6 +39,8 @@ abstract class AppApiServiceClient {
     @Field('notificationChannel') String notificationChannel,
     @Field('address') String? address,
     @Field('restaurantName') String? restaurantName,
+    /// `RESTAURANT` or `STORE` when [role] is `MERCHANT`.
+    @Field('type') String? merchantType,
   );
 
   @POST("auth/verify")
@@ -74,7 +76,13 @@ abstract class AppApiServiceClient {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
+    /// Merchant: `RESTAURANT` or `STORE` (API field `type`).
+    String? type,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
     MultipartFile? image,
   });
 
@@ -82,7 +90,7 @@ abstract class AppApiServiceClient {
   Future<Response> logout();
 
   /// Registers or updates the device FCM token for the current user.
-  @POST("users/firebase-token")
+  @POST("auth/firebase-token")
   Future<Response> updateDeviceToken({
     @Field('token') required String token,
     @Field('platform') required String platform,
@@ -95,7 +103,6 @@ abstract class AppApiServiceClient {
     @Query('limit') int? limit,
     @Query('search') String? search,
   );
-
 
   @POST("categories")
   Future<Response> addCategory(FormData formData);
@@ -232,7 +239,10 @@ abstract class AppApiServiceClient {
   Future<Response> getOrderDetails(@Path('id') String id);
 
   @POST("orders/{id}/complete")
-  Future<Response> completeOrder(@Path('id') String id);
+  Future<Response> completeOrder(
+    @Path('id') String id, {
+    Map<String, dynamic>? body,
+  });
 
   @POST("orders/{id}/cancel")
   Future<Response> cancelOrder(@Path('id') String id);
@@ -252,7 +262,10 @@ abstract class AppApiServiceClient {
   Future<Response> createOffer(Map<String, dynamic> body);
 
   @POST("offers/{id}")
-  Future<Response> updateOffer(@Path('id') String id, Map<String, dynamic> body);
+  Future<Response> updateOffer(
+    @Path('id') String id,
+    Map<String, dynamic> body,
+  );
 
   @DELETE("offers/{id}")
   Future<Response> deleteOffer(@Path('id') String id);

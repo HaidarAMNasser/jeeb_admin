@@ -20,6 +20,8 @@ class CreateDeliverySubmitted extends CreateDeliveryEvent {
   final String? notificationChannel;
   final int? officeOwnerId;
   final String? imagePath;
+  final double? latitude;
+  final double? longitude;
 
   const CreateDeliverySubmitted({
     required this.firstName,
@@ -34,6 +36,8 @@ class CreateDeliverySubmitted extends CreateDeliveryEvent {
     this.notificationChannel,
     this.officeOwnerId,
     this.imagePath,
+    this.latitude,
+    this.longitude,
   });
 
   @override
@@ -50,5 +54,7 @@ class CreateDeliverySubmitted extends CreateDeliveryEvent {
         notificationChannel ?? '',
         officeOwnerId ?? 0,
         imagePath ?? '',
+        latitude ?? 0.0,
+        longitude ?? 0.0,
       ];
 }

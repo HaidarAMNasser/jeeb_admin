@@ -8,6 +8,8 @@ void deliveryValidationToast({
   String? email,
   String? password,
   required bool isEditMode,
+  double? latitude,
+  double? longitude,
 }) {
   if (firstName == null || firstName.trim().isEmpty) {
     customToast(msg: AppTranslation.pleaseEnterFirstName);
@@ -40,6 +42,10 @@ void deliveryValidationToast({
       return;
     }
   }
+
+  if (latitude == null || longitude == null) {
+    customToast(msg: AppTranslation.deliveryLocationRequired);
+  }
 }
 
 bool isDeliveryFormValid({
@@ -49,6 +55,8 @@ bool isDeliveryFormValid({
   required String email,
   String? password,
   required bool isEditMode,
+  double? latitude,
+  double? longitude,
 }) {
   if (firstName.trim().isEmpty) return false;
   if (lastName.trim().isEmpty) return false;
@@ -59,6 +67,7 @@ bool isDeliveryFormValid({
     if (password == null || password.trim().isEmpty) return false;
     if (password.trim().length < 6) return false;
   }
+  if (latitude == null || longitude == null) return false;
 
   return true;
 }

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_customer_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_item_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_payment_receipt_entity.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 import 'package:jeeb_admin/features/product/list_product/domain/entities/product_entity.dart';
 
@@ -27,6 +28,7 @@ class OrderEntity extends Equatable {
   final int? ownerRevenue;
   final int? tipAmount;
   final String? couponCode;
+  final List<OrderPaymentReceiptEntity> receipts;
 
   /// Resolved status for UI logic; use this instead of comparing raw [status] strings.
   OrderStatus get statusEnum => OrderStatus.fromString(status);
@@ -36,6 +38,14 @@ class OrderEntity extends Equatable {
   final String? merchantId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? deliveryLandmark;
+  final String? deliverySpecialInstructions;
+  final String? ownerFirstName;
+  final String? ownerLastName;
+  final String? ownerPhone;
+
+  /// Screenshot URL from delivery payment flow (API key may change later).
+  final String? imagePayFromDelivery;
 
   const OrderEntity({
     required this.id,
@@ -63,7 +73,22 @@ class OrderEntity extends Equatable {
     this.merchantId,
     this.createdAt,
     this.updatedAt,
+    this.deliveryLandmark,
+    this.deliverySpecialInstructions,
+    this.ownerFirstName,
+    this.ownerLastName,
+    this.ownerPhone,
+    this.imagePayFromDelivery,
+    this.receipts = const [],
   });
+
+  /// Delivery location section: coordinates and/or address fields from API.
+  bool get hasDeliveryLocationInfo =>
+      (latitude != null && longitude != null) ||
+      (deliveryAddress != null && deliveryAddress!.trim().isNotEmpty) ||
+      (deliveryLandmark != null && deliveryLandmark!.trim().isNotEmpty) ||
+      (deliverySpecialInstructions != null &&
+          deliverySpecialInstructions!.trim().isNotEmpty);
 
   @override
   List<Object?> get props => [
@@ -92,6 +117,13 @@ class OrderEntity extends Equatable {
         merchantId,
         createdAt,
         updatedAt,
+        deliveryLandmark,
+        deliverySpecialInstructions,
+        ownerFirstName,
+        ownerLastName,
+        ownerPhone,
+        imagePayFromDelivery,
+        receipts,
       ];
 }
 

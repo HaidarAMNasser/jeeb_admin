@@ -96,6 +96,9 @@ class AppTranslation {
   static String get edit => 'edit'.tr();
   static String get merchantDeletedSuccessfully => 'merchant_deleted_successfully'.tr();
   static String get merchantUpdatedSuccessfully => 'merchant_updated_successfully'.tr();
+  static String get merchantIsActiveLabel => 'merchant_is_active_label'.tr();
+  static String get merchantDeactivateAction => 'merchant_deactivate_action'.tr();
+  static String get merchantActivateAction => 'merchant_activate_action'.tr();
   static String get areYouSureDeleteMerchant => 'are_you_sure_delete_merchant'.tr();
   static String get editMerchant => 'edit_merchant'.tr();
   static String get save => 'save'.tr();
@@ -117,12 +120,20 @@ class AppTranslation {
   // Auth
   static String get login => 'login'.tr();
   static String get register => 'register'.tr();
+  static String get merchantBusinessType => 'merchant_business_type'.tr();
+  static String get merchantTypeRestaurant => 'merchant_type_restaurant'.tr();
+  static String get merchantTypeMarket => 'merchant_type_market'.tr();
+  static String get merchantCreatedSuccess => 'merchant_created_success'.tr();
   static String get email => 'email'.tr();
   static String get password => 'password'.tr();
   static String get enterEmail => 'enter_email'.tr();
   static String get enterPassword => 'enter_password'.tr();
   static String get loginSuccess => 'login_success'.tr();
   static String get forgotPassword => 'forgot_password'.tr();
+  static String get changePasswordTitle => 'change_password_title'.tr();
+  static String get changePasswordAction => 'change_password_action'.tr();
+  static String get oldPassword => 'old_password'.tr();
+  static String get changePasswordSuccess => 'change_password_success'.tr();
   static String get dontHaveAccount => 'dont_have_account'.tr();
   static String get alreadyHaveAccount => 'already_have_account'.tr();
   static String get firstName => 'first_name'.tr();
@@ -213,6 +224,7 @@ class AppTranslation {
   static String get currentLocation => 'current_location'.tr();
   static String get noLocationSet => 'no_location_set'.tr();
   static String get accountStatus => 'account_status'.tr();
+  static String get restaurantOpenNow => 'restaurant_open_now'.tr();
   static String get accountActive => 'account_active'.tr();
   static String get accountInactive => 'account_inactive'.tr();
   static String get activateAccount => 'activate_account'.tr();
@@ -222,6 +234,13 @@ class AppTranslation {
   static String get deliveryMen => 'delivery_men'.tr();
   static String get deliveryManDetails => 'delivery_man_details'.tr();
   static String get addDeliveryMan => 'add_delivery_man'.tr();
+  static String get deliveryPickLocation => 'delivery_pick_location'.tr();
+  static String get deliveryOpenMap => 'delivery_open_map'.tr();
+  static String get deliveryLocationRequired => 'delivery_location_required'.tr();
+  static String get deliveryBirthdayInvalid => 'delivery_birthday_invalid'.tr();
+  static String get deliveryBirthday => 'delivery_birthday'.tr();
+  static String get deliveryBirthdayHint => 'delivery_birthday_hint'.tr();
+  static String get deliveryLocationSet => 'delivery_location_set'.tr();
   static String get editDeliveryMan => 'edit_delivery_man'.tr();
   static String get confirmDelivery => 'confirm_delivery'.tr();
   static String get noDeliveryMenFound => 'no_delivery_men_found'.tr();
@@ -251,6 +270,13 @@ class AppTranslation {
 
   // Order
   static String get orders => 'orders'.tr();
+  /// Admin list: delivery-fee payment lifecycle (delivered / paid / completed).
+  static String get adminOrderPaymentDeliveredBadge =>
+      'admin_order_payment_delivered_badge'.tr();
+  static String get adminOrderPaymentPaidBadge =>
+      'admin_order_payment_paid_badge'.tr();
+  static String get adminOrderPaymentCompletedBadge =>
+      'admin_order_payment_completed_badge'.tr();
   static String get orderDetails => 'order_details'.tr();
   static String get noOrdersFound => 'no_orders_found'.tr();
   static String get searchOrders => 'search_orders'.tr();
@@ -272,6 +298,8 @@ class AppTranslation {
   static String get merchantSetPreparing => 'merchant_set_preparing'.tr();
   static String get merchantSetReadyPickup => 'merchant_set_ready_pickup'.tr();
   static String get merchantOrdersTabPending => 'merchant_orders_tab_pending'.tr();
+  static String get merchantOrdersTabPreparing =>
+      'merchant_orders_tab_preparing'.tr();
   static String get merchantOrdersTabConfirmed => 'merchant_orders_tab_confirmed'.tr();
   static String get merchantOrdersTabOthers => 'merchant_orders_tab_others'.tr();
   static String get ordersFilterTitle => 'orders_filter_title'.tr();
@@ -280,6 +308,12 @@ class AppTranslation {
       'orders_filter_no_status_override'.tr();
   static String get ordersFilterApply => 'orders_filter_apply'.tr();
   static String get ordersFilterTooltip => 'orders_filter_tooltip'.tr();
+  static String get ordersFilterLabelDeliveredNotPaid =>
+      'orders_filter_label_delivered_not_paid'.tr();
+  static String get ordersFilterLabelCompletedPaidConfirmed =>
+      'orders_filter_label_completed_paid_confirmed'.tr();
+  static String get ordersFilterLabelPaidWaitingConfirmation =>
+      'orders_filter_label_paid_waiting_confirmation'.tr();
   static String get ordersResetFilters => 'orders_reset_filters'.tr();
   static String get orderStatusPreparing => 'order_status_preparing'.tr();
   static String get orderStatusReadyForPickup =>
@@ -298,6 +332,10 @@ class AppTranslation {
       'merchant_confirm_meal_prep_required'.tr();
   static String get merchantSearchingSheetTagline =>
       'merchant_searching_sheet_tagline'.tr();
+  static String get paymentReceipts => 'payment_receipts'.tr();
+  static String get confirmOrderPaidComplete => 'confirm_order_paid_complete'.tr();
+  static String get areYouSureConfirmPaidComplete =>
+      'are_you_sure_confirm_paid_complete'.tr();
   static String get orderCancelledSuccessfully => 'order_cancelled_successfully'.tr();
   static String get order => 'order'.tr();
   static String get orderRestaurantSection => 'order_restaurant_section'.tr();
@@ -311,6 +349,8 @@ class AppTranslation {
   static String get people => 'people'.tr();
   static String get latitude => 'latitude'.tr();
   static String get longitude => 'longitude'.tr();
+  static String get landmark => 'landmark'.tr();
+  static String get specialInstructions => 'special_instructions'.tr();
   static String get numberOfPeople => 'number_of_people'.tr();
   static String get deliveryMan => 'delivery_man'.tr();
   static String get areYouSureCompleteOrder => 'are_you_sure_complete_order'.tr();
@@ -378,8 +418,17 @@ class AppTranslation {
   static String get whatsappNumber => 'whatsapp_number'.tr();
   static String get enterWhatsappNumber => 'enter_whatsapp_number'.tr();
   static String get defaultCommissionRate => 'default_commission_rate'.tr();
+  static String get deliveryTipPerKilometer => 'delivery_tip_per_kilometer'.tr();
+  static String get enterDeliveryTipPerKilometer =>
+      'enter_delivery_tip_per_kilometer'.tr();
   static String get enterCommissionRate => 'enter_commission_rate'.tr();
   static String get pleaseEnterValidCommissionRate => 'please_enter_valid_commission_rate'.tr();
+  static String get maxOrdersPerDelivery =>
+      'max_orders_per_delivery'.tr();
+  static String get enterMaxOrdersPerDelivery =>
+      'enter_max_orders_per_delivery'.tr();
+  static String get pleaseEnterValidMaxOrdersPerDelivery =>
+      'please_enter_valid_max_orders_per_delivery'.tr();
   static String get settingsUpdatedSuccessfully => 'settings_updated_successfully'.tr();
 }
 

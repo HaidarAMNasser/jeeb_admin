@@ -1,6 +1,7 @@
 import 'dart:io' show File;
 
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class ProfileRemoteDataSource {
@@ -16,8 +17,13 @@ abstract class ProfileRemoteDataSource {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
-    File? imageFile,
+    String? merchantType,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
+    Object? imageFile,
   });
 }
 
@@ -42,14 +48,25 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     double? latitude,
     double? longitude,
     bool? isActive,
+    bool? isOpen,
     String? restaurantName,
-    File? imageFile,
+    String? merchantType,
+    String? password,
+    String? newPassword,
+    String? confirmedPassword,
+    Object? imageFile,
   }) async {
     MultipartFile? image;
     if (imageFile != null) {
-      final path = imageFile.path;
-      final name = path.contains(RegExp(r'[/\\]')) ? path.split(RegExp(r'[/\\]')).last : path;
-      image = await MultipartFile.fromFile(path, filename: name);
+      final path = imageFile is XFile
+          ? imageFile.path
+          : (imageFile is File ? imageFile.path : '');
+      if (path.isNotEmpty) {
+        final name = path.contains(RegExp(r'[/\\]'))
+            ? path.split(RegExp(r'[/\\]')).last
+            : path;
+        image = await MultipartFile.fromFile(path, filename: name);
+      }
     }
     return _appApiServiceClient.updateProfile(
       firstName: firstName,
@@ -61,9 +78,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       latitude: latitude,
       longitude: longitude,
       isActive: isActive,
+      isOpen: isOpen,
       restaurantName: restaurantName,
+      type: merchantType,
+      password: password,
+      newPassword: newPassword,
+      confirmedPassword: confirmedPassword,
       image: image,
     );
   }
 }
-

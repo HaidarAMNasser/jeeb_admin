@@ -97,11 +97,9 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
           listener: (context, updateState) {
             if (updateState is UpdateMerchantSuccess) {
               customToast(msg: AppTranslation.merchantUpdatedSuccessfully);
-              AppRouter.navigateAndRemoveUntil(
-                context,
-                Routes.mainNavigation,
-                arguments: {'tabIndex': 0},
-              );
+              context.read<MerchantDetailsBloc>().add(
+                    GetMerchantDetailsEvent(id: widget.merchantId),
+                  );
             } else if (updateState is UpdateMerchantError) {
               customToast(msg: updateState.message);
             }
@@ -162,12 +160,14 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
       builder: (context, state) {
         if (state is! MerchantDetailsLoaded) return const SizedBox.shrink();
         final hidePhoneNumber = state.merchant.hidePhoneNumber ?? false;
+        final isActive = state.merchant.isActive;
 
         return IconButton(
           icon: Icon(Icons.more_vert, color: ColorManager.titlesColor),
           onPressed: () => MerchantDetailsOptionsDialog.show(
             context: context,
             hidePhoneNumber: hidePhoneNumber,
+            merchantIsActive: isActive,
             onEdit: () {
               AppRouter.navigateTo(
                 context,
@@ -181,6 +181,15 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
                     UpdateMerchantSubmitted(
                       id: widget.merchantId,
                       hidePhoneNumber: !hidePhoneNumber,
+                    ),
+                  );
+            },
+            onToggleMerchantActive: () {
+              if (isActive == null) return;
+              context.read<UpdateMerchantBloc>().add(
+                    UpdateMerchantSubmitted(
+                      id: widget.merchantId,
+                      isActive: !isActive,
                     ),
                   );
             },

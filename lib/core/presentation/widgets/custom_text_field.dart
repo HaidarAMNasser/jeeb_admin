@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Color? filledColor;
   final bool? obscureText;
+  final List<TextInputFormatter>? inputFormatters;
   const CustomTextField({
     super.key,
     this.title,
@@ -31,6 +32,7 @@ class CustomTextField extends StatelessWidget {
     this.filledColor,
     this.obscureText = false,
     this.keyboardType,
+    this.inputFormatters,
   });
 
   @override
@@ -52,6 +54,7 @@ class CustomTextField extends StatelessWidget {
         SizedBox(height: AppHeight.s8),
         TextField(
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           obscureText: obscureText ?? false,
           textDirection: textDirection,
           textAlign: isRTL ? TextAlign.right : TextAlign.left,

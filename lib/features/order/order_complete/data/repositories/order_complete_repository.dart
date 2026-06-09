@@ -19,24 +19,35 @@ class OrderCompleteRepository {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.completeOrder(id);
-
-        BaseResponseModel<dynamic> baseResponseModel =
-            BaseResponseModel<dynamic>.fromJson(
-          response.data!,
-          (json) => json,
-        );
-
-        if (baseResponseModel.status == 200 ||
-            baseResponseModel.success == true ||
-            baseResponseModel.statusCode == 200) {
+        final code = response.statusCode ?? 0;
+        if (code >= 200 && code < 300) {
+          final raw = response.data;
+          if (raw == null) return const Right(null);
+          if (raw is Map<String, dynamic>) {
+            final m = raw;
+            if (m['status']?.toString().toUpperCase() == 'COMPLETE') {
+              return const Right(null);
+            }
+            final baseResponseModel = BaseResponseModel<dynamic>.fromJson(
+              m,
+              (json) => json,
+            );
+            if (baseResponseModel.status == 200 ||
+                baseResponseModel.success == true ||
+                baseResponseModel.statusCode == 200) {
+              return const Right(null);
+            }
+            if (m['id'] != null) {
+              return const Right(null);
+            }
+          }
           return const Right(null);
-        } else {
-          return Left(ErrorHandler.handle(DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: RequestOptions(),
-          )));
         }
+        return Left(ErrorHandler.handle(DioException(
+          type: DioExceptionType.badResponse,
+          response: response,
+          requestOptions: RequestOptions(),
+        )));
       } catch (error) {
         return Left(ErrorHandler.handle(error));
       }

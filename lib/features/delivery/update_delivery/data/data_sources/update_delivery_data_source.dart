@@ -15,6 +15,8 @@ abstract class UpdateDeliveryRemoteDataSource {
     String? birthday,
     String? notificationChannel,
     String? imagePath,
+    double? latitude,
+    double? longitude,
   });
 }
 
@@ -38,6 +40,8 @@ class UpdateDeliveryRemoteDataSourceImpl
     String? birthday,
     String? notificationChannel,
     String? imagePath,
+    double? latitude,
+    double? longitude,
   }) async {
     // Create FormData for multipart/form-data request
     final formData = FormData.fromMap({
@@ -52,6 +56,8 @@ class UpdateDeliveryRemoteDataSourceImpl
       if (birthday != null && birthday.isNotEmpty) 'birthday': birthday,
       if (notificationChannel != null && notificationChannel.isNotEmpty)
         'notificationChannel': notificationChannel,
+      if (latitude != null && longitude != null)
+        'location': {'lat': latitude, 'lng': longitude},
       if (imagePath != null && imagePath.isNotEmpty)
         'image': await MultipartFile.fromFile(imagePath),
     });

@@ -19,6 +19,20 @@ String? orderListFormatMoney(int? amount, String? currencyCode) {
   return c.isNotEmpty ? '$amount $c' : amount.toString();
 }
 
+/// Admin orders list only: delivery payment lifecycle copy.
+String? adminOrderListPaymentLabel(OrderStatus status) {
+  switch (status) {
+    case OrderStatus.delivered:
+      return AppTranslation.adminOrderPaymentDeliveredBadge;
+    case OrderStatus.paid:
+      return AppTranslation.adminOrderPaymentPaidBadge;
+    case OrderStatus.completed:
+      return AppTranslation.adminOrderPaymentCompletedBadge;
+    default:
+      return null;
+  }
+}
+
 String orderListStatusLabel(OrderStatus status, String? rawStatus) {
   if (status != OrderStatus.unknown) return status.displayLabel;
   final raw = rawStatus?.trim();
@@ -43,40 +57,42 @@ class OrderListStatusBadge extends StatelessWidget {
     super.key,
     required this.status,
     this.rawStatus,
+    this.useAdminPaymentLabels = false,
   });
 
   final OrderStatus status;
   final String? rawStatus;
+  final bool useAdminPaymentLabels;
 
   @override
   Widget build(BuildContext context) {
-    final label = orderListStatusLabel(status, rawStatus);
+    final adminLabel =
+        useAdminPaymentLabels ? adminOrderListPaymentLabel(status) : null;
+    final label = adminLabel ?? orderListStatusLabel(status, rawStatus);
+    final accentColor = status.color;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppPadding.p10,
         vertical: AppPadding.p6,
       ),
       decoration: BoxDecoration(
-        color: status.color.withValues(alpha: 0.12),
+        color: accentColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadius.r8),
-        border: Border.all(color: status.color.withValues(alpha: 0.35)),
+        border: Border.all(color: accentColor.withValues(alpha: 0.35)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(status.iconData, size: AppSize.s16, color: status.color),
+          Icon(status.iconData, size: AppSize.s16, color: accentColor),
           SizedBox(width: AppWidth.s8),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 120),
-            child: CustomText(
-              text: label,
-              textStyle: getBoldStyle(
-                fontSize: AppFontSize.s11,
-                color: status.color,
-              ),
-              maxLines: 2,
-              textOverflow: TextOverflow.ellipsis,
+          CustomText(
+            text: label,
+            textStyle: getBoldStyle(
+              fontSize: AppFontSize.s11,
+              color: accentColor,
             ),
+            maxLines: 2,
+            textOverflow: TextOverflow.ellipsis,
           ),
         ],
       ),

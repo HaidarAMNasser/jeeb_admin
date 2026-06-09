@@ -40,6 +40,7 @@ class UserModel {
   final String? address;
   final bool? isOnline;
   final bool? isActive;
+  final bool? isOpen;
   final String? verifiedAt;
   final bool isVerified;
   final double? currentLat;
@@ -52,6 +53,8 @@ class UserModel {
   final String updatedAt;
   final UserImageModel? image;
   final String? restaurantName;
+  /// `RESTAURANT` or `STORE` (merchant profile `type`).
+  final String? merchantType;
 
   UserModel({
     required this.id,
@@ -64,6 +67,7 @@ class UserModel {
     this.address,
     this.isOnline,
     this.isActive,
+    this.isOpen,
     this.verifiedAt,
     this.isVerified = false,
     this.currentLat,
@@ -76,6 +80,7 @@ class UserModel {
     required this.updatedAt,
     this.image,
     this.restaurantName,
+    this.merchantType,
   });
 
   static bool _parseIsVerified(Map<String, dynamic> json) {
@@ -101,6 +106,7 @@ class UserModel {
       address: json['address'] as String?,
       isOnline: json['isOnline'] as bool?,
       isActive: json['isActive'] as bool?,
+      isOpen: json['isOpen'] as bool?,
       verifiedAt: json['verifiedAt'] as String?,
       isVerified: _parseIsVerified(json),
       currentLat: json['currentLat'] != null
@@ -123,6 +129,7 @@ class UserModel {
           ? UserImageModel.fromJson(json['image'] as Map<String, dynamic>)
           : null,
       restaurantName: json['restaurantName'] as String?,
+      merchantType: json['type'] as String?,
     );
   }
 
@@ -202,6 +209,7 @@ class UserModel {
       address: address,
       isOnline: isOnline,
       isActive: isActive,
+      isOpen: isOpen,
       verifiedAt: verifiedAt != null ? DateTime.tryParse(verifiedAt!) : null,
       isVerified: isVerified,
       currentLat: currentLat,
@@ -214,6 +222,7 @@ class UserModel {
       updatedAt: DateTime.tryParse(updatedAt) ?? DateTime.now(),
       profileImageUrl: profileImageUrl,
       restaurantName: restaurantName,
+      merchantType: merchantType,
     );
   }
 }
