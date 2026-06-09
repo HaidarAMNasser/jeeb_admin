@@ -1,6 +1,6 @@
 {
-    "name": "jeeb_admin",
-    "short_name": "jeeb_admin",
+    "name": "Jeeb Admin",
+    "short_name": "Jeeb Admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

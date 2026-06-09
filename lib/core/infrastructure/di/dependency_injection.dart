@@ -31,6 +31,21 @@ import '../../../features/category/update_category/presentation/bloc/update_cate
 import '../../../features/category/delete_category/data/data_sources/delete_category_data_source.dart';
 import '../../../features/category/delete_category/data/repositories/delete_category_repository.dart';
 import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
+import '../../../features/areas/list_areas/data/data_sources/list_areas_data_source.dart';
+import '../../../features/areas/list_areas/data/repositories/list_areas_repository.dart';
+import '../../../features/areas/list_areas/presentation/bloc/list_areas_bloc.dart';
+import '../../../features/areas/create_area/data/data_sources/create_area_data_source.dart';
+import '../../../features/areas/create_area/data/repositories/create_area_repository.dart';
+import '../../../features/areas/create_area/presentation/bloc/create_area_bloc.dart';
+import '../../../features/areas/update_area/data/data_sources/update_area_data_source.dart';
+import '../../../features/areas/update_area/data/repositories/update_area_repository.dart';
+import '../../../features/areas/update_area/presentation/bloc/update_area_bloc.dart';
+import '../../../features/areas/delete_area/data/data_sources/delete_area_data_source.dart';
+import '../../../features/areas/delete_area/data/repositories/delete_area_repository.dart';
+import '../../../features/areas/delete_area/presentation/bloc/delete_area_bloc.dart';
+import '../../../features/areas/area_details/data/data_sources/area_details_data_source.dart';
+import '../../../features/areas/area_details/data/repositories/area_details_repository.dart';
+import '../../../features/areas/area_details/presentation/bloc/area_details_bloc.dart';
 import '../../../features/auth/login/data/data_sources/login_remote_data_source.dart';
 import '../../../features/auth/login/data/repositories/login_repository.dart';
 import '../../../features/auth/login/presentation/bloc/login_bloc.dart';
@@ -178,6 +193,41 @@ Future<void> init() async {
   );
   sl.registerFactory(() => DeleteCategoryRepository(sl(), sl()));
   sl.registerFactory(() => DeleteCategoryBloc(sl()));
+
+  //! Areas List Dependencies
+  sl.registerFactory<ListAreasRemoteDataSource>(
+    () => ListAreasRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ListAreasRepository(sl(), sl()));
+  sl.registerFactory(() => ListAreasBloc(sl()));
+
+  //! Areas Create Dependencies
+  sl.registerFactory<CreateAreaRemoteDataSource>(
+    () => CreateAreaRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => CreateAreaRepository(sl(), sl()));
+  sl.registerFactory(() => CreateAreaBloc(sl()));
+
+  //! Areas Update Dependencies
+  sl.registerFactory<UpdateAreaRemoteDataSource>(
+    () => UpdateAreaRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => UpdateAreaRepository(sl(), sl()));
+  sl.registerFactory(() => UpdateAreaBloc(sl()));
+
+  //! Areas Delete Dependencies
+  sl.registerFactory<DeleteAreaRemoteDataSource>(
+    () => DeleteAreaRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => DeleteAreaRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteAreaBloc(sl()));
+
+  //! Areas Details Dependencies
+  sl.registerFactory<AreaDetailsRemoteDataSource>(
+    () => AreaDetailsRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => AreaDetailsRepository(sl(), sl()));
+  sl.registerFactory(() => AreaDetailsBloc(sl()));
 
   //! Product List Dependencies
   sl.registerFactory<ListProductRemoteDataSource>(

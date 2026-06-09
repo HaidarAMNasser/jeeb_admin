@@ -30,4 +30,6 @@ class Routes {
   static const String addOffer = '/add-offer';
   static const String offerDetails = '/offer-details';
   static const String categories = '/categories';
+  static const String areas = '/areas';
+  static const String addArea = '/add-area';
 }

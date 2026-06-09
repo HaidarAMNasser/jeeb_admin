@@ -81,6 +81,9 @@ class ProfilePageContent extends StatelessWidget {
             onCategoriesTap: isAdminFromStorage
                 ? () => NavigationService().pushNamed(Routes.categories)
                 : null,
+            onAreasTap: isAdminFromStorage
+                ? () => NavigationService().pushNamed(Routes.areas)
+                : null,
           ),
           SizedBox(height: AppHeight.s24),
         ],

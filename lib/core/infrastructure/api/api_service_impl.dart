@@ -487,6 +487,116 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
+  Future<Response> getAreas(int? page, int? limit, String? search) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    if (page != null) queryParameters['page'] = page;
+    if (limit != null) queryParameters['limit'] = limit;
+    if (search != null && search.isNotEmpty) queryParameters['search'] = search;
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'areas',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> getAreaDetails(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'GET', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'areas/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> createArea(FormData formData) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'POST', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'areas',
+              queryParameters: queryParameters,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> updateArea(String id, FormData formData) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'areas/$id',
+              queryParameters: queryParameters,
+              data: formData,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> deleteArea(String id) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'DELETE', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'areas/$id',
+              queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
   Future<Response> getProducts(
     int? page,
     int? limit,

@@ -102,6 +102,19 @@ import '../../../features/category/presentation/pages/categories_page.dart';
 import '../../../features/category/add_category/presentation/bloc/add_category_bloc.dart';
 import '../../../features/category/update_category/presentation/bloc/update_category_bloc.dart';
 import '../../../features/category/delete_category/presentation/bloc/delete_category_bloc.dart';
+import '../../../features/areas/list_areas/presentation/pages/list_areas_page.dart';
+import '../../../features/areas/list_areas/presentation/bloc/list_areas_bloc.dart';
+import '../../../features/areas/list_areas/data/repositories/list_areas_repository.dart';
+import '../../../features/areas/create_area/presentation/pages/create_area_page.dart';
+import '../../../features/areas/create_area/presentation/bloc/create_area_bloc.dart';
+import '../../../features/areas/create_area/data/repositories/create_area_repository.dart';
+import '../../../features/areas/update_area/presentation/bloc/update_area_bloc.dart';
+import '../../../features/areas/update_area/data/repositories/update_area_repository.dart';
+import '../../../features/areas/delete_area/presentation/bloc/delete_area_bloc.dart';
+import '../../../features/areas/delete_area/data/repositories/delete_area_repository.dart';
+import '../../../features/areas/area_details/presentation/bloc/area_details_bloc.dart';
+import '../../../features/areas/area_details/data/repositories/area_details_repository.dart';
+import '../../../features/areas/list_areas/domain/entities/area_entity.dart';
 
 import '../../infrastructure/di/dependency_injection.dart' as di;
 
@@ -237,6 +250,43 @@ class AppRouter {
             ),
             BlocProvider<DeleteCategoryBloc>(
               create: (_) => di.sl<DeleteCategoryBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.areas:
+        return _buildRouteWithBlocs(
+          const ListAreasPage(),
+          settings,
+          providers: [
+            BlocProvider<ListAreasBloc>(
+              create: (_) => ListAreasBloc(di.sl<ListAreasRepository>())
+                ..add(const GetAreasEvent()),
+            ),
+            BlocProvider<DeleteAreaBloc>(
+              create: (_) => DeleteAreaBloc(di.sl<DeleteAreaRepository>()),
+            ),
+          ],
+        );
+
+      case Routes.addArea:
+        final areaArgs = settings.arguments as Map<String, dynamic>?;
+        final area = areaArgs?['area'] as AreaEntity?;
+        return _buildRouteWithBlocs(
+          CreateAreaPage(area: area),
+          settings,
+          providers: [
+            BlocProvider<CreateAreaBloc>(
+              create: (_) => CreateAreaBloc(di.sl<CreateAreaRepository>()),
+            ),
+            BlocProvider<UpdateAreaBloc>(
+              create: (_) => UpdateAreaBloc(di.sl<UpdateAreaRepository>()),
+            ),
+            BlocProvider<DeleteAreaBloc>(
+              create: (_) => DeleteAreaBloc(di.sl<DeleteAreaRepository>()),
+            ),
+            BlocProvider<AreaDetailsBloc>(
+              create: (_) => AreaDetailsBloc(di.sl<AreaDetailsRepository>()),
             ),
           ],
         );

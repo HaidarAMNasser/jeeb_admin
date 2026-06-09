@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:chucker_flutter/chucker_flutter.dart';
+// import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/presentation/routes/route_manager.dart';
 import 'core/presentation/routes/routes.dart';
@@ -42,8 +42,8 @@ void main() async {
 
   await di.sl<NotificationService>().initialize();
 
-  ChuckerFlutter.showOnRelease = true;
-  ChuckerFlutter.showNotification = false;
+  // ChuckerFlutter.showOnRelease = true;
+  // ChuckerFlutter.showNotification = false;
 
   // Get stored language from SharedPreferences
   final storageService = di.sl<StorageService>();
@@ -108,17 +108,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Offset _chuckerButtonOffset = const Offset(300, 500);
+  // Offset _chuckerButtonOffset = const Offset(300, 500);
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final size = MediaQuery.of(context).size;
-      setState(() {
-        _chuckerButtonOffset = Offset(size.width - 72, size.height - 160);
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   final size = MediaQuery.of(context).size;
+    //   // setState(() {
+    //   //   _chuckerButtonOffset = Offset(size.width - 72, size.height - 160);
+    //   // });
+    // });
   }
 
   @override
@@ -132,27 +132,27 @@ class _MyAppState extends State<MyApp> {
           title: 'Jeeb App',
           debugShowCheckedModeBanner: false,
           navigatorObservers: [
-            ChuckerFlutter.navigatorObserver,
+            // ChuckerFlutter.navigatorObserver,
           ],
           builder: (context, child) {
             return Stack(
               children: [
                 child ?? const SizedBox.shrink(),
-                Positioned(
-                  left: _chuckerButtonOffset.dx,
-                  top: _chuckerButtonOffset.dy,
-                  child: GestureDetector(
-                    onPanUpdate: (details) {
-                      setState(() {
-                        _chuckerButtonOffset += details.delta;
-                      });
-                    },
-                    child: Transform.scale(
-                      scale: 0.7,
-                      child: ChuckerFlutter.chuckerButton,
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   left: _chuckerButtonOffset.dx,
+                //   top: _chuckerButtonOffset.dy,
+                //   child: GestureDetector(
+                //     onPanUpdate: (details) {
+                //       setState(() {
+                //         _chuckerButtonOffset += details.delta;
+                //       });
+                //     },
+                //     child: Transform.scale(
+                //       scale: 0.7,
+                //       child: ChuckerFlutter.chuckerButton,
+                //     ),
+                //   ),
+                // ),
               ],
             );
           },

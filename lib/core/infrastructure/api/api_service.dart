@@ -113,6 +113,26 @@ abstract class AppApiServiceClient {
   @DELETE("categories/{id}")
   Future<Response> deleteCategory(@Path('id') String id);
 
+  // Area endpoints
+  @GET("areas")
+  Future<Response> getAreas(
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+  );
+
+  @GET("areas/{id}")
+  Future<Response> getAreaDetails(@Path('id') String id);
+
+  @POST("areas")
+  Future<Response> createArea(FormData formData);
+
+  @PATCH("areas/{id}")
+  Future<Response> updateArea(@Path('id') String id, FormData formData);
+
+  @DELETE("areas/{id}")
+  Future<Response> deleteArea(@Path('id') String id);
+
   // Product endpoints
   @GET("products")
   Future<Response> getProducts(

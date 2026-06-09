@@ -28,6 +28,7 @@ class ProfileForm extends StatelessWidget {
   final ValueChanged<bool> onAccountStatusChanged;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onCategoriesTap;
+  final VoidCallback? onAreasTap;
   /// Merchant-only fields/actions — from SharedPreferences `user_role` at login.
   final bool isMerchantFromStorage;
   /// `RESTAURANT` or `STORE`; only used when [isMerchantFromStorage].
@@ -54,6 +55,7 @@ class ProfileForm extends StatelessWidget {
     required this.onAccountStatusChanged,
     this.onSettingsTap,
     this.onCategoriesTap,
+    this.onAreasTap,
   });
 
   @override
@@ -184,6 +186,28 @@ class ProfileForm extends StatelessWidget {
                     SizedBox(width: AppWidth.s8),
                     CustomText(
                       text: AppTranslation.categories,
+                      textStyle: getMediumStyle(
+                        color: ColorManager.primary,
+                        fontSize: AppFontSize.s15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (onAreasTap != null)
+            InkWell(
+              onTap: onAreasTap,
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: AppPadding.p8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.map_outlined, size: 20, color: ColorManager.primary),
+                    SizedBox(width: AppWidth.s8),
+                    CustomText(
+                      text: AppTranslation.areas,
                       textStyle: getMediumStyle(
                         color: ColorManager.primary,
                         fontSize: AppFontSize.s15,

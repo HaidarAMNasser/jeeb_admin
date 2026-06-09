@@ -58,6 +58,23 @@ class AppTranslation {
   static String get categoryDeletedSuccessfully => 'category_deleted_successfully'.tr();
   static String get areYouSureDeleteCategory => 'are_you_sure_delete_category'.tr();
 
+  // Areas
+  static String get areas => 'areas'.tr();
+  static String get addArea => 'add_area'.tr();
+  static String get editArea => 'edit_area'.tr();
+  static String get areaName => 'area_name'.tr();
+  static String get areaPrice => 'area_price'.tr();
+  static String get areaDescription => 'area_description'.tr();
+  static String get pleaseEnterAreaName => 'please_enter_area_name'.tr();
+  static String get pleaseEnterAreaPrice => 'please_enter_area_price'.tr();
+  static String get invalidAreaPrice => 'invalid_area_price'.tr();
+  static String get areaAddedSuccessfully => 'area_added_successfully'.tr();
+  static String get areaUpdatedSuccessfully => 'area_updated_successfully'.tr();
+  static String get areaDeletedSuccessfully => 'area_deleted_successfully'.tr();
+  static String get areYouSureDeleteArea => 'are_you_sure_delete_area'.tr();
+  static String get searchAreasHint => 'search_areas_hint'.tr();
+  static String get noAreasFound => 'no_areas_found'.tr();
+
   // Product
   static String get products => 'products'.tr();
   static String get addProduct => 'add_product'.tr();
