@@ -206,6 +206,8 @@ class AppTranslation {
       'no_merchant_statistics_found'.tr();
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
+  static String get searchMerchantStatisticsHint =>
+      'search_merchant_statistics_hint'.tr();
   static String get merchantUserId => 'merchant_user_id'.tr();
   static String get totalOrders => 'total_orders'.tr();
   static String get totalRevenue => 'total_revenue'.tr();

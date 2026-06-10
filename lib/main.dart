@@ -3,8 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
-// import 'package:chucker_flutter/chucker_flutter.dart';
+import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'core/config/app_config.dart';
 import 'core/presentation/routes/route_manager.dart';
 import 'core/presentation/routes/routes.dart';
 import 'core/presentation/routes/navigation_service.dart';
@@ -21,13 +22,11 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await EasyLocalization.ensureInitialized();
 
-  // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -37,20 +36,22 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  // Initialize dependency injection
   await di.init();
 
   await di.sl<NotificationService>().initialize();
 
-  // ChuckerFlutter.showOnRelease = true;
-  // ChuckerFlutter.showNotification = false;
+  if (AppConfig.enableChucker) {
+    ChuckerFlutter.showOnRelease = true;
+    ChuckerFlutter.showNotification = false;
+  }
 
-  // Get stored language from SharedPreferences
   final storageService = di.sl<StorageService>();
   final storedLanguage = storageService.getAppLanguage();
   final startLocale = storedLanguage.isEmpty
       ? LocalizationManager.fallbackLocale
-      : (storedLanguage == 'ar' ? const Locale('ar') : LocalizationManager.fallbackLocale);
+      : (storedLanguage == 'ar'
+            ? const Locale('ar')
+            : LocalizationManager.fallbackLocale);
 
   runApp(
     EasyLocalization(
@@ -108,18 +109,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Offset _chuckerButtonOffset = const Offset(300, 500);
-
-  @override
-  void initState() {
-    super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   final size = MediaQuery.of(context).size;
-    //   // setState(() {
-    //   //   _chuckerButtonOffset = Offset(size.width - 72, size.height - 160);
-    //   // });
-    // });
-  }
+  Offset _chuckerButtonOffset = const Offset(300, 500);
 
   @override
   Widget build(BuildContext context) {
@@ -132,32 +122,40 @@ class _MyAppState extends State<MyApp> {
           title: 'Jeeb App',
           debugShowCheckedModeBanner: false,
           navigatorObservers: [
-            // ChuckerFlutter.navigatorObserver,
+            if (AppConfig.enableChucker) ChuckerFlutter.navigatorObserver,
           ],
           builder: (context, child) {
+            if (!AppConfig.enableChucker) {
+              return child ?? const SizedBox.shrink();
+            }
+
+            final size = MediaQuery.sizeOf(context);
+            final clampedOffset = Offset(
+              _chuckerButtonOffset.dx.clamp(0.0, size.width - 56),
+              _chuckerButtonOffset.dy.clamp(0.0, size.height - 120),
+            );
+
             return Stack(
               children: [
                 child ?? const SizedBox.shrink(),
-                // Positioned(
-                //   left: _chuckerButtonOffset.dx,
-                //   top: _chuckerButtonOffset.dy,
-                //   child: GestureDetector(
-                //     onPanUpdate: (details) {
-                //       setState(() {
-                //         _chuckerButtonOffset += details.delta;
-                //       });
-                //     },
-                //     child: Transform.scale(
-                //       scale: 0.7,
-                //       child: ChuckerFlutter.chuckerButton,
-                //     ),
-                //   ),
-                // ),
+                Positioned(
+                  left: clampedOffset.dx,
+                  top: clampedOffset.dy,
+                  child: GestureDetector(
+                    onPanUpdate: (details) {
+                      setState(() {
+                        _chuckerButtonOffset += details.delta;
+                      });
+                    },
+                    child: Transform.scale(
+                      scale: 0.7,
+                      child: ChuckerFlutter.chuckerButton,
+                    ),
+                  ),
+                ),
               ],
             );
           },
-          // theme: AppTheme.lightTheme,
-          // darkTheme:  AppTheme.darkTheme,
           themeMode: ThemeMode.system,
           navigatorKey: di.sl<NavigationService>().navigationKey,
           initialRoute: Routes.splash,

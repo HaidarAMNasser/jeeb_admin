@@ -182,6 +182,7 @@
   "edit_merchant": "تعديل المتجر",
   "search_merchants": "البحث عن المتاجر",
   "search_merchants_hint": "ابحث عن المتاجر...",
+  "search_merchant_statistics_hint": "ابحث باسم المتجر أو معرّف المستخدم...",
   "merchant_user_id": "معرّف المستخدم",
   "total_orders": "إجمالي الطلبات",
   "total_revenue": "إجمالي الإيرادات",

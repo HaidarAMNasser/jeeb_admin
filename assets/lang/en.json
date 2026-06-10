@@ -182,6 +182,7 @@
   "edit_merchant": "Edit Store",
   "search_merchants": "Search Stores",
   "search_merchants_hint": "Search stores...",
+  "search_merchant_statistics_hint": "Search by store name or user ID...",
   "merchant_user_id": "User ID",
   "total_orders": "Total orders",
   "total_revenue": "Total revenue",
