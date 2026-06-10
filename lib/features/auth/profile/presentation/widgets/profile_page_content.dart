@@ -86,9 +86,6 @@ class ProfilePageContent extends StatelessWidget {
             onAreasTap: isAdminFromStorage
                 ? () => NavigationService().pushNamed(Routes.areas)
                 : null,
-            onMerchantStatisticsTap: isAdminFromStorage
-                ? () => NavigationService().pushNamed(Routes.merchantStatistics)
-                : null,
             onSendNotificationTap: isAdminFromStorage
                 ? onSendNotificationTap
                 : null,

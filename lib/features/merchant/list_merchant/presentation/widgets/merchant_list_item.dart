@@ -15,6 +15,8 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/
 import 'package:jeeb_admin/features/merchant/presentation/widgets/merchant_list_options_dialog.dart';
 
 class MerchantListItem extends StatelessWidget {
+  static const double _moreButtonWidth = 48.0;
+
   final MerchantEntity merchant;
   final VoidCallback? onConfirmMerchant;
 
@@ -37,6 +39,11 @@ class MerchantListItem extends StatelessWidget {
         arguments: {'merchantId': merchant.id},
       );
     }
+
+    final headerEndPadding = _headerEndPadding(
+      hasPhone: hasPhone,
+      isPending: isPending && onConfirmMerchant != null,
+    );
 
     return Card(
       color: ColorManager.defaultWhite,
@@ -61,9 +68,7 @@ class MerchantListItem extends StatelessWidget {
                     width: double.infinity,
                     child: Padding(
                       padding: EdgeInsetsDirectional.only(
-                        end: MerchantListItemPhoneBadge.reserveEndPadding(
-                          hasPhone || isPending,
-                        ),
+                        end: headerEndPadding,
                       ),
                       child: MerchantListItemHeader(merchant: merchant),
                     ),
@@ -71,7 +76,9 @@ class MerchantListItem extends StatelessWidget {
                   if (hasPhone)
                     PositionedDirectional(
                       top: 0,
-                      end: isPending ? AppWidth.s35 : 0,
+                      end: isPending && onConfirmMerchant != null
+                          ? _moreButtonWidth + AppWidth.s8
+                          : 0,
                       child: MerchantListItemPhoneBadge(
                         phoneNumber: merchant.phoneNumber!,
                       ),
@@ -126,5 +133,23 @@ class MerchantListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static double _headerEndPadding({
+    required bool hasPhone,
+    required bool isPending,
+  }) {
+    if (hasPhone && isPending) {
+      return MerchantListItemPhoneBadge.width +
+          AppWidth.s8 +
+          _moreButtonWidth;
+    }
+    if (hasPhone) {
+      return MerchantListItemPhoneBadge.reserveEndPadding(true);
+    }
+    if (isPending) {
+      return _moreButtonWidth;
+    }
+    return 0;
   }
 }
