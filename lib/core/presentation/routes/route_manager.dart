@@ -58,6 +58,9 @@ import '../../../features/main_navigation/presentation/pages/main_navigation_pag
 import '../../../features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
 import '../../../features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import '../../../features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
+import '../../../features/merchant/merchant_statistics/presentation/pages/merchant_statistics_page.dart';
+import '../../../features/merchant/merchant_statistics/presentation/bloc/merchant_statistics_bloc.dart';
+import '../../../features/merchant/merchant_statistics/data/repositories/merchant_statistics_repository.dart';
 import '../../../features/merchant/merchant_details/presentation/pages/merchant_details_page.dart';
 import '../../../features/merchant/merchant_details/presentation/bloc/merchant_details_bloc.dart';
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
@@ -389,6 +392,15 @@ class AppRouter {
           bloc: () =>
               ListMerchantBloc(di.sl<ListMerchantRepository>())
                 ..add(const GetMerchantsEvent()),
+        );
+
+      case Routes.merchantStatistics:
+        return _buildRouteWithBloc(
+          const MerchantStatisticsPage(),
+          settings,
+          bloc: () => MerchantStatisticsBloc(
+            di.sl<MerchantStatisticsRepository>(),
+          ),
         );
 
       case Routes.merchantDetails:

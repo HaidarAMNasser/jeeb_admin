@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_text_field.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 
 class SettingsForm extends StatelessWidget {
   const SettingsForm({
@@ -35,6 +36,14 @@ class SettingsForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            CustomButton(
+              text: AppTranslation.merchantStatistics,
+              onPressed: () => Navigator.of(context).pushNamed(
+                Routes.merchantStatistics,
+              ),
+              color: ColorManager.primary,
+            ),
+            SizedBox(height: AppHeight.s24),
             CustomTextField(
               title: AppTranslation.supportPhone,
               hintText: AppTranslation.enterSupportPhone,

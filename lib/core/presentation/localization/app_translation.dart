@@ -199,11 +199,19 @@ class AppTranslation {
 
   // Merchant
   static String get merchants => 'merchants'.tr();
+  static String get merchantStatistics => 'merchant_statistics'.tr();
   static String get merchantDetails => 'merchant_details'.tr();
   static String get noMerchantsFound => 'no_merchants_found'.tr();
+  static String get noMerchantStatisticsFound =>
+      'no_merchant_statistics_found'.tr();
   static String get searchMerchants => 'search_merchants'.tr();
   static String get searchMerchantsHint => 'search_merchants_hint'.tr();
   static String get merchantUserId => 'merchant_user_id'.tr();
+  static String get totalOrders => 'total_orders'.tr();
+  static String get totalRevenue => 'total_revenue'.tr();
+  static String get fromDate => 'from_date'.tr();
+  static String get toDate => 'to_date'.tr();
+  static String get notSpecified => 'not_specified'.tr();
   static String get merchantRole => 'merchant_role'.tr();
   static String get merchantBirthday => 'merchant_birthday'.tr();
   static String get merchantVerifiedAt => 'merchant_verified_at'.tr();

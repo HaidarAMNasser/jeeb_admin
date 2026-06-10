@@ -76,6 +76,8 @@ import '../../../features/city/data/repositories/city_repository.dart';
 import '../../../features/city/presentation/bloc/city_bloc.dart';
 import '../../../features/merchant/list_merchant/data/data_sources/list_merchant_data_source.dart';
 import '../../../features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
+import '../../../features/merchant/merchant_statistics/data/data_sources/merchant_statistics_data_source.dart';
+import '../../../features/merchant/merchant_statistics/data/repositories/merchant_statistics_repository.dart';
 import '../../../features/merchant/merchant_details/data/data_sources/merchant_details_data_source.dart';
 import '../../../features/merchant/merchant_details/data/repositories/merchant_details_repository.dart';
 import '../../../features/merchant/delete_merchant/data/data_sources/delete_merchant_data_source.dart';
@@ -349,6 +351,12 @@ Future<void> init() async {
     () => ListMerchantRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => ListMerchantRepository(sl(), sl()));
+
+  //! Merchant Statistics Dependencies
+  sl.registerFactory<MerchantStatisticsRemoteDataSource>(
+    () => MerchantStatisticsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => MerchantStatisticsRepository(sl(), sl()));
 
   //! Merchant Details Dependencies
   sl.registerFactory<MerchantDetailsRemoteDataSource>(

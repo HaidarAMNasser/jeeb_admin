@@ -210,6 +210,16 @@ abstract class AppApiServiceClient {
     @Query('limit') int? limit,
   });
 
+  @GET("statistics/merchants")
+  Future<Response> getMerchantStatistics({
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('search') String? search,
+    @Query('from') String? from,
+    @Query('to') String? to,
+    @Query('merchantId') int? merchantId,
+  });
+
   // Delivery endpoints
   @GET("users/deliveries")
   Future<Response> getDeliveryMen({
