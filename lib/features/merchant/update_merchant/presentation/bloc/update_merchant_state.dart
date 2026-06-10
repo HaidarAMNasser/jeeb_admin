@@ -16,7 +16,12 @@ class UpdateMerchantLoading extends UpdateMerchantState {
 }
 
 class UpdateMerchantSuccess extends UpdateMerchantState {
-  const UpdateMerchantSuccess();
+  final bool isConfirmAction;
+
+  const UpdateMerchantSuccess({this.isConfirmAction = false});
+
+  @override
+  List<Object?> get props => [isConfirmAction];
 }
 
 class UpdateMerchantError extends UpdateMerchantState {

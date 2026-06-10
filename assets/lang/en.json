@@ -410,5 +410,11 @@
   "notification_body": "Notification Body",
   "enter_notification_body": "Enter notification message",
   "please_enter_notification_title_and_body": "Please enter both title and body",
-  "notification_sent_successfully": "Notification sent successfully"
+  "notification_sent_successfully": "Notification sent successfully",
+  "merchant_waiting_title": "Account Under Review",
+  "merchant_waiting_subtitle": "Your account is under review by the admin. You will be able to sign in once it is confirmed.",
+  "merchant_account_not_confirmed_yet": "Your account has not been confirmed yet",
+  "refresh_page": "Refresh",
+  "confirm_merchant": "Confirm Merchant",
+  "merchant_confirmed_successfully": "Merchant account confirmed successfully"
 }

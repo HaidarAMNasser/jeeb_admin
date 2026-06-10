@@ -96,7 +96,11 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
           ),
           listener: (context, updateState) {
             if (updateState is UpdateMerchantSuccess) {
-              customToast(msg: AppTranslation.merchantUpdatedSuccessfully);
+              customToast(
+                msg: updateState.isConfirmAction
+                    ? AppTranslation.merchantConfirmedSuccessfully
+                    : AppTranslation.merchantUpdatedSuccessfully,
+              );
               context.read<MerchantDetailsBloc>().add(
                     GetMerchantDetailsEvent(id: widget.merchantId),
                   );
@@ -186,10 +190,12 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
             },
             onToggleMerchantActive: () {
               if (isActive == null) return;
+              final confirming = isActive == false;
               context.read<UpdateMerchantBloc>().add(
                     UpdateMerchantSubmitted(
                       id: widget.merchantId,
-                      isActive: !isActive,
+                      isActive: confirming ? true : false,
+                      isConfirmAction: confirming,
                     ),
                   );
             },

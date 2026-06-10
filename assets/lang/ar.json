@@ -410,5 +410,11 @@
   "notification_body": "محتوى الإشعار",
   "enter_notification_body": "أدخل نص الإشعار",
   "please_enter_notification_title_and_body": "الرجاء إدخال العنوان والمحتوى",
-  "notification_sent_successfully": "تم إرسال الإشعار بنجاح"
+  "notification_sent_successfully": "تم إرسال الإشعار بنجاح",
+  "merchant_waiting_title": "الحساب قيد المراجعة",
+  "merchant_waiting_subtitle": "حسابك قيد المراجعة من قبل المدير. يمكنك تسجيل الدخول بعد تأكيد الحساب.",
+  "merchant_account_not_confirmed_yet": "لم يتم تأكيد حسابك بعد",
+  "refresh_page": "تحديث",
+  "confirm_merchant": "تأكيد التاجر",
+  "merchant_confirmed_successfully": "تم تفعيل حساب التاجر بنجاح"
 }

@@ -87,7 +87,17 @@ class _VerifyPageState extends State<VerifyPage> {
       ),
       listener: (context, state) {
         if (state is VerifySuccess) {
-          if (state.goToMain) {
+          if (state.goToPending) {
+            customToast(msg: AppTranslation.merchantWaitingSubtitle);
+            context.pushNamedAndRemoveUntil(
+              Routes.merchantWaiting,
+              predicate: (route) => false,
+              arguments: {
+                'email': state.email,
+                'password': state.password,
+              },
+            );
+          } else if (state.goToMain) {
             customToast(msg: AppTranslation.accountVerifiedSuccess);
             context.pushNamedAndRemoveUntil(
               Routes.mainNavigation,

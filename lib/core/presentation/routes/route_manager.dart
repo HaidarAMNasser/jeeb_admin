@@ -31,6 +31,7 @@ import '../../../features/auth/register/presentation/pages/register_page.dart';
 import '../../../features/auth/register/presentation/bloc/register_bloc.dart';
 import '../../../features/auth/verify/presentation/pages/verify_page.dart';
 import '../../../features/auth/verify/presentation/bloc/verify_bloc.dart';
+import '../../../features/auth/merchant_waiting/presentation/pages/merchant_waiting_page.dart';
 import '../../../features/auth/forgot_password/presentation/pages/forgot_password_page.dart';
 import '../../../features/auth/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import '../../../features/auth/reset_password/presentation/pages/reset_password_page.dart';
@@ -185,6 +186,18 @@ class AppRouter {
             if (registerBloc != null)
               BlocProvider<RegisterBloc>.value(value: registerBloc),
           ],
+        );
+
+      case Routes.merchantWaiting:
+        final waitingArgs = settings.arguments as Map<String, dynamic>?;
+        final waitingEmail = waitingArgs?['email'] as String? ?? '';
+        final waitingPassword = waitingArgs?['password'] as String? ?? '';
+        return _buildRoute(
+          MerchantWaitingPage(
+            email: waitingEmail,
+            password: waitingPassword,
+          ),
+          settings,
         );
 
       case Routes.forgotPassword:
@@ -386,12 +399,19 @@ class AppRouter {
         );
 
       case Routes.merchants:
-        return _buildRouteWithBloc(
+        return _buildRouteWithBlocs(
           const ListMerchantPage(),
           settings,
-          bloc: () =>
-              ListMerchantBloc(di.sl<ListMerchantRepository>())
-                ..add(const GetMerchantsEvent()),
+          providers: [
+            BlocProvider<ListMerchantBloc>(
+              create: (_) =>
+                  ListMerchantBloc(di.sl<ListMerchantRepository>())
+                    ..add(const GetMerchantsEvent()),
+            ),
+            BlocProvider<UpdateMerchantBloc>(
+              create: (_) => di.sl<UpdateMerchantBloc>(),
+            ),
+          ],
         );
 
       case Routes.merchantStatistics:
