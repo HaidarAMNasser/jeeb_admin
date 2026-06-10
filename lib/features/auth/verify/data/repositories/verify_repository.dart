@@ -4,6 +4,7 @@ import '../../../../../core/common/errors/failure.dart';
 import '../../../../../core/common/models/api_response_model.dart';
 import '../../../../../core/common/utils/error_handler.dart';
 import '../../../../../core/infrastructure/network/network_info.dart';
+import '../../domain/entities/verify_result_entity.dart';
 import '../data_sources/verify_remote_data_source.dart';
 
 class VerifyRepository {
@@ -15,8 +16,8 @@ class VerifyRepository {
     this._networkInfo,
   );
 
-  /// Returns the response [data] map on success so the bloc can read token+user if present.
-  Future<Either<Failure, Map<String, dynamic>?>> verify({
+  /// Returns [VerifyResultEntity] on success so the bloc can read token+user if present.
+  Future<Either<Failure, VerifyResultEntity>> verify({
     required String email,
     required String otp,
   }) async {
@@ -46,8 +47,16 @@ class VerifyRepository {
         );
 
         if (apiResponse.isSuccess) {
-          final data = apiResponse.data ?? {};
-          return Right(data);
+          final data = apiResponse.data is Map
+              ? Map<String, dynamic>.from(apiResponse.data as Map)
+              : <String, dynamic>{};
+          return Right(
+            VerifyResultEntity(
+              statusCode: apiResponse.statusCode,
+              message: apiResponse.message,
+              data: data,
+            ),
+          );
         } else {
           return Left(ErrorHandler.handle(
             DioException(

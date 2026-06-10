@@ -12,16 +12,23 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_location_section.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_owner_row.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_phone_badge.dart';
+import 'package:jeeb_admin/features/merchant/presentation/widgets/merchant_list_options_dialog.dart';
 
 class MerchantListItem extends StatelessWidget {
   final MerchantEntity merchant;
+  final VoidCallback? onConfirmMerchant;
 
-  const MerchantListItem({super.key, required this.merchant});
+  const MerchantListItem({
+    super.key,
+    required this.merchant,
+    this.onConfirmMerchant,
+  });
 
   @override
   Widget build(BuildContext context) {
     final hasPhone =
         merchant.phoneNumber != null && merchant.phoneNumber!.isNotEmpty;
+    final isPending = merchant.isActive == false;
 
     void goToDetails() {
       AppRouter.navigateTo(
@@ -55,7 +62,7 @@ class MerchantListItem extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsetsDirectional.only(
                         end: MerchantListItemPhoneBadge.reserveEndPadding(
-                          hasPhone,
+                          hasPhone || isPending,
                         ),
                       ),
                       child: MerchantListItemHeader(merchant: merchant),
@@ -64,9 +71,27 @@ class MerchantListItem extends StatelessWidget {
                   if (hasPhone)
                     PositionedDirectional(
                       top: 0,
-                      end: 0,
+                      end: isPending ? AppWidth.s35 : 0,
                       child: MerchantListItemPhoneBadge(
                         phoneNumber: merchant.phoneNumber!,
+                      ),
+                    ),
+                  if (isPending && onConfirmMerchant != null)
+                    PositionedDirectional(
+                      top: -AppPadding.p4,
+                      end: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: ColorManager.primary,
+                          size: AppSize.s22,
+                        ),
+                        onPressed: () {
+                          MerchantListOptionsDialog.show(
+                            context: context,
+                            onConfirm: onConfirmMerchant!,
+                          );
+                        },
                       ),
                     ),
                 ],

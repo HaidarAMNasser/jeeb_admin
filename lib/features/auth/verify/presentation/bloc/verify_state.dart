@@ -22,11 +22,19 @@ class VerifyLoggingIn extends VerifyState {
 
 class VerifySuccess extends VerifyState {
   final bool goToMain;
+  final bool goToPending;
+  final String email;
+  final String password;
 
-  const VerifySuccess({this.goToMain = true});
+  const VerifySuccess({
+    this.goToMain = false,
+    this.goToPending = false,
+    this.email = '',
+    this.password = '',
+  });
 
   @override
-  List<Object?> get props => [goToMain];
+  List<Object?> get props => [goToMain, goToPending, email, password];
 }
 
 class VerifyOtpResent extends VerifyState {

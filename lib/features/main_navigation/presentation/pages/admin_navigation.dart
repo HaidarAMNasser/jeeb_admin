@@ -17,6 +17,7 @@ import 'package:jeeb_admin/features/delivery/list_delivery/data/repositories/lis
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/data/repositories/list_merchant_repository.dart';
+import 'package:jeeb_admin/features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 class AdminNavigation extends StatefulWidget {
   final int initialIndex;
@@ -39,10 +40,17 @@ class _AdminNavigationState extends State<AdminNavigation> {
   Widget _buildScreen(int index) {
     switch (index) {
       case 0:
-        return BlocProvider<ListMerchantBloc>(
-          create: (_) =>
-              ListMerchantBloc(di.sl<ListMerchantRepository>())
-                ..add(const GetMerchantsEvent()),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<ListMerchantBloc>(
+              create: (_) =>
+                  ListMerchantBloc(di.sl<ListMerchantRepository>())
+                    ..add(const GetMerchantsEvent()),
+            ),
+            BlocProvider<UpdateMerchantBloc>(
+              create: (_) => di.sl<UpdateMerchantBloc>(),
+            ),
+          ],
           child: const ListMerchantPage(),
         );
       case 1:

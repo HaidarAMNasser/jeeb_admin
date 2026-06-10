@@ -459,5 +459,15 @@ class AppTranslation {
       'please_enter_notification_title_and_body'.tr();
   static String get notificationSentSuccessfully =>
       'notification_sent_successfully'.tr();
+
+  // Merchant pending approval
+  static String get merchantWaitingTitle => 'merchant_waiting_title'.tr();
+  static String get merchantWaitingSubtitle => 'merchant_waiting_subtitle'.tr();
+  static String get merchantAccountNotConfirmedYet =>
+      'merchant_account_not_confirmed_yet'.tr();
+  static String get refreshPage => 'refresh_page'.tr();
+  static String get confirmMerchant => 'confirm_merchant'.tr();
+  static String get merchantConfirmedSuccessfully =>
+      'merchant_confirmed_successfully'.tr();
 }
 

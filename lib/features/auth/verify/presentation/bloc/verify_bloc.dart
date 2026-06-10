@@ -33,9 +33,24 @@ class VerifyBloc extends Bloc<VerifyEvent, VerifyState> {
 
         await result.fold(
           (failure) async => emit(VerifyError(message: failure.message)),
-          (data) async {
+          (verifyResult) async {
+            final data = verifyResult.data;
             final responseToken = data?['access_token'];
             final responseUser = data?['user'];
+
+            if (verifyResult.isPendingApproval) {
+              await _storageService.setPendingVerifyEmail(null);
+              if (!emit.isDone) {
+                emit(
+                  VerifySuccess(
+                    goToPending: true,
+                    email: event.email,
+                    password: event.password?.trim() ?? '',
+                  ),
+                );
+              }
+              return;
+            }
 
             if (responseToken != null &&
                 responseToken.toString().isNotEmpty &&

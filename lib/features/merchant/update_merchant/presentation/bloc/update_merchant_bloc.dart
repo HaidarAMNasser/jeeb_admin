@@ -26,7 +26,9 @@ class UpdateMerchantBloc extends Bloc<UpdateMerchantEvent, UpdateMerchantState> 
         );
         result.fold(
           (failure) => emit(UpdateMerchantError(message: failure.message)),
-          (_) => emit(const UpdateMerchantSuccess()),
+          (_) => emit(
+            UpdateMerchantSuccess(isConfirmAction: event.isConfirmAction),
+          ),
         );
       }
     });
