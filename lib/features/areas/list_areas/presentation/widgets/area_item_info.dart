@@ -39,7 +39,7 @@ class AreaItemInfo extends StatelessWidget {
             ),
             SizedBox(width: AppMargin.m8),
             CustomText(
-              text: 'SYP ${(area.price / 100).toStringAsFixed(2)}',
+              text: 'SYP ${area.formattedPrice}',
               textStyle: getBoldStyle(
                 fontSize: AppFontSize.s20,
                 color: ColorManager.primary,

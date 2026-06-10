@@ -13,6 +13,10 @@ class AreaEntity extends Equatable {
     this.description,
   });
 
+  double get priceDisplay => price / 100;
+
+  String get formattedPrice => priceDisplay.toStringAsFixed(2);
+
   @override
   List<Object?> get props => [id, name, price, description];
 }

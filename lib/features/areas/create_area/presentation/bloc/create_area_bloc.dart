@@ -22,7 +22,7 @@ class CreateAreaBloc extends Bloc<CreateAreaEvent, CreateAreaState> {
         if (event.area != null) {
           nameController.text = event.area!.name;
           descriptionController.text = event.area!.description ?? '';
-          priceController.text = (event.area!.price / 100).toString();
+          priceController.text = event.area!.formattedPrice;
           emit(CreateAreaInitial(
             areaId: event.area!.id,
           ));

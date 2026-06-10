@@ -11,11 +11,36 @@ class AreaModel {
     this.description,
   });
 
+  /// API may return price as int, num, or string (e.g. "1500", "1500.00", "15.00").
+  /// App stores price in smallest currency unit (piastres).
+  static int _parsePriceInSmallestUnit(dynamic value, {int fallback = 0}) {
+    if (value == null) return fallback;
+    if (value is int) return value;
+    if (value is num) return value.round();
+
+    if (value is String) {
+      final trimmed = value.trim();
+      if (trimmed.isEmpty) return fallback;
+
+      final parsed = num.tryParse(trimmed);
+      if (parsed == null) return fallback;
+
+      // Decimal strings under 1000 are major units (e.g. "15.00" SYP → 1500).
+      if (trimmed.contains('.') && parsed.abs() < 1000) {
+        return (parsed * 100).round();
+      }
+
+      return parsed.round();
+    }
+
+    return fallback;
+  }
+
   factory AreaModel.fromJson(Map<String, dynamic> json) {
     return AreaModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      price: (json['price'] as num?)?.toInt() ?? 0,
+      price: _parsePriceInSmallestUnit(json['price']),
       description: json['description']?.toString(),
     );
   }
