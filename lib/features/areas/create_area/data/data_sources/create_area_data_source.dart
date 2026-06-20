@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:jeeb_admin/core/infrastructure/api/api_service.dart';
 
 abstract class CreateAreaRemoteDataSource {
-  Future<Response> createArea(FormData formData);
+  Future<Response> createArea(Map<String, dynamic> body);
 }
 
 class CreateAreaRemoteDataSourceImpl implements CreateAreaRemoteDataSource {
@@ -11,7 +11,7 @@ class CreateAreaRemoteDataSourceImpl implements CreateAreaRemoteDataSource {
   CreateAreaRemoteDataSourceImpl(this._appApiServiceClient);
 
   @override
-  Future<Response> createArea(FormData formData) {
-    return _appApiServiceClient.createArea(formData);
+  Future<Response> createArea(Map<String, dynamic> body) {
+    return _appApiServiceClient.createArea(body);
   }
 }

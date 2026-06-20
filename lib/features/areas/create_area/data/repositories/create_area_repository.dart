@@ -19,10 +19,12 @@ class CreateAreaRepository {
     this._networkInfo,
   );
 
-  Future<Either<Failure, AreaEntity>> createArea(FormData formData) async {
+  Future<Either<Failure, AreaEntity>> createArea(
+    Map<String, dynamic> body,
+  ) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.createArea(formData);
+        final response = await _remoteDataSource.createArea(body);
 
         BaseResponseModel<AreaModel> baseResponseModel =
             BaseResponseModel<AreaModel>.fromJson(

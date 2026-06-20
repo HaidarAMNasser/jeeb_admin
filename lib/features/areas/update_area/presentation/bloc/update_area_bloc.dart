@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/features/areas/list_areas/domain/entities/area_entity.dart';
@@ -17,16 +16,16 @@ class UpdateAreaBloc extends Bloc<UpdateAreaEvent, UpdateAreaState> {
 
         final priceInSmallestUnit = (event.price * 100).toInt();
 
-        final formData = FormData.fromMap({
+        final body = <String, dynamic>{
           'name': event.name,
+          'price': priceInSmallestUnit,
           if (event.description != null && event.description!.isNotEmpty)
             'description': event.description,
-          'price': priceInSmallestUnit,
-        });
+        };
 
         final result = await _updateRepository.updateArea(
           id: event.id,
-          formData: formData,
+          body: body,
         );
         result.fold(
           (failure) => emit(UpdateAreaError(message: failure.message)),

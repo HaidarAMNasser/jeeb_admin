@@ -125,10 +125,10 @@ abstract class AppApiServiceClient {
   Future<Response> getAreaDetails(@Path('id') String id);
 
   @POST("areas")
-  Future<Response> createArea(FormData formData);
+  Future<Response> createArea(Map<String, dynamic> body);
 
   @PATCH("areas/{id}")
-  Future<Response> updateArea(@Path('id') String id, FormData formData);
+  Future<Response> updateArea(String id, Map<String, dynamic> body);
 
   @DELETE("areas/{id}")
   Future<Response> deleteArea(@Path('id') String id);

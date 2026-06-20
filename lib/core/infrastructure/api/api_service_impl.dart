@@ -532,10 +532,10 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> createArea(FormData formData) async {
+  Future<Response> createArea(Map<String, dynamic> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -544,7 +544,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'areas',
               queryParameters: queryParameters,
-              data: formData,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),
@@ -554,10 +554,10 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> updateArea(String id, FormData formData) async {
+  Future<Response> updateArea(String id, Map<String, dynamic> body) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{'Content-Type': 'multipart/form-data'};
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -566,7 +566,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'areas/$id',
               queryParameters: queryParameters,
-              data: formData,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

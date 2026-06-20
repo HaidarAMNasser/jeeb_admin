@@ -21,13 +21,13 @@ class UpdateAreaRepository {
 
   Future<Either<Failure, AreaEntity>> updateArea({
     required String id,
-    required FormData formData,
+    required Map<String, dynamic> body,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
         final response = await _remoteDataSource.updateArea(
           id: id,
-          formData: formData,
+          body: body,
         );
 
         BaseResponseModel<AreaModel> baseResponseModel =

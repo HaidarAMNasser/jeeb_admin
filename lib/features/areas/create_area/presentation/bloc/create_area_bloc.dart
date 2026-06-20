@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,14 +52,14 @@ class CreateAreaBloc extends Bloc<CreateAreaEvent, CreateAreaState> {
         final priceInSmallestUnit =
             ((double.tryParse(priceController.text.trim()) ?? 0.0) * 100).toInt();
 
-        final formData = FormData.fromMap({
+        final body = <String, dynamic>{
           'name': nameController.text.trim(),
+          'price': priceInSmallestUnit,
           if (descriptionController.text.trim().isNotEmpty)
             'description': descriptionController.text.trim(),
-          'price': priceInSmallestUnit,
-        });
+        };
 
-        final result = await _createRepository.createArea(formData);
+        final result = await _createRepository.createArea(body);
         result.fold(
           (failure) => emit(CreateAreaError(
             message: failure.message,

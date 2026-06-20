@@ -62,7 +62,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>GMSApiKey</key>
-	<string>AIzaSyACuHfZBSA6iAO9p8dqZFWirDgUozLUFnI</string>
+	<string>AIzaSyBjaiHVyaPf6UnOK9Vz787nkNcZK9pgci4</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
