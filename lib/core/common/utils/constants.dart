@@ -57,6 +57,12 @@ class AppConstants {
   static const int defaultPageSize = 20;
   static const int maxPageSize = 100;
 
+  // Default map center (Ar-Raqqah, Syria) — used by location pickers when no
+  // existing location is provided. Stored as raw doubles so it stays free of any
+  // map-package `LatLng` type (Google Maps vs latlong2).
+  static const double defaultMapLatitude = 35.95809;
+  static const double defaultMapLongitude = 39.01729;
+
   // Animation Durations
   static const Duration shortAnimationDuration = Duration(milliseconds: 200);
   static const Duration mediumAnimationDuration = Duration(milliseconds: 300);

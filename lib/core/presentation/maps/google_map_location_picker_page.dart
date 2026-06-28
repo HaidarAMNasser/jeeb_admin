@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jeeb_admin/core/common/utils/constants.dart';
 import 'package:jeeb_admin/core/common/utils/location_permission_helper.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -11,8 +12,11 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_button.dart';
 import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 
-/// Default center when no initial location (Cairo).
-const LatLng _kDefaultCenter = LatLng(30.0444, 31.2357);
+/// Default center when no initial location (see [AppConstants.defaultMapLatitude]).
+const LatLng _kDefaultCenter = LatLng(
+  AppConstants.defaultMapLatitude,
+  AppConstants.defaultMapLongitude,
+);
 
 /// Picked coordinates from [GoogleMapLocationPickerPage].
 class GoogleMapLocationPickResult {
