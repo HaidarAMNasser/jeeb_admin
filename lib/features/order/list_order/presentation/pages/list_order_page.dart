@@ -269,16 +269,12 @@ class _ListOrderPageState extends State<ListOrderPage>
                     MerchantOrderListRtdbListener(
                       orderIds: state.orders.map((e) => e.id).toList(),
                       rtdb: di.sl<OrderStatusRtdbService>(),
-                      onRemoteStatusChange: () {
+                      onOrderStatusChanged: (orderId, status) {
                         if (!context.mounted) return;
-                        final s = context.read<ListOrderBloc>().state;
-                        if (s is! ListOrderLoaded) return;
                         context.read<ListOrderBloc>().add(
-                              GetOrdersEvent(
-                                search: s.search,
-                                merchantId: s.merchantId,
-                                merchantTab: s.merchantTab,
-                                statusFilter: s.statusFilter,
+                              OrderRtdbStatusChanged(
+                                orderId: orderId,
+                                status: status,
                               ),
                             );
                       },

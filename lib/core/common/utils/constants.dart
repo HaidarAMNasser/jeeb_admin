@@ -28,8 +28,10 @@ class AppConstants {
   /// Updated when [StorageService] reads/writes prefs and after [StorageService.hydrateAppConstantsCache].
   static String accessToken = '';
   static String languageCode = '';
+
   /// Current FCM registration token from the device (saved when Firebase provides it).
   static String? fcmToken;
+
   /// Last FCM token successfully sent to your backend (null until sync succeeds while logged in).
   static String? fcmLastSyncedToken;
   static String? userRole;

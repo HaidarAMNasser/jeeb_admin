@@ -12,10 +12,7 @@ class GetOrdersEvent extends ListOrderEvent {
   final String? search;
   final String? merchantId;
   final MerchantOrdersTab? merchantTab;
-
-  /// API `status` query (uppercase wire). `null` = use [merchantTab] mapping only ("follow tab").
   final String? statusFilter;
-
   const GetOrdersEvent({
     this.loadMore = false,
     this.search,
@@ -26,12 +23,12 @@ class GetOrdersEvent extends ListOrderEvent {
 
   @override
   List<Object?> get props => [
-        loadMore,
-        search ?? '',
-        merchantId ?? '',
-        merchantTab,
-        statusFilter,
-      ];
+    loadMore,
+    search ?? '',
+    merchantId ?? '',
+    merchantTab,
+    statusFilter,
+  ];
 }
 
 class ConfirmOrderEvent extends ListOrderEvent {
@@ -46,8 +43,24 @@ class ConfirmOrderEvent extends ListOrderEvent {
   });
 
   @override
-  List<Object?> get props =>
-      [orderId, mealPreparationMinutes, deliveryMinutes];
+  List<Object?> get props => [orderId, mealPreparationMinutes, deliveryMinutes];
+}
+
+/// A single order's status changed remotely (Firebase RTDB).
+///
+/// Updates only that order in place instead of refetching the whole list.
+/// If the new status no longer matches the active filter/tab, the order is
+/// removed from the current view.
+class OrderRtdbStatusChanged extends ListOrderEvent {
+  final String orderId;
+
+  /// Raw RTDB status value (case-insensitive); null/unknown values are ignored.
+  final String? status;
+
+  const OrderRtdbStatusChanged({required this.orderId, required this.status});
+
+  @override
+  List<Object?> get props => [orderId, status];
 }
 
 class ClearMerchantEducationDialogEvent extends ListOrderEvent {
