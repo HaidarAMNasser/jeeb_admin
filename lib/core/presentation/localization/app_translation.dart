@@ -267,6 +267,9 @@ class AppTranslation {
   static String get deliveryBirthdayInvalid => 'delivery_birthday_invalid'.tr();
   static String get deliveryBirthday => 'delivery_birthday'.tr();
   static String get deliveryBirthdayHint => 'delivery_birthday_hint'.tr();
+  static String get deliveryBirthdayYear => 'delivery_birthday_year'.tr();
+  static String get deliveryBirthdayMonth => 'delivery_birthday_month'.tr();
+  static String get deliveryBirthdayDay => 'delivery_birthday_day'.tr();
   static String get deliveryLocationSet => 'delivery_location_set'.tr();
   static String get editDeliveryMan => 'edit_delivery_man'.tr();
   static String get confirmDelivery => 'confirm_delivery'.tr();

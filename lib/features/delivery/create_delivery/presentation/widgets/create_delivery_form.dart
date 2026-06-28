@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/styles_manager.dart';
 import 'package:jeeb_admin/core/presentation/theme/font_manager.dart';
@@ -15,6 +14,7 @@ import 'package:jeeb_admin/features/delivery/create_delivery/helpful_functions/b
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_controllers.dart';
 import 'package:jeeb_admin/features/delivery/create_delivery/presentation/models/delivery_form_values.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/widgets/location_source_selector.dart';
+import 'package:jeeb_admin/features/delivery/create_delivery/presentation/widgets/delivery_birthday_field.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 
 class CreateDeliveryForm extends StatelessWidget {
@@ -218,16 +218,7 @@ class _DeliveryFormFields extends StatelessWidget {
           hintText: AppTranslation.enterAddress,
         ),
         SizedBox(height: AppHeight.s16),
-        CustomTextField(
-          controller: controllers.birthday,
-          title: AppTranslation.deliveryBirthday,
-          hintText: AppTranslation.deliveryBirthdayHint,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(8),
-          ],
-        ),
+        DeliveryBirthdayField(birthdayController: controllers.birthday),
       ],
     );
   }
