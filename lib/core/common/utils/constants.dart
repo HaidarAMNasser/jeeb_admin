@@ -28,8 +28,10 @@ class AppConstants {
   /// Updated when [StorageService] reads/writes prefs and after [StorageService.hydrateAppConstantsCache].
   static String accessToken = '';
   static String languageCode = '';
+
   /// Current FCM registration token from the device (saved when Firebase provides it).
   static String? fcmToken;
+
   /// Last FCM token successfully sent to your backend (null until sync succeeds while logged in).
   static String? fcmLastSyncedToken;
   static String? userRole;
@@ -54,6 +56,12 @@ class AppConstants {
   // Pagination
   static const int defaultPageSize = 20;
   static const int maxPageSize = 100;
+
+  // Default map center (Ar-Raqqah, Syria) — used by location pickers when no
+  // existing location is provided. Stored as raw doubles so it stays free of any
+  // map-package `LatLng` type (Google Maps vs latlong2).
+  static const double defaultMapLatitude = 35.95809;
+  static const double defaultMapLongitude = 39.01729;
 
   // Animation Durations
   static const Duration shortAnimationDuration = Duration(milliseconds: 200);

@@ -5,6 +5,7 @@ import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/features/order/list_order/data/repositories/list_order_repository.dart';
 import 'package:jeeb_admin/features/order/list_order/domain/merchant_orders_tab.dart';
 import 'package:jeeb_admin/features/order/order_details/domain/entities/order_entity.dart';
+import 'package:jeeb_admin/features/order/order_details/domain/entities/order_status.dart';
 
 part 'list_order_event.dart';
 part 'list_order_state.dart';
@@ -22,6 +23,7 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
     on<ClearMerchantEducationDialogEvent>(_onClearMerchantEducation);
     on<MerchantSetPreparingEvent>(_onMerchantSetPreparing);
     on<MerchantSetReadyForPickupEvent>(_onMerchantSetReadyForPickup);
+    on<OrderRtdbStatusChanged>(_onOrderRtdbStatusChanged);
   }
 
   void _resolveStatusParams({
@@ -179,6 +181,61 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
         ));
       },
     );
+  }
+
+  /// Applies a remote (RTDB) status change to a single order without refetching
+  /// the whole list. Removes the order from the current view if its new status
+  /// no longer matches the active filter/tab.
+  void _onOrderRtdbStatusChanged(
+    OrderRtdbStatusChanged event,
+    Emitter<ListOrderState> emit,
+  ) {
+    final s = state;
+    if (s is! ListOrderLoaded) return;
+
+    final index = s.orders.indexWhere((o) => o.id == event.orderId);
+    if (index < 0) return; // not currently on screen
+
+    final newStatus = OrderStatus.fromString(event.status);
+    // Ignore null / unrecognized values so we never corrupt a real status.
+    if (newStatus == OrderStatus.unknown) return;
+
+    final current = s.orders[index];
+    if (current.statusEnum == newStatus) return; // no-op, avoids rebuilds
+
+    final updated = current.copyWith(status: newStatus.apiWireValue);
+
+    final updatedOrders = List<OrderEntity>.of(s.orders);
+    if (_matchesActiveFilter(updated, s)) {
+      updatedOrders[index] = updated;
+    } else {
+      updatedOrders.removeAt(index);
+    }
+
+    emit(s.copyWith(orders: updatedOrders));
+  }
+
+  /// Whether [order] still belongs in the list given the active filter/tab.
+  /// Mirrors the status logic applied server-side in [_resolveStatusParams] +
+  /// the repository's `filterMerchantOthers`.
+  bool _matchesActiveFilter(OrderEntity order, ListOrderLoaded state) {
+    final sf = state.statusFilter?.trim();
+    if (sf != null && sf.isNotEmpty) {
+      return order.statusEnum.apiWireValue == sf.toUpperCase();
+    }
+    final tab = state.merchantTab;
+    if (tab != null) {
+      switch (tab) {
+        case MerchantOrdersTab.pending:
+          return order.statusEnum == OrderStatus.pending;
+        case MerchantOrdersTab.preparing:
+          return order.statusEnum == OrderStatus.preparing;
+        case MerchantOrdersTab.others:
+          return order.statusEnum != OrderStatus.pending &&
+              order.statusEnum != OrderStatus.preparing;
+      }
+    }
+    return true; // no status filter active
   }
 
   void _onClearMerchantEducation(
