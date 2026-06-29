@@ -21,6 +21,9 @@ extension MerchantMapper on MerchantModel {
       image: imageUrl, // from image.url
       role: role,
       notificationChannel: notificationChannel,
+      merchantType: merchantType,
+      currentLat: currentLat,
+      currentLng: currentLng,
       birthday: birthday,
       isOnline: isOnline,
       isActive: isActive,

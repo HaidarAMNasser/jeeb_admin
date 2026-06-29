@@ -18,6 +18,9 @@ class MerchantEntity extends Equatable {
   final String? image; // Might be null
   final String? role;
   final String? notificationChannel;
+  final String? merchantType;
+  final double? currentLat;
+  final double? currentLng;
   final String? birthday;
   final bool? isOnline;
   final bool? isActive;
@@ -43,6 +46,9 @@ class MerchantEntity extends Equatable {
     this.image,
     this.role,
     this.notificationChannel,
+    this.merchantType,
+    this.currentLat,
+    this.currentLng,
     this.birthday,
     this.isOnline,
     this.isActive,
@@ -70,6 +76,9 @@ class MerchantEntity extends Equatable {
         image,
         role,
         notificationChannel,
+        merchantType,
+        currentLat,
+        currentLng,
         birthday,
         isOnline,
         isActive,

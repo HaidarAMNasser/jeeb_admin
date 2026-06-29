@@ -6,6 +6,8 @@ class EditMerchantFormControllers {
   final email = TextEditingController();
   final phone = TextEditingController();
   final address = TextEditingController();
+  final password = TextEditingController();
+  final restaurantName = TextEditingController();
 
   void dispose() {
     firstName.dispose();
@@ -13,5 +15,7 @@ class EditMerchantFormControllers {
     email.dispose();
     phone.dispose();
     address.dispose();
+    password.dispose();
+    restaurantName.dispose();
   }
 }

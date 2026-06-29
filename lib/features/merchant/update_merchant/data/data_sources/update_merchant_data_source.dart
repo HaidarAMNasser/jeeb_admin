@@ -10,6 +10,11 @@ abstract class UpdateMerchantRemoteDataSource {
     String? email,
     int? countryId,
     int? cityId,
+    int? areaId,
+    String? restaurantName,
+    String? merchantType,
+    double? latitude,
+    double? longitude,
     String? address,
     bool? hidePhoneNumber,
     bool? isActive,
@@ -32,6 +37,11 @@ class UpdateMerchantRemoteDataSourceImpl
     String? email,
     int? countryId,
     int? cityId,
+    int? areaId,
+    String? restaurantName,
+    String? merchantType,
+    double? latitude,
+    double? longitude,
     String? address,
     bool? hidePhoneNumber,
     bool? isActive,
@@ -44,6 +54,15 @@ class UpdateMerchantRemoteDataSourceImpl
       if (email != null && email.isNotEmpty) 'email': email,
       if (countryId != null) 'countryId': countryId,
       if (cityId != null) 'cityId': cityId,
+      if (areaId != null) 'areaId': areaId,
+      if (restaurantName != null && restaurantName.isNotEmpty)
+        'restaurantName': restaurantName,
+      if (merchantType != null &&
+          merchantType.isNotEmpty &&
+          (merchantType == 'STORE' || merchantType == 'RESTAURANT'))
+        'type': merchantType,
+      if (latitude != null && longitude != null)
+        'location': {'lat': latitude, 'lng': longitude},
       if (address != null && address.isNotEmpty) 'address': address,
       if (hidePhoneNumber != null) 'hidePhoneNumber': hidePhoneNumber,
       if (isActive != null) 'isActive': isActive,

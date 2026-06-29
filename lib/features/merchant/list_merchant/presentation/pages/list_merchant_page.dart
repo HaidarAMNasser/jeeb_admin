@@ -5,6 +5,8 @@ import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
+import 'package:jeeb_admin/core/presentation/routes/route_manager.dart';
+import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/core/presentation/theme/values_manager.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/bloc/list_merchant_bloc.dart';
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
@@ -90,6 +92,13 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
       child: Scaffold(
       backgroundColor: ColorManager.background,
       appBar: CustomAppBar(title: AppTranslation.merchants),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AppRouter.navigateTo(context, Routes.addMerchant);
+        },
+        backgroundColor: ColorManager.primary,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: Column(
         children: [
           const SearchMerchantWidget(),

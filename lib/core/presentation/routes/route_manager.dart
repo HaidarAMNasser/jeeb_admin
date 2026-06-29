@@ -70,6 +70,8 @@ import '../../../features/merchant/delete_merchant/data/repositories/delete_merc
 import '../../../features/merchant/update_merchant/presentation/pages/edit_merchant_page.dart';
 import '../../../features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
 import '../../../features/merchant/update_merchant/data/repositories/update_merchant_repository.dart';
+import '../../../features/merchant/create_merchant/presentation/bloc/create_merchant_bloc.dart';
+import '../../../features/merchant/create_merchant/data/repositories/create_merchant_repository.dart';
 import '../../../features/delivery/list_delivery/presentation/pages/list_delivery_page.dart';
 import '../../../features/delivery/list_delivery/presentation/bloc/list_delivery_bloc.dart';
 import '../../../features/delivery/list_delivery/data/repositories/list_delivery_repository.dart';
@@ -490,7 +492,7 @@ class AppRouter {
           );
         }
         return _buildRouteWithBlocs(
-          EditMerchantPage(merchantId: merchantId),
+          EditMerchantPage(fromEdit: true, merchantId: merchantId),
           settings,
           providers: [
             BlocProvider<MerchantDetailsBloc>(
@@ -505,6 +507,30 @@ class AppRouter {
             ),
             BlocProvider<CityBloc>(
               create: (_) => di.sl<CityBloc>(),
+            ),
+            BlocProvider<ListAreasBloc>(
+              create: (_) => di.sl<ListAreasBloc>(),
+            ),
+          ],
+        );
+
+      case Routes.addMerchant:
+        return _buildRouteWithBlocs(
+          const EditMerchantPage(fromEdit: false),
+          settings,
+          providers: [
+            BlocProvider<CreateMerchantBloc>(
+              create: (_) =>
+                  CreateMerchantBloc(di.sl<CreateMerchantRepository>()),
+            ),
+            BlocProvider<CountryBloc>(
+              create: (_) => di.sl<CountryBloc>(),
+            ),
+            BlocProvider<CityBloc>(
+              create: (_) => di.sl<CityBloc>(),
+            ),
+            BlocProvider<ListAreasBloc>(
+              create: (_) => di.sl<ListAreasBloc>(),
             ),
           ],
         );

@@ -118,6 +118,11 @@ class AppTranslation {
   static String get merchantActivateAction => 'merchant_activate_action'.tr();
   static String get areYouSureDeleteMerchant => 'are_you_sure_delete_merchant'.tr();
   static String get editMerchant => 'edit_merchant'.tr();
+  static String get addMerchant => 'add_merchant'.tr();
+  static String get merchantCreatedSuccessfully =>
+      'merchant_created_successfully'.tr();
+  static String get selectArea => 'select_area'.tr();
+  static String get pleaseSelectArea => 'please_select_area'.tr();
   static String get save => 'save'.tr();
   static String get cancel => 'cancel'.tr();
   static String get confirm => 'confirm'.tr();

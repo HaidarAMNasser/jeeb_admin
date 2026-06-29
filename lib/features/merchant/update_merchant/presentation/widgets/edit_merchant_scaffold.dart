@@ -10,15 +10,17 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditMerchantScaffold extends StatelessWidget {
   final bool isLoading;
-  final String merchantId;
-  final void Function(MerchantDetailsLoaded state) onInitialize;
+  final bool fromEdit;
+  final String? merchantId;
+  final void Function(MerchantDetailsLoaded state)? onInitialize;
   final Widget formContent;
 
   const EditMerchantScaffold({
     super.key,
     required this.isLoading,
-    required this.merchantId,
-    required this.onInitialize,
+    required this.fromEdit,
+    this.merchantId,
+    this.onInitialize,
     required this.formContent,
   });
 
@@ -29,23 +31,30 @@ class EditMerchantScaffold extends StatelessWidget {
       inAsyncCall: isLoading,
       child: Scaffold(
         backgroundColor: ColorManager.background,
-        appBar: CustomAppBar(title: AppTranslation.editMerchant),
-        body: BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
-          bloc: context.read<MerchantDetailsBloc>(),
-          isLoading: (state) => state is MerchantDetailsLoading,
-          isError: (state) => state is MerchantDetailsError,
-          getErrorMessage: (state) => (state as MerchantDetailsError).message,
-          isSuccess: (state) => state is MerchantDetailsLoaded,
-          getRetryCallback: (_) => () {
-            context.read<MerchantDetailsBloc>().add(
-              GetMerchantDetailsEvent(id: merchantId),
-            );
-          },
-          successBuilder: (context, detailsState) {
-            onInitialize(detailsState as MerchantDetailsLoaded);
-            return formContent;
-          },
+        appBar: CustomAppBar(
+          title: fromEdit
+              ? AppTranslation.editMerchant
+              : AppTranslation.addMerchant,
         ),
+        body: fromEdit
+            ? BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
+                bloc: context.read<MerchantDetailsBloc>(),
+                isLoading: (state) => state is MerchantDetailsLoading,
+                isError: (state) => state is MerchantDetailsError,
+                getErrorMessage: (state) =>
+                    (state as MerchantDetailsError).message,
+                isSuccess: (state) => state is MerchantDetailsLoaded,
+                getRetryCallback: (_) => () {
+                  context.read<MerchantDetailsBloc>().add(
+                        GetMerchantDetailsEvent(id: merchantId!),
+                      );
+                },
+                successBuilder: (context, detailsState) {
+                  onInitialize?.call(detailsState as MerchantDetailsLoaded);
+                  return formContent;
+                },
+              )
+            : formContent,
       ),
     );
   }

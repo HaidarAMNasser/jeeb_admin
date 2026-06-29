@@ -46,6 +46,9 @@ class MerchantModel {
   final String phone;
   final String? role;
   final String? notificationChannel;
+  final String? merchantType;
+  final double? currentLat;
+  final double? currentLng;
   final int? countryId;
   final int? cityId;
   final String? address;
@@ -69,6 +72,9 @@ class MerchantModel {
     required this.phone,
     this.role,
     this.notificationChannel,
+    this.merchantType,
+    this.currentLat,
+    this.currentLng,
     this.countryId,
     this.cityId,
     this.address,
@@ -94,6 +100,9 @@ class MerchantModel {
       phone: json['phone']?.toString() ?? '',
       role: json['role']?.toString(),
       notificationChannel: json['notificationChannel']?.toString(),
+      merchantType: json['type']?.toString() ?? json['merchantType']?.toString(),
+      currentLat: _parseCoordinate(json['currentLat'], json['location'], 'lat'),
+      currentLng: _parseCoordinate(json['currentLng'], json['location'], 'lng'),
       countryId: json['countryId'] as int?,
       cityId: json['cityId'] as int?,
       address: json['address']?.toString(),
@@ -127,6 +136,20 @@ class MerchantModel {
   String? get phoneNumber => phone;
   String? get imageUrl => image?.url;
 
+  static double? _parseCoordinate(
+    dynamic directValue,
+    dynamic locationValue,
+    String key,
+  ) {
+    if (directValue != null) {
+      return (directValue as num?)?.toDouble();
+    }
+    if (locationValue is Map<String, dynamic>) {
+      return (locationValue[key] as num?)?.toDouble();
+    }
+    return null;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -137,6 +160,9 @@ class MerchantModel {
       'phone': phone,
       'role': role,
       'notificationChannel': notificationChannel,
+      'type': merchantType,
+      'currentLat': currentLat,
+      'currentLng': currentLng,
       'countryId': countryId,
       'cityId': cityId,
       'address': address,

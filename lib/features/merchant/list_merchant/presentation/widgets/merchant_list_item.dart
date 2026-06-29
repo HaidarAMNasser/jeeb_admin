@@ -12,8 +12,8 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_location_section.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_owner_row.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_phone_badge.dart';
-import 'package:jeeb_admin/features/merchant/presentation/widgets/merchant_list_options_dialog.dart';
-
+import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_list_options_dialog.dart';
+  
 class MerchantListItem extends StatelessWidget {
   static const double _moreButtonWidth = 48.0;
 

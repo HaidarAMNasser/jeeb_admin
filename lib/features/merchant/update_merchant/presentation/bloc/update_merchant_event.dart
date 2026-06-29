@@ -15,6 +15,11 @@ class UpdateMerchantSubmitted extends UpdateMerchantEvent {
   final String? email;
   final int? countryId;
   final int? cityId;
+  final int? areaId;
+  final String? restaurantName;
+  final String? merchantType;
+  final double? latitude;
+  final double? longitude;
   final String? address;
   final bool? hidePhoneNumber;
   final bool? isActive;
@@ -28,6 +33,11 @@ class UpdateMerchantSubmitted extends UpdateMerchantEvent {
     this.email,
     this.countryId,
     this.cityId,
+    this.areaId,
+    this.restaurantName,
+    this.merchantType,
+    this.latitude,
+    this.longitude,
     this.address,
     this.hidePhoneNumber,
     this.isActive,
@@ -43,6 +53,11 @@ class UpdateMerchantSubmitted extends UpdateMerchantEvent {
         email,
         countryId,
         cityId,
+        areaId,
+        restaurantName,
+        merchantType,
+        latitude,
+        longitude,
         address,
         hidePhoneNumber,
         isActive,
