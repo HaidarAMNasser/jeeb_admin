@@ -194,7 +194,22 @@ abstract class AppApiServiceClient {
   Future<Response> getMerchantDetails(@Path('id') String id);
 
   @POST("users/merchants")
-  Future<Response> createMerchant(FormData formData);
+  Future<Response> createMerchant(
+    @Field('firstName') String firstName,
+    @Field('lastName') String lastName,
+    @Field('email') String email,
+    @Field('password') String password,
+    @Field('phone') String phone,
+    @Field('countryId') int countryId,
+    @Field('cityId') int cityId,
+    @Field('areaId') int areaId,
+    @Field('restaurantName') String restaurantName,
+    @Field('type') String merchantType,
+    @Field('latitude') double latitude,
+    @Field('longitude') double longitude,
+    @Field('address') String? address,
+    @Field('notificationChannel') String? notificationChannel,
+  );
 
   @PATCH("users/merchants/{id}")
   Future<Response> updateMerchant(@Path('id') String id, FormData formData);

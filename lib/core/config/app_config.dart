@@ -13,7 +13,7 @@ class AppConfig {
   // Environment
   static const bool isProduction = false;
   static const bool enableLogging = true;
-  static bool get enableChucker => false;
+  static bool get enableChucker => true;
 
   // API Configuration
   static String get baseUrl {

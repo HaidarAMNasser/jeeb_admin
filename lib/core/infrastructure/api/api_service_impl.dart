@@ -871,10 +871,42 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
-  Future<Response> createMerchant(FormData formData) async {
+  Future<Response> createMerchant(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String phone,
+    int countryId,
+    int cityId,
+    int areaId,
+    String restaurantName,
+    String merchantType,
+    double latitude,
+    double longitude,
+    String? address,
+    String? notificationChannel,
+  ) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final headers = <String, dynamic>{};
+    final data = <String, dynamic>{
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
+      'phone': phone,
+      'countryId': countryId,
+      'cityId': cityId,
+      'areaId': areaId,
+      'restaurantName': restaurantName,
+      'type': merchantType,
+      'location': {'lat': latitude, 'lng': longitude},
+    };
+    if (address != null && address.isNotEmpty) data['address'] = address;
+    if (notificationChannel != null && notificationChannel.isNotEmpty) {
+      data['notificationChannel'] = notificationChannel;
+    }
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
@@ -883,7 +915,7 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'users/merchants',
               queryParameters: queryParameters,
-              data: formData,
+              data: data,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

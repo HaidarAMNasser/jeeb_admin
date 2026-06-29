@@ -11,6 +11,7 @@ class LocationSourceSelector extends StatelessWidget {
   final String title;
   final String useMyLocationHint;
   final String locationSetHint;
+  final String? locationDisplayText;
   final double? latitude;
   final double? longitude;
   final bool isRequired;
@@ -25,6 +26,7 @@ class LocationSourceSelector extends StatelessWidget {
     required this.title,
     required this.useMyLocationHint,
     required this.locationSetHint,
+    this.locationDisplayText,
     this.latitude,
     this.longitude,
     this.isRequired = false,
@@ -99,9 +101,16 @@ class LocationSourceSelector extends StatelessWidget {
                         )
                       : CustomText(
                           text: hasLocation
-                              ? locationSetHint
-                                  .replaceAll('{lat}', latitude!.toStringAsFixed(5))
-                                  .replaceAll('{lng}', longitude!.toStringAsFixed(5))
+                              ? (locationDisplayText ??
+                                  locationSetHint
+                                      .replaceAll(
+                                        '{lat}',
+                                        latitude!.toStringAsFixed(5),
+                                      )
+                                      .replaceAll(
+                                        '{lng}',
+                                        longitude!.toStringAsFixed(5),
+                                      ))
                               : useMyLocationHint,
                           textStyle: getRegularStyle(
                             fontSize: AppFontSize.s14,

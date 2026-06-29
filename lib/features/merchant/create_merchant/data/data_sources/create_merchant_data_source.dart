@@ -42,28 +42,26 @@ class CreateMerchantRemoteDataSourceImpl
     required double longitude,
     String? address,
     String? notificationChannel,
-  }) async {
+  }) {
     final type = (merchantType == 'STORE' || merchantType == 'RESTAURANT')
         ? merchantType
         : 'RESTAURANT';
 
-    final formData = FormData.fromMap({
-      'email': email,
-      'password': password,
-      'firstName': firstName,
-      'lastName': lastName,
-      'phone': phone,
-      'countryId': countryId,
-      'cityId': cityId,
-      'areaId': areaId,
-      'restaurantName': restaurantName,
-      'type': type,
-      'location': {'lat': latitude, 'lng': longitude},
-      if (address != null && address.isNotEmpty) 'address': address,
-      if (notificationChannel != null && notificationChannel.isNotEmpty)
-        'notificationChannel': notificationChannel,
-    });
-
-    return _appApiServiceClient.createMerchant(formData);
+    return _appApiServiceClient.createMerchant(
+      firstName,
+      lastName,
+      email,
+      password,
+      phone,
+      countryId,
+      cityId,
+      areaId,
+      restaurantName,
+      type,
+      latitude,
+      longitude,
+      address,
+      notificationChannel,
+    );
   }
 }

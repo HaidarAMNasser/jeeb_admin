@@ -183,6 +183,7 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
       email: email,
       phone: phone,
       restaurantName: restaurantName,
+      address: address,
       countryId: countryId,
       cityId: cityId,
       areaId: areaId,
@@ -198,6 +199,7 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
       email: email,
       phone: phone,
       restaurantName: restaurantName,
+      address: address,
       countryId: countryId,
       cityId: cityId,
       areaId: areaId,
@@ -224,7 +226,7 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
               merchantType: _merchantBusinessType,
               latitude: _mapLatitude,
               longitude: _mapLongitude,
-              address: address.isEmpty ? null : address,
+              address: address,
             ),
           );
     } else {
@@ -242,7 +244,7 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
               merchantType: _merchantBusinessType,
               latitude: _mapLatitude!,
               longitude: _mapLongitude!,
-              address: address.isEmpty ? null : address,
+              address: address,
               notificationChannel: 'WHATSAPP',
             ),
           );

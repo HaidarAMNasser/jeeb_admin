@@ -220,6 +220,7 @@
   "location": "الموقع",
   "use_my_location": "استخدام موقعي",
   "location_set_format": "خط العرض: {lat}، خط الطول: {lng}",
+  "merchant_default_location_label": "سوريا - الرقة",
   "please_select_location": "الرجاء تحديد موقعك",
   "please_select_country_or_location": "الرجاء اختيار الدولة والمدينة أو استخدام موقعك",
   "location_permission_denied": "تم رفض إذن الموقع",

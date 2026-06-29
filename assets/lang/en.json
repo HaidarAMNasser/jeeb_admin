@@ -220,6 +220,7 @@
   "location": "Location",
   "use_my_location": "Use my location",
   "location_set_format": "Lat: {lat}, Lng: {lng}",
+  "merchant_default_location_label": "Syria - Ar-Raqqah",
   "please_select_location": "Please select your location",
   "please_select_country_or_location": "Please select country & city or use your location",
   "location_permission_denied": "Location permission was denied",

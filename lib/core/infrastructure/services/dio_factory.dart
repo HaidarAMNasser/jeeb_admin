@@ -93,19 +93,12 @@ class AppInterceptors extends Interceptor {
 
   DateTime? requestStartTime;
 
-  /// Public endpoints must not receive a stored session token (wrong/mismatched
-  /// Bearer causes 401). Example: `POST users/merchants` merchant registration.
+  /// Public endpoints must not receive a stored session token.
   static bool shouldOmitBearerToken(RequestOptions options) {
-    final method = options.method.toUpperCase();
     final path = options.path;
 
     if (path.contains('auth/login') || path.contains('Auth_general')) return true;
     if (path.contains('auth/register')) return true;
-
-    if (method == 'POST' &&
-        (path == 'users/merchants' || path.endsWith('/users/merchants'))) {
-      return true;
-    }
 
     return false;
   }

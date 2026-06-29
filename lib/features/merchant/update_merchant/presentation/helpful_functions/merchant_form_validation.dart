@@ -7,6 +7,7 @@ bool isMerchantFormValid({
   required String email,
   required String phone,
   required String restaurantName,
+  required String address,
   required int? countryId,
   required int? cityId,
   required int? areaId,
@@ -19,7 +20,8 @@ bool isMerchantFormValid({
       lastName.isEmpty ||
       email.isEmpty ||
       phone.isEmpty ||
-      restaurantName.isEmpty) {
+      restaurantName.isEmpty ||
+      address.isEmpty) {
     return false;
   }
   if (!isEditMode) {
@@ -44,6 +46,7 @@ void merchantFormValidationToast({
   required String email,
   required String phone,
   required String restaurantName,
+  required String address,
   required int? countryId,
   required int? cityId,
   required int? areaId,
@@ -70,6 +73,10 @@ void merchantFormValidationToast({
   }
   if (restaurantName.isEmpty) {
     customToast(msg: AppTranslation.pleaseEnterRestaurantName);
+    return;
+  }
+  if (address.isEmpty) {
+    customToast(msg: AppTranslation.pleaseEnterAddress);
     return;
   }
   if (!isEditMode) {

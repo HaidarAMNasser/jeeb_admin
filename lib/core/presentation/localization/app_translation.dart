@@ -247,6 +247,8 @@ class AppTranslation {
   static String get useMyLocation => 'use_my_location'.tr();
   static String get pleaseSelectLocation => 'please_select_location'.tr();
   static String get locationSetFormat => 'location_set_format'.tr();
+  static String get merchantDefaultLocationLabel =>
+      'merchant_default_location_label'.tr();
   static String get pleaseSelectCountryOrLocation =>
       'please_select_country_or_location'.tr();
   static String get locationPermissionDenied => 'location_permission_denied'.tr();
