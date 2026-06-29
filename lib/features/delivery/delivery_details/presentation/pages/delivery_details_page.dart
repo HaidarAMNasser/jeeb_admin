@@ -13,6 +13,8 @@ import 'package:jeeb_admin/features/delivery/delivery_details/presentation/bloc/
 import 'package:jeeb_admin/features/delivery/delivery_details/presentation/widgets/delivery_details_options_dialog.dart';
 import 'package:jeeb_admin/features/delivery/delivery_details/presentation/widgets/delivery_details_content.dart';
 import 'package:jeeb_admin/features/delivery/delete_delivery/presentation/bloc/delete_delivery_bloc.dart';
+import 'package:jeeb_admin/features/delivery/reset_delivery_password/presentation/bloc/reset_delivery_password_bloc.dart';
+import 'package:jeeb_admin/core/presentation/widgets/admin_reset_password_dialog.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 /// Delivery tab index in admin bottom nav (Merchants=0, Orders=1, Delivery=2, Profile=3).
@@ -72,43 +74,69 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
             }
           },
         ),
+        BlocListener<ResetDeliveryPasswordBloc, ResetDeliveryPasswordState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) =>
+                s is ResetDeliveryPasswordSuccess ||
+                s is ResetDeliveryPasswordError,
+          ),
+          listener: (context, state) {
+            if (state is ResetDeliveryPasswordSuccess) {
+              customToast(msg: AppTranslation.passwordResetSuccess);
+            } else if (state is ResetDeliveryPasswordError) {
+              customToast(msg: state.message);
+            }
+          },
+        ),
       ],
       child: BlocBuilder<ConfirmDeliveryBloc, ConfirmDeliveryState>(
         builder: (context, confirmState) {
           return BlocBuilder<DeleteDeliveryBloc, DeleteDeliveryState>(
             builder: (context, deleteState) {
-              return ModalProgressHUD(
-                progressIndicator: const CustomCircleIndicator(),
-                inAsyncCall:
-                    confirmState is ConfirmDeliveryLoading ||
-                    deleteState is DeleteDeliveryLoading,
-                child: Scaffold(
-                  backgroundColor: ColorManager.background,
-                  appBar: CustomAppBar(
-                    title: AppTranslation.deliveryManDetails,
-                    onBackPressed: () => _goToMainWithDeliveryTab(context),
-                    actions: [_buildOptionsButton(context)],
-                  ),
-                  body: BlocStateHandler<DeliveryDetailsBloc, DeliveryDetailsState>(
-                    bloc: context.read<DeliveryDetailsBloc>(),
-                    isLoading: (state) => state is DeliveryDetailsLoading,
-                    isError: (state) => state is DeliveryDetailsError,
-                    getErrorMessage: (state) =>
-                        (state as DeliveryDetailsError).message,
-                    isSuccess: (state) => state is DeliveryDetailsLoaded,
-                    getRetryCallback: (_) => () => context
-                        .read<DeliveryDetailsBloc>()
-                        .add(GetDeliveryManDetailsEvent(id: widget.deliveryManId)),
-                    successBuilder: (context, detailsState) {
-                      final loadedState = detailsState as DeliveryDetailsLoaded;
-                      return SingleChildScrollView(
-                        child: DeliveryDetailsContent(
-                          deliveryMan: loadedState.deliveryMan,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+              return BlocBuilder<ResetDeliveryPasswordBloc,
+                  ResetDeliveryPasswordState>(
+                builder: (context, resetPasswordState) {
+                  return ModalProgressHUD(
+                    progressIndicator: const CustomCircleIndicator(),
+                    inAsyncCall:
+                        confirmState is ConfirmDeliveryLoading ||
+                        deleteState is DeleteDeliveryLoading ||
+                        resetPasswordState is ResetDeliveryPasswordLoading,
+                    child: Scaffold(
+                      backgroundColor: ColorManager.background,
+                      appBar: CustomAppBar(
+                        title: AppTranslation.deliveryManDetails,
+                        onBackPressed: () => _goToMainWithDeliveryTab(context),
+                        actions: [_buildOptionsButton(context)],
+                      ),
+                      body: BlocStateHandler<DeliveryDetailsBloc,
+                          DeliveryDetailsState>(
+                        bloc: context.read<DeliveryDetailsBloc>(),
+                        isLoading: (state) => state is DeliveryDetailsLoading,
+                        isError: (state) => state is DeliveryDetailsError,
+                        getErrorMessage: (state) =>
+                            (state as DeliveryDetailsError).message,
+                        isSuccess: (state) => state is DeliveryDetailsLoaded,
+                        getRetryCallback: (_) => () => context
+                            .read<DeliveryDetailsBloc>()
+                            .add(GetDeliveryManDetailsEvent(
+                              id: widget.deliveryManId,
+                            )),
+                        successBuilder: (context, detailsState) {
+                          final loadedState =
+                              detailsState as DeliveryDetailsLoaded;
+                          return SingleChildScrollView(
+                            child: DeliveryDetailsContent(
+                              deliveryMan: loadedState.deliveryMan,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );
@@ -134,6 +162,19 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
                 context,
                 Routes.addDelivery,
                 arguments: {'deliveryMan': state.deliveryMan},
+              );
+            },
+            onEditPassword: () {
+              AdminResetPasswordDialog.show(
+                context: context,
+                onSubmit: (password) {
+                  context.read<ResetDeliveryPasswordBloc>().add(
+                        ResetDeliveryPasswordSubmitted(
+                          deliveryManId: widget.deliveryManId,
+                          password: password,
+                        ),
+                      );
+                },
               );
             },
             onDelete: () => _showDeleteConfirmation(context),

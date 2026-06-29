@@ -217,6 +217,12 @@ abstract class AppApiServiceClient {
   @DELETE("users/merchants/{id}")
   Future<Response> deleteMerchant(@Path('id') String id);
 
+  @PATCH("users/merchants/{id}/reset-password")
+  Future<Response> resetMerchantPassword(
+    @Path('id') String id,
+    @Field('password') String password,
+  );
+
   // Merchant Review endpoints
   @GET("merchants/{merchantId}/reviews")
   Future<Response> getMerchantReviews({
@@ -261,6 +267,12 @@ abstract class AppApiServiceClient {
 
   @POST("users/deliveries/{id}/confirm")
   Future<Response> confirmDeliveryMan(@Path('id') String id);
+
+  @PATCH("users/deliveries/{id}/reset-password")
+  Future<Response> resetDeliveryPassword(
+    @Path('id') String id,
+    @Field('password') String password,
+  );
 
   // Order endpoints
   @GET("orders")

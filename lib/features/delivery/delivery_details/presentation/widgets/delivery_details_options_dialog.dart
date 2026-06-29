@@ -10,6 +10,7 @@ import 'package:jeeb_admin/core/presentation/widgets/text_widget.dart';
 class DeliveryDetailsOptionsDialog extends StatelessWidget {
   final bool showConfirm;
   final VoidCallback onEdit;
+  final VoidCallback onEditPassword;
   final VoidCallback onDelete;
   final VoidCallback onConfirm;
 
@@ -17,6 +18,7 @@ class DeliveryDetailsOptionsDialog extends StatelessWidget {
     super.key,
     required this.showConfirm,
     required this.onEdit,
+    required this.onEditPassword,
     required this.onDelete,
     required this.onConfirm,
   });
@@ -25,6 +27,7 @@ class DeliveryDetailsOptionsDialog extends StatelessWidget {
     required BuildContext context,
     required bool showConfirm,
     required VoidCallback onEdit,
+    required VoidCallback onEditPassword,
     required VoidCallback onDelete,
     required VoidCallback onConfirm,
   }) {
@@ -33,6 +36,7 @@ class DeliveryDetailsOptionsDialog extends StatelessWidget {
       builder: (context) => DeliveryDetailsOptionsDialog(
         showConfirm: showConfirm,
         onEdit: onEdit,
+        onEditPassword: onEditPassword,
         onDelete: onDelete,
         onConfirm: onConfirm,
       ),
@@ -69,6 +73,14 @@ class DeliveryDetailsOptionsDialog extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 onEdit();
+              },
+            ),
+            SizedBox(height: AppHeight.s16),
+            _OptionTile(
+              label: AppTranslation.editPassword,
+              onTap: () {
+                Navigator.of(context).pop();
+                onEditPassword();
               },
             ),
             if (showConfirm) ...[

@@ -20,7 +20,9 @@ import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_
 import 'package:jeeb_admin/features/offer/list_offer/presentation/bloc/list_offer_bloc.dart';
 import 'package:jeeb_admin/features/merchant/delete_merchant/presentation/bloc/delete_merchant_bloc.dart';
 import 'package:jeeb_admin/features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
+import 'package:jeeb_admin/features/merchant/reset_merchant_password/presentation/bloc/reset_merchant_password_bloc.dart';
 import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_details_options_dialog.dart';
+import 'package:jeeb_admin/core/presentation/widgets/admin_reset_password_dialog.dart';
 
 class MerchantDetailsPage extends StatefulWidget {
   final String merchantId;
@@ -109,48 +111,74 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
             }
           },
         ),
+        BlocListener<ResetMerchantPasswordBloc, ResetMerchantPasswordState>(
+          listenWhen: (previous, current) => listenWhenEnteringTerminal(
+            previous,
+            current,
+            (s) =>
+                s is ResetMerchantPasswordSuccess ||
+                s is ResetMerchantPasswordError,
+          ),
+          listener: (context, state) {
+            if (state is ResetMerchantPasswordSuccess) {
+              customToast(msg: AppTranslation.passwordResetSuccess);
+            } else if (state is ResetMerchantPasswordError) {
+              customToast(msg: state.message);
+            }
+          },
+        ),
       ],
       child: BlocBuilder<DeleteMerchantBloc, DeleteMerchantState>(
         builder: (context, deleteState) {
           return BlocBuilder<UpdateMerchantBloc, UpdateMerchantState>(
             builder: (context, updateState) {
-              return ModalProgressHUD(
-                progressIndicator: const CustomCircleIndicator(),
-                inAsyncCall: deleteState is DeleteMerchantLoading ||
-                    updateState is UpdateMerchantLoading,
-                child: Scaffold(
-                  backgroundColor: ColorManager.background,
-                  appBar: CustomAppBar(
-                    title: AppTranslation.merchantDetails,
-                    actions: [
-                      if (_isAdmin) _buildOptionsButton(context),
-                    ],
-                  ),
-                  body: BlocStateHandler<MerchantDetailsBloc, MerchantDetailsState>(
-                    bloc: context.read<MerchantDetailsBloc>(),
-                    isLoading: (state) => state is MerchantDetailsLoading,
-                    isError: (state) => state is MerchantDetailsError,
-                    getErrorMessage: (state) =>
-                        (state as MerchantDetailsError).message,
-                    isSuccess: (state) => state is MerchantDetailsLoaded,
-                    getRetryCallback: (state) => () {
-                      context.read<MerchantDetailsBloc>().add(
-                            GetMerchantDetailsEvent(id: widget.merchantId),
+              return BlocBuilder<ResetMerchantPasswordBloc,
+                  ResetMerchantPasswordState>(
+                builder: (context, resetPasswordState) {
+                  return ModalProgressHUD(
+                    progressIndicator: const CustomCircleIndicator(),
+                    inAsyncCall: deleteState is DeleteMerchantLoading ||
+                        updateState is UpdateMerchantLoading ||
+                        resetPasswordState is ResetMerchantPasswordLoading,
+                    child: Scaffold(
+                      backgroundColor: ColorManager.background,
+                      appBar: CustomAppBar(
+                        title: AppTranslation.merchantDetails,
+                        actions: [
+                          if (_isAdmin) _buildOptionsButton(context),
+                        ],
+                      ),
+                      body: BlocStateHandler<MerchantDetailsBloc,
+                          MerchantDetailsState>(
+                        bloc: context.read<MerchantDetailsBloc>(),
+                        isLoading: (state) => state is MerchantDetailsLoading,
+                        isError: (state) => state is MerchantDetailsError,
+                        getErrorMessage: (state) =>
+                            (state as MerchantDetailsError).message,
+                        isSuccess: (state) => state is MerchantDetailsLoaded,
+                        getRetryCallback: (state) => () {
+                          context.read<MerchantDetailsBloc>().add(
+                                GetMerchantDetailsEvent(
+                                  id: widget.merchantId,
+                                ),
+                              );
+                        },
+                        successBuilder: (context, detailsState) {
+                          final loadedState =
+                              detailsState as MerchantDetailsLoaded;
+                          return SingleChildScrollView(
+                            controller: _scrollController,
+                            child: MerchantDetailsContent(
+                              merchant: loadedState.merchant,
+                              merchantId: widget.merchantId,
+                              scrollController: _scrollController,
+                            ),
                           );
-                    },
-                    successBuilder: (context, detailsState) {
-                      final loadedState = detailsState as MerchantDetailsLoaded;
-                      return SingleChildScrollView(
-                        controller: _scrollController,
-                        child: MerchantDetailsContent(
-                          merchant: loadedState.merchant,
-                          merchantId: widget.merchantId,
-                          scrollController: _scrollController,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                        },
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );
@@ -177,6 +205,19 @@ class _MerchantDetailsPageState extends State<MerchantDetailsPage> {
                 context,
                 Routes.editMerchant,
                 arguments: {'merchantId': widget.merchantId},
+              );
+            },
+            onEditPassword: () {
+              AdminResetPasswordDialog.show(
+                context: context,
+                onSubmit: (password) {
+                  context.read<ResetMerchantPasswordBloc>().add(
+                        ResetMerchantPasswordSubmitted(
+                          merchantId: widget.merchantId,
+                          password: password,
+                        ),
+                      );
+                },
               );
             },
             onDelete: () => _showDeleteConfirmation(context),

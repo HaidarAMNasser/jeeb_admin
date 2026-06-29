@@ -146,6 +146,7 @@
   "otp": "رمز التحقق",
   "resend_otp": "إعادة إرسال رمز التحقق",
   "reset_password": "إعادة تعيين كلمة المرور",
+  "edit_password": "تعديل كلمة المرور",
   "new_password": "كلمة المرور الجديدة",
   "confirm_password": "تأكيد كلمة المرور",
   "password_reset_success": "تم إعادة تعيين كلمة المرور بنجاح",

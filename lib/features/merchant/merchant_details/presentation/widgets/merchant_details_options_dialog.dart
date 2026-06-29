@@ -11,6 +11,7 @@ class MerchantDetailsOptionsDialog extends StatelessWidget {
   final bool hidePhoneNumber;
   final bool? merchantIsActive;
   final VoidCallback onEdit;
+  final VoidCallback onEditPassword;
   final VoidCallback onDelete;
   final VoidCallback onTogglePhoneVisibility;
   final VoidCallback onToggleMerchantActive;
@@ -20,6 +21,7 @@ class MerchantDetailsOptionsDialog extends StatelessWidget {
     required this.hidePhoneNumber,
     this.merchantIsActive,
     required this.onEdit,
+    required this.onEditPassword,
     required this.onDelete,
     required this.onTogglePhoneVisibility,
     required this.onToggleMerchantActive,
@@ -30,6 +32,7 @@ class MerchantDetailsOptionsDialog extends StatelessWidget {
     required bool hidePhoneNumber,
     bool? merchantIsActive,
     required VoidCallback onEdit,
+    required VoidCallback onEditPassword,
     required VoidCallback onDelete,
     required VoidCallback onTogglePhoneVisibility,
     required VoidCallback onToggleMerchantActive,
@@ -40,6 +43,7 @@ class MerchantDetailsOptionsDialog extends StatelessWidget {
         hidePhoneNumber: hidePhoneNumber,
         merchantIsActive: merchantIsActive,
         onEdit: onEdit,
+        onEditPassword: onEditPassword,
         onDelete: onDelete,
         onTogglePhoneVisibility: onTogglePhoneVisibility,
         onToggleMerchantActive: onToggleMerchantActive,
@@ -77,6 +81,14 @@ class MerchantDetailsOptionsDialog extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 onEdit();
+              },
+            ),
+            SizedBox(height: AppHeight.s16),
+            _OptionTile(
+              label: AppTranslation.editPassword,
+              onTap: () {
+                Navigator.of(context).pop();
+                onEditPassword();
               },
             ),
             SizedBox(height: AppHeight.s16),

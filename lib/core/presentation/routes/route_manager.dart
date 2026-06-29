@@ -69,6 +69,7 @@ import '../../../features/merchant/delete_merchant/presentation/bloc/delete_merc
 import '../../../features/merchant/delete_merchant/data/repositories/delete_merchant_repository.dart';
 import '../../../features/merchant/update_merchant/presentation/pages/edit_merchant_page.dart';
 import '../../../features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
+import '../../../features/merchant/reset_merchant_password/presentation/bloc/reset_merchant_password_bloc.dart';
 import '../../../features/merchant/update_merchant/data/repositories/update_merchant_repository.dart';
 import '../../../features/merchant/create_merchant/presentation/bloc/create_merchant_bloc.dart';
 import '../../../features/merchant/create_merchant/data/repositories/create_merchant_repository.dart';
@@ -86,6 +87,7 @@ import '../../../features/delivery/update_delivery/data/repositories/update_deli
 import '../../../features/delivery/delete_delivery/presentation/bloc/delete_delivery_bloc.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
 import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
+import '../../../features/delivery/reset_delivery_password/presentation/bloc/reset_delivery_password_bloc.dart';
 import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
 import '../../../features/delivery/delivery_details/domain/entities/delivery_man_entity.dart';
 import '../../../features/offer/list_offer/presentation/pages/list_offer_page.dart';
@@ -468,6 +470,11 @@ class AppRouter {
             BlocProvider<UpdateMerchantBloc>(
               create: (_) => UpdateMerchantBloc(di.sl<UpdateMerchantRepository>()),
             ),
+            BlocProvider<ResetMerchantPasswordBloc>(
+              create: (_) => ResetMerchantPasswordBloc(
+                di.sl(),
+              ),
+            ),
           ],
         );
 
@@ -582,6 +589,9 @@ class AppRouter {
             ),
             BlocProvider<ConfirmDeliveryBloc>(
               create: (_) => ConfirmDeliveryBloc(di.sl<ConfirmDeliveryRepository>()),
+            ),
+            BlocProvider<ResetDeliveryPasswordBloc>(
+              create: (_) => ResetDeliveryPasswordBloc(di.sl()),
             ),
           ],
         );

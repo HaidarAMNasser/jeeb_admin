@@ -778,6 +778,29 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   }
 
   @override
+  Future<Response> resetDeliveryPassword(String id, String password) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {'password': password};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'users/deliveries/$id/reset-password',
+              queryParameters: queryParameters,
+              data: data,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
   Future<Response> getCountries(int? page, int? limit) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -959,6 +982,29 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
               dio.options,
               'users/merchants/$id',
               queryParameters: queryParameters,
+            )
+            .copyWith(baseUrl: baseUrlApi),
+      ),
+    );
+
+    return result;
+  }
+
+  @override
+  Future<Response> resetMerchantPassword(String id, String password) async {
+    const extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final headers = <String, dynamic>{};
+    final data = {'password': password};
+
+    final result = await dio.fetch<Map<String, dynamic>>(
+      _setStreamType(
+        Options(method: 'PATCH', headers: headers, extra: extra)
+            .compose(
+              dio.options,
+              'users/merchants/$id/reset-password',
+              queryParameters: queryParameters,
+              data: data,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

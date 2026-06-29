@@ -179,6 +179,7 @@ class AppTranslation {
   static String get otp => 'otp'.tr();
   static String get resendOtp => 'resend_otp'.tr();
   static String get resetPassword => 'reset_password'.tr();
+  static String get editPassword => 'edit_password'.tr();
   static String get newPassword => 'new_password'.tr();
   static String get confirmPassword => 'confirm_password'.tr();
   static String get passwordResetSuccess => 'password_reset_success'.tr();

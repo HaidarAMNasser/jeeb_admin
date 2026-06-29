@@ -85,6 +85,9 @@ import '../../../features/merchant/delete_merchant/data/repositories/delete_merc
 import '../../../features/merchant/update_merchant/data/data_sources/update_merchant_data_source.dart';
 import '../../../features/merchant/update_merchant/data/repositories/update_merchant_repository.dart';
 import '../../../features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
+import '../../../features/merchant/reset_merchant_password/data/data_sources/reset_merchant_password_data_source.dart';
+import '../../../features/merchant/reset_merchant_password/data/repositories/reset_merchant_password_repository.dart';
+import '../../../features/merchant/reset_merchant_password/presentation/bloc/reset_merchant_password_bloc.dart';
 import '../../../features/merchant/create_merchant/data/data_sources/create_merchant_data_source.dart';
 import '../../../features/merchant/create_merchant/data/repositories/create_merchant_repository.dart';
 import '../../../features/delivery/list_delivery/data/data_sources/list_delivery_data_source.dart';
@@ -98,6 +101,9 @@ import '../../../features/delivery/update_delivery/data/repositories/update_deli
 import '../../../features/delivery/delete_delivery/data/data_sources/delete_delivery_data_source.dart';
 import '../../../features/delivery/delete_delivery/data/repositories/delete_delivery_repository.dart';
 import '../../../features/delivery/confirm_delivery/data/data_sources/confirm_delivery_data_source.dart';
+import '../../../features/delivery/reset_delivery_password/data/data_sources/reset_delivery_password_data_source.dart';
+import '../../../features/delivery/reset_delivery_password/data/repositories/reset_delivery_password_repository.dart';
+import '../../../features/delivery/reset_delivery_password/presentation/bloc/reset_delivery_password_bloc.dart';
 import '../../../features/delivery/confirm_delivery/data/repositories/confirm_delivery_repository.dart';
 import '../../../features/delivery/confirm_delivery/presentation/bloc/confirm_delivery_bloc.dart';
 import '../../../features/order/list_order/data/data_sources/list_order_data_source.dart';
@@ -378,6 +384,12 @@ Future<void> init() async {
   );
   sl.registerFactory(() => UpdateMerchantRepository(sl(), sl()));
   sl.registerFactory(() => UpdateMerchantBloc(sl()));
+  //! Merchant Reset Password Dependencies
+  sl.registerFactory<ResetMerchantPasswordRemoteDataSource>(
+    () => ResetMerchantPasswordRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ResetMerchantPasswordRepository(sl(), sl()));
+  sl.registerFactory(() => ResetMerchantPasswordBloc(sl()));
   //! Merchant Create Dependencies
   sl.registerFactory<CreateMerchantRemoteDataSource>(
     () => CreateMerchantRemoteDataSourceImpl(sl()),
@@ -401,6 +413,12 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ConfirmDeliveryRepository(sl(), sl()));
   sl.registerFactory(() => ConfirmDeliveryBloc(sl()));
+  //! Delivery Reset Password Dependencies
+  sl.registerFactory<ResetDeliveryPasswordRemoteDataSource>(
+    () => ResetDeliveryPasswordRemoteDataSourceImpl(sl()),
+  );
+  sl.registerFactory(() => ResetDeliveryPasswordRepository(sl(), sl()));
+  sl.registerFactory(() => ResetDeliveryPasswordBloc(sl()));
 
   //! Delivery Create/Update/Delete Dependencies
   sl.registerFactory<CreateDeliveryRemoteDataSource>(
