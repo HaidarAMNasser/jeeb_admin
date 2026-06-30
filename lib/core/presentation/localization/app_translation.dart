@@ -490,5 +490,13 @@ class AppTranslation {
   static String get confirmMerchant => 'confirm_merchant'.tr();
   static String get merchantConfirmedSuccessfully =>
       'merchant_confirmed_successfully'.tr();
+
+  // Merchant list filters
+  static String get merchantsFilterTitle => 'merchants_filter_title'.tr();
+  static String get merchantsFilterActive => 'merchants_filter_active'.tr();
+  static String get merchantsFilterInactive => 'merchants_filter_inactive'.tr();
+  static String get merchantsFilterApply => 'merchants_filter_apply'.tr();
+  static String get merchantsFilterTooltip => 'merchants_filter_tooltip'.tr();
+  static String get merchantsResetFilters => 'merchants_reset_filters'.tr();
 }
 

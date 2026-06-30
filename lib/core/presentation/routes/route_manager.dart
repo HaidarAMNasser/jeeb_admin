@@ -412,9 +412,6 @@ class AppRouter {
                   ListMerchantBloc(di.sl<ListMerchantRepository>())
                     ..add(const GetMerchantsEvent()),
             ),
-            BlocProvider<UpdateMerchantBloc>(
-              create: (_) => di.sl<UpdateMerchantBloc>(),
-            ),
           ],
         );
 

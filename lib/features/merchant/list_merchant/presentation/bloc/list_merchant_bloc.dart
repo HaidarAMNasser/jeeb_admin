@@ -19,6 +19,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
           if (!currentState.hasMore || currentState.isLoadingMore) return;
 
           final searchQuery = event.search ?? currentState.search;
+          final isActiveFilter = currentState.isActiveFilter;
           emit(currentState.copyWith(isLoadingMore: true));
 
           final nextPage = currentState.currentPage + 1;
@@ -26,6 +27,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
             page: nextPage,
             limit: _pageSize,
             search: searchQuery,
+            isActive: isActiveFilter,
           );
 
           result.fold(
@@ -40,6 +42,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
                 hasMore: newMerchants.length >= _pageSize,
                 currentPage: nextPage,
                 search: searchQuery,
+                isActiveFilter: isActiveFilter,
                 isLoadingMore: false,
               ));
             },
@@ -51,6 +54,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
             page: 1,
             limit: _pageSize,
             search: event.search,
+            isActive: event.isActiveFilter,
           );
 
           result.fold(
@@ -60,6 +64,7 @@ class ListMerchantBloc extends Bloc<ListMerchantEvent, ListMerchantState> {
               hasMore: merchants.length >= _pageSize,
               currentPage: 1,
               search: event.search,
+              isActiveFilter: event.isActiveFilter,
               isLoadingMore: false,
             )),
           );

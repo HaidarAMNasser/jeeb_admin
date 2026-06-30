@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
-import 'package:jeeb_admin/core/common/utils/toast_util.dart';
 import 'package:jeeb_admin/core/presentation/theme/colors_manager.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_app_bar.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
@@ -14,7 +12,6 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/search_merchant_widget.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
 import 'package:jeeb_admin/core/presentation/widgets/empty_state_widget.dart';
-import 'package:jeeb_admin/features/merchant/update_merchant/presentation/bloc/update_merchant_bloc.dart';
 
 class ListMerchantPage extends StatefulWidget {
   const ListMerchantPage({super.key});
@@ -52,44 +49,18 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
     final state = context.read<ListMerchantBloc>().state;
     if (state is ListMerchantLoaded && state.hasMore && !state.isLoadingMore) {
       context.read<ListMerchantBloc>().add(
-        GetMerchantsEvent(loadMore: true, search: state.search),
+        GetMerchantsEvent(
+          loadMore: true,
+          search: state.search,
+          isActiveFilter: state.isActiveFilter,
+        ),
       );
     }
   }
 
-  void _confirmMerchant(BuildContext context, String merchantId) {
-    context.read<UpdateMerchantBloc>().add(
-          UpdateMerchantSubmitted(
-            id: merchantId,
-            isActive: true,
-            isConfirmAction: true,
-          ),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UpdateMerchantBloc, UpdateMerchantState>(
-      listenWhen: (previous, current) => listenWhenEnteringTerminal(
-        previous,
-        current,
-        (s) => s is UpdateMerchantSuccess || s is UpdateMerchantError,
-      ),
-      listener: (context, state) {
-        if (state is UpdateMerchantSuccess) {
-          customToast(
-            msg: state.isConfirmAction
-                ? AppTranslation.merchantConfirmedSuccessfully
-                : AppTranslation.merchantUpdatedSuccessfully,
-          );
-          final listState = context.read<ListMerchantBloc>().state;
-          final search = listState is ListMerchantLoaded ? listState.search : null;
-          context.read<ListMerchantBloc>().add(GetMerchantsEvent(search: search));
-        } else if (state is UpdateMerchantError) {
-          customToast(msg: state.message);
-        }
-      },
-      child: Scaffold(
+    return Scaffold(
       backgroundColor: ColorManager.background,
       appBar: CustomAppBar(title: AppTranslation.merchants),
       floatingActionButton: FloatingActionButton(
@@ -117,13 +88,17 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
                 final merchants = s.merchants;
                 final isLoadingMore = s.isLoadingMore;
                 final currentSearch = s.search;
+                final currentIsActiveFilter = s.isActiveFilter;
 
                 if (merchants.isEmpty && !isLoadingMore) {
                   return EmptyStateWidget(
                     message: AppTranslation.noMerchantsFound,
                     onPress: () {
                       context.read<ListMerchantBloc>().add(
-                            GetMerchantsEvent(search: currentSearch),
+                            GetMerchantsEvent(
+                              search: currentSearch,
+                              isActiveFilter: currentIsActiveFilter,
+                            ),
                           );
                     },
                   );
@@ -132,7 +107,10 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
                 return RefreshIndicator(
                   onRefresh: () async {
                     context.read<ListMerchantBloc>().add(
-                          GetMerchantsEvent(search: currentSearch),
+                          GetMerchantsEvent(
+                            search: currentSearch,
+                            isActiveFilter: currentIsActiveFilter,
+                          ),
                         );
                   },
                   child: ListView.builder(
@@ -151,12 +129,7 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
                         );
                       }
                       final merchant = merchants[index];
-                      return MerchantListItem(
-                        merchant: merchant,
-                        onConfirmMerchant: merchant.isActive == false
-                            ? () => _confirmMerchant(context, merchant.id)
-                            : null,
-                      );
+                      return MerchantListItem(merchant: merchant);
                     },
                   ),
                 );
@@ -165,7 +138,6 @@ class _ListMerchantPageState extends State<ListMerchantPage> {
           ),
         ],
       ),
-    ),
     );
   }
 }

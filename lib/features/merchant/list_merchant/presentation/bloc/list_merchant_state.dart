@@ -20,6 +20,7 @@ class ListMerchantLoaded extends ListMerchantState {
   final bool hasMore;
   final int currentPage;
   final String? search;
+  final bool? isActiveFilter;
   final bool isLoadingMore;
 
   const ListMerchantLoaded({
@@ -27,14 +28,19 @@ class ListMerchantLoaded extends ListMerchantState {
     this.hasMore = true,
     this.currentPage = 1,
     this.search,
+    this.isActiveFilter,
     this.isLoadingMore = false,
   });
+
+  bool get isFiltered =>
+      (search != null && search!.trim().isNotEmpty) || isActiveFilter != null;
 
   ListMerchantLoaded copyWith({
     List<MerchantEntity>? merchants,
     bool? hasMore,
     int? currentPage,
     String? search,
+    bool? isActiveFilter,
     bool? isLoadingMore,
   }) {
     return ListMerchantLoaded(
@@ -42,13 +48,14 @@ class ListMerchantLoaded extends ListMerchantState {
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       search: search ?? this.search,
+      isActiveFilter: isActiveFilter ?? this.isActiveFilter,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
   @override
   List<Object?> get props =>
-      [merchants, hasMore, currentPage, search, isLoadingMore];
+      [merchants, hasMore, currentPage, search, isActiveFilter, isLoadingMore];
 }
 
 class ListMerchantError extends ListMerchantState {

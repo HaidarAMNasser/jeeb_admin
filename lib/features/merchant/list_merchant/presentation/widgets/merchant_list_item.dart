@@ -12,25 +12,19 @@ import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_location_section.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_owner_row.dart';
 import 'package:jeeb_admin/features/merchant/list_merchant/presentation/widgets/merchant_list_item_phone_badge.dart';
-import 'package:jeeb_admin/features/merchant/merchant_details/presentation/widgets/merchant_list_options_dialog.dart';
-  
-class MerchantListItem extends StatelessWidget {
-  static const double _moreButtonWidth = 48.0;
 
+class MerchantListItem extends StatelessWidget {
   final MerchantEntity merchant;
-  final VoidCallback? onConfirmMerchant;
 
   const MerchantListItem({
     super.key,
     required this.merchant,
-    this.onConfirmMerchant,
   });
 
   @override
   Widget build(BuildContext context) {
     final hasPhone =
         merchant.phoneNumber != null && merchant.phoneNumber!.isNotEmpty;
-    final isPending = merchant.isActive == false;
 
     void goToDetails() {
       AppRouter.navigateTo(
@@ -40,10 +34,9 @@ class MerchantListItem extends StatelessWidget {
       );
     }
 
-    final headerEndPadding = _headerEndPadding(
-      hasPhone: hasPhone,
-      isPending: isPending && onConfirmMerchant != null,
-    );
+    final headerEndPadding = hasPhone
+        ? MerchantListItemPhoneBadge.reserveEndPadding(true)
+        : 0.0;
 
     return Card(
       color: ColorManager.defaultWhite,
@@ -76,29 +69,9 @@ class MerchantListItem extends StatelessWidget {
                   if (hasPhone)
                     PositionedDirectional(
                       top: 0,
-                      end: isPending && onConfirmMerchant != null
-                          ? _moreButtonWidth + AppWidth.s8
-                          : 0,
+                      end: 0,
                       child: MerchantListItemPhoneBadge(
                         phoneNumber: merchant.phoneNumber!,
-                      ),
-                    ),
-                  if (isPending && onConfirmMerchant != null)
-                    PositionedDirectional(
-                      top: -AppPadding.p4,
-                      end: 0,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: ColorManager.primary,
-                          size: AppSize.s22,
-                        ),
-                        onPressed: () {
-                          MerchantListOptionsDialog.show(
-                            context: context,
-                            onConfirm: onConfirmMerchant!,
-                          );
-                        },
                       ),
                     ),
                 ],
@@ -135,21 +108,4 @@ class MerchantListItem extends StatelessWidget {
     );
   }
 
-  static double _headerEndPadding({
-    required bool hasPhone,
-    required bool isPending,
-  }) {
-    if (hasPhone && isPending) {
-      return MerchantListItemPhoneBadge.width +
-          AppWidth.s8 +
-          _moreButtonWidth;
-    }
-    if (hasPhone) {
-      return MerchantListItemPhoneBadge.reserveEndPadding(true);
-    }
-    if (isPending) {
-      return _moreButtonWidth;
-    }
-    return 0;
-  }
 }
