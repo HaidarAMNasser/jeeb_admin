@@ -20,8 +20,6 @@ class EditMerchantPage extends StatefulWidget {
 }
 
 class _EditMerchantPageState extends State<EditMerchantPage> {
-  MerchantDetailsLoaded? _merchantDetails;
-
   bool get _isEditMode => widget.fromEdit;
 
   @override
@@ -34,10 +32,6 @@ class _EditMerchantPageState extends State<EditMerchantPage> {
     }
   }
 
-  void _onMerchantLoaded(MerchantDetailsLoaded state) {
-    setState(() => _merchantDetails = state);
-  }
-
   @override
   Widget build(BuildContext context) {
     return EditMerchantBlocLayer(
@@ -46,12 +40,19 @@ class _EditMerchantPageState extends State<EditMerchantPage> {
         isLoading: isLoading,
         fromEdit: _isEditMode,
         merchantId: widget.merchantId,
-        onInitialize: _isEditMode ? _onMerchantLoaded : null,
-        formContent: MerchantFormPageBody(
-          isEditMode: _isEditMode,
-          merchantId: widget.merchantId,
-          merchantDetails: _merchantDetails,
-        ),
+        formBuilder: _isEditMode
+            ? (loaded) => MerchantFormPageBody(
+                  isEditMode: true,
+                  merchantId: widget.merchantId,
+                  merchantDetails: loaded,
+                )
+            : null,
+        formContent: _isEditMode
+            ? null
+            : MerchantFormPageBody(
+                isEditMode: false,
+                merchantId: widget.merchantId,
+              ),
       ),
     );
   }

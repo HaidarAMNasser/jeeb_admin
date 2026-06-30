@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jeeb_admin/core/presentation/maps/google_map_location_picker_page.dart';
 import 'package:jeeb_admin/features/areas/list_areas/domain/entities/area_entity.dart';
+import 'package:jeeb_admin/features/areas/list_areas/presentation/bloc/list_areas_bloc.dart';
 import 'package:jeeb_admin/features/city/presentation/bloc/city_bloc.dart';
 import 'package:jeeb_admin/features/city/domain/entities/city_entity.dart';
 import 'package:jeeb_admin/features/country/domain/entities/country_entity.dart';
@@ -39,6 +40,17 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
   bool _initialized = false;
   int? _initialCityIdToHydrate;
   bool _isHydratingCity = false;
+  String? _initialAreaIdToHydrate;
+  bool _isHydratingArea = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final details = widget.merchantDetails;
+    if (details != null) {
+      _initFromMerchant(details);
+    }
+  }
 
   @override
   void didUpdateWidget(MerchantFormPageBody oldWidget) {
@@ -79,6 +91,10 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
     final merchant = state.merchant;
     _initialCityIdToHydrate = merchant.cityId;
     _isHydratingCity = merchant.cityId != null;
+    if (merchant.areaId != null) {
+      _initialAreaIdToHydrate = merchant.areaId!.toString();
+      _isHydratingArea = true;
+    }
 
     final prefillCountry = merchant.countryId != null
         ? CountryEntity(
@@ -115,6 +131,16 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
           )
         : null;
 
+    final prefillArea = merchant.areaId != null
+        ? AreaEntity(
+            id: merchant.areaId!.toString(),
+            name: (merchant.areaName ?? '').trim().isEmpty
+                ? '${merchant.areaId}'
+                : merchant.areaName!.trim(),
+            price: 0,
+          )
+        : null;
+
     final merchantType = merchant.merchantType;
     final normalizedType =
         merchantType == 'STORE' || merchantType == 'RESTAURANT'
@@ -123,6 +149,9 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      if (_isHydratingArea) {
+        context.read<ListAreasBloc>().add(const GetAreasEvent());
+      }
       setState(() {
         _controllers.firstName.text = merchant.firstName ?? '';
         _controllers.lastName.text = merchant.lastName ?? '';
@@ -132,6 +161,7 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
         _controllers.restaurantName.text = merchant.restaurantName;
         _selectedCountry = prefillCountry;
         _selectedCity = prefillCity;
+        _selectedArea = prefillArea;
         _merchantBusinessType = normalizedType;
         _mapLatitude = merchant.currentLat;
         _mapLongitude = merchant.currentLng;
@@ -161,6 +191,26 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
       _selectedCity = matched;
       _isHydratingCity = false;
       _initialCityIdToHydrate = null;
+    });
+  }
+
+  void _tryHydrateAreaFromState(ListAreasState state) {
+    if (!_isHydratingArea || _initialAreaIdToHydrate == null) return;
+    if (state is! ListAreasLoaded) return;
+    final areaId = _initialAreaIdToHydrate!;
+    AreaEntity? matched;
+    for (final area in state.areas) {
+      if (area.id == areaId) {
+        matched = area;
+        break;
+      }
+    }
+    if (matched == null) return;
+    if (!mounted) return;
+    setState(() {
+      _selectedArea = matched;
+      _isHydratingArea = false;
+      _initialAreaIdToHydrate = null;
     });
   }
 
@@ -253,8 +303,15 @@ class _MerchantFormPageBodyState extends State<MerchantFormPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CityBloc, CityState>(
-      listener: (context, state) => _tryHydrateCityFromState(state),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CityBloc, CityState>(
+          listener: (context, state) => _tryHydrateCityFromState(state),
+        ),
+        BlocListener<ListAreasBloc, ListAreasState>(
+          listener: (context, state) => _tryHydrateAreaFromState(state),
+        ),
+      ],
       child: EditMerchantForm(
         controllers: _controllers,
         isEdit: widget.isEditMode,

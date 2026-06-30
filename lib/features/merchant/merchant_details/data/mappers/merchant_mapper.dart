@@ -12,9 +12,11 @@ extension MerchantMapper on MerchantModel {
       email: email,
       countryId: countryId,
       cityId: cityId,
+      areaId: areaId,
       address: address,
       cityName: cityName, // from city.nameEn or city.nameAr
       countryName: countryName, // from country.nameEn or country.nameAr
+      areaName: areaName,
       location: address,
       phoneNumber: phoneNumber, // from phone
       hidePhoneNumber: hidePhoneNumber,

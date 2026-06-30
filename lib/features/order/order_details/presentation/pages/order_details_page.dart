@@ -95,6 +95,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 listener: (context, cancelState) {
                   if (cancelState is OrderCancelSuccess) {
                     customToast(msg: AppTranslation.orderCancelledSuccessfully);
+                    context.read<OrderDetailsBloc>().add(
+                          GetOrderDetailsEvent(widget.orderId),
+                        );
                   } else if (cancelState is OrderCancelError) {
                     customToast(msg: cancelState.message);
                   }
@@ -126,38 +129,54 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                 return const SizedBox.shrink();
                               }
                               final order = detailsState.order;
-                              if (!order.statusEnum.canCompleteOrCancel) {
-                                return const SizedBox.shrink();
-                              }
                               return FutureBuilder<String?>(
                                 future: di.sl<StorageService>().getUserRole(),
                                 builder: (context, snapshot) {
-                                  final userRole = snapshot.data;
-                                  if (userRole?.toLowerCase() !=
-                                      UserRole.merchant.name) {
-                                    return const SizedBox.shrink();
+                                  final userRole = snapshot.data?.toLowerCase();
+                                  final isMerchant =
+                                      userRole == UserRole.merchant.name;
+                                  final isAdmin =
+                                      userRole == UserRole.admin.name;
+
+                                  if (isMerchant &&
+                                      order.statusEnum.canCompleteOrCancel) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.check_circle,
+                                            color: Colors.green,
+                                          ),
+                                          onPressed: () =>
+                                              _showCompleteConfirmation(context),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.cancel,
+                                            color: ColorManager.primary,
+                                          ),
+                                          onPressed: () =>
+                                              _showCancelConfirmation(context),
+                                        ),
+                                      ],
+                                    );
                                   }
-                                  return Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.check_circle,
-                                          color: Colors.green,
-                                        ),
-                                        onPressed: () =>
-                                            _showCompleteConfirmation(context),
+
+                                  if (isAdmin &&
+                                      order.statusEnum.canAdminCancel) {
+                                    return IconButton(
+                                      icon: const Icon(
+                                        Icons.cancel,
+                                        color: ColorManager.primary,
                                       ),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.cancel,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () =>
-                                            _showCancelConfirmation(context),
-                                      ),
-                                    ],
-                                  );
+                                      tooltip: AppTranslation.cancelOrder,
+                                      onPressed: () =>
+                                          _showCancelConfirmation(context),
+                                    );
+                                  }
+
+                                  return const SizedBox.shrink();
                                 },
                               );
                             },
@@ -226,15 +245,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   void _showCancelConfirmation(BuildContext context) {
-    showDialog(
+    ConfirmationDialog.show(
       context: context,
-      builder: (context) => ConfirmationDialog(
-        title: AppTranslation.areYouSureCancelOrder,
-        onConfirm: () {
-          Navigator.of(context).pop();
-          context.read<OrderCancelBloc>().add(CancelOrderEvent(widget.orderId));
-        },
-      ),
+      title: AppTranslation.areYouSureCancelOrder,
+      confirmText: AppTranslation.cancelOrder,
+      confirmColor: ColorManager.primary,
+      onConfirm: () {
+        context.read<OrderCancelBloc>().add(CancelOrderEvent(widget.orderId));
+      },
     );
   }
 }

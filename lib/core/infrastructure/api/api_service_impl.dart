@@ -1277,18 +1277,19 @@ class _AppApiServiceClientImpl implements AppApiServiceClient {
   
 
   @override
-  Future<Response> cancelOrder(String id) async {
+  Future<Response> cancelOrder(String id, {Map<String, dynamic>? body}) async {
     const extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final headers = <String, dynamic>{};
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
 
     final result = await dio.fetch<Map<String, dynamic>>(
       _setStreamType(
-        Options(method: 'POST', headers: headers, extra: extra)
+        Options(method: 'PATCH', headers: headers, extra: extra)
             .compose(
               dio.options,
               'orders/$id/cancel',
               queryParameters: queryParameters,
+              data: body,
             )
             .copyWith(baseUrl: baseUrlApi),
       ),

@@ -154,6 +154,20 @@ enum OrderStatus {
   /// Merchant: complete/cancel from pending (legacy flow).
   bool get canCompleteOrCancel => this == OrderStatus.pending;
 
+  /// Admin: cancel while order is still in progress (before pickup/delivery).
+  bool get canAdminCancel {
+    switch (this) {
+      case OrderStatus.pending:
+      case OrderStatus.confirmed:
+      case OrderStatus.preparing:
+      case OrderStatus.readyForPickup:
+      case OrderStatus.assigned:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   /// Admin: confirm payment receipts and mark PAID → COMPLETE.
   bool get canAdminConfirmPaidComplete => this == OrderStatus.paid;
 }

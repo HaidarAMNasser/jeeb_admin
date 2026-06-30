@@ -39,10 +39,21 @@ class AreaModel {
   factory AreaModel.fromJson(Map<String, dynamic> json) {
     return AreaModel(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
+      name: _parseName(json['name']),
       price: _parsePriceInSmallestUnit(json['price']),
       description: json['description']?.toString(),
     );
+  }
+
+  static String _parseName(dynamic name) {
+    if (name is String) return name;
+    if (name is Map) {
+      final en = name['en']?.toString().trim() ?? '';
+      final ar = name['ar']?.toString().trim() ?? '';
+      if (en.isNotEmpty) return en;
+      if (ar.isNotEmpty) return ar;
+    }
+    return '';
   }
 
   Map<String, dynamic> toJson() {

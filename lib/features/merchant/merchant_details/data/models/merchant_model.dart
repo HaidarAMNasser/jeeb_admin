@@ -1,5 +1,6 @@
 import '../../../../country/data/models/country_model.dart';
 import '../../../../city/data/models/city_model.dart';
+import '../../../../areas/list_areas/data/models/area_model.dart';
 
 class MerchantImageModel {
   final int id;
@@ -51,6 +52,7 @@ class MerchantModel {
   final double? currentLng;
   final int? countryId;
   final int? cityId;
+  final int? areaId;
   final String? address;
   final String? birthday;
   final bool? isOnline;
@@ -62,6 +64,7 @@ class MerchantModel {
   final MerchantImageModel? image;
   final CountryModel? country;
   final CityModel? city;
+  final AreaModel? area;
 
   MerchantModel({
     required this.id,
@@ -77,6 +80,7 @@ class MerchantModel {
     this.currentLng,
     this.countryId,
     this.cityId,
+    this.areaId,
     this.address,
     this.birthday,
     this.isOnline,
@@ -88,6 +92,7 @@ class MerchantModel {
     this.image,
     this.country,
     this.city,
+    this.area,
   });
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) {
@@ -105,6 +110,13 @@ class MerchantModel {
       currentLng: _parseCoordinate(json['currentLng'], json['location'], 'lng'),
       countryId: json['countryId'] as int?,
       cityId: json['cityId'] as int?,
+      areaId: json['areaId'] as int? ??
+          (json['area'] is Map<String, dynamic>
+              ? int.tryParse(
+                  (json['area'] as Map<String, dynamic>)['id']?.toString() ??
+                      '',
+                )
+              : null),
       address: json['address']?.toString(),
       birthday: json['birthday']?.toString(),
       isOnline: json['isOnline'] as bool?,
@@ -122,6 +134,9 @@ class MerchantModel {
       city: json['city'] != null
           ? CityModel.fromJson(json['city'] as Map<String, dynamic>)
           : null,
+      area: json['area'] != null
+          ? AreaModel.fromJson(json['area'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -133,6 +148,9 @@ class MerchantModel {
   String? get countryName => country?.name.en.isNotEmpty == true
       ? country?.name.en
       : (country?.name.ar.isNotEmpty == true ? country?.name.ar : null);
+  String? get areaName =>
+      area?.name.isNotEmpty == true ? area?.name : null;
+  int? get areaPrice => area?.price;
   String? get phoneNumber => phone;
   String? get imageUrl => image?.url;
 
@@ -165,6 +183,7 @@ class MerchantModel {
       'currentLng': currentLng,
       'countryId': countryId,
       'cityId': cityId,
+      'areaId': areaId,
       'address': address,
       'birthday': birthday,
       'isOnline': isOnline,
@@ -176,6 +195,7 @@ class MerchantModel {
       'image': image?.toJson(),
       'country': country?.toJson(),
       'city': city?.toJson(),
+      'area': area?.toJson(),
     };
   }
 }

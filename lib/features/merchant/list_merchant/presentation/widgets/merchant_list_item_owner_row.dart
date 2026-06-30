@@ -13,23 +13,26 @@ class MerchantListItemOwnerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CustomText(
-          text: "${AppTranslation.owner}: ",
-          textStyle: getRegularStyle(
-            fontSize: AppFontSize.s12,
-            color: ColorManager.descriptionColor,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          CustomText(
+            text: "${AppTranslation.owner}: ",
+            textStyle: getRegularStyle(
+              fontSize: AppFontSize.s12,
+              color: ColorManager.descriptionColor,
+            ),
           ),
-        ),
-        SizedBox(height: AppHeight.s4),
-        CustomText(
-          text: ownerName,
-          textStyle: getRegularStyle(color: ColorManager.backgroundDark),
-          maxLines: 2,
-          textOverflow: TextOverflow.ellipsis,
-        ),
-      ],
+          SizedBox(height: AppHeight.s4),
+          CustomText(
+            text: ownerName,
+            textStyle: getRegularStyle(color: ColorManager.backgroundDark),
+            maxLines: 2,
+            textOverflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -301,8 +301,8 @@ abstract class AppApiServiceClient {
     Map<String, dynamic>? body,
   });
 
-  @POST("orders/{id}/cancel")
-  Future<Response> cancelOrder(@Path('id') String id);
+  /// Cancel order (`PATCH orders/{id}/cancel`) — same status-update style as preparing.
+  Future<Response> cancelOrder(String id, {Map<String, dynamic>? body});
 
   // Offer endpoints (merchant & admin)
   @GET("offers")

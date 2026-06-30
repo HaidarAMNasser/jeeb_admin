@@ -12,16 +12,16 @@ class EditMerchantScaffold extends StatelessWidget {
   final bool isLoading;
   final bool fromEdit;
   final String? merchantId;
-  final void Function(MerchantDetailsLoaded state)? onInitialize;
-  final Widget formContent;
+  final Widget Function(MerchantDetailsLoaded loaded)? formBuilder;
+  final Widget? formContent;
 
   const EditMerchantScaffold({
     super.key,
     required this.isLoading,
     required this.fromEdit,
     this.merchantId,
-    this.onInitialize,
-    required this.formContent,
+    this.formBuilder,
+    this.formContent,
   });
 
   @override
@@ -50,11 +50,12 @@ class EditMerchantScaffold extends StatelessWidget {
                       );
                 },
                 successBuilder: (context, detailsState) {
-                  onInitialize?.call(detailsState as MerchantDetailsLoaded);
-                  return formContent;
+                  return formBuilder!.call(
+                    detailsState as MerchantDetailsLoaded,
+                  );
                 },
               )
-            : formContent,
+            : formContent!,
       ),
     );
   }

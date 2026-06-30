@@ -8,9 +8,11 @@ class MerchantEntity extends Equatable {
   final String email;
   final int? countryId;
   final int? cityId;
+  final int? areaId;
   final String? address;
   final String? cityName;
   final String? countryName;
+  final String? areaName;
   final String? location; // Not used in UI right now
   final String? phoneNumber;
   final bool? hidePhoneNumber;
@@ -37,9 +39,11 @@ class MerchantEntity extends Equatable {
     required this.email,
     this.countryId,
     this.cityId,
+    this.areaId,
     this.address,
     this.cityName,
     this.countryName,
+    this.areaName,
     this.location,
     this.phoneNumber,
     this.hidePhoneNumber,
@@ -66,9 +70,11 @@ class MerchantEntity extends Equatable {
         email,
         countryId,
         cityId,
+        areaId,
         address,
         cityName,
         countryName,
+        areaName,
         location,
         phoneNumber,
         hidePhoneNumber,
