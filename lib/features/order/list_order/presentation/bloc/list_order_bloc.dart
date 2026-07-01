@@ -17,6 +17,11 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
   /// Set on confirm success; attached to next [ListOrderLoaded] then cleared here.
   String? _pendingMerchantEducationOrderId;
 
+  OrderListFetchParams? _lastFetchParams;
+
+  /// Query params from the most recent list fetch (survives [ListOrderError]).
+  OrderListFetchParams? get lastFetchParams => _lastFetchParams;
+
   ListOrderBloc(this._repository) : super(const ListOrderInitial()) {
     on<GetOrdersEvent>(_onGetOrders);
     on<ConfirmOrderEvent>(_onConfirmOrder);
@@ -71,6 +76,13 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
         },
       );
 
+      _lastFetchParams = OrderListFetchParams(
+        search: searchQuery,
+        merchantId: merchantId,
+        merchantTab: tab,
+        statusFilter: statusFilter,
+      );
+
       emit(currentState.copyWith(isLoadingMore: true));
 
       final nextPage = currentState.currentPage + 1;
@@ -116,6 +128,14 @@ class ListOrderBloc extends Bloc<ListOrderEvent, ListOrderState> {
         apiStatus = a;
         filterOthers = f;
       },
+    );
+
+    final sf = event.statusFilter?.trim();
+    _lastFetchParams = OrderListFetchParams(
+      search: event.search,
+      merchantId: event.merchantId,
+      merchantTab: event.merchantTab,
+      statusFilter: (sf == null || sf.isEmpty) ? null : sf,
     );
 
     emit(const ListOrderLoading());

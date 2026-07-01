@@ -1,5 +1,30 @@
 part of 'list_order_bloc.dart';
 
+/// Last query used for a list fetch; kept across [ListOrderError] for retry.
+class OrderListFetchParams extends Equatable {
+  final String? search;
+  final String? merchantId;
+  final MerchantOrdersTab? merchantTab;
+  final String? statusFilter;
+
+  const OrderListFetchParams({
+    this.search,
+    this.merchantId,
+    this.merchantTab,
+    this.statusFilter,
+  });
+
+  GetOrdersEvent toEvent({bool clearSearch = false}) => GetOrdersEvent(
+        search: clearSearch ? null : search,
+        merchantId: merchantId,
+        merchantTab: merchantTab,
+        statusFilter: statusFilter,
+      );
+
+  @override
+  List<Object?> get props => [search, merchantId, merchantTab, statusFilter];
+}
+
 abstract class ListOrderState extends Equatable {
   const ListOrderState();
 

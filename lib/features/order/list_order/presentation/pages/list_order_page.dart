@@ -74,6 +74,28 @@ class _ListOrderPageState extends State<ListOrderPage>
         );
   }
 
+  MerchantOrdersTab? get _selectedMerchantTab {
+    if (!widget.isMerchant || _tabController == null) return null;
+    return MerchantOrdersTab.values[_tabController!.index];
+  }
+
+  void _refetchOrders({bool clearSearch = false}) {
+    final bloc = context.read<ListOrderBloc>();
+    final loaded = bloc.state is ListOrderLoaded
+        ? bloc.state as ListOrderLoaded
+        : null;
+    final last = bloc.lastFetchParams;
+
+    bloc.add(
+      GetOrdersEvent(
+        search: clearSearch ? null : (loaded?.search ?? last?.search),
+        merchantId: loaded?.merchantId ?? last?.merchantId,
+        merchantTab: _selectedMerchantTab ?? loaded?.merchantTab ?? last?.merchantTab,
+        statusFilter: loaded?.statusFilter ?? last?.statusFilter,
+      ),
+    );
+  }
+
   Future<void> _onConfirmOrder(OrderEntity order) async {
     final result = await showMerchantConfirmOrderDialog(context);
     if (!mounted || result == null) return;
@@ -110,31 +132,13 @@ class _ListOrderPageState extends State<ListOrderPage>
       isEmpty: (s) =>
           s is ListOrderLoaded && s.orders.isEmpty && !s.isLoadingMore,
       emptyMessage: AppTranslation.noOrdersFound,
-      getRetryCallback: (s) => () {
-        final loaded = s is ListOrderLoaded ? s : null;
-        context.read<ListOrderBloc>().add(
-              GetOrdersEvent(
-                search: currentSearch,
-                merchantId: loaded?.merchantId,
-                merchantTab: loaded?.merchantTab,
-                statusFilter: loaded?.statusFilter,
-              ),
-            );
-      },
-      getEmptyRetryCallback: (s) => () {
-        if (!widget.isMerchant) {
-          context.read<ListOrderBloc>().add(const GetOrdersEvent());
-          return;
+      getRetryCallback: (_) => () => _refetchOrders(),
+      getEmptyRetryCallback: (_) => () {
+        if (widget.isMerchant) {
+          _refetchOrders(clearSearch: true);
+        } else {
+          _refetchOrders();
         }
-        final loaded = s is ListOrderLoaded ? s : null;
-        context.read<ListOrderBloc>().add(
-              GetOrdersEvent(
-                search: currentSearch,
-                merchantId: loaded?.merchantId,
-                merchantTab: loaded?.merchantTab,
-                statusFilter: loaded?.statusFilter,
-              ),
-            );
       },
       successBuilder: (context, orderState) {
         final s = orderState as ListOrderLoaded;

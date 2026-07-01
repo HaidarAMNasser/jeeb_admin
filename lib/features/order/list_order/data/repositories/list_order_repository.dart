@@ -15,10 +15,7 @@ class ListOrderRepository {
   final ListOrderRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
 
-  const ListOrderRepository(
-    this._remoteDataSource,
-    this._networkInfo,
-  );
+  const ListOrderRepository(this._remoteDataSource, this._networkInfo);
 
   Future<Either<Failure, List<OrderEntity>>> getOrders({
     int? page,
@@ -38,24 +35,27 @@ class ListOrderRepository {
           merchantId: merchantId,
         );
 
-        BaseResponseModel<List<OrderModel>> baseResponseModel =
-            BaseResponseModel<List<OrderModel>>.fromJson(
+        BaseResponseModel<List<OrderModel>>
+        baseResponseModel = BaseResponseModel<List<OrderModel>>.fromJson(
           response.data!,
           (json) {
             if (json is String) {
               final parsedJson = jsonDecode(json) as List<dynamic>;
               return parsedJson
-                  .map((item) =>
-                      OrderModel.fromJson(item as Map<String, dynamic>))
+                  .map(
+                    (item) => OrderModel.fromJson(item as Map<String, dynamic>),
+                  )
                   .toList();
             } else if (json is List) {
               return json
-                  .map((item) =>
-                      OrderModel.fromJson(item as Map<String, dynamic>))
+                  .map(
+                    (item) => OrderModel.fromJson(item as Map<String, dynamic>),
+                  )
                   .toList();
             } else {
               throw FormatException(
-                  'Expected data to be String or List, but got ${json.runtimeType}');
+                'Expected data to be String or List, but got ${json.runtimeType}',
+              );
             }
           },
         );
@@ -64,11 +64,15 @@ class ListOrderRepository {
             baseResponseModel.success == true ||
             baseResponseModel.statusCode == 200) {
           if (baseResponseModel.data == null) {
-            return Left(ErrorHandler.handle(DioException(
-              type: DioExceptionType.badResponse,
-              response: response,
-              requestOptions: RequestOptions(),
-            )));
+            return Left(
+              ErrorHandler.handle(
+                DioException(
+                  type: DioExceptionType.badResponse,
+                  response: response,
+                  requestOptions: RequestOptions(),
+                ),
+              ),
+            );
           }
 
           try {
@@ -87,13 +91,18 @@ class ListOrderRepository {
             return Left(ErrorHandler.handle(domainError));
           }
         } else {
-          return Left(ErrorHandler.handle(DioException(
-            type: DioExceptionType.badResponse,
-            response: response,
-            requestOptions: RequestOptions(),
-          )));
+          return Left(
+            ErrorHandler.handle(
+              DioException(
+                type: DioExceptionType.badResponse,
+                response: response,
+                requestOptions: RequestOptions(),
+              ),
+            ),
+          );
         }
       } catch (error) {
+        print("in the catch section nn${error}");
         return Left(ErrorHandler.handle(error));
       }
     } else {
@@ -125,11 +134,15 @@ class ListOrderRepository {
       if (code != null && code >= 200 && code < 300) {
         return const Right(null);
       }
-      return Left(ErrorHandler.handle(DioException(
-        type: DioExceptionType.badResponse,
-        response: response,
-        requestOptions: RequestOptions(),
-      )));
+      return Left(
+        ErrorHandler.handle(
+          DioException(
+            type: DioExceptionType.badResponse,
+            response: response,
+            requestOptions: RequestOptions(),
+          ),
+        ),
+      );
     } catch (error) {
       return Left(ErrorHandler.handle(error));
     }
@@ -145,11 +158,15 @@ class ListOrderRepository {
       if (code != null && code >= 200 && code < 300) {
         return const Right(null);
       }
-      return Left(ErrorHandler.handle(DioException(
-        type: DioExceptionType.badResponse,
-        response: response,
-        requestOptions: RequestOptions(),
-      )));
+      return Left(
+        ErrorHandler.handle(
+          DioException(
+            type: DioExceptionType.badResponse,
+            response: response,
+            requestOptions: RequestOptions(),
+          ),
+        ),
+      );
     } catch (error) {
       return Left(ErrorHandler.handle(error));
     }
@@ -165,14 +182,17 @@ class ListOrderRepository {
       if (code != null && code >= 200 && code < 300) {
         return const Right(null);
       }
-      return Left(ErrorHandler.handle(DioException(
-        type: DioExceptionType.badResponse,
-        response: response,
-        requestOptions: RequestOptions(),
-      )));
+      return Left(
+        ErrorHandler.handle(
+          DioException(
+            type: DioExceptionType.badResponse,
+            response: response,
+            requestOptions: RequestOptions(),
+          ),
+        ),
+      );
     } catch (error) {
       return Left(ErrorHandler.handle(error));
     }
   }
 }
-
