@@ -453,7 +453,7 @@ Future<void> init() async {
     () => OrderDetailsRemoteDataSourceImpl(sl()),
   );
   sl.registerFactory(() => OrderDetailsRepository(sl(), sl()));
-  sl.registerFactory(() => OrderDetailsBloc(sl()));
+  sl.registerFactory(() => OrderDetailsBloc(sl(), sl()));
 
   //! Order Complete Dependencies
   sl.registerFactory<OrderCompleteRemoteDataSource>(

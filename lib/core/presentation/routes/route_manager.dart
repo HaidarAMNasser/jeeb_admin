@@ -53,7 +53,6 @@ import '../../../features/order/order_status_section/presentation/pages/order_st
 import '../../../features/order/order_status_section/presentation/bloc/order_status_bloc.dart';
 import '../../../features/order/order_details/domain/entities/order_status.dart';
 import '../../infrastructure/realtime/order_status_rtdb_service.dart';
-import '../../../features/order/order_complete/presentation/bloc/order_complete_bloc.dart';
 import '../../../features/order/order_cancel/presentation/bloc/order_cancel_bloc.dart';
 import '../../../features/main_navigation/presentation/pages/main_navigation_page.dart';
 import '../../../features/merchant/list_merchant/presentation/pages/list_merchant_page.dart';
@@ -662,9 +661,6 @@ class AppRouter {
             BlocProvider<OrderDetailsBloc>(
               create: (_) => di.sl<OrderDetailsBloc>()
                 ..add(GetOrderDetailsEvent(orderId)),
-            ),
-            BlocProvider<OrderCompleteBloc>(
-              create: (_) => di.sl<OrderCompleteBloc>(),
             ),
             BlocProvider<OrderCancelBloc>(
               create: (_) => di.sl<OrderCancelBloc>(),
