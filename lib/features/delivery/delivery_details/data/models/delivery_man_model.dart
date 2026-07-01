@@ -113,12 +113,12 @@ class DeliveryManModel {
   });
 
   factory DeliveryManModel.fromJson(Map<String, dynamic> json) {
-    double? lat = (json['currentLat'] as num?)?.toDouble();
-    double? lng = (json['currentLng'] as num?)?.toDouble();
+    double? lat = _parseDouble(json['currentLat']);
+    double? lng = _parseDouble(json['currentLng']);
     final loc = json['location'];
     if (lat == null && loc is Map<String, dynamic>) {
-      lat = (loc['lat'] as num?)?.toDouble() ?? (loc['latitude'] as num?)?.toDouble();
-      lng = (loc['lng'] as num?)?.toDouble() ?? (loc['longitude'] as num?)?.toDouble();
+      lat = _parseDouble(loc['lat']) ?? _parseDouble(loc['latitude']);
+      lng = _parseDouble(loc['lng']) ?? _parseDouble(loc['longitude']);
     }
     return DeliveryManModel(
       id: json['id']?.toString() ?? '',
@@ -153,6 +153,12 @@ class DeliveryManModel {
       currentLat: lat,
       currentLng: lng,
     );
+  }
+
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString().trim());
   }
 
   // Helper getters for backward compatibility
