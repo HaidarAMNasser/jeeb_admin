@@ -1,4 +1,4 @@
-package com.example.jeeb_admin
+package com.zawada.zawada
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:chucker_flutter/chucker_flutter.dart';
+// import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/config/app_config.dart';
 import 'core/presentation/routes/route_manager.dart';
@@ -40,10 +40,10 @@ void main() async {
 
   await di.sl<NotificationService>().initialize();
 
-  if (AppConfig.enableChucker) {
-    ChuckerFlutter.showOnRelease = true;
-    ChuckerFlutter.showNotification = false;
-  }
+  // if (AppConfig.enableChucker) {
+  //   ChuckerFlutter.showOnRelease = true;
+  //   ChuckerFlutter.showNotification = false;
+  // }
 
   final storageService = di.sl<StorageService>();
   final storedLanguage = storageService.getAppLanguage();
@@ -109,7 +109,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Offset _chuckerButtonOffset = const Offset(300, 500);
+  // Offset _chuckerButtonOffset = const Offset(300, 500);
 
   @override
   Widget build(BuildContext context) {
@@ -119,43 +119,43 @@ class _MyAppState extends State<MyApp> {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'Jeeb App',
+          title: AppConfig.appName,
           debugShowCheckedModeBanner: false,
-          navigatorObservers: [
-            if (AppConfig.enableChucker) ChuckerFlutter.navigatorObserver,
-          ],
-          builder: (context, child) {
-            if (!AppConfig.enableChucker) {
-              return child ?? const SizedBox.shrink();
-            }
-
-            final size = MediaQuery.sizeOf(context);
-            final clampedOffset = Offset(
-              _chuckerButtonOffset.dx.clamp(0.0, size.width - 56),
-              _chuckerButtonOffset.dy.clamp(0.0, size.height - 120),
-            );
-
-            return Stack(
-              children: [
-                child ?? const SizedBox.shrink(),
-                Positioned(
-                  left: clampedOffset.dx,
-                  top: clampedOffset.dy,
-                  child: GestureDetector(
-                    onPanUpdate: (details) {
-                      setState(() {
-                        _chuckerButtonOffset += details.delta;
-                      });
-                    },
-                    child: Transform.scale(
-                      scale: 0.7,
-                      child: ChuckerFlutter.chuckerButton,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+          // navigatorObservers: [
+          //   if (AppConfig.enableChucker) ChuckerFlutter.navigatorObserver,
+          // ],
+          // builder: (context, child) {
+          //   if (!AppConfig.enableChucker) {
+          //     return child ?? const SizedBox.shrink();
+          //   }
+          //
+          //   final size = MediaQuery.sizeOf(context);
+          //   final clampedOffset = Offset(
+          //     _chuckerButtonOffset.dx.clamp(0.0, size.width - 56),
+          //     _chuckerButtonOffset.dy.clamp(0.0, size.height - 120),
+          //   );
+          //
+          //   return Stack(
+          //     children: [
+          //       child ?? const SizedBox.shrink(),
+          //       Positioned(
+          //         left: clampedOffset.dx,
+          //         top: clampedOffset.dy,
+          //         child: GestureDetector(
+          //           onPanUpdate: (details) {
+          //             setState(() {
+          //               _chuckerButtonOffset += details.delta;
+          //             });
+          //           },
+          //           child: Transform.scale(
+          //             scale: 0.7,
+          //             child: ChuckerFlutter.chuckerButton,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   );
+          // },
           themeMode: ThemeMode.system,
           navigatorKey: di.sl<NavigationService>().navigationKey,
           initialRoute: Routes.splash,

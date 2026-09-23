@@ -2,18 +2,18 @@
 class AppConfig {
   AppConfig._();
 
-  static const String appName = 'Jeeb app';
-  static const String appVersion = '1.0.0';
-  static const String buildNumber = '1';
+  static const String appName = 'zawada';
+  static const String appVersion = '1.0.1';
+  static const String buildNumber = '2';
 
   // Developer Info
   static const String developerName = 'Haidar Nasser';
   static const String developerEmail = 'haideramnasser09@gmail.com';
 
-  // Environment
-  static const bool isProduction = false;
-  static const bool enableLogging = true;
-  static bool get enableChucker => false;
+  // Environment — set [isProduction] false for local/dev builds.
+  static const bool isProduction = true;
+  static const bool enableLogging = !isProduction;
+  // static bool get enableChucker => false;
 
   // API Configuration
   static String get baseUrl {
