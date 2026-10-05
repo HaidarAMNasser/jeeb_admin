@@ -49,12 +49,16 @@ class NotificationService {
       sound: false,
     );
 
-    await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: false,
-    );
+    try {
+      await _messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      ).timeout(const Duration(seconds: 8));
+    } catch (e) {
+      debugPrint('FCM requestPermission failed: $e');
+    }
 
     _tokenRefreshSubscription = _messaging.onTokenRefresh.listen((token) async {
       await _storage.setFcmDeviceToken(token);
@@ -67,11 +71,17 @@ class NotificationService {
     _openedAppSubscription =
         FirebaseMessaging.onMessageOpenedApp.listen(_handleOpenedFromBackground);
 
-    final initial = await _messaging.getInitialMessage();
-    if (initial != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _navigateFromPayload(initial.data);
-      });
+    try {
+      final initial = await _messaging.getInitialMessage().timeout(
+        const Duration(seconds: 5),
+      );
+      if (initial != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _navigateFromPayload(initial.data);
+        });
+      }
+    } catch (e) {
+      debugPrint('FCM getInitialMessage failed: $e');
     }
 
     await _syncCurrentToken();
@@ -115,7 +125,13 @@ class NotificationService {
   }
 
   Future<void> _syncCurrentToken({bool forceSync = false}) async {
-    final token = await _messaging.getToken();
+    String? token;
+    try {
+      token = await _messaging.getToken().timeout(const Duration(seconds: 8));
+    } catch (e) {
+      debugPrint('FCM getToken failed: $e');
+      return;
+    }
     if (token == null || token.isEmpty) return;
     await _storage.setFcmDeviceToken(token);
     _tokenBloc.add(

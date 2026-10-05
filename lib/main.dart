@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  await ScreenUtil.ensureScreenSize();
   await EasyLocalization.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations([
@@ -34,11 +36,14 @@ void main() async {
     ),
   );
 
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp().timeout(const Duration(seconds: 10));
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  } catch (e, st) {
+    debugPrint('Firebase startup failed: $e\n$st');
+  }
 
   await di.init();
-
-  await di.sl<NotificationService>().initialize();
 
   // if (AppConfig.enableChucker) {
   //   ChuckerFlutter.showOnRelease = true;
@@ -112,11 +117,30 @@ class _MyAppState extends State<MyApp> {
   // Offset _chuckerButtonOffset = const Offset(300, 500);
 
   @override
+  void initState() {
+    super.initState();
+    // FCM permission / APNs token can hang on iOS if awaited in main()
+    // before the first frame, which leaves a blank white screen.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_initNotifications());
+    });
+  }
+
+  Future<void> _initNotifications() async {
+    try {
+      await di.sl<NotificationService>().initialize();
+    } catch (e, st) {
+      debugPrint('Notification init failed: $e\n$st');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
+      ensureScreenSize: true,
       builder: (context, child) {
         return MaterialApp(
           title: AppConfig.appName,
