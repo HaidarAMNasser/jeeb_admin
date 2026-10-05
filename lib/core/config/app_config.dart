@@ -4,7 +4,7 @@ class AppConfig {
 
   static const String appName = 'zawada';
   static const String appVersion = '1.0.1';
-  static const String buildNumber = '2';
+  static const String buildNumber = '4';
 
   // Developer Info
   static const String developerName = 'Haidar Nasser';
