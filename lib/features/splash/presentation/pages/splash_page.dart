@@ -9,6 +9,7 @@ import '../../../../core/infrastructure/di/dependency_injection.dart' as di;
 import '../widgets/curved_text_animation.dart';
 import '../widgets/shimmer_wave_animation.dart';
 import '../../../../core/presentation/routes/routes.dart';
+import '../../../../core/config/app_config.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -92,13 +93,13 @@ class _SplashPageState extends State<SplashPage> {
                   ),
                   // Text animation - letters appear one after another
                   CurvedTextAnimation(
-                    text: 'Jeeb',
+                    text: AppConfig.appName,
                     textStyle: getBoldStyle(
                       fontSize: AppFontSize.s50,
                       color: ColorManager.primary,
                     ).copyWith(letterSpacing: 2),
                     curveHeight: AppHeight.s25,
-                    letterDelay: const Duration(milliseconds: 300), // Increased delay to make it more visible
+                    letterDelay: const Duration(milliseconds: 200),
                     totalDuration: const Duration(milliseconds: 2000),
                   ),
                 ],
