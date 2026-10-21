@@ -27,6 +27,7 @@ class ProfilePageContent extends StatelessWidget {
   final bool isUpdateLoading;
   final VoidCallback? onPickImage;
   final VoidCallback? onSendNotificationTap;
+  final VoidCallback? onDeleteAccount;
 
   const ProfilePageContent({
     super.key,
@@ -49,6 +50,7 @@ class ProfilePageContent extends StatelessWidget {
     required this.isUpdateLoading,
     this.onPickImage,
     this.onSendNotificationTap,
+    this.onDeleteAccount,
   });
 
   @override
@@ -92,6 +94,7 @@ class ProfilePageContent extends StatelessWidget {
             onSendNotificationTap: isAdminFromStorage
                 ? onSendNotificationTap
                 : null,
+            onDeleteAccount: isMerchantFromStorage ? onDeleteAccount : null,
           ),
           SizedBox(height: AppHeight.s24),
         ],

@@ -68,6 +68,9 @@ import '../../../features/auth/profile/presentation/bloc/change_password/change_
 import '../../../features/auth/logout/data/data_sources/logout_remote_data_source.dart';
 import '../../../features/auth/logout/data/repositories/logout_repository.dart';
 import '../../../features/auth/logout/presentation/bloc/logout_bloc.dart';
+import '../../../features/auth/delete_account/data/data_sources/delete_account_remote_data_source.dart';
+import '../../../features/auth/delete_account/data/repositories/delete_account_repository.dart';
+import '../../../features/auth/delete_account/presentation/bloc/delete_account_bloc.dart';
 import '../../../features/country/data/data_sources/country_remote_data_source.dart';
 import '../../../features/country/data/repositories/country_repository.dart';
 import '../../../features/country/presentation/bloc/country_bloc.dart';
@@ -340,6 +343,13 @@ Future<void> init() async {
   );
   sl.registerFactory(() => LogoutRepository(sl(), sl()));
   sl.registerFactory(() => LogoutBloc(sl(), sl()));
+
+  //! Auth Dependencies - Delete Account
+  sl.registerFactory<DeleteAccountRemoteDataSource>(
+    () => DeleteAccountRemoteDataSourceImpl(sl<AppApiServiceClient>()),
+  );
+  sl.registerFactory(() => DeleteAccountRepository(sl(), sl()));
+  sl.registerFactory(() => DeleteAccountBloc(sl(), sl()));
 
   //! Country Dependencies
   sl.registerFactory<CountryRemoteDataSource>(

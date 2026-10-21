@@ -10,6 +10,7 @@ import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dar
 import 'package:jeeb_admin/core/presentation/widgets/bloc_state_handler.dart';
 import 'package:jeeb_admin/core/presentation/widgets/language_selection_dialog.dart';
 import 'package:jeeb_admin/core/presentation/widgets/logout_dialog.dart';
+import 'package:jeeb_admin/core/presentation/widgets/confirmation_dialog.dart';
 import 'package:jeeb_admin/core/presentation/localization/app_translation.dart';
 import 'package:jeeb_admin/core/common/utils/bloc_listen_when.dart';
 import 'package:jeeb_admin/core/common/utils/toast_util.dart';
@@ -27,6 +28,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../bloc/profiel/profile_bloc.dart';
 import '../../../logout/presentation/bloc/logout_bloc.dart';
+import '../../../delete_account/presentation/bloc/delete_account_bloc.dart';
 import 'package:jeeb_admin/features/notification/send_to_customers/presentation/widgets/send_notification_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -88,7 +90,24 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LogoutBloc, LogoutState>(
+    return BlocConsumer<DeleteAccountBloc, DeleteAccountState>(
+      listenWhen: (previous, current) => listenWhenEnteringTerminal(
+        previous,
+        current,
+        (s) => s is DeleteAccountSuccess || s is DeleteAccountError,
+      ),
+      listener: (context, deleteState) {
+        if (deleteState is DeleteAccountSuccess) {
+          customToast(msg: AppTranslation.deleteAccountSuccess);
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => NavigationService().pushNamedAndRemoveUntil(Routes.login),
+          );
+        } else if (deleteState is DeleteAccountError) {
+          customToast(msg: deleteState.message);
+        }
+      },
+      builder: (context, deleteState) {
+        return BlocConsumer<LogoutBloc, LogoutState>(
       listenWhen: (previous, current) => listenWhenEnteringTerminal(
         previous,
         current,
@@ -150,9 +169,11 @@ class _ProfilePageState extends State<ProfilePage> {
             final loaded = state is ProfileLoaded ? state : null;
             final isUpdateLoading = loaded?.isUpdating ?? false;
             final isLogoutLoading = logoutState is LogoutLoading;
+            final isDeleteLoading = deleteState is DeleteAccountLoading;
             return ModalProgressHUD(
               progressIndicator: const CustomCircleIndicator(),
-              inAsyncCall: isUpdateLoading || isLogoutLoading,
+              inAsyncCall:
+                  isUpdateLoading || isLogoutLoading || isDeleteLoading,
               child: Scaffold(
                 backgroundColor: ColorManager.background,
                 appBar: CustomAppBar(
@@ -232,6 +253,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       onSendNotificationTap: _isAdminFromStorage
                           ? () => SendNotificationDialog.show(context)
                           : null,
+                      onDeleteAccount: _isMerchantFromStorage
+                          ? () => _showDeleteAccountConfirmation(context)
+                          : null,
                     );
                   },
                 ),
@@ -239,6 +263,20 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           },
         );
+      },
+    );
+      },
+    );
+  }
+
+  void _showDeleteAccountConfirmation(BuildContext context) {
+    ConfirmationDialog.show(
+      context: context,
+      title: AppTranslation.areYouSureDeleteAccount,
+      confirmText: AppTranslation.deleteAccount,
+      confirmColor: ColorManager.errorColor,
+      onConfirm: () {
+        context.read<DeleteAccountBloc>().add(const DeleteAccountSubmitted());
       },
     );
   }

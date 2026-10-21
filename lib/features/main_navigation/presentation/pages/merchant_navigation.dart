@@ -7,6 +7,7 @@ import 'package:jeeb_admin/core/infrastructure/di/dependency_injection.dart' as 
 import 'package:jeeb_admin/features/auth/profile/presentation/pages/profile_page.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/bloc/profiel/profile_bloc.dart';
 import 'package:jeeb_admin/features/auth/logout/presentation/bloc/logout_bloc.dart';
+import 'package:jeeb_admin/features/auth/delete_account/presentation/bloc/delete_account_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/pages/list_product_page.dart';
 import 'package:jeeb_admin/features/product/list_product/presentation/bloc/list_product_bloc.dart';
 import 'package:jeeb_admin/features/product/list_product/data/repositories/list_product_repository.dart';
@@ -68,6 +69,9 @@ class _MerchantNavigationState extends State<MerchantNavigation> {
             ),
             BlocProvider<LogoutBloc>(
               create: (_) => di.sl<LogoutBloc>(),
+            ),
+            BlocProvider<DeleteAccountBloc>(
+              create: (_) => di.sl<DeleteAccountBloc>(),
             ),
           ],
           child: const ProfilePage(),

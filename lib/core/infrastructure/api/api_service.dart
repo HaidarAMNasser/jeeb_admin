@@ -65,6 +65,9 @@ abstract class AppApiServiceClient {
   @GET("auth/profile")
   Future<Response> getProfile();
 
+  @DELETE("auth/profile")
+  Future<Response> deleteProfile();
+
   @PATCH("auth/profile")
   Future<Response> updateProfile({
     String? firstName,

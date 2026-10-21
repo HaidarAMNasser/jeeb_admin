@@ -12,6 +12,7 @@ import 'package:jeeb_admin/features/auth/login/domain/entities/user_entity.dart'
 import 'package:jeeb_admin/core/presentation/widgets/custom_checkbox.dart';
 import 'package:jeeb_admin/features/auth/register/presentation/widgets/merchant_business_type_dropdown.dart';
 import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_send_notification_tile.dart';
+import 'package:jeeb_admin/features/auth/profile/presentation/widgets/profile_delete_account_tile.dart';
 
 class ProfileForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -32,6 +33,7 @@ class ProfileForm extends StatelessWidget {
   final VoidCallback? onAreasTap;
   final VoidCallback? onMerchantStatisticsTap;
   final VoidCallback? onSendNotificationTap;
+  final VoidCallback? onDeleteAccount;
   /// Merchant-only fields/actions — from SharedPreferences `user_role` at login.
   final bool isMerchantFromStorage;
   /// `RESTAURANT` or `STORE`; only used when [isMerchantFromStorage].
@@ -61,6 +63,7 @@ class ProfileForm extends StatelessWidget {
     this.onAreasTap,
     this.onMerchantStatisticsTap,
     this.onSendNotificationTap,
+    this.onDeleteAccount,
   });
 
   @override
@@ -282,6 +285,8 @@ class ProfileForm extends StatelessWidget {
             onPressed: isLoading ? null : onUpdate,
             color: ColorManager.primary,
           ),
+          if (isMerchantFromStorage && onDeleteAccount != null)
+            ProfileDeleteAccountTile(onTap: onDeleteAccount!),
         ],
       ),
     );
