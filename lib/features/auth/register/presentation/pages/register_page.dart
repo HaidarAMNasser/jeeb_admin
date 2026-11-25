@@ -11,16 +11,17 @@ import 'package:jeeb_admin/core/presentation/routes/navigation_extensions.dart';
 import 'package:jeeb_admin/core/presentation/routes/routes.dart';
 import 'package:jeeb_admin/features/auth/register/data/helpful_functions/register_form_validate.dart';
 import 'package:jeeb_admin/core/presentation/widgets/custom_circle_indicator.dart';
+import 'package:jeeb_admin/core/presentation/widgets/verification_method_selection_dialog.dart';
 import '../bloc/register_bloc.dart';
 import '../widgets/register_form.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
   /// On Register tap: validate form, call register API, then navigate to verify on success.
   Future<void> _onRegisterTapped(BuildContext context) async {
     final bloc = context.read<RegisterBloc>();
-
     registerValidationToast(
       firstName: bloc.firstNameController.text.trim(),
       lastName: bloc.lastNameController.text.trim(),
@@ -51,6 +52,13 @@ class RegisterPage extends StatelessWidget {
       return;
     }
 
+    final channel = await showDialog<String>(
+      context: context,
+      builder: (_) => const VerificationMethodSelectionDialog(),
+    );
+    if (channel == null || !context.mounted) return;
+
+    bloc.add(RegisterNotificationChannelChanged(channel));
     bloc.add(const RegisterSubmitted());
   }
 
@@ -58,14 +66,15 @@ class RegisterPage extends StatelessWidget {
     final bloc = context.read<RegisterBloc>();
     bloc.add(const RegisterLocationLoadingChanged(true));
     try {
-      final result = await Navigator.of(context).push<GoogleMapLocationPickResult>(
-        MaterialPageRoute(
-          builder: (_) => GoogleMapLocationPickerPage(
-            initialLatitude: bloc.useLocationLat,
-            initialLongitude: bloc.useLocationLng,
-          ),
-        ),
-      );
+      final result = await Navigator.of(context)
+          .push<GoogleMapLocationPickResult>(
+            MaterialPageRoute(
+              builder: (_) => GoogleMapLocationPickerPage(
+                initialLatitude: bloc.useLocationLat,
+                initialLongitude: bloc.useLocationLng,
+              ),
+            ),
+          );
       if (!context.mounted) return;
       if (result != null) {
         bloc.add(
@@ -110,20 +119,19 @@ class RegisterPage extends StatelessWidget {
         return ModalProgressHUD(
           progressIndicator: const CustomCircleIndicator(),
           inAsyncCall: state is RegisterLoading,
-          child: 
-        
-        Scaffold(
-        backgroundColor: ColorManager.background,
-        appBar: CustomAppBar(title: AppTranslation.register),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(AppPadding.p24),
-            child: RegisterForm(
-              onRegister: () => _onRegisterTapped(context),
-              onUseMyLocation: () => _onUseMyLocation(context),
+          child: Scaffold(
+            backgroundColor: ColorManager.background,
+            appBar: CustomAppBar(title: AppTranslation.register),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(AppPadding.p24),
+                child: RegisterForm(
+                  onRegister: () => _onRegisterTapped(context),
+                  onUseMyLocation: () => _onUseMyLocation(context),
+                ),
+              ),
             ),
           ),
-          ),)
         );
       },
     );
